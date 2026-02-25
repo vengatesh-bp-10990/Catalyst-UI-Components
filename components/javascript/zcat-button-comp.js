@@ -19,12 +19,15 @@
  * Usage:
  *   <zcat-button-comp></zcat-button-comp>
  */
+import { prop } from "@slyte/core";
 import { Component } from "@slyte/component";
 
+
 class ZcatButtonComp extends Component {
-  constructor() {
-    super();
-  }
+
+    constructor() {
+        super();
+    }
 
   /**
    * Component data — defines reactive properties for the button.

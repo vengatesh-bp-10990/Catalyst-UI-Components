@@ -9,12 +9,15 @@
  * Usage:
  *   <zcat-colors-comp></zcat-colors-comp>
  */
+import { prop } from "@slyte/core";
 import { Component } from "@slyte/component";
 
+
 class ZcatColorsComp extends Component {
-  constructor() {
-    super();
-  }
+
+    constructor() {
+        super();
+    }
 
   /**
    * Component data — empty since all tokens are CSS custom properties

@@ -13,12 +13,15 @@
  *   <zcat-typography-comp></zcat-typography-comp>
  *   <zcat-typography-comp lt-prop-font="puvi"></zcat-typography-comp>
  */
+import { prop } from "@slyte/core";
 import { Component } from "@slyte/component";
 
+
 class ZcatTypographyComp extends Component {
-  constructor() {
-    super();
-  }
+
+    constructor() {
+        super();
+    }
 
   /**
    * Component data block — defines reactive properties.
