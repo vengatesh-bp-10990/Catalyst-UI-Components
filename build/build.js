@@ -14,7 +14,7 @@ module.exports = {
 	},
 
 	build : async function (options)  {
-		buildUtils = new (require(path.join(options.cliRoot,'lib','utilities','buildUtils')))()
+		buildUtils = new (require(path.join(options.cliRoot,'lib','utilities','buildUtils')))();
 		await buildUtils.init(options);
 		await buildUtils.build(options);
 	},
