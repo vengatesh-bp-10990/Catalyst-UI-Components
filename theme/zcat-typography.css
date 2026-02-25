@@ -1,0 +1,246 @@
+/**
+ * ZCAT Design System — Typography Tokens
+ * ========================================
+ * Source of truth: https://zcat-component-docs.netlify.app/#base/typography
+ *
+ * Font Families:
+ *   --zcat-font-family-primary : Inter, sans-serif  (or Zoho Puvi, sans-serif)
+ *   --zcat-font-family-code    : Roboto Mono, sans-serif
+ *
+ * All class names and variable names match EXACTLY as shown in the ZCAT docs.
+ */
+
+/* ==========================================================================
+   FONT FAMILY CUSTOM PROPERTIES
+   ========================================================================== */
+
+:root {
+  /* Primary font — Inter by default; switch to Zoho Puvi via data-font attribute */
+  --zcat-font-family-primary: "Inter", sans-serif;
+  --zcat-font-family-code: "Roboto Mono", monospace;
+}
+
+[data-font="puvi"] {
+  --zcat-font-family-primary: "Zoho Puvi", sans-serif;
+}
+
+
+/* ==========================================================================
+   HEADLINES — zcat-h1 through zcat-h6 / h1 through h6
+   ========================================================================== */
+
+.zcat-h1,
+h1 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 40px;
+  line-height: normal; /* auto per ZCAT spec */
+  font-weight: 600;    /* Semi-Bold */
+  margin: 0;
+}
+
+.zcat-h2,
+h2 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 32px;
+  line-height: normal; /* auto per ZCAT spec */
+  font-weight: 600;    /* Semi-Bold */
+  margin: 0;
+}
+
+.zcat-h3,
+h3 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 600;    /* Semi-Bold */
+  margin: 0;
+}
+
+.zcat-h4,
+h4 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 600;    /* Semi-Bold */
+  margin: 0;
+}
+
+.zcat-h5,
+h5 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 600;    /* Semi-Bold */
+  margin: 0;
+}
+
+.zcat-h6,
+h6 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;    /* Semi-Bold */
+  margin: 0;
+}
+
+
+/* ==========================================================================
+   SUBTITLES — zcat-subtitle1, zcat-subtitle2, zcat-subtitle3
+   ========================================================================== */
+
+.zcat-subtitle1 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600; /* Semi-Bold */
+}
+
+.zcat-subtitle2 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600; /* Semi-Bold */
+}
+
+.zcat-subtitle3 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 600; /* Semi-Bold */
+}
+
+
+/* ==========================================================================
+   BODY — zcat-body10, zcat-body12, zcat-body14, zcat-body16, zcat-body18
+   ========================================================================== */
+
+.zcat-body14 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400; /* Regular */
+}
+
+.zcat-body16 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400; /* Regular */
+}
+
+.zcat-body12 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400; /* Regular */
+}
+
+.zcat-body10 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 400; /* Regular */
+}
+
+.zcat-body18 {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 400; /* Regular */
+}
+
+
+/* ==========================================================================
+   BUTTON TEXT — zcat-font-buttonLg, buttonMd, buttonSm, buttonXs
+   ========================================================================== */
+
+.zcat-font-buttonLg {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500; /* Medium */
+}
+
+.zcat-font-buttonMd {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500; /* Medium */
+}
+
+.zcat-font-buttonSm {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500; /* Medium */
+}
+
+.zcat-font-buttonXs {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500; /* Medium */
+}
+
+
+/* ==========================================================================
+   CODE BLOCK — zcat-code-body, zcat-code-subtitle
+   ========================================================================== */
+
+.zcat-code-body {
+  font-family: var(--zcat-font-family-code);
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 400; /* Regular */
+}
+
+.zcat-code-subtitle {
+  font-family: var(--zcat-font-family-code);
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600; /* Semi-Bold */
+}
+
+
+/* ==========================================================================
+   INPUT FIELD — zcat-input-label, --zcat-input-text-font-*
+   ========================================================================== */
+
+.zcat-input-label {
+  font-family: var(--zcat-font-family-primary);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600; /* Semi-Bold */
+}
+
+:root {
+  --zcat-input-text-font-default-size: 14px;
+  --zcat-input-text-font-default-lh: 20px;
+  --zcat-input-text-font-default-weight: 400;
+
+  --zcat-input-text-font-small-size: 14px;
+  --zcat-input-text-font-small-lh: 20px;
+  --zcat-input-text-font-small-weight: 400;
+
+  --zcat-input-text-font-exsm-size: 12px;
+  --zcat-input-text-font-exsm-lh: 16px;
+  --zcat-input-text-font-exsm-weight: 400;
+}
+
+
+/* ==========================================================================
+   SERVICE HEADING — --zcat-sidemenu-font
+   ========================================================================== */
+
+:root {
+  --zcat-sidemenu-font-size: 10px;
+  --zcat-sidemenu-font-lh: 12px;
+  --zcat-sidemenu-font-weight: 400;
+}
+
+.zcat-sidemenu-font {
+  font-family: var(--zcat-font-family-primary);
+  font-size: var(--zcat-sidemenu-font-size);
+  line-height: var(--zcat-sidemenu-font-lh);
+  font-weight: var(--zcat-sidemenu-font-weight);
+}

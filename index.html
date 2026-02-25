@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Catalyst UI Components — ZCAT Design System on sLyte.dev v1.0.4">
+  <title>Catalyst UI Components — ZCAT Design System</title>
+
+  <!-- =====================================================================
+       FONT IMPORTS
+       ===================================================================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- =====================================================================
+       ZCAT DESIGN TOKENS + TYPOGRAPHY + GLOBAL STYLES
+       ===================================================================== -->
+  <link rel="stylesheet" href="theme/zcat-tokens.css">
+  <link rel="stylesheet" href="theme/zcat-typography.css">
+  <link rel="stylesheet" href="styles/app.css">
+
+  <!--
+    Component styles — sLyte auto-bundles these via convention when using
+    `lyte serve`. Listed here as fallback for direct browser loading.
+  -->
+  <link rel="stylesheet" href="components/styles/zcat-typography-comp.css">
+  <link rel="stylesheet" href="components/styles/zcat-colors-comp.css">
+  <link rel="stylesheet" href="components/styles/zcat-button-comp.css">
+
+  <!-- =====================================================================
+       DEMO PAGE STYLES
+       ===================================================================== -->
+  <link rel="stylesheet" href="styles/demo.css">
+</head>
+
+<body>
+  <div class="demo-shell">
+
+    <!-- ===== Top Navigation ===== -->
+    <nav class="demo-nav" role="navigation" aria-label="Main navigation">
+      <div class="demo-nav__title">
+        Catalyst UI Components
+        <span class="demo-nav__version">sLyte v1.0.4 · ZCAT Design System</span>
+      </div>
+      <div class="demo-nav__controls">
+        <span class="demo-theme-badge" id="themeBadge">☀️ Light Mode</span>
+        <button
+          class="demo-theme-toggle"
+          onclick="toggleTheme()"
+          aria-label="Toggle dark mode"
+          title="Switch between light and dark theme"
+        >
+          <span class="demo-theme-toggle__icon" id="themeIcon">🌙</span>
+          <span id="themeLabel">Dark Mode</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ===== Tab Bar ===== -->
+    <div class="demo-tabs" role="tablist" aria-label="Component sections">
+      <button class="demo-tab demo-tab--active" role="tab" aria-selected="true"
+        aria-controls="panel-overview" id="tab-overview"
+        onclick="switchTab('overview')">Overview</button>
+      <button class="demo-tab" role="tab" aria-selected="false"
+        aria-controls="panel-typography" id="tab-typography"
+        onclick="switchTab('typography')">Typography</button>
+      <button class="demo-tab" role="tab" aria-selected="false"
+        aria-controls="panel-colors" id="tab-colors"
+        onclick="switchTab('colors')">Colors</button>
+      <button class="demo-tab" role="tab" aria-selected="false"
+        aria-controls="panel-buttons" id="tab-buttons"
+        onclick="switchTab('buttons')">Buttons</button>
+    </div>
+
+    <!-- ===== Content Panels ===== -->
+    <div class="demo-content">
+
+      <!-- Overview Panel -->
+      <div class="demo-panel demo-panel--active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+        <div class="demo-overview">
+          <div class="demo-overview__hero">
+            <h1 class="zcat-h1">ZCAT Design System</h1>
+            <p class="zcat-body16">
+              Production-ready UI components built on the sLyte.dev v1.0.4 framework.
+              Full light and dark mode support with WCAG AA accessibility.
+            </p>
+          </div>
+
+          <div class="demo-overview__cards">
+            <div class="demo-overview__card" onclick="switchTab('typography')" tabindex="0" role="button" aria-label="View Typography">
+              <h3 class="zcat-h5">Typography</h3>
+              <p class="zcat-body14">
+                Complete typographic scale — Headlines (h1–h6), Subtitles, Body text,
+                Button text, Code blocks, Input field styles. Supports Inter & Zoho Puvi.
+              </p>
+              <span class="demo-tag demo-tag--info">&lt;zcat-typography-comp&gt;</span>
+            </div>
+            <div class="demo-overview__card" onclick="switchTab('colors')" tabindex="0" role="button" aria-label="View Colors">
+              <h3 class="zcat-h5">Colors</h3>
+              <p class="zcat-body14">
+                All ZCAT color tokens — dark scale, grey scale, primary, danger,
+                success, warning, info. Plus bg, stroke, and border variants.
+              </p>
+              <span class="demo-tag demo-tag--success">&lt;zcat-colors-comp&gt;</span>
+            </div>
+            <div class="demo-overview__card" onclick="switchTab('buttons')" tabindex="0" role="button" aria-label="View Buttons">
+              <h3 class="zcat-h5">Buttons</h3>
+              <p class="zcat-body14">
+                Fill, Outline, & Text variants × 4 sizes (lg, md, sm, xs)
+                × 3 colors (primary, danger, success) × all states.
+              </p>
+              <span class="demo-tag demo-tag--warning">&lt;zcat-button-comp&gt;</span>
+            </div>
+          </div>
+
+          <!-- Quick-start for consuming teams -->
+          <div class="demo-overview__quickstart">
+            <h3 class="zcat-h5">Quick Start — For Other Teams</h3>
+            <div class="demo-code-block">
+              <pre class="zcat-code-body"><code># 1. Install the library
+npm install catalyst-ui-components --registry http://cm-npmregistry
+
+# 2. In your app-init.js  — import all components
+import "catalyst-ui-components";
+
+# 3. In your index.html &lt;head&gt; — load the design tokens
+&lt;link rel="stylesheet" href="node_modules/catalyst-ui-components/theme/zcat-tokens.css"&gt;
+&lt;link rel="stylesheet" href="node_modules/catalyst-ui-components/theme/zcat-typography.css"&gt;
+&lt;link rel="stylesheet" href="node_modules/catalyst-ui-components/styles/app.css"&gt;
+
+# 4. Use in your sLyte templates
+&lt;zcat-button-comp lt-prop-variant="fill" lt-prop-color="primary" lt-prop-size="md"&gt;
+&lt;/zcat-button-comp&gt;
+
+# Or use ZCAT CSS classes directly
+&lt;button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md"&gt;
+  Submit
+&lt;/button&gt;
+&lt;h1 class="zcat-h1"&gt;Page Title&lt;/h1&gt;</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typography Panel — uses the sLyte custom element -->
+      <div class="demo-panel" id="panel-typography" role="tabpanel" aria-labelledby="tab-typography">
+        <zcat-typography-comp></zcat-typography-comp>
+      </div>
+
+      <!-- Colors Panel — uses the sLyte custom element -->
+      <div class="demo-panel" id="panel-colors" role="tabpanel" aria-labelledby="tab-colors">
+        <zcat-colors-comp></zcat-colors-comp>
+      </div>
+
+      <!-- Buttons Panel — uses the sLyte custom element -->
+      <div class="demo-panel" id="panel-buttons" role="tabpanel" aria-labelledby="tab-buttons">
+        <zcat-button-comp></zcat-button-comp>
+      </div>
+
+    </div><!-- .demo-content -->
+  </div><!-- .demo-shell -->
+
+  <!-- =====================================================================
+       sLyte BUNDLE — compiled by `lyte serve` / `lyte build`
+       This script registers all component classes + templates with sLyte.
+       ===================================================================== -->
+  <script src="app-init.js"></script>
+
+  <!-- =====================================================================
+       DEMO SCRIPTS — Theme Toggle + Tab Navigation
+       ===================================================================== -->
+  <script>
+    /* ── Theme Toggle ─────────────────────────────────────────────── */
+    function toggleTheme() {
+      var html = document.documentElement;
+      var current = html.getAttribute("data-theme") || "light";
+      var next = current === "light" ? "dark" : "light";
+
+      html.setAttribute("data-theme", next);
+
+      var icon = document.getElementById("themeIcon");
+      var label = document.getElementById("themeLabel");
+      var badge = document.getElementById("themeBadge");
+
+      if (next === "dark") {
+        icon.textContent = "☀️";
+        label.textContent = "Light Mode";
+        badge.textContent = "🌙 Dark Mode";
+      } else {
+        icon.textContent = "🌙";
+        label.textContent = "Dark Mode";
+        badge.textContent = "☀️ Light Mode";
+      }
+
+      try { localStorage.setItem("zcat-theme", next); } catch (e) { /* */ }
+    }
+
+    /* ── Tab Switching ────────────────────────────────────────────── */
+    function switchTab(name) {
+      document.querySelectorAll(".demo-tab").forEach(function (t) {
+        t.classList.remove("demo-tab--active");
+        t.setAttribute("aria-selected", "false");
+      });
+      document.querySelectorAll(".demo-panel").forEach(function (p) {
+        p.classList.remove("demo-panel--active");
+      });
+
+      var tab = document.getElementById("tab-" + name);
+      var panel = document.getElementById("panel-" + name);
+      if (tab) { tab.classList.add("demo-tab--active"); tab.setAttribute("aria-selected", "true"); }
+      if (panel) { panel.classList.add("demo-panel--active"); }
+    }
+
+    /* ── Init: restore saved theme ────────────────────────────────── */
+    (function () {
+      var saved;
+      try { saved = localStorage.getItem("zcat-theme"); } catch (e) { /* */ }
+      if (!saved && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        saved = "dark";
+      }
+      if (saved === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        var i = document.getElementById("themeIcon");
+        var l = document.getElementById("themeLabel");
+        var b = document.getElementById("themeBadge");
+        if (i) i.textContent = "☀️";
+        if (l) l.textContent = "Light Mode";
+        if (b) b.textContent = "🌙 Dark Mode";
+      }
+    })();
+  </script>
+</body>
+</html>

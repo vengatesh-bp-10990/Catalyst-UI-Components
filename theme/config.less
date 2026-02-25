@@ -1,0 +1,16 @@
+/**
+ * config.less — sLyte Theme Configuration
+ * @see https://www.slyte.dev/1.0.0/uiComponents/themes
+ *
+ * Sets the active theme name and maps components to themes.
+ * Compile with: lessc theme/config.less theme/output.css
+ */
+
+/* Global theme name — 'default' for light, 'night' for dark */
+@themeName: 'default';
+@global: @themeName;
+
+/* Component theme assignments */
+@button: @themeName;
+@typography: @themeName;
+@colors: @themeName;

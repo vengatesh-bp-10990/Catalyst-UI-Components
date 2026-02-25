@@ -1,0 +1,409 @@
+<!--
+  zcat-colors-comp.html — ZCAT Colors Component Template
+  ========================================================
+  sLyte component template for displaying all ZCAT color tokens with
+  swatches for both light and dark mode values.
+  Source: https://zcat-component-docs.netlify.app/#base/colors
+
+  Naming convention from ZCAT docs:
+    color      → --zcat-color-{name}
+    background → --zcat-bg-{name}
+    stroke     → --zcat-stroke-{name}
+    border     → --zcat-border-{name}
+
+  Usage:
+    <zcat-colors-comp></zcat-colors-comp>
+-->
+<template tag-name="zcat-colors-comp">
+  <div class="zcat-colors" role="region" aria-label="ZCAT Color Tokens">
+
+    <div class="zcat-colors__header">
+      <h2 class="zcat-h4">Colors</h2>
+      <p class="zcat-body14 zcat-colors__description">
+        Color naming: <code>color → zcat-color-dark1</code>,
+        <code>background → zcat-bg-dark1</code>,
+        <code>Stroke → zcat-stroke-dark1</code>,
+        <code>Border → zcat-border-dark1</code>
+      </p>
+    </div>
+
+    <!-- Dark Scale -->
+    <section class="zcat-colors__section" aria-labelledby="dark-scale-heading">
+      <h3 class="zcat-h6" id="dark-scale-heading">Dark Scale</h3>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-dark1);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-dark1</span>
+            <code class="zcat-code-body">color: var(--zcat-color-dark1)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #101f3e · Dark: #e8ecf4</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-dark2);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-dark2</span>
+            <code class="zcat-code-body">color: var(--zcat-color-dark2)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #4d618a · Dark: #b0bdd4</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-dark3);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-dark3</span>
+            <code class="zcat-code-body">color: var(--zcat-color-dark3)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #7988a8 · Dark: #8a97b4</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-dark4);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-dark4</span>
+            <code class="zcat-code-body">color: var(--zcat-color-dark4)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #a6b1c9 · Dark: #5f6e8c</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- White -->
+    <section class="zcat-colors__section" aria-labelledby="white-heading">
+      <h3 class="zcat-h6" id="white-heading">White</h3>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch zcat-colors__swatch--bordered" style="background-color: var(--zcat-color-white);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-white</span>
+            <code class="zcat-code-body">color: var(--zcat-color-white)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #ffffff · Dark: #1a1d2e</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Grey Scale -->
+    <section class="zcat-colors__section" aria-labelledby="grey-scale-heading">
+      <h3 class="zcat-h6" id="grey-scale-heading">Grey Scale</h3>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-grey1);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-grey1</span>
+            <code class="zcat-code-body">color: var(--zcat-color-grey1)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #d6ddef · Dark: #3a3f55</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-grey2);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-grey2</span>
+            <span class="zcat-colors__usage zcat-body10">border color</span>
+            <code class="zcat-code-body">color: var(--zcat-color-grey2)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #eff2fa · Dark: #2c3044</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-grey3);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-grey3</span>
+            <span class="zcat-colors__usage zcat-body10">disabled color</span>
+            <code class="zcat-code-body">color: var(--zcat-color-grey3)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #eff2fa · Dark: #2c3044</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-grey4);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-grey4</span>
+            <code class="zcat-code-body">color: var(--zcat-color-grey4)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #f7f8fb · Dark: #232738</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-grey5);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-grey5</span>
+            <code class="zcat-code-body">color: var(--zcat-color-grey5)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #fafbfd · Dark: #1e2233</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Primary -->
+    <section class="zcat-colors__section" aria-labelledby="primary-heading">
+      <h3 class="zcat-h6" id="primary-heading">Primary</h3>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-primary);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-primary</span>
+            <code class="zcat-code-body">color: var(--zcat-color-primary)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #1b73e8 · Dark: #5b9cf6</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-primary-dark);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-primary-dark</span>
+            <code class="zcat-code-body">color: var(--zcat-color-primary-dark)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #1557b0 · Dark: #3d7edb</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-primary-light);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-primary-light</span>
+            <code class="zcat-code-body">color: var(--zcat-color-primary-light)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #e8f0fe · Dark: #1a2744</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Danger -->
+    <section class="zcat-colors__section" aria-labelledby="danger-heading">
+      <h3 class="zcat-h6" id="danger-heading">Danger</h3>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-danger);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-danger</span>
+            <code class="zcat-code-body">color: var(--zcat-color-danger)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #e03f3f · Dark: #f07070</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-danger-dark);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-danger-dark</span>
+            <code class="zcat-code-body">color: var(--zcat-color-danger-dark)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #c62828 · Dark: #e04a4a</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-danger-light);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-danger-light</span>
+            <code class="zcat-code-body">color: var(--zcat-color-danger-light)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #fce8e8 · Dark: #3d1f1f</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Success -->
+    <section class="zcat-colors__section" aria-labelledby="success-heading">
+      <h3 class="zcat-h6" id="success-heading">Success</h3>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-success);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-success</span>
+            <code class="zcat-code-body">color: var(--zcat-color-success)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #2e7d32 · Dark: #66bb6a</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-success-dark);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-success-dark</span>
+            <code class="zcat-code-body">color: var(--zcat-color-success-dark)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #1b5e20 · Dark: #43a047</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-success-light);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-success-light</span>
+            <code class="zcat-code-body">color: var(--zcat-color-success-light)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #e8f5e9 · Dark: #1a2e1b</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Warning -->
+    <section class="zcat-colors__section" aria-labelledby="warning-heading">
+      <h3 class="zcat-h6" id="warning-heading">Warning</h3>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-warning);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-warning</span>
+            <code class="zcat-code-body">color: var(--zcat-color-warning)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #f9a825 · Dark: #fdd835</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-warning-dark);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-warning-dark</span>
+            <code class="zcat-code-body">color: var(--zcat-color-warning-dark)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #f57f17 · Dark: #fbc02d</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-warning-light);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-warning-light</span>
+            <code class="zcat-code-body">color: var(--zcat-color-warning-light)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #fff8e1 · Dark: #332c0f</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Info -->
+    <section class="zcat-colors__section" aria-labelledby="info-heading">
+      <h3 class="zcat-h6" id="info-heading">Info</h3>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-info);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-info</span>
+            <code class="zcat-code-body">color: var(--zcat-color-info)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #0288d1 · Dark: #4fc3f7</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-info-dark);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-info-dark</span>
+            <code class="zcat-code-body">color: var(--zcat-color-info-dark)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #01579b · Dark: #29b6f6</span>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-color-info-light);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-color-info-light</span>
+            <code class="zcat-code-body">color: var(--zcat-color-info-light)</code>
+            <span class="zcat-colors__hex zcat-body12">Light: #e1f5fe · Dark: #0e2a3d</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Background Tokens Reference -->
+    <section class="zcat-colors__section" aria-labelledby="bg-heading">
+      <h3 class="zcat-h6" id="bg-heading">Background Tokens</h3>
+      <p class="zcat-body12 zcat-colors__note">
+        Every color token has a corresponding <code>--zcat-bg-*</code> variant for backgrounds.
+        Example: <code>background: var(--zcat-bg-primary)</code>
+      </p>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-bg-primary);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-bg-primary</span>
+            <code class="zcat-code-body">background: var(--zcat-bg-primary)</code>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-bg-danger);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-bg-danger</span>
+            <code class="zcat-code-body">background: var(--zcat-bg-danger)</code>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-bg-success);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-bg-success</span>
+            <code class="zcat-code-body">background: var(--zcat-bg-success)</code>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-bg-warning);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-bg-warning</span>
+            <code class="zcat-code-body">background: var(--zcat-bg-warning)</code>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch" style="background-color: var(--zcat-bg-info);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-bg-info</span>
+            <code class="zcat-code-body">background: var(--zcat-bg-info)</code>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Stroke & Border Tokens Reference -->
+    <section class="zcat-colors__section" aria-labelledby="stroke-border-heading">
+      <h3 class="zcat-h6" id="stroke-border-heading">Stroke &amp; Border Tokens</h3>
+      <p class="zcat-body12 zcat-colors__note">
+        Tokens: <code>--zcat-stroke-*</code> for SVG strokes, <code>--zcat-border-*</code> for CSS borders.
+      </p>
+      <div class="zcat-colors__grid">
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch zcat-colors__swatch--stroke" style="border-color: var(--zcat-border-primary);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-border-primary</span>
+            <code class="zcat-code-body">border-color: var(--zcat-border-primary)</code>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch zcat-colors__swatch--stroke" style="border-color: var(--zcat-border-danger);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-border-danger</span>
+            <code class="zcat-code-body">border-color: var(--zcat-border-danger)</code>
+          </div>
+        </div>
+
+        <div class="zcat-colors__card" role="listitem">
+          <div class="zcat-colors__swatch zcat-colors__swatch--stroke" style="border-color: var(--zcat-border-grey2);" aria-hidden="true"></div>
+          <div class="zcat-colors__info">
+            <span class="zcat-subtitle2">zcat-border-grey2</span>
+            <code class="zcat-code-body">border-color: var(--zcat-border-grey2)</code>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</template>

@@ -1,0 +1,439 @@
+/**
+ * zcat-button-comp.css — Button Component Styles
+ * =================================================
+ * Complete ZCAT button styles for all variants (fill, outline, text),
+ * sizes (lg, md, sm, xs), colors (primary, danger, success), and
+ * states (default, hover, disabled) with light and dark mode support.
+ *
+ * Typography classes (zcat-font-button*) are applied in addition to
+ * button classes for correct font sizing per ZCAT typography spec.
+ *
+ * @see https://zcat-component-docs.netlify.app/#zcat/button
+ */
+
+/* ==========================================================================
+   BASE BUTTON
+   ========================================================================== */
+
+.zcat-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--zcat-font-family-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  transition: background-color 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease,
+              opacity 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  outline: none;
+}
+
+/* Focus-visible ring for keyboard accessibility */
+.zcat-btn:focus-visible {
+  box-shadow: 0 0 0 3px var(--zcat-focus-ring);
+  z-index: 1;
+}
+
+
+/* ==========================================================================
+   SIZES — per ZCAT button typography spec
+   ========================================================================== */
+
+/* Large: height 44px, padding 12px 24px */
+.zcat-btn--lg {
+  height: 44px;
+  padding: 10px 24px;
+}
+
+/* Medium / Default: height 36px, padding 8px 20px */
+.zcat-btn--md {
+  height: 36px;
+  padding: 8px 20px;
+}
+
+/* Small: height 32px, padding 6px 16px */
+.zcat-btn--sm {
+  height: 32px;
+  padding: 6px 16px;
+}
+
+/* Extra-small: height 28px, padding 4px 12px */
+.zcat-btn--xs {
+  height: 28px;
+  padding: 4px 12px;
+}
+
+
+/* ==========================================================================
+   FILL VARIANT
+   ========================================================================== */
+
+/* ---- Primary Fill ---- */
+.zcat-btn--fill.zcat-btn--primary {
+  background-color: var(--zcat-color-primary);
+  color: #ffffff;
+  border: 1px solid var(--zcat-color-primary);
+}
+
+.zcat-btn--fill.zcat-btn--primary:hover,
+.zcat-btn--fill.zcat-btn--primary.zcat-btn--hover {
+  background-color: var(--zcat-color-primary-dark);
+  border-color: var(--zcat-color-primary-dark);
+}
+
+.zcat-btn--fill.zcat-btn--primary:active {
+  background-color: var(--zcat-color-primary-dark);
+  border-color: var(--zcat-color-primary-dark);
+  transform: scale(0.98);
+}
+
+.zcat-btn--fill.zcat-btn--primary:disabled,
+.zcat-btn--fill.zcat-btn--primary[aria-disabled="true"] {
+  background-color: var(--zcat-color-grey3);
+  border-color: var(--zcat-color-grey2);
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ---- Danger Fill ---- */
+.zcat-btn--fill.zcat-btn--danger {
+  background-color: var(--zcat-color-danger);
+  color: #ffffff;
+  border: 1px solid var(--zcat-color-danger);
+}
+
+.zcat-btn--fill.zcat-btn--danger:hover,
+.zcat-btn--fill.zcat-btn--danger.zcat-btn--hover {
+  background-color: var(--zcat-color-danger-dark);
+  border-color: var(--zcat-color-danger-dark);
+}
+
+.zcat-btn--fill.zcat-btn--danger:active {
+  background-color: var(--zcat-color-danger-dark);
+  border-color: var(--zcat-color-danger-dark);
+  transform: scale(0.98);
+}
+
+.zcat-btn--fill.zcat-btn--danger:disabled,
+.zcat-btn--fill.zcat-btn--danger[aria-disabled="true"] {
+  background-color: var(--zcat-color-grey3);
+  border-color: var(--zcat-color-grey2);
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ---- Success Fill ---- */
+.zcat-btn--fill.zcat-btn--success {
+  background-color: var(--zcat-color-success);
+  color: #ffffff;
+  border: 1px solid var(--zcat-color-success);
+}
+
+.zcat-btn--fill.zcat-btn--success:hover,
+.zcat-btn--fill.zcat-btn--success.zcat-btn--hover {
+  background-color: var(--zcat-color-success-dark);
+  border-color: var(--zcat-color-success-dark);
+}
+
+.zcat-btn--fill.zcat-btn--success:active {
+  background-color: var(--zcat-color-success-dark);
+  border-color: var(--zcat-color-success-dark);
+  transform: scale(0.98);
+}
+
+.zcat-btn--fill.zcat-btn--success:disabled,
+.zcat-btn--fill.zcat-btn--success[aria-disabled="true"] {
+  background-color: var(--zcat-color-grey3);
+  border-color: var(--zcat-color-grey2);
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+
+/* ==========================================================================
+   OUTLINE VARIANT
+   ========================================================================== */
+
+/* ---- Primary Outline ---- */
+.zcat-btn--outline.zcat-btn--primary {
+  background-color: transparent;
+  color: var(--zcat-color-primary);
+  border: 1px solid var(--zcat-color-primary);
+}
+
+.zcat-btn--outline.zcat-btn--primary:hover,
+.zcat-btn--outline.zcat-btn--primary.zcat-btn--hover {
+  background-color: var(--zcat-color-primary-light);
+  color: var(--zcat-color-primary-dark);
+  border-color: var(--zcat-color-primary-dark);
+}
+
+.zcat-btn--outline.zcat-btn--primary:active {
+  background-color: var(--zcat-color-primary-light);
+  transform: scale(0.98);
+}
+
+.zcat-btn--outline.zcat-btn--primary:disabled,
+.zcat-btn--outline.zcat-btn--primary[aria-disabled="true"] {
+  background-color: transparent;
+  border-color: var(--zcat-color-grey2);
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ---- Danger Outline ---- */
+.zcat-btn--outline.zcat-btn--danger {
+  background-color: transparent;
+  color: var(--zcat-color-danger);
+  border: 1px solid var(--zcat-color-danger);
+}
+
+.zcat-btn--outline.zcat-btn--danger:hover,
+.zcat-btn--outline.zcat-btn--danger.zcat-btn--hover {
+  background-color: var(--zcat-color-danger-light);
+  color: var(--zcat-color-danger-dark);
+  border-color: var(--zcat-color-danger-dark);
+}
+
+.zcat-btn--outline.zcat-btn--danger:active {
+  background-color: var(--zcat-color-danger-light);
+  transform: scale(0.98);
+}
+
+.zcat-btn--outline.zcat-btn--danger:disabled,
+.zcat-btn--outline.zcat-btn--danger[aria-disabled="true"] {
+  background-color: transparent;
+  border-color: var(--zcat-color-grey2);
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ---- Success Outline ---- */
+.zcat-btn--outline.zcat-btn--success {
+  background-color: transparent;
+  color: var(--zcat-color-success);
+  border: 1px solid var(--zcat-color-success);
+}
+
+.zcat-btn--outline.zcat-btn--success:hover,
+.zcat-btn--outline.zcat-btn--success.zcat-btn--hover {
+  background-color: var(--zcat-color-success-light);
+  color: var(--zcat-color-success-dark);
+  border-color: var(--zcat-color-success-dark);
+}
+
+.zcat-btn--outline.zcat-btn--success:active {
+  background-color: var(--zcat-color-success-light);
+  transform: scale(0.98);
+}
+
+.zcat-btn--outline.zcat-btn--success:disabled,
+.zcat-btn--outline.zcat-btn--success[aria-disabled="true"] {
+  background-color: transparent;
+  border-color: var(--zcat-color-grey2);
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+
+/* ==========================================================================
+   TEXT VARIANT
+   ========================================================================== */
+
+/* ---- Primary Text ---- */
+.zcat-btn--text.zcat-btn--primary {
+  background-color: transparent;
+  color: var(--zcat-color-primary);
+  border: 1px solid transparent;
+}
+
+.zcat-btn--text.zcat-btn--primary:hover,
+.zcat-btn--text.zcat-btn--primary.zcat-btn--hover {
+  background-color: var(--zcat-color-primary-light);
+  color: var(--zcat-color-primary-dark);
+}
+
+.zcat-btn--text.zcat-btn--primary:active {
+  background-color: var(--zcat-color-primary-light);
+  transform: scale(0.98);
+}
+
+.zcat-btn--text.zcat-btn--primary:disabled,
+.zcat-btn--text.zcat-btn--primary[aria-disabled="true"] {
+  background-color: transparent;
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ---- Danger Text ---- */
+.zcat-btn--text.zcat-btn--danger {
+  background-color: transparent;
+  color: var(--zcat-color-danger);
+  border: 1px solid transparent;
+}
+
+.zcat-btn--text.zcat-btn--danger:hover,
+.zcat-btn--text.zcat-btn--danger.zcat-btn--hover {
+  background-color: var(--zcat-color-danger-light);
+  color: var(--zcat-color-danger-dark);
+}
+
+.zcat-btn--text.zcat-btn--danger:active {
+  background-color: var(--zcat-color-danger-light);
+  transform: scale(0.98);
+}
+
+.zcat-btn--text.zcat-btn--danger:disabled,
+.zcat-btn--text.zcat-btn--danger[aria-disabled="true"] {
+  background-color: transparent;
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ---- Success Text ---- */
+.zcat-btn--text.zcat-btn--success {
+  background-color: transparent;
+  color: var(--zcat-color-success);
+  border: 1px solid transparent;
+}
+
+.zcat-btn--text.zcat-btn--success:hover,
+.zcat-btn--text.zcat-btn--success.zcat-btn--hover {
+  background-color: var(--zcat-color-success-light);
+  color: var(--zcat-color-success-dark);
+}
+
+.zcat-btn--text.zcat-btn--success:active {
+  background-color: var(--zcat-color-success-light);
+  transform: scale(0.98);
+}
+
+.zcat-btn--text.zcat-btn--success:disabled,
+.zcat-btn--text.zcat-btn--success[aria-disabled="true"] {
+  background-color: transparent;
+  color: var(--zcat-color-dark4);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+
+/* ==========================================================================
+   DARK MODE — additional overrides for fill buttons to ensure contrast
+   ========================================================================== */
+
+[data-theme="dark"] .zcat-btn--fill.zcat-btn--primary {
+  color: #1a1d2e;
+}
+
+[data-theme="dark"] .zcat-btn--fill.zcat-btn--danger {
+  color: #1a1d2e;
+}
+
+[data-theme="dark"] .zcat-btn--fill.zcat-btn--success {
+  color: #1a1d2e;
+}
+
+[data-theme="dark"] .zcat-btn--fill:disabled,
+[data-theme="dark"] .zcat-btn--fill[aria-disabled="true"] {
+  background-color: var(--zcat-color-grey3);
+  border-color: var(--zcat-color-grey2);
+  color: var(--zcat-color-dark4);
+}
+
+
+/* ==========================================================================
+   DEMO LAYOUT STYLES
+   ========================================================================== */
+
+.zcat-button-demo {
+  padding: 24px;
+  color: var(--zcat-color-dark1);
+  font-family: var(--zcat-font-family-primary);
+}
+
+.zcat-button-demo__header {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--zcat-color-grey2);
+}
+
+.zcat-button-demo__header h2 {
+  margin-bottom: 8px;
+}
+
+.zcat-button-demo__desc {
+  color: var(--zcat-color-dark2);
+}
+
+.zcat-button-demo__section {
+  margin-bottom: 40px;
+}
+
+.zcat-button-demo__section h3 {
+  margin-bottom: 20px;
+  color: var(--zcat-color-dark1);
+}
+
+.zcat-button-demo__group {
+  margin-bottom: 24px;
+}
+
+.zcat-button-demo__group h4 {
+  margin-bottom: 12px;
+  color: var(--zcat-color-dark2);
+}
+
+.zcat-button-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Code block reference */
+.zcat-button-demo__code-block {
+  border: 1px solid var(--zcat-color-grey2);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--zcat-color-grey4);
+}
+
+.zcat-button-demo__code-block pre {
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.zcat-button-demo__code-block code {
+  font-family: var(--zcat-font-family-code);
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--zcat-color-dark2);
+}

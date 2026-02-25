@@ -1,0 +1,62 @@
+{
+  "name": "catalyst-ui-components",
+  "version": "1.0.0",
+  "description": "ZCAT Design System UI Component Library built on sLyte.dev v1.0.4 — shared across all teams",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "style": "theme/zcat-tokens.css",
+  "scripts": {
+    "serve": "lyte serve --port=3000",
+    "start": "lyte serve --port=3000",
+    "build": "lyte build",
+    "build:watch": "lyte build --watch",
+    "build:prod": "lyte build --production"
+  },
+  "files": [
+    "lib/",
+    "components/",
+    "theme/zcat-tokens.css",
+    "theme/zcat-typography.css",
+    "theme/config.less",
+    "theme/themes/",
+    "theme/overrides/",
+    "styles/app.css",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./lib/index.js",
+    "./tokens": "./theme/zcat-tokens.css",
+    "./typography": "./theme/zcat-typography.css",
+    "./theme": "./styles/app.css",
+    "./components/button": "./components/javascript/zcat-button-comp.js",
+    "./components/typography": "./components/javascript/zcat-typography-comp.js",
+    "./components/colors": "./components/javascript/zcat-colors-comp.js",
+    "./styles/button": "./components/styles/zcat-button-comp.css",
+    "./styles/typography": "./components/styles/zcat-typography-comp.css",
+    "./styles/colors": "./components/styles/zcat-colors-comp.css"
+  },
+  "peerDependencies": {
+    "@slyte/component": "^1.0.4"
+  },
+  "dependencies": {
+    "@slyte/component": "1.0.4",
+    "@slyte/router": "1.0.4",
+    "@slyte/data": "1.0.4"
+  },
+  "devDependencies": {
+    "@slyte/cli": "1.0.5",
+    "less": "^4.2.0"
+  },
+  "keywords": [
+    "zcat",
+    "slyte",
+    "design-system",
+    "ui-components",
+    "typography",
+    "buttons",
+    "colors",
+    "catalyst"
+  ],
+  "author": "Catalyst UI Team",
+  "license": "UNLICENSED"
+}

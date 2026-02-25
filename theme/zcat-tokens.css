@@ -1,0 +1,250 @@
+/**
+ * ZCAT Design System — Color Tokens
+ * ===================================
+ * Source of truth: https://zcat-component-docs.netlify.app/#base/colors
+ *
+ * Naming convention from ZCAT docs:
+ *   color    → --zcat-color-{name}
+ *   background → --zcat-bg-{name}
+ *   stroke   → --zcat-stroke-{name}
+ *   border   → --zcat-border-{name}
+ *
+ * All variable names match EXACTLY as shown in the ZCAT documentation.
+ * Both light (default) and dark mode values are defined.
+ */
+
+/* ==========================================================================
+   LIGHT MODE (Default)
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+
+  /* ---------- Dark scale (text colors) ---------- */
+  --zcat-color-dark1: #101f3e;
+  --zcat-color-dark2: #4d618a;
+  --zcat-color-dark3: #7988a8;
+  --zcat-color-dark4: #a6b1c9;
+
+  /* ---------- White ---------- */
+  --zcat-color-white: #ffffff;
+
+  /* ---------- Grey scale ---------- */
+  --zcat-color-grey1: #d6ddef;
+  --zcat-color-grey2: #eff2fa;  /* border color */
+  --zcat-color-grey3: #eff2fa;  /* disabled color */
+  --zcat-color-grey4: #f7f8fb;
+  --zcat-color-grey5: #fafbfd;
+
+  /* ---------- Primary (Blue) ---------- */
+  --zcat-color-primary: #1b73e8;
+  --zcat-color-primary-dark: #1557b0;
+  --zcat-color-primary-light: #e8f0fe;
+
+  /* ---------- Danger (Red) ---------- */
+  --zcat-color-danger: #e03f3f;
+  --zcat-color-danger-dark: #c62828;
+  --zcat-color-danger-light: #fce8e8;
+
+  /* ---------- Success (Green) ---------- */
+  --zcat-color-success: #2e7d32;
+  --zcat-color-success-dark: #1b5e20;
+  --zcat-color-success-light: #e8f5e9;
+
+  /* ---------- Warning (Amber) ---------- */
+  --zcat-color-warning: #f9a825;
+  --zcat-color-warning-dark: #f57f17;
+  --zcat-color-warning-light: #fff8e1;
+
+  /* ---------- Info (Cyan) ---------- */
+  --zcat-color-info: #0288d1;
+  --zcat-color-info-dark: #01579b;
+  --zcat-color-info-light: #e1f5fe;
+
+  /* ---------- Background tokens ---------- */
+  --zcat-bg-dark1: #101f3e;
+  --zcat-bg-dark2: #4d618a;
+  --zcat-bg-dark3: #7988a8;
+  --zcat-bg-dark4: #a6b1c9;
+  --zcat-bg-white: #ffffff;
+  --zcat-bg-grey1: #d6ddef;
+  --zcat-bg-grey2: #eff2fa;
+  --zcat-bg-grey3: #eff2fa;
+  --zcat-bg-grey4: #f7f8fb;
+  --zcat-bg-grey5: #fafbfd;
+  --zcat-bg-primary: #1b73e8;
+  --zcat-bg-primary-dark: #1557b0;
+  --zcat-bg-primary-light: #e8f0fe;
+  --zcat-bg-danger: #e03f3f;
+  --zcat-bg-danger-dark: #c62828;
+  --zcat-bg-danger-light: #fce8e8;
+  --zcat-bg-success: #2e7d32;
+  --zcat-bg-success-dark: #1b5e20;
+  --zcat-bg-success-light: #e8f5e9;
+  --zcat-bg-warning: #f9a825;
+  --zcat-bg-warning-dark: #f57f17;
+  --zcat-bg-warning-light: #fff8e1;
+  --zcat-bg-info: #0288d1;
+  --zcat-bg-info-dark: #01579b;
+  --zcat-bg-info-light: #e1f5fe;
+
+  /* ---------- Stroke tokens ---------- */
+  --zcat-stroke-dark1: #101f3e;
+  --zcat-stroke-dark2: #4d618a;
+  --zcat-stroke-dark3: #7988a8;
+  --zcat-stroke-dark4: #a6b1c9;
+  --zcat-stroke-white: #ffffff;
+  --zcat-stroke-grey1: #d6ddef;
+  --zcat-stroke-grey2: #eff2fa;
+  --zcat-stroke-grey3: #eff2fa;
+  --zcat-stroke-grey4: #f7f8fb;
+  --zcat-stroke-grey5: #fafbfd;
+  --zcat-stroke-primary: #1b73e8;
+  --zcat-stroke-danger: #e03f3f;
+  --zcat-stroke-success: #2e7d32;
+  --zcat-stroke-warning: #f9a825;
+  --zcat-stroke-info: #0288d1;
+
+  /* ---------- Border tokens ---------- */
+  --zcat-border-dark1: #101f3e;
+  --zcat-border-dark2: #4d618a;
+  --zcat-border-dark3: #7988a8;
+  --zcat-border-dark4: #a6b1c9;
+  --zcat-border-white: #ffffff;
+  --zcat-border-grey1: #d6ddef;
+  --zcat-border-grey2: #eff2fa;
+  --zcat-border-grey3: #eff2fa;
+  --zcat-border-grey4: #f7f8fb;
+  --zcat-border-grey5: #fafbfd;
+  --zcat-border-primary: #1b73e8;
+  --zcat-border-danger: #e03f3f;
+  --zcat-border-success: #2e7d32;
+  --zcat-border-warning: #f9a825;
+  --zcat-border-info: #0288d1;
+
+  /* ---------- Surface / Page ---------- */
+  --zcat-surface-primary: #ffffff;
+  --zcat-surface-secondary: #f7f8fb;
+  --zcat-surface-elevated: #ffffff;
+
+  /* ---------- Focus ring ---------- */
+  --zcat-focus-ring: rgba(27, 115, 232, 0.4);
+}
+
+
+/* ==========================================================================
+   DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] {
+
+  /* ---------- Dark scale (text colors — inverted for dark mode) ---------- */
+  --zcat-color-dark1: #e8ecf4;
+  --zcat-color-dark2: #b0bdd4;
+  --zcat-color-dark3: #8a97b4;
+  --zcat-color-dark4: #5f6e8c;
+
+  /* ---------- White (inverted for dark surfaces) ---------- */
+  --zcat-color-white: #1a1d2e;
+
+  /* ---------- Grey scale (inverted for dark mode) ---------- */
+  --zcat-color-grey1: #3a3f55;
+  --zcat-color-grey2: #2c3044;  /* border color */
+  --zcat-color-grey3: #2c3044;  /* disabled color */
+  --zcat-color-grey4: #232738;
+  --zcat-color-grey5: #1e2233;
+
+  /* ---------- Primary (Blue — adjusted for dark bg contrast) ---------- */
+  --zcat-color-primary: #5b9cf6;
+  --zcat-color-primary-dark: #3d7edb;
+  --zcat-color-primary-light: #1a2744;
+
+  /* ---------- Danger (Red) ---------- */
+  --zcat-color-danger: #f07070;
+  --zcat-color-danger-dark: #e04a4a;
+  --zcat-color-danger-light: #3d1f1f;
+
+  /* ---------- Success (Green) ---------- */
+  --zcat-color-success: #66bb6a;
+  --zcat-color-success-dark: #43a047;
+  --zcat-color-success-light: #1a2e1b;
+
+  /* ---------- Warning (Amber) ---------- */
+  --zcat-color-warning: #fdd835;
+  --zcat-color-warning-dark: #fbc02d;
+  --zcat-color-warning-light: #332c0f;
+
+  /* ---------- Info (Cyan) ---------- */
+  --zcat-color-info: #4fc3f7;
+  --zcat-color-info-dark: #29b6f6;
+  --zcat-color-info-light: #0e2a3d;
+
+  /* ---------- Background tokens ---------- */
+  --zcat-bg-dark1: #e8ecf4;
+  --zcat-bg-dark2: #b0bdd4;
+  --zcat-bg-dark3: #8a97b4;
+  --zcat-bg-dark4: #5f6e8c;
+  --zcat-bg-white: #1a1d2e;
+  --zcat-bg-grey1: #3a3f55;
+  --zcat-bg-grey2: #2c3044;
+  --zcat-bg-grey3: #2c3044;
+  --zcat-bg-grey4: #232738;
+  --zcat-bg-grey5: #1e2233;
+  --zcat-bg-primary: #5b9cf6;
+  --zcat-bg-primary-dark: #3d7edb;
+  --zcat-bg-primary-light: #1a2744;
+  --zcat-bg-danger: #f07070;
+  --zcat-bg-danger-dark: #e04a4a;
+  --zcat-bg-danger-light: #3d1f1f;
+  --zcat-bg-success: #66bb6a;
+  --zcat-bg-success-dark: #43a047;
+  --zcat-bg-success-light: #1a2e1b;
+  --zcat-bg-warning: #fdd835;
+  --zcat-bg-warning-dark: #fbc02d;
+  --zcat-bg-warning-light: #332c0f;
+  --zcat-bg-info: #4fc3f7;
+  --zcat-bg-info-dark: #29b6f6;
+  --zcat-bg-info-light: #0e2a3d;
+
+  /* ---------- Stroke tokens ---------- */
+  --zcat-stroke-dark1: #e8ecf4;
+  --zcat-stroke-dark2: #b0bdd4;
+  --zcat-stroke-dark3: #8a97b4;
+  --zcat-stroke-dark4: #5f6e8c;
+  --zcat-stroke-white: #1a1d2e;
+  --zcat-stroke-grey1: #3a3f55;
+  --zcat-stroke-grey2: #2c3044;
+  --zcat-stroke-grey3: #2c3044;
+  --zcat-stroke-grey4: #232738;
+  --zcat-stroke-grey5: #1e2233;
+  --zcat-stroke-primary: #5b9cf6;
+  --zcat-stroke-danger: #f07070;
+  --zcat-stroke-success: #66bb6a;
+  --zcat-stroke-warning: #fdd835;
+  --zcat-stroke-info: #4fc3f7;
+
+  /* ---------- Border tokens ---------- */
+  --zcat-border-dark1: #e8ecf4;
+  --zcat-border-dark2: #b0bdd4;
+  --zcat-border-dark3: #8a97b4;
+  --zcat-border-dark4: #5f6e8c;
+  --zcat-border-white: #1a1d2e;
+  --zcat-border-grey1: #3a3f55;
+  --zcat-border-grey2: #2c3044;
+  --zcat-border-grey3: #2c3044;
+  --zcat-border-grey4: #f7f8fb;
+  --zcat-border-grey5: #1e2233;
+  --zcat-border-primary: #5b9cf6;
+  --zcat-border-danger: #f07070;
+  --zcat-border-success: #66bb6a;
+  --zcat-border-warning: #fdd835;
+  --zcat-border-info: #4fc3f7;
+
+  /* ---------- Surface / Page ---------- */
+  --zcat-surface-primary: #1a1d2e;
+  --zcat-surface-secondary: #232738;
+  --zcat-surface-elevated: #2c3044;
+
+  /* ---------- Focus ring ---------- */
+  --zcat-focus-ring: rgba(91, 156, 246, 0.5);
+}

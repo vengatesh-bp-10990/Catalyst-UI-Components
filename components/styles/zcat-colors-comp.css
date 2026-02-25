@@ -1,0 +1,142 @@
+/**
+ * zcat-colors-comp.css — Colors Component Styles
+ * =================================================
+ * Styles for the ZCAT colors showcase component.
+ * Uses ZCAT design tokens from theme/zcat-tokens.css.
+ */
+
+/* ---------- Component Root ---------- */
+.zcat-colors {
+  padding: 24px;
+  color: var(--zcat-color-dark1);
+  font-family: var(--zcat-font-family-primary);
+}
+
+/* ---------- Header ---------- */
+.zcat-colors__header {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--zcat-color-grey2);
+}
+
+.zcat-colors__header h2 {
+  margin-bottom: 8px;
+}
+
+.zcat-colors__description {
+  color: var(--zcat-color-dark2);
+}
+
+.zcat-colors__description code {
+  font-family: var(--zcat-font-family-code);
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: var(--zcat-color-grey4);
+  color: var(--zcat-color-dark2);
+}
+
+/* ---------- Sections ---------- */
+.zcat-colors__section {
+  margin-bottom: 32px;
+}
+
+.zcat-colors__section h3 {
+  margin-bottom: 16px;
+  color: var(--zcat-color-dark1);
+}
+
+.zcat-colors__note {
+  color: var(--zcat-color-dark3);
+  margin-bottom: 12px;
+}
+
+.zcat-colors__note code {
+  font-family: var(--zcat-font-family-code);
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: var(--zcat-color-grey4);
+  color: var(--zcat-color-dark2);
+}
+
+/* ---------- Grid ---------- */
+.zcat-colors__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ---------- Color Card ---------- */
+.zcat-colors__card {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--zcat-color-grey2);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--zcat-surface-primary);
+  transition: box-shadow 0.2s ease;
+}
+
+.zcat-colors__card:hover {
+  box-shadow: 0 2px 8px rgba(16, 31, 62, 0.12);
+}
+
+[data-theme="dark"] .zcat-colors__card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------- Swatch ---------- */
+.zcat-colors__swatch {
+  width: 72px;
+  min-height: 72px;
+  flex-shrink: 0;
+}
+
+.zcat-colors__swatch--bordered {
+  border-right: 1px solid var(--zcat-color-grey2);
+}
+
+.zcat-colors__swatch--stroke {
+  background-color: transparent;
+  border: 3px solid;
+  width: 72px;
+  min-height: 72px;
+  flex-shrink: 0;
+  border-radius: 0;
+}
+
+/* ---------- Info ---------- */
+.zcat-colors__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 14px;
+  gap: 4px;
+  min-width: 0;
+}
+
+.zcat-colors__info code {
+  font-family: var(--zcat-font-family-code);
+  font-size: 11px;
+  line-height: 16px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: var(--zcat-color-grey4);
+  color: var(--zcat-color-dark3);
+  word-break: break-all;
+}
+
+.zcat-colors__hex {
+  color: var(--zcat-color-dark3);
+}
+
+.zcat-colors__usage {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background-color: var(--zcat-color-primary-light);
+  color: var(--zcat-color-primary);
+  font-weight: 500;
+  width: fit-content;
+}

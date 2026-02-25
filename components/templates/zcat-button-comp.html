@@ -1,0 +1,311 @@
+<!--
+  zcat-button-comp.html — ZCAT Button Component Template
+  ========================================================
+  sLyte component template for the ZCAT button with full variant,
+  size, color, and state support in light and dark mode.
+
+  Source: https://zcat-component-docs.netlify.app/#zcat/button
+
+  Usage:
+    <zcat-button-comp></zcat-button-comp>
+    <zcat-button-comp lt-prop-variant="outline" lt-prop-color="danger" lt-prop-size="lg"></zcat-button-comp>
+
+  Properties:
+    lt-prop-variant  : "fill" | "outline" | "text"         (default: "fill")
+    lt-prop-size     : "lg" | "md" | "sm" | "xs"           (default: "md")
+    lt-prop-color    : "primary" | "danger" | "success"    (default: "primary")
+    lt-prop-state    : "default" | "hover" | "disabled"    (default: "default")
+    lt-prop-label    : String                               (default: "Button Text")
+    lt-prop-icon-left  : String — icon class name (optional)
+    lt-prop-icon-right : String — icon class name (optional)
+-->
+<template tag-name="zcat-button-comp">
+  <div class="zcat-button-demo" role="region" aria-label="ZCAT Button Component">
+
+    <div class="zcat-button-demo__header">
+      <h2 class="zcat-h4">Buttons</h2>
+      <p class="zcat-body14 zcat-button-demo__desc">
+        A button triggers an event or action. They let users know what will happen next.
+      </p>
+    </div>
+
+    <!-- ==================== FILL VARIANT ==================== -->
+    <section class="zcat-button-demo__section" aria-labelledby="fill-heading">
+      <h3 class="zcat-h6" id="fill-heading">Variant: Fill</h3>
+
+      <!-- Sizes row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">Sizes</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--lg zcat-font-buttonLg"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Large</button>
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Default</button>
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--sm zcat-font-buttonSm"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Small</button>
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--xs zcat-font-buttonXs"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Extra-small</button>
+        </div>
+      </div>
+
+      <!-- Colors row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">Colors</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Primary</button>
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--danger zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Danger</button>
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--success zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Success</button>
+        </div>
+      </div>
+
+      <!-- States row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">States</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Default</button>
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-btn--hover zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Hover</button>
+          <button
+            class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+            disabled
+            aria-disabled="true"
+          >Disabled</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== OUTLINE VARIANT ==================== -->
+    <section class="zcat-button-demo__section" aria-labelledby="outline-heading">
+      <h3 class="zcat-h6" id="outline-heading">Variant: Outline</h3>
+
+      <!-- Sizes row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">Sizes</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--lg zcat-font-buttonLg"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Large</button>
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Default</button>
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--sm zcat-font-buttonSm"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Small</button>
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--xs zcat-font-buttonXs"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Extra-small</button>
+        </div>
+      </div>
+
+      <!-- Colors row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">Colors</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Primary</button>
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--danger zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Danger</button>
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--success zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Success</button>
+        </div>
+      </div>
+
+      <!-- States row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">States</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Default</button>
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-btn--hover zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Hover</button>
+          <button
+            class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+            disabled
+            aria-disabled="true"
+          >Disabled</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TEXT VARIANT ==================== -->
+    <section class="zcat-button-demo__section" aria-labelledby="text-heading">
+      <h3 class="zcat-h6" id="text-heading">Variant: Text</h3>
+
+      <!-- Sizes row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">Sizes</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--primary zcat-btn--lg zcat-font-buttonLg"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Large</button>
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Default</button>
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--primary zcat-btn--sm zcat-font-buttonSm"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Small</button>
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--primary zcat-btn--xs zcat-font-buttonXs"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Extra-small</button>
+        </div>
+      </div>
+
+      <!-- Colors row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">Colors</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Primary</button>
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--danger zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Danger</button>
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--success zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Success</button>
+        </div>
+      </div>
+
+      <!-- States row -->
+      <div class="zcat-button-demo__group">
+        <h4 class="zcat-subtitle1">States</h4>
+        <div class="zcat-button-demo__row">
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Default</button>
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--primary zcat-btn--md zcat-btn--hover zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+          >Hover</button>
+          <button
+            class="zcat-btn zcat-btn--text zcat-btn--primary zcat-btn--md zcat-font-buttonMd"
+            type="button"
+            role="button"
+            tabindex="0"
+            disabled
+            aria-disabled="true"
+          >Disabled</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== USAGE REFERENCE ==================== -->
+    <section class="zcat-button-demo__section" aria-labelledby="usage-heading">
+      <h3 class="zcat-h6" id="usage-heading">Usage (sLyte)</h3>
+      <div class="zcat-button-demo__code-block">
+        <pre class="zcat-code-body"><code>&lt;zcat-button self="{{self}}" zcat-prop={{btnStyles}}&gt;
+&lt;/zcat-button&gt;
+
+&lt;!-- Or use CSS classes directly --&gt;
+&lt;button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-font-buttonMd"&gt;
+  Button Text
+&lt;/button&gt;</code></pre>
+      </div>
+    </section>
+
+  </div>
+</template>
