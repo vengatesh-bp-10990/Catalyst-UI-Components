@@ -79,11 +79,7 @@
 }
 
 .zcat-colors__card:hover {
-  box-shadow: 0 2px 8px rgba(16, 31, 62, 0.12);
-}
-
-[data-theme="dark"] .zcat-colors__card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px var(--zcat-color-grey1);
 }
 
 /* ---------- Swatch ---------- */

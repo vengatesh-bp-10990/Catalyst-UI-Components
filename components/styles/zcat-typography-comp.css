@@ -123,17 +123,4 @@
   color: var(--zcat-color-dark2);
 }
 
-/* ---------- Dark mode overrides ---------- */
-[data-theme="dark"] .zcat-typography__font-btn--active {
-  background-color: var(--zcat-color-primary);
-  border-color: var(--zcat-color-primary);
-}
 
-[data-theme="dark"] .zcat-typography__table thead {
-  background-color: var(--zcat-color-grey4);
-}
-
-[data-theme="dark"] .zcat-typography__table code {
-  background-color: var(--zcat-color-grey4);
-  color: var(--zcat-color-dark2);
-}

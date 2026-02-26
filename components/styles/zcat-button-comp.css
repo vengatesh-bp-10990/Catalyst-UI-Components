@@ -81,7 +81,7 @@
 /* ---- Primary Fill ---- */
 .zcat-btn--fill.zcat-btn--primary {
   background-color: var(--zcat-color-primary);
-  color: #ffffff;
+  color: var(--zcat-color-white);
   border: 1px solid var(--zcat-color-primary);
 }
 
@@ -110,7 +110,7 @@
 /* ---- Danger Fill ---- */
 .zcat-btn--fill.zcat-btn--danger {
   background-color: var(--zcat-color-danger);
-  color: #ffffff;
+  color: var(--zcat-color-white);
   border: 1px solid var(--zcat-color-danger);
 }
 
@@ -139,7 +139,7 @@
 /* ---- Success Fill ---- */
 .zcat-btn--fill.zcat-btn--success {
   background-color: var(--zcat-color-success);
-  color: #ffffff;
+  color: var(--zcat-color-white);
   border: 1px solid var(--zcat-color-success);
 }
 
@@ -344,28 +344,6 @@
 }
 
 
-/* ==========================================================================
-   DARK MODE — additional overrides for fill buttons to ensure contrast
-   ========================================================================== */
-
-[data-theme="dark"] .zcat-btn--fill.zcat-btn--primary {
-  color: #1a1d2e;
-}
-
-[data-theme="dark"] .zcat-btn--fill.zcat-btn--danger {
-  color: #1a1d2e;
-}
-
-[data-theme="dark"] .zcat-btn--fill.zcat-btn--success {
-  color: #1a1d2e;
-}
-
-[data-theme="dark"] .zcat-btn--fill:disabled,
-[data-theme="dark"] .zcat-btn--fill[aria-disabled="true"] {
-  background-color: var(--zcat-color-grey3);
-  border-color: var(--zcat-color-grey2);
-  color: var(--zcat-color-dark4);
-}
 
 
 /* ==========================================================================
