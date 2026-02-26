@@ -6,8 +6,6 @@ class CatalystUIComponentsComponentRegistry extends ComponentRegistry {
     }
     lookups() {
         return [
-            import("./javascript/zcat-typography-comp.js"),
-            import("./javascript/zcat-colors-comp.js"),
             import("./javascript/zcat-button-comp.js")
         ];
     }

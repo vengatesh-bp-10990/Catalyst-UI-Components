@@ -1,250 +1,573 @@
-/**
- * ZCAT Design System — Color Tokens
- * ===================================
- * Source of truth: https://zcat-component-docs.netlify.app/#base/colors
- *
- * Naming convention from ZCAT docs:
- *   color    → --zcat-color-{name}
- *   background → --zcat-bg-{name}
- *   stroke   → --zcat-stroke-{name}
- *   border   → --zcat-border-{name}
- *
- * All variable names match EXACTLY as shown in the ZCAT documentation.
- * Both light (default) and dark mode values are defined.
- */
+/* ============================================================
+   ZCAT Design Tokens — 3-Tier Architecture
+   ============================================================
+   Layer 1: Base Color Palette  — hex values (never changes)
+   Layer 2: Light Mode Tokens   — references -1/-2/-3/-4 primitives
+   Layer 3: Dark Mode Overrides — references -10/-20/-30/-40 primitives
+
+   Toggle: html[data-user-color-scheme="dark"]
+   Source: Production ZCAT CSS (Referance docs/MycurrentCSSfile)
+   ============================================================ */
+
 
 /* ==========================================================================
-   LIGHT MODE (Default)
+   LAYER 1 — BASE COLOR PALETTE
+   All hex values. Light (-1 to -9) and dark (-10 to -90+) coexist here.
    ========================================================================== */
 
-:root,
-[data-theme="light"] {
+:root {
 
-  /* ---------- Dark scale (text colors) ---------- */
-  --zcat-color-dark1: #101f3e;
-  --zcat-color-dark2: #4d618a;
-  --zcat-color-dark3: #7988a8;
-  --zcat-color-dark4: #a6b1c9;
+    /* ---- Primary ---- */
+    --zcat-primary-1: #2A65F0;
+    --zcat-primary-2: #0755F2;
+    --zcat-primary-3: #7DA2FB;
+    --zcat-primary-4: #E7EEFE;
+    --zcat-primary-5: rgba(42, 101, 240, 0.20);
+    --zcat-primary-6: #E8F0FE;
+    --zcat-primary-7: #F3F7FF;
 
-  /* ---------- White ---------- */
-  --zcat-color-white: #ffffff;
+    --zcat-primary-10: #458BFF;
+    --zcat-primary-20: #5A97FB;
+    --zcat-primary-30: #355A8D;
+    --zcat-primary-40: #1A273D;
+    --zcat-primary-50: rgba(32, 116, 255, 0.20);
 
-  /* ---------- Grey scale ---------- */
-  --zcat-color-grey1: #d6ddef;
-  --zcat-color-grey2: #eff2fa;  /* border color */
-  --zcat-color-grey3: #eff2fa;  /* disabled color */
-  --zcat-color-grey4: #f7f8fb;
-  --zcat-color-grey5: #fafbfd;
+    /* ---- Grey ---- */
+    --zcat-grey-1: #D6DDEF;
+    --zcat-grey-2: #EBEEF6;
+    --zcat-grey-3: #EFF2FA;
+    --zcat-grey-4: #F7F8FB;
+    --zcat-grey-5: #F4F7FE;
+    --zcat-grey-6: #F7FAFF;
+    --zcat-grey-7: #DDE4F6;
+    --zcat-grey-8: #FBFBFB;
+    --zcat-grey-9: rgba(239, 242, 250, 0.24);
 
-  /* ---------- Primary (Blue) ---------- */
-  --zcat-color-primary: #1b73e8;
-  --zcat-color-primary-dark: #1557b0;
-  --zcat-color-primary-light: #e8f0fe;
+    --zcat-grey-10: #484D58;
+    --zcat-grey-20: #2F3136;
+    --zcat-grey-30: #292A2F;
+    --zcat-grey-40: #242424;
+    --zcat-grey-50: #242527;
+    --zcat-grey-60: #1F2022;
+    --zcat-grey-70: #33373F;
+    --zcat-grey-80: #121215;
+    --zcat-grey-90: #111213;
+    --zcat-grey-901: #1E1F21;
+    --zcat-grey-902: #151516;
+    --zcat-grey-100: #2A303F;
+    --zcat-grey-101: #212733;
+    --zcat-grey-102: #828DA4;
+    --zcat-grey-103: #252932;
+    --zcat-grey-104: rgba(41, 42, 47, 0.24);
 
-  /* ---------- Danger (Red) ---------- */
-  --zcat-color-danger: #e03f3f;
-  --zcat-color-danger-dark: #c62828;
-  --zcat-color-danger-light: #fce8e8;
+    /* ---- Green ---- */
+    --zcat-green-1: #29B260;
+    --zcat-green-2: #218E4D;
+    --zcat-green-3: #7FD1A0;
+    --zcat-green-4: #EAF7EF;
 
-  /* ---------- Success (Green) ---------- */
-  --zcat-color-success: #2e7d32;
-  --zcat-color-success-dark: #1b5e20;
-  --zcat-color-success-light: #e8f5e9;
+    --zcat-green-10: #3E9F64;
+    --zcat-green-20: #3AA564;
+    --zcat-green-30: #2F4326;
+    --zcat-green-40: #1C2622;
 
-  /* ---------- Warning (Amber) ---------- */
-  --zcat-color-warning: #f9a825;
-  --zcat-color-warning-dark: #f57f17;
-  --zcat-color-warning-light: #fff8e1;
+    /* ---- Red ---- */
+    --zcat-red-1: #E22020;
+    --zcat-red-2: #B51A1A;
+    --zcat-red-3: #EE7979;
+    --zcat-red-4: #FCE9E9;
 
-  /* ---------- Info (Cyan) ---------- */
-  --zcat-color-info: #0288d1;
-  --zcat-color-info-dark: #01579b;
-  --zcat-color-info-light: #e1f5fe;
+    --zcat-red-10: #DE5E60;
+    --zcat-red-20: #E86E6B;
+    --zcat-red-30: #682B2D;
+    --zcat-red-40: #2A1E20;
 
-  /* ---------- Background tokens ---------- */
-  --zcat-bg-dark1: #101f3e;
-  --zcat-bg-dark2: #4d618a;
-  --zcat-bg-dark3: #7988a8;
-  --zcat-bg-dark4: #a6b1c9;
-  --zcat-bg-white: #ffffff;
-  --zcat-bg-grey1: #d6ddef;
-  --zcat-bg-grey2: #eff2fa;
-  --zcat-bg-grey3: #eff2fa;
-  --zcat-bg-grey4: #f7f8fb;
-  --zcat-bg-grey5: #fafbfd;
-  --zcat-bg-primary: #1b73e8;
-  --zcat-bg-primary-dark: #1557b0;
-  --zcat-bg-primary-light: #e8f0fe;
-  --zcat-bg-danger: #e03f3f;
-  --zcat-bg-danger-dark: #c62828;
-  --zcat-bg-danger-light: #fce8e8;
-  --zcat-bg-success: #2e7d32;
-  --zcat-bg-success-dark: #1b5e20;
-  --zcat-bg-success-light: #e8f5e9;
-  --zcat-bg-warning: #f9a825;
-  --zcat-bg-warning-dark: #f57f17;
-  --zcat-bg-warning-light: #fff8e1;
-  --zcat-bg-info: #0288d1;
-  --zcat-bg-info-dark: #01579b;
-  --zcat-bg-info-light: #e1f5fe;
+    /* ---- Dark (text colors) ---- */
+    --zcat-dark-1: #101F3E;
+    --zcat-dark-2: #4D618A;
+    --zcat-dark-3: #7988A8;
+    --zcat-dark-4: #A6B1C9;
+    --zcat-dark-5: rgba(16, 31, 62, 0.70);
 
-  /* ---------- Stroke tokens ---------- */
-  --zcat-stroke-dark1: #101f3e;
-  --zcat-stroke-dark2: #4d618a;
-  --zcat-stroke-dark3: #7988a8;
-  --zcat-stroke-dark4: #a6b1c9;
-  --zcat-stroke-white: #ffffff;
-  --zcat-stroke-grey1: #d6ddef;
-  --zcat-stroke-grey2: #eff2fa;
-  --zcat-stroke-grey3: #eff2fa;
-  --zcat-stroke-grey4: #f7f8fb;
-  --zcat-stroke-grey5: #fafbfd;
-  --zcat-stroke-primary: #1b73e8;
-  --zcat-stroke-danger: #e03f3f;
-  --zcat-stroke-success: #2e7d32;
-  --zcat-stroke-warning: #f9a825;
-  --zcat-stroke-info: #0288d1;
+    --zcat-dark-10: #EEEEEE;
+    --zcat-dark-20: #AAAAAA;
+    --zcat-dark-30: #888888;
+    --zcat-dark-40: #666666;
+    --zcat-dark-50: #1A1B1D;
+    --zcat-dark-60: rgba(0, 0, 0, 0.70);
 
-  /* ---------- Border tokens ---------- */
-  --zcat-border-dark1: #101f3e;
-  --zcat-border-dark2: #4d618a;
-  --zcat-border-dark3: #7988a8;
-  --zcat-border-dark4: #a6b1c9;
-  --zcat-border-white: #ffffff;
-  --zcat-border-grey1: #d6ddef;
-  --zcat-border-grey2: #eff2fa;
-  --zcat-border-grey3: #eff2fa;
-  --zcat-border-grey4: #f7f8fb;
-  --zcat-border-grey5: #fafbfd;
-  --zcat-border-primary: #1b73e8;
-  --zcat-border-danger: #e03f3f;
-  --zcat-border-success: #2e7d32;
-  --zcat-border-warning: #f9a825;
-  --zcat-border-info: #0288d1;
+    /* ---- Orange ---- */
+    --zcat-orange-1: #C98E06;
+    --zcat-orange-2: #A5760C;
+    --zcat-orange-3: #DAB45F;
+    --zcat-orange-4: #FFF4DC;
 
-  /* ---------- Surface / Page ---------- */
-  --zcat-surface-primary: #ffffff;
-  --zcat-surface-secondary: #f7f8fb;
-  --zcat-surface-elevated: #ffffff;
+    --zcat-orange-10: #AE821C;
+    --zcat-orange-20: #A1874B;
+    --zcat-orange-30: #493F07;
+    --zcat-orange-40: #2B261B;
 
-  /* ---------- Focus ring ---------- */
-  --zcat-focus-ring: rgba(27, 115, 232, 0.4);
+    /* ---- White ---- */
+    --zcat-white: #FFFFFF;
+    --zcat-white-20: rgba(255, 255, 255, 0.20);
+
+    /* ---- Black ---- */
+    --zcat-black: #1A1B1D;
+
+    /* ---- Gradient ---- */
+    --zcat-gradient-1: #0F2A64;
+    --zcat-gradient-2: #0A245D;
+    --zcat-gradient-3: #FFE1FB;
+    --zcat-gradient-3-1: #FFD2F9;
+    --zcat-gradient-3-2: #FFEFFD;
+    --zcat-gradient-4: #C4E7FD;
+    --zcat-gradient-4-1: #B5DDF6;
+    --zcat-gradient-4-2: #DCF2FF;
+
+    --zcat-gradient-30: #46224A;
+    --zcat-gradient-30-1: #520D49;
+    --zcat-gradient-30-2: #493546;
+    --zcat-gradient-40: #08293E;
+    --zcat-gradient-40-1: #2B4B5E;
+    --zcat-gradient-40-2: #29333A;
+
+    /* ---- Pink ---- */
+    --zcat-pink-1: #E417B1;
+    --zcat-pink-2: #C51D9B;
+    --zcat-pink-3: #F8B4E7;
+    --zcat-pink-4: #FFE5F8;
+
+    --zcat-pink-10: #DA57B9;
+    --zcat-pink-20: #CD75B8;
+    --zcat-pink-30: #542F4B;
+    --zcat-pink-40: #381B31;
+
+    /* ---- Blue ---- */
+    --zcat-blue-1: #2092EF;
+    --zcat-blue-2: #257EC7;
+    --zcat-blue-3: #A6CBEA;
+    --zcat-blue-4: #DCECF9;
+
+    --zcat-blue-10: #4A8EFF;
+    --zcat-blue-20: #2E88D1;
+    --zcat-blue-30: #2B4254;
+    --zcat-blue-40: #1B2B38;
+
+    /* ---- Branding ---- */
+    --zcat-branding-blue: #226DB4;
+    --zcat-branding-red: #E42527;
+
+    /* ---- Font ---- */
+    --zcat-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --zcat-font-code: 'Roboto Mono', monospace;
+
+    /* ---- Focus Ring ---- */
+    --zcat-focus-ring: rgba(42, 101, 240, 0.4);
 }
 
 
 /* ==========================================================================
-   DARK MODE
+   LAYER 2 — LIGHT MODE SEMANTIC TOKENS
+   Component tokens referencing light primitives (-1/-2/-3/-4)
    ========================================================================== */
 
-[data-theme="dark"] {
+:root {
 
-  /* ---------- Dark scale (text colors — inverted for dark mode) ---------- */
-  --zcat-color-dark1: #e8ecf4;
-  --zcat-color-dark2: #b0bdd4;
-  --zcat-color-dark3: #8a97b4;
-  --zcat-color-dark4: #5f6e8c;
+    /* ============ FILL BUTTONS ============ */
 
-  /* ---------- White (inverted for dark surfaces) ---------- */
-  --zcat-color-white: #1a1d2e;
+    /* Background */
+    --zcat-btn-fill-bg-primary-default: var(--zcat-primary-1);
+    --zcat-btn-fill-bg-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-fill-bg-primary-click: var(--zcat-primary-1);
+    --zcat-btn-fill-bg-primary-disabled: var(--zcat-primary-3);
 
-  /* ---------- Grey scale (inverted for dark mode) ---------- */
-  --zcat-color-grey1: #3a3f55;
-  --zcat-color-grey2: #2c3044;  /* border color */
-  --zcat-color-grey3: #2c3044;  /* disabled color */
-  --zcat-color-grey4: #232738;
-  --zcat-color-grey5: #1e2233;
+    --zcat-btn-fill-bg-success-default: var(--zcat-green-1);
+    --zcat-btn-fill-bg-success-hover: var(--zcat-green-2);
+    --zcat-btn-fill-bg-success-click: var(--zcat-green-1);
+    --zcat-btn-fill-bg-success-disabled: var(--zcat-green-3);
 
-  /* ---------- Primary (Blue — adjusted for dark bg contrast) ---------- */
-  --zcat-color-primary: #5b9cf6;
-  --zcat-color-primary-dark: #3d7edb;
-  --zcat-color-primary-light: #1a2744;
+    --zcat-btn-fill-bg-danger-default: var(--zcat-red-1);
+    --zcat-btn-fill-bg-danger-hover: var(--zcat-red-2);
+    --zcat-btn-fill-bg-danger-click: var(--zcat-red-1);
+    --zcat-btn-fill-bg-danger-disabled: var(--zcat-red-3);
 
-  /* ---------- Danger (Red) ---------- */
-  --zcat-color-danger: #f07070;
-  --zcat-color-danger-dark: #e04a4a;
-  --zcat-color-danger-light: #3d1f1f;
+    /* Text & Icons */
+    --zcat-btn-fill-text-default: var(--zcat-white);
+    --zcat-btn-fill-text-click: var(--zcat-white);
+    --zcat-btn-fill-text-disabled: var(--zcat-primary-4);
 
-  /* ---------- Success (Green) ---------- */
-  --zcat-color-success: #66bb6a;
-  --zcat-color-success-dark: #43a047;
-  --zcat-color-success-light: #1a2e1b;
+    --zcat-btn-fill-icon-default: var(--zcat-white);
+    --zcat-btn-fill-icon-click: var(--zcat-white);
+    --zcat-btn-fill-icon-disabled: var(--zcat-primary-4);
 
-  /* ---------- Warning (Amber) ---------- */
-  --zcat-color-warning: #fdd835;
-  --zcat-color-warning-dark: #fbc02d;
-  --zcat-color-warning-light: #332c0f;
+    /* Split line */
+    --zcat-btn-fill-splitLine-default: var(--zcat-white-20);
 
-  /* ---------- Info (Cyan) ---------- */
-  --zcat-color-info: #4fc3f7;
-  --zcat-color-info-dark: #29b6f6;
-  --zcat-color-info-light: #0e2a3d;
 
-  /* ---------- Background tokens ---------- */
-  --zcat-bg-dark1: #e8ecf4;
-  --zcat-bg-dark2: #b0bdd4;
-  --zcat-bg-dark3: #8a97b4;
-  --zcat-bg-dark4: #5f6e8c;
-  --zcat-bg-white: #1a1d2e;
-  --zcat-bg-grey1: #3a3f55;
-  --zcat-bg-grey2: #2c3044;
-  --zcat-bg-grey3: #2c3044;
-  --zcat-bg-grey4: #232738;
-  --zcat-bg-grey5: #1e2233;
-  --zcat-bg-primary: #5b9cf6;
-  --zcat-bg-primary-dark: #3d7edb;
-  --zcat-bg-primary-light: #1a2744;
-  --zcat-bg-danger: #f07070;
-  --zcat-bg-danger-dark: #e04a4a;
-  --zcat-bg-danger-light: #3d1f1f;
-  --zcat-bg-success: #66bb6a;
-  --zcat-bg-success-dark: #43a047;
-  --zcat-bg-success-light: #1a2e1b;
-  --zcat-bg-warning: #fdd835;
-  --zcat-bg-warning-dark: #fbc02d;
-  --zcat-bg-warning-light: #332c0f;
-  --zcat-bg-info: #4fc3f7;
-  --zcat-bg-info-dark: #29b6f6;
-  --zcat-bg-info-light: #0e2a3d;
+    /* ============ OUTLINE BUTTONS ============ */
 
-  /* ---------- Stroke tokens ---------- */
-  --zcat-stroke-dark1: #e8ecf4;
-  --zcat-stroke-dark2: #b0bdd4;
-  --zcat-stroke-dark3: #8a97b4;
-  --zcat-stroke-dark4: #5f6e8c;
-  --zcat-stroke-white: #1a1d2e;
-  --zcat-stroke-grey1: #3a3f55;
-  --zcat-stroke-grey2: #2c3044;
-  --zcat-stroke-grey3: #2c3044;
-  --zcat-stroke-grey4: #232738;
-  --zcat-stroke-grey5: #1e2233;
-  --zcat-stroke-primary: #5b9cf6;
-  --zcat-stroke-danger: #f07070;
-  --zcat-stroke-success: #66bb6a;
-  --zcat-stroke-warning: #fdd835;
-  --zcat-stroke-info: #4fc3f7;
+    /* Text */
+    --zcat-btn-outline-text-primary-default: var(--zcat-primary-1);
+    --zcat-btn-outline-text-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-outline-text-primary-click: var(--zcat-primary-1);
+    --zcat-btn-outline-text-primary-disabled: var(--zcat-primary-3);
 
-  /* ---------- Border tokens ---------- */
-  --zcat-border-dark1: #e8ecf4;
-  --zcat-border-dark2: #b0bdd4;
-  --zcat-border-dark3: #8a97b4;
-  --zcat-border-dark4: #5f6e8c;
-  --zcat-border-white: #1a1d2e;
-  --zcat-border-grey1: #3a3f55;
-  --zcat-border-grey2: #2c3044;
-  --zcat-border-grey3: #2c3044;
-  --zcat-border-grey4: #f7f8fb;
-  --zcat-border-grey5: #1e2233;
-  --zcat-border-primary: #5b9cf6;
-  --zcat-border-danger: #f07070;
-  --zcat-border-success: #66bb6a;
-  --zcat-border-warning: #fdd835;
-  --zcat-border-info: #4fc3f7;
+    --zcat-btn-outline-text-success-default: var(--zcat-green-1);
+    --zcat-btn-outline-text-success-hover: var(--zcat-green-2);
+    --zcat-btn-outline-text-success-click: var(--zcat-green-1);
+    --zcat-btn-outline-text-success-disabled: var(--zcat-green-3);
 
-  /* ---------- Surface / Page ---------- */
-  --zcat-surface-primary: #1a1d2e;
-  --zcat-surface-secondary: #232738;
-  --zcat-surface-elevated: #2c3044;
+    --zcat-btn-outline-text-danger-default: var(--zcat-red-1);
+    --zcat-btn-outline-text-danger-hover: var(--zcat-red-2);
+    --zcat-btn-outline-text-danger-click: var(--zcat-red-1);
+    --zcat-btn-outline-text-danger-disabled: var(--zcat-red-3);
 
-  /* ---------- Focus ring ---------- */
-  --zcat-focus-ring: rgba(91, 156, 246, 0.5);
+    /* Icons */
+    --zcat-btn-outline-icon-primary-default: var(--zcat-primary-1);
+    --zcat-btn-outline-icon-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-outline-icon-primary-click: var(--zcat-primary-1);
+    --zcat-btn-outline-icon-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-outline-icon-success-default: var(--zcat-green-1);
+    --zcat-btn-outline-icon-success-hover: var(--zcat-green-2);
+    --zcat-btn-outline-icon-success-click: var(--zcat-green-1);
+    --zcat-btn-outline-icon-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-outline-icon-danger-default: var(--zcat-red-1);
+    --zcat-btn-outline-icon-danger-hover: var(--zcat-red-2);
+    --zcat-btn-outline-icon-danger-click: var(--zcat-red-1);
+    --zcat-btn-outline-icon-danger-disabled: var(--zcat-red-3);
+
+    /* Borders */
+    --zcat-btn-outline-border-primary-default: var(--zcat-primary-1);
+    --zcat-btn-outline-border-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-outline-border-primary-click: var(--zcat-primary-1);
+    --zcat-btn-outline-border-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-outline-border-success-default: var(--zcat-green-1);
+    --zcat-btn-outline-border-success-hover: var(--zcat-green-2);
+    --zcat-btn-outline-border-success-click: var(--zcat-green-1);
+    --zcat-btn-outline-border-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-outline-border-danger-default: var(--zcat-red-1);
+    --zcat-btn-outline-border-danger-hover: var(--zcat-red-2);
+    --zcat-btn-outline-border-danger-click: var(--zcat-red-1);
+    --zcat-btn-outline-border-danger-disabled: var(--zcat-red-3);
+
+    /* Background */
+    --zcat-btn-outline-bg-primaryHover: var(--zcat-primary-4);
+    --zcat-btn-outline-bg-successHover: var(--zcat-green-4);
+    --zcat-btn-outline-bg-dangerHover: var(--zcat-red-4);
+
+
+    /* ============ GREY BUTTONS ============ */
+
+    /* Background */
+    --zcat-btn-grey-bg-default: var(--zcat-grey-2);
+    --zcat-btn-grey-bg-hover: var(--zcat-primary-4);
+    --zcat-btn-grey-bg-click: var(--zcat-grey-2);
+    --zcat-btn-grey-bg-disabled: var(--zcat-grey-4);
+
+    /* Text & Icons */
+    --zcat-btn-grey-text-default: var(--zcat-dark-1);
+    --zcat-btn-grey-text-hover: var(--zcat-dark-1);
+    --zcat-btn-grey-text-click: var(--zcat-dark-1);
+    --zcat-btn-grey-text-disabled: var(--zcat-dark-4);
+
+    --zcat-btn-grey-icon-default: var(--zcat-dark-1);
+    --zcat-btn-grey-icon-hover: var(--zcat-dark-1);
+    --zcat-btn-grey-icon-click: var(--zcat-dark-1);
+    --zcat-btn-grey-icon-disabled: var(--zcat-dark-4);
+
+    /* Borders */
+    --zcat-btn-grey-border-default: var(--zcat-grey-1);
+    --zcat-btn-grey-border-hover: var(--zcat-grey-1);
+    --zcat-btn-grey-border-click: var(--zcat-grey-1);
+    --zcat-btn-grey-border-disabled: var(--zcat-grey-3);
+
+
+    /* ============ GHOST BUTTONS ============ */
+
+    /* Background */
+    --zcat-btn-ghost-bg-primary-hover: var(--zcat-primary-4);
+    --zcat-btn-ghost-bg-success-hover: var(--zcat-green-4);
+    --zcat-btn-ghost-bg-danger-hover: var(--zcat-red-4);
+
+    /* Text */
+    --zcat-btn-ghost-text-primary-default: var(--zcat-primary-1);
+    --zcat-btn-ghost-text-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-ghost-text-primary-click: var(--zcat-primary-1);
+    --zcat-btn-ghost-text-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-ghost-text-success-default: var(--zcat-green-1);
+    --zcat-btn-ghost-text-success-hover: var(--zcat-green-2);
+    --zcat-btn-ghost-text-success-click: var(--zcat-green-1);
+    --zcat-btn-ghost-text-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-ghost-text-danger-default: var(--zcat-red-1);
+    --zcat-btn-ghost-text-danger-hover: var(--zcat-red-2);
+    --zcat-btn-ghost-text-danger-click: var(--zcat-red-1);
+    --zcat-btn-ghost-text-danger-disabled: var(--zcat-red-3);
+
+    /* Icons */
+    --zcat-btn-ghost-icon-primary-default: var(--zcat-primary-1);
+    --zcat-btn-ghost-icon-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-ghost-icon-primary-click: var(--zcat-primary-1);
+    --zcat-btn-ghost-icon-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-ghost-icon-success-default: var(--zcat-green-1);
+    --zcat-btn-ghost-icon-success-hover: var(--zcat-green-2);
+    --zcat-btn-ghost-icon-success-click: var(--zcat-green-1);
+    --zcat-btn-ghost-icon-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-ghost-icon-danger-default: var(--zcat-red-1);
+    --zcat-btn-ghost-icon-danger-hover: var(--zcat-red-2);
+    --zcat-btn-ghost-icon-danger-click: var(--zcat-red-1);
+    --zcat-btn-ghost-icon-danger-disabled: var(--zcat-red-3);
+
+
+    /* ============ GRADIENT BUTTONS ============ */
+
+    --zcat-btn-gradient-bg-top: var(--zcat-gradient-3);
+    --zcat-btn-gradient-bg-bottom: var(--zcat-gradient-4);
+    --zcat-btn-gradient-bg-top-hover: var(--zcat-gradient-3-1);
+    --zcat-btn-gradient-bg-bottom-hover: var(--zcat-gradient-4-1);
+    --zcat-btn-gradient-bg-top-click: var(--zcat-gradient-3);
+    --zcat-btn-gradient-bg-bottom-click: var(--zcat-gradient-4);
+    --zcat-btn-gradient-bg-top-disabled: var(--zcat-gradient-3-2);
+    --zcat-btn-gradient-bg-bottom-disabled: var(--zcat-gradient-4-2);
+
+    --zcat-btn-gradient-text-default: var(--zcat-dark-1);
+    --zcat-btn-gradient-text-hover: var(--zcat-dark-1);
+    --zcat-btn-gradient-text-click: var(--zcat-dark-1);
+    --zcat-btn-gradient-text-disabled: var(--zcat-dark-4);
+
+
+    /* ============ BODY / PAGE ============ */
+
+    --zcat-body-bg: var(--zcat-grey-3);
+    --zcat-body-container-bg: var(--zcat-white);
+    --zcat-body-text-primary: var(--zcat-dark-1);
+    --zcat-body-text-secondary: var(--zcat-dark-2);
+    --zcat-body-text-light: var(--zcat-dark-3);
+    --zcat-body-text-disabled: var(--zcat-dark-4);
+    --zcat-body-text-theme: var(--zcat-primary-1);
+    --zcat-body-border-default: var(--zcat-grey-2);
+    --zcat-body-border-outerdivider: var(--zcat-grey-7);
+
+    /* ============ SHADOWS ============ */
+    --zcat-shadow-bg-default: var(--zcat-grey-3);
+    --zcat-shadow-bg-secondary: var(--zcat-grey-9);
+
+    /* ============ CODE TABS ============ */
+    --zcat-tabs-code-bg-default: var(--zcat-grey-3);
+    --zcat-tabs-code-bg-active: var(--zcat-white);
+    --zcat-tabs-code-text-default: var(--zcat-dark-2);
+    --zcat-tabs-code-text-active: var(--zcat-dark-1);
+    --zcat-tabs-code-border-default: var(--zcat-grey-7);
+}
+
+
+/* ==========================================================================
+   LAYER 3 — DARK MODE OVERRIDES
+   Same token names, now referencing dark primitives (-10/-20/-30/-40)
+   ========================================================================== */
+
+html[data-user-color-scheme="dark"] {
+
+    /* ============ FILL BUTTONS ============ */
+
+    /* Background */
+    --zcat-btn-fill-bg-primary-default: var(--zcat-primary-10);
+    --zcat-btn-fill-bg-primary-hover: var(--zcat-primary-20);
+    --zcat-btn-fill-bg-primary-click: var(--zcat-primary-10);
+    --zcat-btn-fill-bg-primary-disabled: var(--zcat-primary-30);
+
+    --zcat-btn-fill-bg-success-default: var(--zcat-green-10);
+    --zcat-btn-fill-bg-success-hover: var(--zcat-green-20);
+    --zcat-btn-fill-bg-success-click: var(--zcat-green-10);
+    --zcat-btn-fill-bg-success-disabled: var(--zcat-green-30);
+
+    --zcat-btn-fill-bg-danger-default: var(--zcat-red-10);
+    --zcat-btn-fill-bg-danger-hover: var(--zcat-red-20);
+    --zcat-btn-fill-bg-danger-click: var(--zcat-red-10);
+    --zcat-btn-fill-bg-danger-disabled: var(--zcat-red-30);
+
+    /* Text & Icons — white stays white in dark mode! */
+    --zcat-btn-fill-text-default: var(--zcat-white);
+    --zcat-btn-fill-text-click: var(--zcat-white);
+    --zcat-btn-fill-text-disabled: var(--zcat-white-20);
+
+    --zcat-btn-fill-icon-default: var(--zcat-white);
+    --zcat-btn-fill-icon-click: var(--zcat-white);
+    --zcat-btn-fill-icon-disabled: var(--zcat-white-20);
+
+    /* Split line */
+    --zcat-btn-fill-splitLine-default: var(--zcat-white-20);
+
+
+    /* ============ OUTLINE BUTTONS ============ */
+
+    /* Text */
+    --zcat-btn-outline-text-primary-default: var(--zcat-primary-10);
+    --zcat-btn-outline-text-primary-hover: var(--zcat-primary-20);
+    --zcat-btn-outline-text-primary-click: var(--zcat-primary-10);
+    --zcat-btn-outline-text-primary-disabled: var(--zcat-primary-30);
+
+    --zcat-btn-outline-text-success-default: var(--zcat-green-10);
+    --zcat-btn-outline-text-success-hover: var(--zcat-green-20);
+    --zcat-btn-outline-text-success-click: var(--zcat-green-10);
+    --zcat-btn-outline-text-success-disabled: var(--zcat-green-30);
+
+    --zcat-btn-outline-text-danger-default: var(--zcat-red-10);
+    --zcat-btn-outline-text-danger-hover: var(--zcat-red-20);
+    --zcat-btn-outline-text-danger-click: var(--zcat-red-10);
+    --zcat-btn-outline-text-danger-disabled: var(--zcat-red-30);
+
+    /* Icons */
+    --zcat-btn-outline-icon-primary-default: var(--zcat-primary-10);
+    --zcat-btn-outline-icon-primary-hover: var(--zcat-primary-20);
+    --zcat-btn-outline-icon-primary-click: var(--zcat-primary-10);
+    --zcat-btn-outline-icon-primary-disabled: var(--zcat-primary-30);
+
+    --zcat-btn-outline-icon-success-default: var(--zcat-green-10);
+    --zcat-btn-outline-icon-success-hover: var(--zcat-green-20);
+    --zcat-btn-outline-icon-success-click: var(--zcat-green-10);
+    --zcat-btn-outline-icon-success-disabled: var(--zcat-green-30);
+
+    --zcat-btn-outline-icon-danger-default: var(--zcat-red-10);
+    --zcat-btn-outline-icon-danger-hover: var(--zcat-red-20);
+    --zcat-btn-outline-icon-danger-click: var(--zcat-red-10);
+    --zcat-btn-outline-icon-danger-disabled: var(--zcat-red-30);
+
+    /* Borders */
+    --zcat-btn-outline-border-primary-default: var(--zcat-primary-10);
+    --zcat-btn-outline-border-primary-hover: var(--zcat-primary-20);
+    --zcat-btn-outline-border-primary-click: var(--zcat-primary-10);
+    --zcat-btn-outline-border-primary-disabled: var(--zcat-primary-30);
+
+    --zcat-btn-outline-border-success-default: var(--zcat-green-10);
+    --zcat-btn-outline-border-success-hover: var(--zcat-green-20);
+    --zcat-btn-outline-border-success-click: var(--zcat-green-10);
+    --zcat-btn-outline-border-success-disabled: var(--zcat-green-30);
+
+    --zcat-btn-outline-border-danger-default: var(--zcat-red-10);
+    --zcat-btn-outline-border-danger-hover: var(--zcat-red-20);
+    --zcat-btn-outline-border-danger-click: var(--zcat-red-10);
+    --zcat-btn-outline-border-danger-disabled: var(--zcat-red-30);
+
+    /* Background */
+    --zcat-btn-outline-bg-primaryHover: var(--zcat-primary-40);
+    --zcat-btn-outline-bg-successHover: var(--zcat-green-40);
+    --zcat-btn-outline-bg-dangerHover: var(--zcat-red-40);
+
+
+    /* ============ GREY BUTTONS ============ */
+
+    /* Background */
+    --zcat-btn-grey-bg-default: var(--zcat-grey-20);
+    --zcat-btn-grey-bg-hover: var(--zcat-grey-30);
+    --zcat-btn-grey-bg-click: var(--zcat-grey-20);
+    --zcat-btn-grey-bg-disabled: var(--zcat-grey-40);
+
+    /* Text & Icons */
+    --zcat-btn-grey-text-default: var(--zcat-dark-10);
+    --zcat-btn-grey-text-hover: var(--zcat-dark-10);
+    --zcat-btn-grey-text-click: var(--zcat-dark-10);
+    --zcat-btn-grey-text-disabled: var(--zcat-dark-40);
+
+    --zcat-btn-grey-icon-default: var(--zcat-dark-10);
+    --zcat-btn-grey-icon-hover: var(--zcat-dark-10);
+    --zcat-btn-grey-icon-click: var(--zcat-dark-10);
+    --zcat-btn-grey-icon-disabled: var(--zcat-dark-40);
+
+    /* Borders */
+    --zcat-btn-grey-border-default: var(--zcat-grey-10);
+    --zcat-btn-grey-border-hover: var(--zcat-grey-10);
+    --zcat-btn-grey-border-click: var(--zcat-grey-10);
+    --zcat-btn-grey-border-disabled: var(--zcat-grey-30);
+
+
+    /* ============ GHOST BUTTONS ============ */
+
+    /* Background */
+    --zcat-btn-ghost-bg-primary-hover: var(--zcat-primary-40);
+    --zcat-btn-ghost-bg-success-hover: var(--zcat-green-40);
+    --zcat-btn-ghost-bg-danger-hover: var(--zcat-red-40);
+
+    /* Text */
+    --zcat-btn-ghost-text-primary-default: var(--zcat-primary-10);
+    --zcat-btn-ghost-text-primary-hover: var(--zcat-primary-20);
+    --zcat-btn-ghost-text-primary-click: var(--zcat-primary-10);
+    --zcat-btn-ghost-text-primary-disabled: var(--zcat-primary-30);
+
+    --zcat-btn-ghost-text-success-default: var(--zcat-green-10);
+    --zcat-btn-ghost-text-success-hover: var(--zcat-green-20);
+    --zcat-btn-ghost-text-success-click: var(--zcat-green-10);
+    --zcat-btn-ghost-text-success-disabled: var(--zcat-green-30);
+
+    --zcat-btn-ghost-text-danger-default: var(--zcat-red-10);
+    --zcat-btn-ghost-text-danger-hover: var(--zcat-red-20);
+    --zcat-btn-ghost-text-danger-click: var(--zcat-red-10);
+    --zcat-btn-ghost-text-danger-disabled: var(--zcat-red-30);
+
+    /* Icons */
+    --zcat-btn-ghost-icon-primary-default: var(--zcat-primary-10);
+    --zcat-btn-ghost-icon-primary-hover: var(--zcat-primary-20);
+    --zcat-btn-ghost-icon-primary-click: var(--zcat-primary-10);
+    --zcat-btn-ghost-icon-primary-disabled: var(--zcat-primary-30);
+
+    --zcat-btn-ghost-icon-success-default: var(--zcat-green-10);
+    --zcat-btn-ghost-icon-success-hover: var(--zcat-green-20);
+    --zcat-btn-ghost-icon-success-click: var(--zcat-green-10);
+    --zcat-btn-ghost-icon-success-disabled: var(--zcat-green-30);
+
+    --zcat-btn-ghost-icon-danger-default: var(--zcat-red-10);
+    --zcat-btn-ghost-icon-danger-hover: var(--zcat-red-20);
+    --zcat-btn-ghost-icon-danger-click: var(--zcat-red-10);
+    --zcat-btn-ghost-icon-danger-disabled: var(--zcat-red-30);
+
+
+    /* ============ GRADIENT BUTTONS ============ */
+
+    --zcat-btn-gradient-bg-top: var(--zcat-gradient-30);
+    --zcat-btn-gradient-bg-bottom: var(--zcat-gradient-40);
+    --zcat-btn-gradient-bg-top-hover: var(--zcat-gradient-30-1);
+    --zcat-btn-gradient-bg-bottom-hover: var(--zcat-gradient-40-1);
+    --zcat-btn-gradient-bg-top-click: var(--zcat-gradient-30);
+    --zcat-btn-gradient-bg-bottom-click: var(--zcat-gradient-40);
+    --zcat-btn-gradient-bg-top-disabled: var(--zcat-gradient-30-2);
+    --zcat-btn-gradient-bg-bottom-disabled: var(--zcat-gradient-40-2);
+
+    --zcat-btn-gradient-text-default: var(--zcat-white);
+    --zcat-btn-gradient-text-hover: var(--zcat-white);
+    --zcat-btn-gradient-text-click: var(--zcat-white);
+    --zcat-btn-gradient-text-disabled: var(--zcat-white-20);
+
+
+    /* ============ BODY / PAGE ============ */
+
+    --zcat-body-bg: var(--zcat-grey-902);
+    --zcat-body-container-bg: var(--zcat-black);
+    --zcat-body-text-primary: var(--zcat-dark-10);
+    --zcat-body-text-secondary: var(--zcat-dark-20);
+    --zcat-body-text-light: var(--zcat-dark-30);
+    --zcat-body-text-disabled: var(--zcat-dark-40);
+    --zcat-body-text-theme: var(--zcat-primary-10);
+    --zcat-body-border-default: var(--zcat-grey-20);
+    --zcat-body-border-outerdivider: var(--zcat-grey-70);
+
+    /* ============ SHADOWS ============ */
+    --zcat-shadow-bg-default: var(--zcat-grey-30);
+    --zcat-shadow-bg-secondary: var(--zcat-grey-104);
+
+    /* ============ CODE TABS ============ */
+    --zcat-tabs-code-bg-default: var(--zcat-grey-30);
+    --zcat-tabs-code-bg-active: var(--zcat-grey-60);
+    --zcat-tabs-code-text-default: var(--zcat-dark-20);
+    --zcat-tabs-code-text-active: var(--zcat-dark-10);
+    --zcat-tabs-code-border-default: var(--zcat-grey-70);
+
+    /* ============ FOCUS RING ============ */
+    --zcat-focus-ring: rgba(69, 139, 255, 0.5);
 }

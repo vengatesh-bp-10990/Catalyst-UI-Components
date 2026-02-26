@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Catalyst UI Components - ZCAT Design System on sLyte.dev v1.0.4">
-  <title>Catalyst UI Components - ZCAT Design System</title>
+  <title>ZCAT Button Component — Catalyst UI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="theme/zcat-tokens.css">
-  <link rel="stylesheet" href="theme/zcat-typography.css">
   <link rel="stylesheet" href="styles/app.css">
-  <link rel="stylesheet" href="components/styles/zcat-typography-comp.css">
-  <link rel="stylesheet" href="components/styles/zcat-colors-comp.css">
-  <link rel="stylesheet" href="components/styles/zcat-button-comp.css">
+  <link rel="stylesheet" href="styles/zcat-button.css">
   <link rel="stylesheet" href="styles/demo.css">
 </head>
 <body>
@@ -22,394 +18,525 @@
 <!-- ===== TOP BAR ===== -->
 <header class="zd-topbar">
   <div class="zd-topbar__left">
-    <span class="zd-badge zd-badge--icons">Icons</span>
-    <span class="zd-badge zd-badge--personal">Personal</span>
-    <span class="zd-badge zd-badge--components">Components</span>
-    <span class="zd-badge zd-badge--product">Product</span>
-    <span class="zd-badge zd-badge--docs">Docs</span>
-  </div>
-  <div class="zd-topbar__center">
-    <svg class="zd-topbar__logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <rect width="24" height="24" rx="6" fill="var(--zcat-color-primary)"/>
-      <path d="M7 8h10M7 12h7M7 16h10" stroke="var(--zcat-bg-white)" stroke-width="2" stroke-linecap="round"/>
-    </svg>
     <span class="zd-topbar__title">Zcat Components</span>
-    <span class="zd-topbar__version">Version 1.0.0</span>
+    <span class="zd-topbar__version">v1.0.0</span>
   </div>
   <div class="zd-topbar__right">
-    <div class="zd-topbar__font-select">
-      <span>Aa</span>
-      <span>Inter</span>
-    </div>
-    <button class="zd-topbar__theme-btn" onclick="toggleTheme()" aria-label="Toggle theme" id="themeBtn">&#9790;</button>
+    <button class="zd-topbar__theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle dark/light mode">&#9790;</button>
   </div>
 </header>
 
 <!-- ===== LAYOUT ===== -->
 <div class="zd-layout">
 
-  <!-- ===== SIDEBAR ===== -->
+  <!-- Sidebar -->
   <aside class="zd-sidebar">
-    <div class="zd-sidebar__search">
-      <svg class="zd-sidebar__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input class="zd-sidebar__search-input" type="text" placeholder="Search components..." oninput="filterSidebar(this.value)">
-    </div>
     <nav>
       <div class="zd-sidebar__group">
-        <h4 class="zd-sidebar__heading">Getting Started</h4>
-        <a class="zd-sidebar__link zd-sidebar__link--active" href="#" onclick="navigateTo('overview',this);return false" data-nav="overview">Overview</a>
-        <a class="zd-sidebar__link" href="#" onclick="navigateTo('installation',this);return false" data-nav="installation">Installation</a>
-        <a class="zd-sidebar__link" href="#" onclick="navigateTo('usage',this);return false" data-nav="usage">Usage</a>
-      </div>
-      <div class="zd-sidebar__group">
-        <h4 class="zd-sidebar__heading">Base</h4>
-        <a class="zd-sidebar__link" href="#" onclick="navigateTo('typography',this);return false" data-nav="typography">Typography</a>
-        <a class="zd-sidebar__link" href="#" onclick="navigateTo('colors',this);return false" data-nav="colors">Colors</a>
-      </div>
-      <div class="zd-sidebar__group">
-        <h4 class="zd-sidebar__heading">Zcat Components</h4>
-        <a class="zd-sidebar__link" href="#" onclick="navigateTo('button',this);return false" data-nav="button">Button</a>
+        <h4 class="zd-sidebar__heading">Components</h4>
+        <a class="zd-sidebar__link zd-sidebar__link--active" href="#">Button</a>
       </div>
     </nav>
   </aside>
 
-  <!-- ===== MAIN CONTENT ===== -->
+  <!-- Main Content -->
   <main class="zd-main">
 
-    <!-- OVERVIEW PAGE -->
-    <div class="zd-page zd-page--active" id="page-overview">
-      <h1 class="zd-page__title">ZCAT Design System</h1>
-      <p class="zd-page__desc">Production-ready UI components built on the sLyte.dev v1.0.4 framework. Full light and dark mode support with WCAG AA accessibility.</p>
-      <div class="zd-cards">
-        <div class="zd-card" onclick="navigateTo('typography')" tabindex="0">
-          <h3 class="zd-card__title">Typography</h3>
-          <p class="zd-card__text">Complete typographic scale — Headlines (h1–h6), Subtitles, Body text, Button text, Code blocks.</p>
-          <span class="zd-card__tag zd-card__tag--info">&lt;zcat-typography-comp&gt;</span>
-        </div>
-        <div class="zd-card" onclick="navigateTo('colors')" tabindex="0">
-          <h3 class="zd-card__title">Colors</h3>
-          <p class="zd-card__text">All ZCAT color tokens — dark scale, grey scale, primary, danger, success, warning, info variants.</p>
-          <span class="zd-card__tag zd-card__tag--success">&lt;zcat-colors-comp&gt;</span>
-        </div>
-        <div class="zd-card" onclick="navigateTo('button')" tabindex="0">
-          <h3 class="zd-card__title">Buttons</h3>
-          <p class="zd-card__text">Fill, Outline, &amp; Text variants &times; 4 sizes &times; 3 colors &times; all states.</p>
-          <span class="zd-card__tag zd-card__tag--warning">&lt;zcat-button-comp&gt;</span>
-        </div>
-      </div>
+    <h1 class="zd-page__title">Buttons</h1>
+    <p class="zd-page__desc">A button triggers an event or action. They let users know what will happen next.</p>
+
+    <!-- Sub-tabs -->
+    <div class="zd-subtabs">
+      <button class="zd-subtab zd-subtab--active" onclick="switchSubtab('customize',this)">Customize</button>
+      <button class="zd-subtab" onclick="switchSubtab('showcase',this)">All Variants</button>
     </div>
 
-    <!-- INSTALLATION PAGE -->
-    <div class="zd-page" id="page-installation">
-      <h1 class="zd-page__title">Installation</h1>
-      <p class="zd-page__desc">Get started with Catalyst UI Components in your sLyte project.</p>
-      <div class="zd-section">
-        <h3 class="zd-section__title">Install via npm</h3>
-        <div class="zd-code-block">
-          <div class="zd-code-block__header">
-            <span>Terminal</span>
-            <button class="zd-code-block__copy" onclick="copyCode(this)" title="Copy">&#128203;</button>
+    <!-- ============================================================
+         CUSTOMIZE PANEL
+         ============================================================ -->
+    <div class="zd-subtab-panel zd-subtab-panel--active" id="panel-customize">
+      <div class="zd-preview-layout">
+
+        <!-- Left: Preview + Code -->
+        <div class="zd-preview-main">
+
+          <!-- Preview Area -->
+          <div class="zd-preview">
+            <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md" id="previewBtn">Button</button>
           </div>
-          <pre><code>npm install catalyst-ui-components --registry http://cm-npmregistry</code></pre>
-        </div>
-      </div>
-      <div class="zd-section">
-        <h3 class="zd-section__title">Import tokens in your HTML</h3>
-        <div class="zd-code-block">
-          <div class="zd-code-block__header">
-            <span>HTML</span>
-            <button class="zd-code-block__copy" onclick="copyCode(this)" title="Copy">&#128203;</button>
-          </div>
-          <pre><code>&lt;link rel="stylesheet" href="node_modules/catalyst-ui-components/theme/zcat-tokens.css"&gt;
-&lt;link rel="stylesheet" href="node_modules/catalyst-ui-components/theme/zcat-typography.css"&gt;
-&lt;link rel="stylesheet" href="node_modules/catalyst-ui-components/styles/app.css"&gt;</code></pre>
-        </div>
-      </div>
-    </div>
 
-    <!-- USAGE PAGE -->
-    <div class="zd-page" id="page-usage">
-      <h1 class="zd-page__title">Usage</h1>
-      <p class="zd-page__desc">Use ZCAT components in your sLyte templates or plain HTML with CSS classes.</p>
-      <div class="zd-section">
-        <h3 class="zd-section__title">sLyte Component</h3>
-        <div class="zd-code-block">
-          <div class="zd-code-block__header">
-            <span>HTML</span>
-            <button class="zd-code-block__copy" onclick="copyCode(this)" title="Copy">&#128203;</button>
-          </div>
-          <pre><code>&lt;zcat-button-comp lt-prop-variant="fill" lt-prop-color="primary" lt-prop-size="md"&gt;
-&lt;/zcat-button-comp&gt;</code></pre>
-        </div>
-      </div>
-      <div class="zd-section">
-        <h3 class="zd-section__title">CSS Class Usage</h3>
-        <div class="zd-code-block">
-          <div class="zd-code-block__header">
-            <span>HTML</span>
-            <button class="zd-code-block__copy" onclick="copyCode(this)" title="Copy">&#128203;</button>
-          </div>
-          <pre><code>&lt;button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md"&gt;
-  Submit
-&lt;/button&gt;</code></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- TYPOGRAPHY PAGE -->
-    <div class="zd-page" id="page-typography">
-      <h1 class="zd-page__title">Typography</h1>
-      <p class="zd-page__desc">Complete typographic scale following the ZCAT design system specifications.</p>
-      <zcat-typography-comp></zcat-typography-comp>
-    </div>
-
-    <!-- COLORS PAGE -->
-    <div class="zd-page" id="page-colors">
-      <h1 class="zd-page__title">Colors</h1>
-      <p class="zd-page__desc">All ZCAT design tokens for color, background, stroke, and border.</p>
-      <zcat-colors-comp></zcat-colors-comp>
-    </div>
-
-    <!-- BUTTON PAGE -->
-    <div class="zd-page" id="page-button">
-      <h1 class="zd-page__title">Buttons</h1>
-      <p class="zd-page__desc">A button triggers an event or action. They let users know what will happen next.</p>
-
-      <!-- Sub-tabs: Customize | Change Logs -->
-      <div class="zd-subtabs">
-        <button class="zd-subtab zd-subtab--active" onclick="switchSubtab('customize',this)">Customize</button>
-        <button class="zd-subtab" onclick="switchSubtab('changelog',this)">Change Logs</button>
-      </div>
-
-      <!-- Customize panel -->
-      <div class="zd-subtab-panel zd-subtab-panel--active" id="panel-customize">
-        <div class="zd-preview-layout">
-
-          <!-- Left: preview + code -->
-          <div class="zd-preview-main">
-            <div class="zd-preview">
-              <p class="zd-preview__label">Preview</p>
-              <div class="zd-preview__area" id="btnPreviewArea">
-                <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-font-buttonMd" id="previewBtn">Button Text</button>
-              </div>
+          <!-- Code Tabs -->
+          <div class="zd-code-tabs">
+            <div class="zd-code-tabs__header">
+              <button class="zd-code-tab zd-code-tab--active" onclick="switchCodeTab('zcat',this)">ZCAT</button>
+              <button class="zd-code-tab" onclick="switchCodeTab('html',this)">Html</button>
+              <button class="zd-code-tab" onclick="switchCodeTab('js',this)">JS</button>
+              <button class="zd-code-tabs__copy" onclick="copyCode(this)" title="Copy">&#128203;</button>
             </div>
-
-            <!-- Code tabs: Html | JS -->
-            <div class="zd-code-tabs">
-              <div class="zd-code-tabs__header">
-                <button class="zd-code-tab zd-code-tab--active" onclick="switchCodeTab('html',this)">Html</button>
-                <button class="zd-code-tab" onclick="switchCodeTab('js',this)">JS</button>
-                <button class="zd-code-block__copy zd-code-tabs__copy" onclick="copyCode(this)" title="Copy">&#128203;</button>
-              </div>
-              <div class="zd-code-tab-panel zd-code-tab-panel--active" id="codePanel-html">
-                <pre><code id="codeHtml"><span class="code-ln">1</span>&lt;button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md"&gt;
-<span class="code-ln">2</span>  Button Text
+            <div class="zd-code-tab-panel zd-code-tab-panel--active" id="codePanel-zcat">
+              <pre><code id="codeZcat"><span class="code-ln">1</span>&lt;lyte-button lt-prop-class="lytePrimaryBtn"&gt;
+<span class="code-ln">2</span>  &lt;template is="registerYield" yield-name="text"&gt;
+<span class="code-ln">3</span>    &lt;span&gt;Button&lt;/span&gt;
+<span class="code-ln">4</span>  &lt;/template&gt;
+<span class="code-ln">5</span>&lt;/lyte-button&gt;</code></pre>
+            </div>
+            <div class="zd-code-tab-panel" id="codePanel-html">
+              <pre><code id="codeHtml"><span class="code-ln">1</span>&lt;button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md"&gt;
+<span class="code-ln">2</span>  Button
 <span class="code-ln">3</span>&lt;/button&gt;</code></pre>
-              </div>
-              <div class="zd-code-tab-panel" id="codePanel-js">
-                <pre><code id="codeJs"><span class="code-ln">1</span>import { Component } from "@slyte/core";
-<span class="code-ln">2</span>
-<span class="code-ln">3</span>class ZcatButtonComp extends Component {
-<span class="code-ln">4</span>  static data() {
-<span class="code-ln">5</span>    return { variant: "fill", size: "md", color: "primary" };
-<span class="code-ln">6</span>  }
-<span class="code-ln">7</span>}</code></pre>
-              </div>
             </div>
-
-            <!-- Full component showcase -->
-            <div style="margin-top:32px">
-              <h3 class="zd-section__title">All Variants Showcase</h3>
-              <zcat-button-comp></zcat-button-comp>
+            <div class="zd-code-tab-panel" id="codePanel-js">
+              <pre><code id="codeJs"><span class="code-ln">1</span>// sLyte component usage
+<span class="code-ln">2</span>// The lyte-button component is provided by @slyte/core
+<span class="code-ln">3</span>// Apply ZCAT styling via lt-prop-class
+<span class="code-ln">4</span>
+<span class="code-ln">5</span>// Fill:    lt-prop-class="lytePrimaryBtn"
+<span class="code-ln">6</span>// Outline: lt-prop-class="lytePrimaryLineBtn"
+<span class="code-ln">7</span>// Ghost:   lt-prop-class="lyteTertiaryBtn"
+<span class="code-ln">8</span>// Grey:    lt-prop-class="lyteSecondary"</code></pre>
             </div>
           </div>
+        </div>
 
-          <!-- Right: Customise panel -->
-          <div class="zd-customise">
-            <div class="zd-customise__header">
-              <h3>Customise</h3>
-              <button class="zd-customise__reset" onclick="resetCustomise()">Reset</button>
-            </div>
-            <div class="zd-customise__row">
-              <span class="zd-customise__label">Variant</span>
-              <select class="zd-customise__select" id="ctrlVariant" onchange="updatePreview()">
-                <option value="fill" selected>Fill</option>
-                <option value="outline">Outline</option>
-                <option value="text">Text</option>
-              </select>
-            </div>
-            <div class="zd-customise__row">
-              <span class="zd-customise__label">Size</span>
-              <select class="zd-customise__select" id="ctrlSize" onchange="updatePreview()">
-                <option value="lg">Large</option>
-                <option value="md" selected>Default</option>
-                <option value="sm">Small</option>
-                <option value="xs">Extra-small</option>
-              </select>
-            </div>
-            <div class="zd-customise__row">
-              <span class="zd-customise__label">Color</span>
-              <select class="zd-customise__select" id="ctrlColor" onchange="updatePreview()">
-                <option value="primary" selected>Primary</option>
-                <option value="danger">Danger</option>
-                <option value="success">Success</option>
-              </select>
-            </div>
-            <div class="zd-customise__row">
-              <span class="zd-customise__label">State</span>
-              <select class="zd-customise__select" id="ctrlState" onchange="updatePreview()">
-                <option value="default" selected>Default</option>
-                <option value="hover">Hover</option>
-                <option value="disabled">Disabled</option>
-              </select>
-            </div>
-            <div class="zd-customise__row">
-              <span class="zd-customise__label">Icon Left</span>
-              <label class="zd-toggle"><input type="checkbox" id="ctrlIconL" onchange="updatePreview()"><span class="zd-toggle__track"></span></label>
-            </div>
-            <div class="zd-customise__row">
-              <span class="zd-customise__label">Icon Right</span>
-              <label class="zd-toggle"><input type="checkbox" id="ctrlIconR" onchange="updatePreview()"><span class="zd-toggle__track"></span></label>
-            </div>
+        <!-- Right: Customise Controls -->
+        <div class="zd-customise">
+          <div class="zd-customise__header">
+            <h3>Customise</h3>
+            <button class="zd-customise__reset" onclick="resetCustomise()">Reset</button>
           </div>
+          <div class="zd-customise__row">
+            <span class="zd-customise__label">Variant</span>
+            <select class="zd-customise__select" id="ctrlVariant" onchange="updatePreview()">
+              <option value="fill" selected>Fill</option>
+              <option value="outline">Outline</option>
+              <option value="ghost">Ghost</option>
+              <option value="ghost-grey">Ghost Grey</option>
+              <option value="grey">Grey</option>
+              <option value="gradient">Gradient</option>
+            </select>
+          </div>
+          <div class="zd-customise__row">
+            <span class="zd-customise__label">Color</span>
+            <select class="zd-customise__select" id="ctrlColor" onchange="updatePreview()">
+              <option value="primary" selected>Primary</option>
+              <option value="success">Success</option>
+              <option value="danger">Danger</option>
+            </select>
+          </div>
+          <div class="zd-customise__row">
+            <span class="zd-customise__label">Size</span>
+            <select class="zd-customise__select" id="ctrlSize" onchange="updatePreview()">
+              <option value="lg">Large (50px)</option>
+              <option value="md" selected>Default (36px)</option>
+              <option value="sm">Small (28px)</option>
+              <option value="xs">Extra-small (24px)</option>
+            </select>
+          </div>
+          <div class="zd-customise__row">
+            <span class="zd-customise__label">Radius</span>
+            <select class="zd-customise__select" id="ctrlRadius" onchange="updatePreview()">
+              <option value="default" selected>Default (6px)</option>
+              <option value="rounded">Rounded / Pill</option>
+            </select>
+          </div>
+          <div class="zd-customise__row">
+            <span class="zd-customise__label">Content</span>
+            <select class="zd-customise__select" id="ctrlContent" onchange="updatePreview()">
+              <option value="text" selected>Text</option>
+              <option value="icon">Icon Only</option>
+            </select>
+          </div>
+          <div class="zd-customise__row">
+            <span class="zd-customise__label">State</span>
+            <select class="zd-customise__select" id="ctrlState" onchange="updatePreview()">
+              <option value="default" selected>Default</option>
+              <option value="hover">Hover</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </div>
+        </div>
 
+      </div>
+    </div>
+
+
+    <!-- ============================================================
+         ALL VARIANTS SHOWCASE
+         ============================================================ -->
+    <div class="zd-subtab-panel" id="panel-showcase">
+
+      <!-- ==================== FILL ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Fill Buttons</h3>
+        <table class="zd-showcase-table">
+          <thead>
+            <tr><th>Color</th><th>Default</th><th>Hover</th><th>Disabled</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Primary</td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+            <tr>
+              <td>Success</td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--success zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--success zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--success zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+            <tr>
+              <td>Danger</td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--danger zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--danger zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--fill zcat-btn--danger zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ==================== OUTLINE ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Outline Buttons</h3>
+        <table class="zd-showcase-table">
+          <thead>
+            <tr><th>Color</th><th>Default</th><th>Hover</th><th>Disabled</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Primary</td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+            <tr>
+              <td>Success</td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--success zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--success zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--success zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+            <tr>
+              <td>Danger</td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--danger zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--danger zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--outline zcat-btn--danger zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ==================== GHOST ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Ghost Buttons</h3>
+        <table class="zd-showcase-table">
+          <thead>
+            <tr><th>Color</th><th>Default</th><th>Hover</th><th>Disabled</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Primary</td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--primary zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--primary zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--primary zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+            <tr>
+              <td>Success</td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--success zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--success zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--success zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+            <tr>
+              <td>Danger</td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--danger zcat-btn--md">Button</button></td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--danger zcat-btn--md zcat-btn--hover">Hover</button></td>
+              <td><button class="zcat-btn zcat-btn--ghost zcat-btn--danger zcat-btn--md" disabled>Disabled</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ==================== GREY ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Grey Buttons</h3>
+        <div class="zd-btn-row">
+          <button class="zcat-btn zcat-btn--grey zcat-btn--md">Default</button>
+          <button class="zcat-btn zcat-btn--grey zcat-btn--md zcat-btn--hover">Hover</button>
+          <button class="zcat-btn zcat-btn--grey zcat-btn--md" disabled>Disabled</button>
         </div>
       </div>
 
-      <!-- Changelog panel -->
-      <div class="zd-subtab-panel" id="panel-changelog">
-        <div class="zd-section">
-          <h3 class="zd-section__title">Version 1.0.0</h3>
-          <ul class="zd-changelog">
-            <li>Initial release of zcat-button-comp</li>
-            <li>Fill, Outline, Text variants</li>
-            <li>4 sizes: lg, md, sm, xs</li>
-            <li>3 colors: primary, danger, success</li>
-            <li>Light and dark mode support</li>
-            <li>Keyboard accessible with focus ring</li>
-          </ul>
+      <!-- ==================== GHOST GREY ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Ghost Grey Buttons</h3>
+        <div class="zd-btn-row">
+          <button class="zcat-btn zcat-btn--ghost-grey zcat-btn--md">Default</button>
+          <button class="zcat-btn zcat-btn--ghost-grey zcat-btn--md zcat-btn--hover">Hover</button>
+          <button class="zcat-btn zcat-btn--ghost-grey zcat-btn--md" disabled>Disabled</button>
         </div>
       </div>
+
+      <!-- ==================== GRADIENT ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Gradient Buttons</h3>
+        <div class="zd-btn-row">
+          <button class="zcat-btn zcat-btn--gradient zcat-btn--md">Default</button>
+          <button class="zcat-btn zcat-btn--gradient zcat-btn--md zcat-btn--hover">Hover</button>
+          <button class="zcat-btn zcat-btn--gradient zcat-btn--md" disabled>Disabled</button>
+        </div>
+      </div>
+
+      <!-- ==================== ROUNDED / PILL ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Rounded / Pill</h3>
+        <div class="zd-btn-row">
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-btn--rounded">Fill Rounded</button>
+          <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-btn--rounded">Outline Rounded</button>
+          <button class="zcat-btn zcat-btn--ghost zcat-btn--primary zcat-btn--md zcat-btn--rounded">Ghost Rounded</button>
+          <button class="zcat-btn zcat-btn--grey zcat-btn--md zcat-btn--rounded">Grey Rounded</button>
+        </div>
+        <div class="zd-btn-row" style="margin-top:12px">
+          <button class="zcat-btn zcat-btn--fill zcat-btn--success zcat-btn--lg zcat-btn--rounded">Large Pill</button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--danger zcat-btn--md zcat-btn--rounded">Default Pill</button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--sm zcat-btn--rounded">Small Pill</button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--xs zcat-btn--rounded">XS Pill</button>
+        </div>
+      </div>
+
+      <!-- ==================== ICON ONLY ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Icon Only Buttons</h3>
+        <div class="zd-btn-row">
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--lg zcat-btn--icon"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-btn--icon"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--sm zcat-btn--icon"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--xs zcat-btn--icon"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        </div>
+        <div class="zd-btn-row" style="margin-top:12px">
+          <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-btn--icon"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+          <button class="zcat-btn zcat-btn--ghost zcat-btn--primary zcat-btn--md zcat-btn--icon"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+          <button class="zcat-btn zcat-btn--grey zcat-btn--md zcat-btn--icon"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+          <button class="zcat-btn zcat-btn--ghost-grey zcat-btn--md zcat-btn--icon"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        </div>
+        <div class="zd-btn-row" style="margin-top:12px">
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md zcat-btn--icon zcat-btn--rounded"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+          <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md zcat-btn--icon zcat-btn--rounded"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+          <button class="zcat-btn zcat-btn--ghost zcat-btn--primary zcat-btn--md zcat-btn--icon zcat-btn--rounded"><span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        </div>
+      </div>
+
+      <!-- ==================== SPLIT BUTTON ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Split Buttons</h3>
+        <div class="zd-btn-row">
+          <div class="zcat-btn-split">
+            <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md">Action</button>
+            <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md"><span class="zcat-btn-split__caret"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span></button>
+          </div>
+          <div class="zcat-btn-split">
+            <button class="zcat-btn zcat-btn--fill zcat-btn--success zcat-btn--md">Action</button>
+            <button class="zcat-btn zcat-btn--fill zcat-btn--success zcat-btn--md"><span class="zcat-btn-split__caret"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span></button>
+          </div>
+          <div class="zcat-btn-split">
+            <button class="zcat-btn zcat-btn--fill zcat-btn--danger zcat-btn--md">Action</button>
+            <button class="zcat-btn zcat-btn--fill zcat-btn--danger zcat-btn--md"><span class="zcat-btn-split__caret"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span></button>
+          </div>
+        </div>
+        <div class="zd-btn-row" style="margin-top:12px">
+          <div class="zcat-btn-split zcat-btn-split--outline">
+            <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md">Outline</button>
+            <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md"><span class="zcat-btn-split__caret"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span></button>
+          </div>
+          <div class="zcat-btn-split zcat-btn-split--rounded">
+            <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md">Rounded Split</button>
+            <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md"><span class="zcat-btn-split__caret"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SIZES ==================== -->
+      <div class="zd-section">
+        <h3 class="zd-section__title">Sizes</h3>
+        <div class="zd-btn-row">
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--lg">Large 50px</button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--md">Default 36px</button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--sm">Small 28px</button>
+          <button class="zcat-btn zcat-btn--fill zcat-btn--primary zcat-btn--xs">XS 24px</button>
+        </div>
+        <div class="zd-btn-row" style="margin-top:12px">
+          <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--lg">Large</button>
+          <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--md">Default</button>
+          <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--sm">Small</button>
+          <button class="zcat-btn zcat-btn--outline zcat-btn--primary zcat-btn--xs">XS</button>
+        </div>
+      </div>
+
     </div>
 
   </main>
 </div>
 
-<!-- sLyte bundle -->
+<!-- sLyte bundle (for component registration when served via slyte serve) -->
 <slyte-import fileName="/app-init.js"></slyte-import>
 
 <!-- ===== SCRIPTS ===== -->
 <script>
-/* Theme Toggle */
+/* Theme Toggle — uses data-user-color-scheme to match production ZCAT */
 function toggleTheme() {
   var h = document.documentElement;
-  var cur = h.getAttribute("data-theme") || "light";
-  var nxt = cur === "light" ? "dark" : "light";
-  h.setAttribute("data-theme", nxt);
-  document.getElementById("themeBtn").innerHTML = nxt === "dark" ? "&#9728;" : "&#9790;";
-  try { localStorage.setItem("zcat-theme", nxt); } catch (e) {}
-}
-
-/* Navigate to a page */
-function navigateTo(id, el) {
-  document.querySelectorAll(".zd-page").forEach(function (p) { p.classList.remove("zd-page--active"); });
-  var pg = document.getElementById("page-" + id);
-  if (pg) pg.classList.add("zd-page--active");
-  document.querySelectorAll(".zd-sidebar__link").forEach(function (a) { a.classList.remove("zd-sidebar__link--active"); });
-  if (el) {
-    el.classList.add("zd-sidebar__link--active");
+  var isDark = h.getAttribute('data-user-color-scheme') === 'dark';
+  if (isDark) {
+    h.removeAttribute('data-user-color-scheme');
+    document.getElementById('themeBtn').innerHTML = '&#9790;';
+    try { localStorage.setItem('zcat-theme', 'light'); } catch(e) {}
   } else {
-    var a = document.querySelector('[data-nav="' + id + '"]');
-    if (a) a.classList.add("zd-sidebar__link--active");
+    h.setAttribute('data-user-color-scheme', 'dark');
+    document.getElementById('themeBtn').innerHTML = '&#9728;';
+    try { localStorage.setItem('zcat-theme', 'dark'); } catch(e) {}
   }
-  window.scrollTo(0, 0);
 }
 
-/* Sidebar search filter */
-function filterSidebar(q) {
-  q = q.toLowerCase();
-  document.querySelectorAll(".zd-sidebar__link").forEach(function (a) {
-    a.style.display = a.textContent.toLowerCase().indexOf(q) > -1 ? "" : "none";
-  });
-}
-
-/* Button page sub-tabs */
+/* Sub-tabs */
 function switchSubtab(name, btn) {
-  document.querySelectorAll(".zd-subtab").forEach(function (t) { t.classList.remove("zd-subtab--active"); });
-  document.querySelectorAll(".zd-subtab-panel").forEach(function (p) { p.classList.remove("zd-subtab-panel--active"); });
-  if (btn) btn.classList.add("zd-subtab--active");
-  var p = document.getElementById("panel-" + name);
-  if (p) p.classList.add("zd-subtab-panel--active");
+  document.querySelectorAll('.zd-subtab').forEach(function(t) { t.classList.remove('zd-subtab--active'); });
+  document.querySelectorAll('.zd-subtab-panel').forEach(function(p) { p.classList.remove('zd-subtab-panel--active'); });
+  if (btn) btn.classList.add('zd-subtab--active');
+  var p = document.getElementById('panel-' + name);
+  if (p) p.classList.add('zd-subtab-panel--active');
 }
 
-/* Code Html/JS tabs */
+/* Code tabs */
 function switchCodeTab(name, btn) {
-  document.querySelectorAll(".zd-code-tab").forEach(function (t) { t.classList.remove("zd-code-tab--active"); });
-  document.querySelectorAll(".zd-code-tab-panel").forEach(function (p) { p.classList.remove("zd-code-tab-panel--active"); });
-  if (btn) btn.classList.add("zd-code-tab--active");
-  var p = document.getElementById("codePanel-" + name);
-  if (p) p.classList.add("zd-code-tab-panel--active");
+  document.querySelectorAll('.zd-code-tab').forEach(function(t) { t.classList.remove('zd-code-tab--active'); });
+  document.querySelectorAll('.zd-code-tab-panel').forEach(function(p) { p.classList.remove('zd-code-tab-panel--active'); });
+  if (btn) btn.classList.add('zd-code-tab--active');
+  var p = document.getElementById('codePanel-' + name);
+  if (p) p.classList.add('zd-code-tab-panel--active');
 }
 
-/* Copy code to clipboard */
+/* Copy code */
 function copyCode(btn) {
-  var block = btn.closest(".zd-code-block,.zd-code-tabs");
-  var code = block.querySelector("code");
+  var block = btn.closest('.zd-code-tabs');
+  var activePanel = block.querySelector('.zd-code-tab-panel--active');
+  var code = activePanel ? activePanel.querySelector('code') : null;
   if (code) {
-    navigator.clipboard.writeText(code.textContent).then(function () {
-      btn.innerHTML = "&#10003;";
-      setTimeout(function () { btn.innerHTML = "&#128203;"; }, 1200);
+    navigator.clipboard.writeText(code.textContent).then(function() {
+      btn.innerHTML = '&#10003;';
+      setTimeout(function() { btn.innerHTML = '&#128203;'; }, 1200);
     });
   }
 }
 
-/* Update button preview from customise controls */
+/* sLyte class map for code generation */
+var lyteClassMap = {
+  'fill-primary': 'lytePrimaryBtn',
+  'fill-success': 'lytePrimaryBtn lyteSuccessBtn',
+  'fill-danger': 'lyteFailure',
+  'outline-primary': 'lytePrimaryLineBtn',
+  'outline-success': 'lytePrimaryLineBtn lyteSuccessLineBtn',
+  'outline-danger': 'lytePrimaryLineBtn lyteDangerLineBtn',
+  'ghost-primary': 'lyteTertiaryBtn',
+  'ghost-success': 'lyteTertiaryBtn lyteSuccessGhost',
+  'ghost-danger': 'lyteTertiaryBtn lyteDangerGhost',
+  'ghost-grey': 'lyteNavGhost',
+  'grey': 'lyteSecondary',
+  'gradient': 'lyteGradientBtn'
+};
+
+/* sLyte size class map */
+var lyteSizeMap = { lg: ' lyteLg', md: '', sm: ' lyteSm', xs: ' lyteExsm' };
+
+/* Update preview from controls */
 function updatePreview() {
-  var v = document.getElementById("ctrlVariant").value;
-  var s = document.getElementById("ctrlSize").value;
-  var c = document.getElementById("ctrlColor").value;
-  var st = document.getElementById("ctrlState").value;
-  var il = document.getElementById("ctrlIconL").checked;
-  var ir = document.getElementById("ctrlIconR").checked;
+  var v = document.getElementById('ctrlVariant').value;
+  var c = document.getElementById('ctrlColor').value;
+  var s = document.getElementById('ctrlSize').value;
+  var st = document.getElementById('ctrlState').value;
+  var r = document.getElementById('ctrlRadius').value;
+  var ct = document.getElementById('ctrlContent').value;
 
-  var cls = "zcat-btn zcat-btn--" + v + " zcat-btn--" + c + " zcat-btn--" + s;
-  var fontCls = " zcat-font-button" + (s === "lg" ? "Lg" : s === "md" ? "Md" : s === "sm" ? "Sm" : "Xs");
-  cls += fontCls;
-  if (st === "hover") cls += " zcat-btn--hover";
+  /* Color dropdown: hide for grey/gradient/ghost-grey */
+  var colorRow = document.getElementById('ctrlColor').closest('.zd-customise__row');
+  colorRow.style.display = (v === 'grey' || v === 'gradient' || v === 'ghost-grey') ? 'none' : 'flex';
 
-  var btn = document.getElementById("previewBtn");
+  /* Build CSS class */
+  var cls = 'zcat-btn zcat-btn--' + s;
+  if (v === 'grey' || v === 'gradient' || v === 'ghost-grey') {
+    cls += ' zcat-btn--' + v;
+  } else {
+    cls += ' zcat-btn--' + v + ' zcat-btn--' + c;
+  }
+  if (r === 'rounded') cls += ' zcat-btn--rounded';
+  if (ct === 'icon') cls += ' zcat-btn--icon';
+  if (st === 'hover') cls += ' zcat-btn--hover';
+
+  var btn = document.getElementById('previewBtn');
   btn.className = cls;
-  btn.disabled = st === "disabled";
-  var label = (il ? "\u2190 " : "") + "Button Text" + (ir ? " \u2192" : "");
-  btn.textContent = label;
+  btn.disabled = (st === 'disabled');
 
-  /* Update code block */
-  var html = "<span class='code-ln'>1</span>&lt;button class=\"zcat-btn zcat-btn--" + v + " zcat-btn--" + c + " zcat-btn--" + s + "\"" + (st === "disabled" ? " disabled" : "") + "&gt;\n";
-  html += "<span class='code-ln'>2</span>  " + (il ? "&lt;span class='icon-left'&gt;\u2190&lt;/span&gt; " : "") + "Button Text" + (ir ? " &lt;span class='icon-right'&gt;\u2192&lt;/span&gt;" : "") + "\n";
-  html += "<span class='code-ln'>3</span>&lt;/button&gt;";
-  document.getElementById("codeHtml").innerHTML = html;
+  /* Content: text or icon */
+  if (ct === 'icon') {
+    btn.innerHTML = '<span class="zcat-btn__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>';
+  } else {
+    btn.textContent = 'Button';
+  }
+
+  /* ZCAT code — sLyte component */
+  var lyteKey = (v === 'grey' || v === 'gradient' || v === 'ghost-grey') ? v : (v + '-' + c);
+  var lyteClass = (lyteClassMap[lyteKey] || 'lytePrimaryBtn') + (lyteSizeMap[s] || '');
+  var disAttr = st === 'disabled' ? ' lt-prop-disabled="true"' : '';
+
+  var btnLabel = ct === 'icon' ? '&#x2795;' : 'Button';
+  var zcat = '<span class="code-ln">1</span>&lt;lyte-button lt-prop-class="' + lyteClass + '"' + disAttr + '&gt;\n';
+  zcat += '<span class="code-ln">2</span>  &lt;template is="registerYield" yield-name="text"&gt;\n';
+  zcat += '<span class="code-ln">3</span>    &lt;span&gt;' + btnLabel + '&lt;/span&gt;\n';
+  zcat += '<span class="code-ln">4</span>  &lt;/template&gt;\n';
+  zcat += '<span class="code-ln">5</span>&lt;/lyte-button&gt;';
+  document.getElementById('codeZcat').innerHTML = zcat;
+
+  /* HTML code — CSS class usage */
+  var htmlCls = 'zcat-btn zcat-btn--' + v;
+  if (v !== 'grey' && v !== 'gradient' && v !== 'ghost-grey') htmlCls += ' zcat-btn--' + c;
+  htmlCls += ' zcat-btn--' + s;
+  if (r === 'rounded') htmlCls += ' zcat-btn--rounded';
+  if (ct === 'icon') htmlCls += ' zcat-btn--icon';
+
+  var htmlContent = ct === 'icon'
+    ? '\n<span class="code-ln">2</span>  &lt;span class="zcat-btn__icon"&gt;...&lt;/span&gt;\n'
+    : '\n<span class="code-ln">2</span>  Button\n';
+  var html = '<span class="code-ln">1</span>&lt;button class="' + htmlCls + '"' + (st === 'disabled' ? ' disabled' : '') + '&gt;';
+  html += htmlContent;
+  html += '<span class="code-ln">3</span>&lt;/button&gt;';
+  document.getElementById('codeHtml').innerHTML = html;
+
+  /* JS code */
+  var js = '<span class="code-ln">1</span>// sLyte component usage\n';
+  js += '<span class="code-ln">2</span>// Apply via lt-prop-class on &lt;lyte-button&gt;\n';
+  js += '<span class="code-ln">3</span>\n';
+  js += '<span class="code-ln">4</span>// Production class: "' + lyteClass + '"\n';
+  js += '<span class="code-ln">5</span>// CSS class:        "' + htmlCls + '"';
+  document.getElementById('codeJs').innerHTML = js;
 }
 
-/* Reset customise to defaults */
+/* Reset customise */
 function resetCustomise() {
-  document.getElementById("ctrlVariant").value = "fill";
-  document.getElementById("ctrlSize").value = "md";
-  document.getElementById("ctrlColor").value = "primary";
-  document.getElementById("ctrlState").value = "default";
-  document.getElementById("ctrlIconL").checked = false;
-  document.getElementById("ctrlIconR").checked = false;
+  document.getElementById('ctrlVariant').value = 'fill';
+  document.getElementById('ctrlColor').value = 'primary';
+  document.getElementById('ctrlSize').value = 'md';
+  document.getElementById('ctrlRadius').value = 'default';
+  document.getElementById('ctrlContent').value = 'text';
+  document.getElementById('ctrlState').value = 'default';
   updatePreview();
 }
 
 /* Init: restore saved theme */
-(function () {
+(function() {
   var saved;
-  try { saved = localStorage.getItem("zcat-theme"); } catch (e) {}
-  if (!saved && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) saved = "dark";
-  if (saved === "dark") {
-    document.documentElement.setAttribute("data-theme", "dark");
-    var b = document.getElementById("themeBtn");
-    if (b) b.innerHTML = "&#9728;";
+  try { saved = localStorage.getItem('zcat-theme'); } catch(e) {}
+  if (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) saved = 'dark';
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-user-color-scheme', 'dark');
+    var b = document.getElementById('themeBtn');
+    if (b) b.innerHTML = '&#9728;';
   }
 })();
 </script>
