@@ -1,0 +1,32 @@
+/* Element Classes */
+.zcat-lyte-exclude *,
+.modal-tab-head-container,
+.code-tabs .code-tab-slide,
+.lyteExsm lyte-drop-item {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0px;
+  padding: 0px;
+  color: var(--zcat-body-text-primary);
+  font-weight: 400;
+  overflow: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--zcat-font-family-primary), sans-serif;
+}
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 600 !important;
+}

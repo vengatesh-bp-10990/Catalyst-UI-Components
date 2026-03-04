@@ -1,0 +1,40 @@
+.zcat-stroke-linkbtn-icon{
+  stroke: var(--zcat-link-icon-primary-default);
+}
+.zcat-link-btn.default{
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-default) var(--zcat-font-family-primary);
+}
+.zcat-link-btn.small{
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-sm) var(--zcat-font-family-primary);
+}
+.zcat-link-btn.exsm{
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-exsm) var(--zcat-font-family-primary);
+}
+.zcat-link-btn.large{
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-lg) var(--zcat-font-family-primary);
+}
+/* hover  */
+.zcat-link-btn:hover {
+    text-decoration: underline;
+    color: var(--zcat-link-text-primary-hover);
+}
+.zcat-link-btn:hover lyte-svg svg {
+  stroke: var(--zcat-link-icon-primary-hover);
+}
+/* click  */
+.zcat-link-btn:active, .zcat-link-btn:focus {
+    text-decoration: underline;
+    color: var(--zcat-link-text-primary-click);
+}
+.zcat-link-btn:active lyte-svg svg {
+  stroke: var(--zcat-link-icon-primary-click);
+}
+/* disable  */
+zcat-link-button .disabled .zcat-link-btn{
+  color: var(--zcat-link-text-primary-disabled);
+  cursor: not-allowed;
+}
+zcat-link-button .disabled lyte-svg svg{
+  stroke: var(--zcat-link-icon-primary-disabled); 
+  cursor: not-allowed;
+}

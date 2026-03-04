@@ -1,0 +1,1030 @@
+:root {
+
+    /* -------------------------------------------- FILL BUTTONS -------------------------------------------- */
+
+    /* Background */
+    --zcat-btn-fill-bg-primary-default: var(--zcat-primary-1);
+    --zcat-btn-fill-bg-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-fill-bg-primary-click: var(--zcat-primary-1);
+    --zcat-btn-fill-bg-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-fill-bg-success-default: var(--zcat-green-1);
+    --zcat-btn-fill-bg-success-hover: var(--zcat-green-2);
+    --zcat-btn-fill-bg-success-click: var(--zcat-green-1);
+    --zcat-btn-fill-bg-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-fill-bg-danger-default: var(--zcat-red-1);
+    --zcat-btn-fill-bg-danger-hover: var(--zcat-red-2);
+    --zcat-btn-fill-bg-danger-click: var(--zcat-red-1);
+    --zcat-btn-fill-bg-danger-disabled: var(--zcat-red-3);
+
+    /* Text and Icons */
+    --zcat-btn-fill-text-default: var(--zcat-white);
+    --zcat-btn-fill-text-click: var(--zcat-white);
+    --zcat-btn-fill-text-disabled: var(--zcat-primary-4);
+
+    --zcat-btn-fill-icon-default: var(--zcat-white);
+    --zcat-btn-fill-icon-click: var(--zcat-white);
+    --zcat-btn-fill-icon-disabled: var(--zcat-primary-4);
+
+    /* Split line for buttton*/
+    --zcat-btn-fill-splitLine-default: var(--zcat-white-20);
+
+
+    /* -------------------------------------------- OUTLINE BUTTONS -------------------------------------------- */
+
+    /* Text */
+    --zcat-btn-outline-text-primary-default: var(--zcat-primary-1);
+    --zcat-btn-outline-text-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-outline-text-primary-click: var(--zcat-primary-1);
+    --zcat-btn-outline-text-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-outline-text-success-default: var(--zcat-green-1);
+    --zcat-btn-outline-text-success-hover: var(--zcat-green-2);
+    --zcat-btn-outline-text-success-click: var(--zcat-green-1);
+    --zcat-btn-outline-text-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-outline-text-danger-default: var(--zcat-red-1);
+    --zcat-btn-outline-text-danger-hover: var(--zcat-red-2);
+    --zcat-btn-outline-text-danger-click: var(--zcat-red-1);
+    --zcat-btn-outline-text-danger-disabled: var(--zcat-red-3);
+
+    /* Icons */
+    --zcat-btn-outline-icon-primary-default: var(--zcat-primary-1);
+    --zcat-btn-outline-icon-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-outline-icon-primary-click: var(--zcat-primary-1);
+    --zcat-btn-outline-icon-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-outline-icon-success-default: var(--zcat-green-1);
+    --zcat-btn-outline-icon-success-hover: var(--zcat-green-2);
+    --zcat-btn-outline-icon-success-click: var(--zcat-green-1);
+    --zcat-btn-outline-icon-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-outline-icon-danger-default: var(--zcat-red-1);
+    --zcat-btn-outline-icon-danger-hover: var(--zcat-red-2);
+    --zcat-btn-outline-icon-danger-click: var(--zcat-red-1);
+    --zcat-btn-outline-icon-danger-disabled: var(--zcat-red-3);
+
+    /* Borders */
+    --zcat-btn-outline-border-primary-default: var(--zcat-primary-1);
+    --zcat-btn-outline-border-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-outline-border-primary-click: var(--zcat-primary-1);
+    --zcat-btn-outline-border-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-outline-border-success-default: var(--zcat-green-1);
+    --zcat-btn-outline-border-success-hover: var(--zcat-green-2);
+    --zcat-btn-outline-border-success-click: var(--zcat-green-1);
+    --zcat-btn-outline-border-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-outline-border-danger-default: var(--zcat-red-1);
+    --zcat-btn-outline-border-danger-hover: var(--zcat-red-2);
+    --zcat-btn-outline-border-danger-click: var(--zcat-red-1);
+    --zcat-btn-outline-border-danger-disabled: var(--zcat-red-3);
+
+    /* Background */
+    --zcat-btn-outline-bg-primaryHover: var(--zcat-primary-4);
+    --zcat-btn-outline-bg-successHover: var(--zcat-green-4);
+    --zcat-btn-outline-bg-dangerHover: var(--zcat-red-4);
+
+    /* -------------------------------------------- GREY BUTTONS -------------------------------------------- */
+
+    /* Background */
+    --zcat-btn-grey-bg-default: var(--zcat-grey-2);
+    --zcat-btn-grey-bg-hover: var(--zcat-primary-4);
+    --zcat-btn-grey-bg-click: var(--zcat-grey-2);
+    --zcat-btn-grey-bg-disabled: var(--zcat-grey-4);
+
+    /* Grey-Text & Grey-Icons */
+    --zcat-btn-grey-text-default: var(--zcat-dark-1);
+    --zcat-btn-grey-text-hover: var(--zcat-dark-1);
+    --zcat-btn-grey-text-click: var(--zcat-dark-1);
+    --zcat-btn-grey-text-disabled: var(--zcat-dark-4);
+
+    --zcat-btn-grey-icon-default: var(--zcat-dark-1);
+    --zcat-btn-grey-icon-hover: var(--zcat-dark-1);
+    --zcat-btn-grey-icon-click: var(--zcat-dark-1);
+    --zcat-btn-grey-icon-disabled: var(--zcat-dark-4);
+
+    /* Grey-Borders */
+    --zcat-btn-grey-border-default: var(--zcat-grey-1);
+    --zcat-btn-grey-border-hover: var(--zcat-grey-1);
+    --zcat-btn-grey-border-click: var(--zcat-grey-1);
+    --zcat-btn-grey-border-disabled: var(--zcat-grey-3);
+
+    /* -------------------------------------------- GHOST BUTTONS -------------------------------------------- */
+
+    /* Background */
+    --zcat-btn-ghost-bg-primary-hover: var(--zcat-primary-4);
+    --zcat-btn-ghost-bg-success-hover: var(--zcat-green-4);
+    --zcat-btn-ghost-bg-danger-hover: var(--zcat-red-4);
+
+    /* Text */
+    --zcat-btn-ghost-text-primary-default: var(--zcat-primary-1);
+    --zcat-btn-ghost-text-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-ghost-text-primary-click: var(--zcat-primary-1);
+    --zcat-btn-ghost-text-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-ghost-text-success-default: var(--zcat-green-1);
+    --zcat-btn-ghost-text-success-hover: var(--zcat-green-2);
+    --zcat-btn-ghost-text-success-click: var(--zcat-green-1);
+    --zcat-btn-ghost-text-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-ghost-text-danger-default: var(--zcat-red-1);
+    --zcat-btn-ghost-text-danger-hover: var(--zcat-red-2);
+    --zcat-btn-ghost-text-danger-click: var(--zcat-red-1);
+    --zcat-btn-ghost-text-danger-disabled: var(--zcat-red-3);
+
+    /* Icons */
+    --zcat-btn-ghost-icon-primary-default: var(--zcat-primary-1);
+    --zcat-btn-ghost-icon-primary-hover: var(--zcat-primary-2);
+    --zcat-btn-ghost-icon-primary-click: var(--zcat-primary-1);
+    --zcat-btn-ghost-icon-primary-disabled: var(--zcat-primary-3);
+
+    --zcat-btn-ghost-icon-success-default: var(--zcat-green-1);
+    --zcat-btn-ghost-icon-success-hover: var(--zcat-green-2);
+    --zcat-btn-ghost-icon-success-click: var(--zcat-green-1);
+    --zcat-btn-ghost-icon-success-disabled: var(--zcat-green-3);
+
+    --zcat-btn-ghost-icon-danger-default: var(--zcat-red-1);
+    --zcat-btn-ghost-icon-danger-hover: var(--zcat-red-2);
+    --zcat-btn-ghost-icon-danger-click: var(--zcat-red-1);
+    --zcat-btn-ghost-icon-danger-disabled: var(--zcat-red-3);
+
+
+    /* -------------------------------------------- Gradient Buttons -------------------------------------------- */
+    --zcat-btn-gradient-bg-top: var(--zcat-gradient-3);
+    --zcat-btn-gradient-bg-bottom: var(--zcat-gradient-4);
+
+    --zcat-btn-gradient-bg-top-hover: var(--zcat-gradient-3-1);
+    --zcat-btn-gradient-bg-bottom-hover: var(--zcat-gradient-4-1);
+
+    --zcat-btn-gradient-bg-top-click: var(--zcat-gradient-3);
+    --zcat-btn-gradient-bg-bottom-click: var(--zcat-gradient-4);
+
+    --zcat-btn-gradient-bg-top-disabled: var(--zcat-gradient-3-2);
+    --zcat-btn-gradient-bg-bottom-disabled: var(--zcat-gradient-4-2);
+
+    /* Text */
+
+    --zcat-btn-gradient-text-default: var(--zcat-dark-1);
+    --zcat-btn-gradient-text-hover: var(--zcat-dark-1);
+    --zcat-btn-gradient-text-click: var(--zcat-dark-1);
+    --zcat-btn-gradient-text-disabled: var(--zcat-dark-4);
+
+    /* -------------------------------------------- LINK -------------------------------------------- */
+
+    /* Link Text */
+    --zcat-link-text-primary-default: var(--zcat-primary-1);
+    --zcat-link-text-primary-hover: var(--zcat-primary-2);
+    --zcat-link-text-primary-click: var(--zcat-primary-1);
+    --zcat-link-text-primary-disabled: var(--zcat-primary-3);
+
+    /* Link Icons */
+    --zcat-link-icon-primary-default: var(--zcat-primary-1);
+    --zcat-link-icon-primary-hover: var(--zcat-primary-2);
+    --zcat-link-icon-primary-click: var(--zcat-primary-1);
+    --zcat-link-icon-primary-disabled: var(--zcat-primary-3);
+
+    /* -------------------------------------------- TABLE -------------------------------------------- */
+
+    /* Table-Text & Table-icons */
+    --zcat-table-text-primary: var(--zcat-dark-1);
+    --zcat-table-text-secondary: var(--zcat-dark-2);
+    --zcat-table-text-light: var(--zcat-dark-3);
+    --zcat-table-text-disabled: var(--zcat-dark-4);
+
+    --zcat-table-icon-primary: var(--zcat-dark-1);
+    --zcat-table-icon-secondary: var(--zcat-dark-2);
+    --zcat-table-icon-light: var(--zcat-dark-3);
+    --zcat-table-icon-disabled: var(--zcat-dark-4);
+
+    /* Table-border */
+    --zcat-table-border-default: var(--zcat-grey-2);
+
+    /* Table-background */
+    --zcat-table-bg-row: var(--zcat-white);
+    --zcat-table-bg-header: var(--zcat-grey-4);
+    --zcat-table-bg-rowHover: var(--zcat-grey-5);
+    --zcat-table-bg-rowSelected: var(--zcat-primary-4);
+    --zcat-table-bg-rowDisabled: var(--zcat-grey-4);
+
+    /* Table-threedot */
+    --zcat-table-threeDot-icon: var(--zcat-dark-1);
+    --zcat-table-threeDot-iconBg: var(--zcat-grey-4);
+    --zcat-table-threeDot-iconBg-hover: var(--zcat-grey-2);
+    --zcat-table-threeDot-iconBg-active: var(--zcat-primary-4);
+
+    /* -------------------------------------------- SERVICE MENU -------------------------------------------- */
+
+    /* Background */
+    --zcat-serviceMenu-bg-serviceMenu: linear-gradient(180deg, var(--zcat-gradient-1) 0%, var(--zcat-gradient-2) 100%);
+    --zcat-serviceMenu-bg-icon: var(--zcat-primary-5);
+
+    /* Border */
+    --zcat-serviceMenu-border-default: var(--zcat-dark-2);
+
+    /* Icons */
+    --zcat-serviceMenu-icon-default: var(--zcat-white);
+    --zcat-serviceMenu-iconBg-active: var(--zcat-primary-4);
+
+    /* Text */
+    --zcat-serviceMenu-text-subHeading: var(--zcat-dark-2);
+    --zcat-serviceMenu-text-default: var(--zcat-white);
+    --zcat-serviceMenu-text-active: var(--zcat-dark-1);
+
+    /* -------------------------------------------- INPUT FIELDS -------------------------------------------- */
+
+    /* Input field - Background */
+    --zcat-inputField-bg-default: var(--zcat-white);
+    --zcat-inputField-bg-hover: var(--zcat-grey-6);
+    --zcat-inputField-bg-active: var(--zcat-grey-6);
+    --zcat-inputField-bg-disabled: var(--zcat-grey-4);
+    --zcat-inputField-bg-error: var(--zcat-red-4);
+    --zcat-inputField-bg-linkField-hover: var(--zcat-grey-6);
+    --zcat-inputField-bg-keyvalue-hover: var(--zcat-grey-5);
+
+
+    /* Input field - border */
+    --zcat-inputField-border-default: var(--zcat-grey-1);
+    --zcat-inputField-border-hover: var(--zcat-primary-3);
+    --zcat-inputField-border-active: var(--zcat-primary-1);
+    --zcat-inputField-border-disabled: var(--zcat-grey-3);
+    --zcat-inputField-border-error: var(--zcat-red-3);
+
+    /* Input Field Text */
+    --zcat-inputField-text-placeholder: var(--zcat-dark-3);
+    --zcat-inputField-text-active: var(--zcat-dark-1);
+    --zcat-inputField-text-disabled: var(--zcat-dark-4);
+    --zcat-inputField-text-label: var(--zcat-dark-2);
+    --zcat-inputField-text-error: var(--zcat-red-1);
+    --zcat-inputField-text-optional: var(--zcat-dark-3);
+
+    /* Input Field Link */
+    --zcat-inputField-text-linkField: var(--zcat-primary-1);
+    --zcat-inputField-text-linkField-hover: var(--zcat-primary-2);
+    --zcat-inputField-text-linkField-active: var(--zcat-primary-1);
+    --zcat-inputField-text-linkField-disabled: var(--zcat-primary-3);
+
+    /* Input Field Icon */
+    --zcat-inputField-icon-placeholder: var(--zcat-dark-3);
+    --zcat-inputField-icon-active: var(--zcat-dark-1);
+    --zcat-inputField-icon-hover: var(--zcat-primary-4);
+    --zcat-inputField-icon-disabled: var(--zcat-dark-4);
+    --zcat-inputField-icon-label: var(--zcat-dark-2);
+
+
+    /* -------------------------------------------- CHIPS -------------------------------------------- */
+
+    /* Chips background */
+    --zcat-chips-bg-default: var(--zcat-grey-5);
+    --zcat-chips-bg-hover: var(--zcat-grey-6);
+    --zcat-chips-bg-disabled: var(--zcat-grey-4);
+
+    /* Chips border */
+    --zcat-chips-border-default: var(--zcat-grey-2);
+    --zcat-chips-border-hover: var(--zcat-grey-1);
+    --zcat-chips-border-disabled: var(--zcat-grey-3);
+
+    /* Chips text */
+    --zcat-chips-text-default: var(--zcat-dark-1);
+    --zcat-chips-text-hover: var(--zcat-dark-1);
+    --zcat-chips-text-disabled: var(--zcat-dark-4);
+
+    /* Chips icons */
+    --zcat-chips-icon-default: var(--zcat-dark-1);
+    --zcat-chips-icon-hover: var(--zcat-dark-1);
+    --zcat-chips-icon-disabled: var(--zcat-dark-4);
+
+    /* -------------------------------------------- CHECKBOX -------------------------------------------- */
+
+    /* Checkbox background */
+    --zcat-checkbox-bg-default: var(--zcat-white);
+    --zcat-checkbox-bg-hover: var(--zcat-primary-4);
+    --zcat-checkbox-bg-disabled: var(--zcat-grey-4);
+    --zcat-checkbox-bg-clicked: var(--zcat-primary-1);
+    --zcat-checkbox-bg-clicked-hover: var(--zcat-primary-2);
+    --zcat-checkbox-bg-clicked-disabled: var(--zcat-primary-3);
+    --zcat-checkbox-bg-white: var(--zcat-white);
+
+    /* Checkbox icon */
+    --zcat-checkbox-icon-click: var(--zcat-white);
+    --zcat-checkbox-icon-disabled: var(--zcat-primary-4);
+
+    /* Checkbox border */
+    --zcat-checkbox-border-default: var(--zcat-grey-1);
+    --zcat-checkbox-border-hover: var(--zcat-primary-3);
+    --zcat-checkbox-border-disabled: var(--zcat-grey-3);
+
+    /* Inner For checkbox */
+    --zcat-checkbox-inner-default: var(--zcat-white);
+    --zcat-checkbox-inner-disabled: var(--zcat-primary-4);
+
+    /* -------------------------------------------- MENU LIST -------------------------------------------- */
+
+    /* Menu background */
+    --zcat-menuList-bg-default: var(--zcat-white);
+    --zcat-menuList-bg-hover: var(--zcat-grey-5);
+    --zcat-menuList-bg-selected: var(--zcat-primary-4);
+    --zcat-menuList-bg-disabled: var(--zcat-grey-4);
+
+    /* Menu border */
+    --zcat-menuList-border-default: var(--zcat-grey-2);
+
+    /* Menu text */
+    --zcat-menuList-text-default: var(--zcat-dark-1);
+    --zcat-menuList-text-light: var(--zcat-dark-3);
+    --zcat-menuList-text-hover: var(--zcat-dark-1);
+    --zcat-menuList-text-disabled: var(--zcat-dark-4);
+    --zcat-menuList-text-heading: var(--zcat-dark-2);
+
+    /* Menu icon */
+    --zcat-menuList-icon-active: var(--zcat-dark-1);
+    --zcat-menuList-icon-hover: var(--zcat-dark-1);
+    --zcat-menuList-icon-disabled: var(--zcat-dark-4);
+    --zcat-menuList-icon-check-default: var(--zcat-primary-1);
+
+    /* --------------------------------------------  CARDS -------------------------------------------- */
+
+    /* Card background */
+    --zcat-card-bg-default: var(--zcat-white);
+    --zcat-card-bg-secondary: var(--zcat-grey-8);
+    --zcat-card-bg-tertiary: var(--zcat-grey-5);
+    --zcat-card-bg-quaternary: var(--zcat-grey-3);
+    --zcat-card-bg-bodyBg: var(--zcat-grey-6);
+    --zcat-card-bg-darkBg: var(--zcat-gradient-1);
+    --zcat-card-bg-disabled: var(--zcat-grey-4);
+
+    /* hover state */
+    --zcat-card-bg-hover: var(--zcat-grey-8);
+    --zcat-card-bg-hover-secondary: var(--zcat-grey-5);
+    --zcat-card-bg-hover-tertiary: var(--zcat-grey-6);
+    --zcat-card-bg-hover-quaternary: var(--zcat-grey-5);
+    --zcat-card-bg-hover-bodyBg: var(--zcat-grey-5);
+
+    /* selected state */
+    --zcat-card-bg-selected: var(--zcat-primary-4);
+    --zcat-card-bg-secondary-selected: var(--zcat-primary-4);
+    --zcat-card-bg-tertiary-selected: var(--zcat-primary-4);
+    --zcat-card-bg-quaternary-selected: var(--zcat-primary-4);
+    --zcat-card-bg-bodyBg-selected: var(--zcat-primary-4);
+
+    /* Card border */
+    --zcat-card-border-default: var(--zcat-grey-2);
+    --zcat-card-border-hover: var(--zcat-grey-7);
+    --zcat-card-border-selected: var(--zcat-primary-1);
+    --zcat-card-border-disabled: var(--zcat-grey-3);
+
+    /* -------------------------------------------- SHADOWS -------------------------------------------- */
+
+    /* Shadows background */
+    --zcat-shadow-bg-default: var(--zcat-grey-3);
+    --zcat-shadow-bg-secondary: var(--zcat-grey-9);
+
+    /* -------------------------------------------- PRIMARY TABS -------------------------------------------- */
+
+    /*  Tabs background */
+    --zcat-tabs-primary-bg: var(--zcat-white);
+    --zcat-tabs-primary-bg-hover: var(--zcat-primary-4);
+    --zcat-tabs-primary-bg-hoverDisabled: var(--zcat-grey-4);
+
+    /*  Tabs border */
+    --zcat-tabs-primary-border-default: var(--zcat-grey-7);
+    --zcat-tabs-primary-border-hover: var(--zcat-primary-3);
+    --zcat-tabs-primary-border-active: var(--zcat-primary-1);
+    --zcat-tabs-primary-border-disabled: var(--zcat-grey-3);
+
+    /*  Tabs text */
+    --zcat-tabs-primary-text-default: var(--zcat-dark-2);
+    --zcat-tabs-primary-text-hover: var(--zcat-dark-1);
+    --zcat-tabs-primary-text-active: var(--zcat-primary-1);
+    --zcat-tabs-primary-text-disabled: var(--zcat-dark-4);
+
+    /*  Tabs icon */
+    --zcat-tabs-primary-icon-default: var(--zcat-dark-2);
+    --zcat-tabs-primary-icon-hover: var(--zcat-dark-1);
+    --zcat-tabs-primary-icon-active: var(--zcat-primary-1);
+    --zcat-tabs-primary-icon-disabled: var(--zcat-dark-4);
+
+    /* -------------------------------------------- SECONDARY TABS -------------------------------------------- */
+
+    /*  Tabs bg */
+    --zcat-tabs-secondary-bg-default: var(--zcat-grey-3);
+    --zcat-tabs-secondary-bg-hover: var(--zcat-white);
+    --zcat-tabs-secondary-bg-active: var(--zcat-white);
+    --zcat-tabs-secondary-bg-disabled: var(--zcat-grey-4);
+
+    /*  Tabs text */
+    --zcat-tabs-secondary-text-default: var(--zcat-dark-2);
+    --zcat-tabs-secondary-text-hover: var(--zcat-dark-1);
+    --zcat-tabs-secondary-text-active: var(--zcat-primary-1);
+    --zcat-tabs-secondary-text-disabled: var(--zcat-dark-4);
+
+    /*  Tabs icon */
+    --zcat-tabs-secondary-icon-default: var(--zcat-dark-2);
+    --zcat-tabs-secondary-icon-hover: var(--zcat-dark-1);
+    --zcat-tabs-secondary-icon-active: var(--zcat-primary-1);
+    --zcat-tabs-secondary-icon-disabled: var(--zcat-dark-4);
+
+    /*  Tabs border */
+    --zcat-tabs-secondary-border-default: var(--zcat-grey-7);
+
+    /* -------------------------------------------- CODE TABS -------------------------------------------- */
+
+    /*  Tabs bg */
+    --zcat-tabs-code-bg-default: var(--zcat-grey-3);
+    --zcat-tabs-code-bg-hover: var(--zcat-white);
+    --zcat-tabs-code-bg-active: var(--zcat-white);
+    --zcat-tabs-code-bg-disabled: var(--zcat-grey-4);
+
+    /*  Tabs text */
+    --zcat-tabs-code-text-default: var(--zcat-dark-2);
+    --zcat-tabs-code-text-hover: var(--zcat-dark-1);
+    --zcat-tabs-code-text-active: var(--zcat-primary-1);
+    --zcat-tabs-code-text-disabled: var(--zcat-dark-4);
+
+    /*  Tabs icon */
+    --zcat-tabs-code-icon-default: var(--zcat-dark-2);
+    --zcat-tabs-code-icon-hover: var(--zcat-dark-1);
+    --zcat-tabs-code-icon-active: var(--zcat-primary-1);
+    --zcat-tabs-code-icon-disabled: var(--zcat-dark-4);
+
+    /*  Tabs border */
+    --zcat-tabs-code-border-default: var(--zcat-grey-7);
+
+    /* -------------------------------------------- BADGE-------------------------------------------- */
+
+    /* Primary Badge bg */
+    --zcat-badge-primary-bg-primary: var(--zcat-primary-1);
+    --zcat-badge-primary-bg-green: var(--zcat-green-1);
+    --zcat-badge-primary-bg-red: var(--zcat-red-1);
+    --zcat-badge-primary-bg-pink: var(--zcat-pink-1);
+    --zcat-badge-primary-bg-orange: var(--zcat-orange-1);
+    --zcat-badge-primary-bg-disabled: var(--zcat-grey-4);
+
+    /* --zcat-badge-primary-bg-primary2: var(--zcat-primary-4);
+    --zcat-badge-primary-bg-green2: var(--zcat-green-4);
+    --zcat-badge-primary-bg-red2: var(--zcat-red-4);
+    --zcat-badge-primary-bg-pink2: var(--zcat-pink-4);
+    --zcat-badge-primary-bg-orange2: var(--zcat-orange-4); */
+
+    /* Secondary Badge bg */
+    --zcat-badge-secondary-bg-default: var(--zcat-grey-2);
+    --zcat-badge-secondary-bg-primary: var(--zcat-primary-4);
+    --zcat-badge-secondary-bg-green: var(--zcat-green-4);
+    --zcat-badge-secondary-bg-red: var(--zcat-red-4);
+    --zcat-badge-secondary-bg-pink: var(--zcat-pink-4);
+    --zcat-badge-secondary-bg-orange: var(--zcat-orange-4);
+    --zcat-badge-secondary-bg-disbaled: var(--zcat-grey-4);
+
+    /* primary Badge text */
+    --zcat-badge-primary-text-white: var(--zcat-white);
+    --zcat-badge-primary-text-primary: var(--zcat-dark-1);
+    --zcat-badge-primary-text-disabled: var(--zcat-dark-4);
+
+    /* secondary Badge text */
+    --zcat-badge-secondary-text-default: var(--zcat-white);
+    --zcat-badge-secondary-text-primary: var(--zcat-primary-1);
+    --zcat-badge-secondary-text-green: var(--zcat-green-1);
+    --zcat-badge-secondary-text-red: var(--zcat-red-1);
+    --zcat-badge-secondary-text-pink: var(--zcat-pink-1);
+    --zcat-badge-secondary-text-orange: var(--zcat-orange-1);
+    --zcat-badge-secondary-text-disabled: var(--zcat-dark-4);
+
+
+    /* -------------------------------------------- BREADCRUMBS-------------------------------------------- */
+
+    /* breadcrumbs bg */
+    --zcat-breadcrumbs-bg-hover: var(--zcat-primary-4);
+
+    /* breadcrumbs text */
+    --zcat-breadcrumbs-text-default: var(--zcat-dark-1);
+    --zcat-breadcrumbs-text-hover: var(--zcat-primary-1);
+    --zcat-breadcrumbs-text-active: var(--zcat-dark-2);
+    --zcat-breadcrumbs-text-disabled: var(--zcat-dark-4);
+
+    /* breadcrumbs icon */
+    --zcat-breadcrumbs-icon-default: var(--zcat-dark-2);
+    --zcat-breadcrumbs-icon-hover: var(--zcat-primary-1);
+    --zcat-breadcrumbs-icon-active: var(--zcat-dark-1);
+    --zcat-breadcrumbs-icon-disabled: var(--zcat-dark-4);
+
+    /* -------------------------------------------- ACCORDION -------------------------------------------- */
+
+    /* Accordion bg */
+    --zcat-accordion-bg-default: var(--zcat-white);
+    --zcat-accordion-bg-hover: var(--zcat-grey-8);
+    --zcat-accordion-bg-active: var(--zcat-grey-5);
+    --zcat-accordion-bg-disabled: var(--zcat-grey-4);
+    --zcat-accordion-bg-container: var(--zcat-white);
+    --zcat-accordion-icon-bg-default: var(--zcat-grey-2);
+    --zcat-secondary-accordion-bg-hover: var(--zcat-primary-4);
+
+    /* Accordion text */
+    --zcat-accordion-text-default: var(--zcat-dark-1);
+    --zcat-accordion-text-secondary: var(--zcat-dark-2);
+    --zcat-accordion-text-disabled: var(--zcat-dark-4);
+    --zcat-secondary-accordion-text-default: var(--zcat-primary-1);
+    --zcat-secondary-accordion-text-hover: var(--zcat-primary-2);
+
+    /* Accordion icon */
+    --zcat-accordion-icon-default: var(--zcat-dark-1);
+    --zcat-accordion-icon-bg-hover: var(--zcat-grey-2);
+    --zcat-accordion-icon-disabled: var(--zcat-dark-4);
+
+    /* Accordion border */
+    --zcat-accordion-border-default: var(--zcat-grey-2);
+    --zcat-accordion-border-theme: var(--zcat-primary-1);
+    --zcat-accordion-border-disabled: var(--zcat-grey-3);
+
+
+    /* -------------------------------------------- SIDE MENU-------------------------------------------- */
+
+    /* Side Menu bg*/
+    --zcat-sidemenu-bg-default: var(--zcat-white);
+    --zcat-sidemenu-bg-hover: var(--zcat-grey-5);
+    --zcat-sidemenu-bg-active: var(--zcat-primary-4);
+
+    /* Side Menu text*/
+    --zcat-sidemenu-text-default: var(--zcat-dark-1);
+    --zcat-sidemenu-text-hover: var(--zcat-primary-1);
+    --zcat-sidemenu-text-active: var(--zcat-primary-1);
+    --zcat-sidemenu-text-disabled: var(--zcat-dark-4);
+    --zcat-sidemenu-text-subHeading: var(--zcat-dark-3);
+    --zcat-sidemenu-text-serviceName: var(--zcat-dark-1);
+
+    /* Side Menu icon */
+    --zcat-sidemenu-icon-default: var(--zcat-dark-1);
+    --zcat-sidemenu-icon-hover: var(--zcat-primary-1);
+    --zcat-sidemenu-icon-active: var(--zcat-primary-1);
+    --zcat-sidemenu-icon-disabled: var(--zcat-dark-4);
+
+    /* Side Menu border */
+    --zcat-sidemenu-border-default: var(--zcat-grey-7);
+
+    /* -------------------------------------------- MAIN HEADER -------------------------------------------- */
+
+    /* Project Name */
+    --zcat-mainHeader-projectName-bg: var(--zcat-green-4);
+    --zcat-mainHeader-projectName-text: var(--zcat-green-1);
+
+    /* Main header bg */
+    --zcat-mainHeader-bg-default: var(--zcat-white);
+
+    /* Main header border */
+    --zcat-mainHeader-border-default: var(--zcat-grey-7);
+
+    /* Main header text */
+    --zcat-mainHeader-text-default: var(--zcat-dark-1);
+
+    /* -------------------------------------------- SUB HEADER -------------------------------------------- */
+
+    /* Sub header bg */
+    --zcat-subHeader-bg-default: var(--zcat-white);
+
+    /* sub header border */
+    --zcat-subHeader-border-default: var(--zcat-grey-7);
+
+    /* sub header text */
+    --zcat-subHeader-text-default: var(--zcat-dark-1);
+
+    /* -------------------------------------------- FULL PAGE POPUP HEADER -------------------------------------------- */
+
+    /* Fullpage popup Background */
+    --zcat-fullpagePopup-bg-default: var(--zcat-grey-5);
+    --zcat-fullpagePopup-bg-header: var(--zcat-grey-5);
+    --zcat-fullpagePopup-bg-body: var(--zcat-white);
+
+    /* Fullpage popup border */
+    --zcat-fullpagePopup-border-default: var(--zcat-grey-7);
+
+    /* Fullpage popup text */
+    --zcat-fullpagePopup-text-default: var(--zcat-dark-1);
+
+    /* -------------------------------------------- BODY -------------------------------------------- */
+
+    /* background */
+    --zcat-body-bg: var(--zcat-grey-3);
+
+    /* rightpanel */
+    --zcat-body-container-bg: var(--zcat-white);
+    --zcat-body-curve-bg: var(--zcat-gradient-2);
+
+    /* text */
+    --zcat-body-text-primary: var(--zcat-dark-1);
+    --zcat-body-text-secondary: var(--zcat-dark-2);
+    --zcat-body-text-light: var(--zcat-dark-3);
+    --zcat-body-text-disabled: var(--zcat-dark-4);
+    --zcat-body-text-theme: var(--zcat-primary-1);
+    --zcat-body-text-theme-red: var(--zcat-red-1);
+    --zcat-body-text-white: var(--zcat-white);
+    --zcat-body-text-static-white: var(--zcat-white);
+
+    /* border */
+    --zcat-body-border-default: var(--zcat-grey-2);
+    --zcat-body-border-outerdivider: var(--zcat-grey-7);
+    --zcat-body-border-outerdivider-secondary: var(--zcat-grey-2);
+
+    /* icons */
+    --zcat-body-icons-static-primary: var(--zcat-dark-1);
+    --zcat-body-icons-static-secondary: var(--zcat-dark-2);
+    --zcat-body-icons-static-tertiary: var(--zcat-dark-3);
+    --zcat-body-icons-static-disabled: var(--zcat-dark-4);
+
+    --zcat-body-icons-static-theme: var(--zcat-primary-1);
+    --zcat-body-icons-static-theme-hover: var(--zcat-primary-2);
+    --zcat-body-icons-static-theme-light: var(--zcat-primary-4);
+
+    /* -------------------------------------------- POPUP -------------------------------------------- */
+
+    /* border */
+    --zcat-popup-border: var(--zcat-grey-2);
+    --zcat-popup-outer-border: var(--zcat-grey-2);
+
+    /* background */
+    --zcat-popup-bg: var(--zcat-white);
+    --zcat-popup-bg-blur: var(--zcat-dark-5);
+
+
+    /* -------------------------------------------- ALERTS AND ATTENTION -------------------------------------------- */
+
+    /* info */
+    --zcat-alerts-info-bg: var(--zcat-blue-4);
+    --zcat-alerts-info-border: var(--zcat-blue-3);
+    --zcat-alerts-info-text-primary: var(--zcat-dark-1);
+    --zcat-alerts-info-text-secondary: var(--zcat-dark-2);
+    --zcat-alerts-info-icon: var(--zcat-dark-1);
+
+    /* success */
+    --zcat-alerts-success-bg: var(--zcat-green-4);
+    --zcat-alerts-success-border: var(--zcat-green-3);
+    --zcat-alerts-success-text-primary: var(--zcat-dark-1);
+    --zcat-alerts-success-text-secondary: var(--zcat-dark-2);
+    --zcat-alerts-success-icon: var(--zcat-dark-1);
+
+    /* danger */
+    --zcat-alerts-danger-bg: var(--zcat-red-4);
+    --zcat-alerts-danger-border: var(--zcat-red-3);
+    --zcat-alerts-danger-text-primary: var(--zcat-dark-1);
+    --zcat-alerts-danger-text-secondary: var(--zcat-dark-2);
+    --zcat-alerts-danger-icon: var(--zcat-dark-1);
+
+    /* warning */
+    --zcat-alerts-warning-bg: var(--zcat-orange-4);
+    --zcat-alerts-warning-border: var(--zcat-orange-3);
+    --zcat-alerts-warning-text-primary: var(--zcat-dark-1);
+    --zcat-alerts-warning-text-secondary: var(--zcat-dark-2);
+    --zcat-alerts-warning-icon: var(--zcat-dark-1);
+
+    /* dafault */
+    --zcat-attention-default-bg: var(--zcat-grey-5);
+    --zcat-attention-default-border: var(--zcat-grey-2);
+    --zcat-attention-default-text-primary: var(--zcat-dark-1);
+    --zcat-attention-default-text-secondary: var(--zcat-dark-2);
+    --zcat-attention-default-icon: var(--zcat-dark-1);
+
+    /* -------------------------------------------- PAGINATION -------------------------------------------- */
+
+    --zcat-pagination-bg: var(--zcat-white);
+    --zcat-pagination-text-primary: var(--zcat-dark-1);
+    --zcat-pagination-text-secondary: var(--zcat-dark-2);
+    --zcat-pagination-text-tertiary: var(--zcat-dark-3);
+    --zcat-pagination-theme: var(--zcat-primary-1);
+    --zcat-pagination-divider: var(--zcat-grey-2);
+
+
+    /* -------------------------------------------- TOOLTIP -------------------------------------------- */
+
+    --zcat-tooltip-bg: var(--zcat-white);
+    --zcat-tooltip-text-primary: var(--zcat-dark-1);
+    --zcat-tooltip-text-secondary: var(--zcat-dark-2);
+    --zcat-tooltip-border: var(--zcat-grey-7);
+
+    /* -------------------------------------------- LOADER -------------------------------------------- */
+
+    /* content */
+    --zcat-loader-content-primary: var(--zcat-grey-1);
+    --zcat-loader-content-secondary: var(--zcat-grey-6);
+
+    /* round */
+    --zcat-loader-round-primary: var(--zcat-primary-1);
+    --zcat-loader-round-secondary: var(--zcat-dark-1);
+    --zcat-loader-round-tertiary: var(--zcat-white);
+
+    /* progress */
+    --zcat-loader-progress-primary: var(--zcat-primary-1);
+    --zcat-loader-progress-secondary: var(--zcat-grey-2);
+
+    /* -------------------------------------------- RADIO -------------------------------------------- */
+
+    /* radio background */
+    --zcat-radio-bg-default: var(--zcat-white);
+    --zcat-radio-bg-hover: var(--zcat-primary-4);
+    --zcat-radio-bg-disabled: var(--zcat-grey-4);
+    --zcat-radio-bg-clicked: var(--zcat-primary-1);
+    --zcat-radio-bg-clicked-hover: var(--zcat-primary-2);
+    --zcat-radio-bg-clicked-disabled: var(--zcat-primary-3);
+    --zcat-radio-outer-bg-default: var(--zcat-white);
+
+    /* radio border */
+    --zcat-radio-border-default: var(--zcat-grey-1);
+    --zcat-radio-border-hover: var(--zcat-primary-3);
+    --zcat-radio-border-disabled: var(--zcat-grey-3);
+    --zcat-radio-outer-border-default: var(--zcat-grey-2);
+
+
+    /* Inner For Radio */
+    --zcat-radio-inner-default: var(--zcat-white);
+    --zcat-radio-inner-disabled: var(--zcat-primary-4);
+
+    /* -------------------------------------------- TOGGLE -------------------------------------------- */
+
+    /* toggle background */
+    --zcat-toggle-bg-default: var(--zcat-white);
+    --zcat-toggle-bg-hover: var(--zcat-primary-4);
+    --zcat-toggle-bg-disabled: var(--zcat-grey-4);
+    --zcat-toggle-bg-clicked: var(--zcat-primary-1);
+    --zcat-toggle-bg-clicked-hover: var(--zcat-primary-2);
+    --zcat-toggle-bg-clicked-disabled: var(--zcat-primary-3);
+
+    /* toggle border */
+    --zcat-toggle-border-default: var(--zcat-grey-1);
+    --zcat-toggle-border-hover: var(--zcat-primary-3);
+    --zcat-toggle-border-disabled: var(--zcat-grey-3);
+
+    /* Inner For Toggle */
+    --zcat-toggle-inner-active: var(--zcat-white);
+    --zcat-toggle-inner-active-disabled: var(--zcat-primary-4);
+    --zcat-toggle-inner-default: var(--zcat-grey-1);
+    --zcat-toggle-inner-hover: var(--zcat-primary-3);
+    --zcat-toggle-inner-disabled: var(--zcat-grey-2);
+
+    /* -------------------------------------------- STEPPER -------------------------------------------- */
+
+    /* Stepper background */
+    --zcat-stepper-bg-default: var(--zcat-grey-5);
+    --zcat-stepper-bg-active: var(--zcat-primary-1);
+    --zcat-stepper-bg-completed: var(--zcat-green-1);
+    --zcat-stepper-bg-disabled: var(--zcat-grey-4);
+
+    /* Stepper text */
+    --zcat-stepper-text-default: var(--zcat-dark-2);
+    --zcat-stepper-text-subText: var(--zcat-dark-2);
+    --zcat-stepper-text-active: var(--zcat-dark-1);
+    --zcat-stepper-text-completed: var(--zcat-dark-1);
+    --zcat-stepper-text-disabled: var(--zcat-dark-4);
+    --zcat-stepper-text-number: var(--zcat-white);
+
+    /* Stepper divider */
+    --zcat-stepper-divider-default: var(--zcat-grey-1);
+    --zcat-stepper-divider-active: var(--zcat-primary-1);
+    --zcat-stepper-divider-completed: var(--zcat-green-1);
+    --zcat-stepper-divider-disabled: var(--zcat-grey-3);
+
+    /* Stepper border */
+    --zcat-stepper-border-default: var(--zcat-grey-1);
+    --zcat-stepper-border-active: var(--zcat-white);
+    --zcat-stepper-border-disabled: var(--zcat-white-20);
+    --zcat-stepper-border-completed: var(--zcat-green-4);
+
+    /* -------------------------------------------- CODE BLOCK & SNIPPET -------------------------------------------- */
+
+    /* Code block background */
+    --zcat-code-bg-writer: var(--zcat-white);
+    --zcat-code-bg-reader: var(--zcat-grey-4);
+    --zcat-code-bg-line-highlight: var(--zcat-primary-4);
+
+    /* code border */
+    --zcat-code-border-default: var(--zcat-grey-2);
+
+    /* text */
+    --zcat-code-text-number: var(--zcat-dark-3);
+    --zcat-code-text-number-active: var(--zcat-dark-1);
+
+
+    /* -------------------------------------------- DATE PICKER  -------------------------------------------- */
+
+    /* Date picker background */
+    --zcat-datePicker-bg-default: var(--zcat-white);
+    --zcat-datePicker-number-bg-hover: var(--zcat-grey-5);
+    --zcat-datePicker-number-bg-selected: var(--zcat-primary-1);
+    --zcat-datePicker-number-bg-active: var(--zcat-primary-4);
+
+    /* Date picker text */
+    --zcat-datePicker-text-default: var(--zcat-dark-1);
+    --zcat-datePicker-text-selected: var(--zcat-white);
+    --zcat-datePicker-text-active: var(--zcat-primary-1);
+    --zcat-datePicker-text-disabled: var(--zcat-dark-4);
+    --zcat-datePicker-text-days: var(--zcat-dark-3);
+    --zcat-datePicker-text-headings: var(--zcat-dark-1);
+
+    /* Date picker border */
+    --zcat-datePicker-border-default: var(--zcat-grey-1);
+    --zcat-datePicker-border-line: var(--zcat-grey-2);
+
+    /* -------------------------------------------- Link box  -------------------------------------------- */
+
+    /* link background */
+    --zcat-linkbox-bg-default: var(--zcat-grey-5);
+    --zcat-linkbox-bg-hover: var(--zcat-grey-3);
+
+    /* link text */
+    --zcat-linkbox-text-label1: var(--zcat-dark-2);
+    --zcat-linkbox-text-label2: var(--zcat-dark-1);
+    --zcat-linkbox-text-mainText: var(--zcat-dark-1);
+
+    /* link icon */
+    --zcat-linkbox-icon-default: var(--zcat-dark-1);
+    --zcat-linkbox-icon-hover: var(--zcat-primary-1);
+    --zcat-linkbox-icon-click: var(--zcat-dark-1);
+    --zcat-linkbox-icon-label: var(--zcat-dark-2);
+
+    /* link border */
+    --zcat-linkbox-border-default: var(--zcat-grey-2);
+    --zcat-linkbox-border-hover: var(--zcat-primary-3);
+    --zcat-linkbox-border-divider: var(--zcat-grey-1);
+
+    /* -------------------------------------------- GRAPH -------------------------------------------- */
+
+    /* Dial Graph */
+    --zcat-graph-bg-default: var(--zcat-grey-4);
+    --zcat-graph-bg-success: var(--zcat-green-1);
+    --zcat-graph-line-bg-success: var(--zcat-green-4);
+    --zcat-graph-bg-failure: var(--zcat-red-1);
+    --zcat-graph-line-bg-failure: var(--zcat-red-4);
+
+    /* graph text */
+  --zcat-graph-text-primary: var(--zcat-dark-1);
+  --zcat-graph-text-secondary: var(--zcat-dark-2);
+  --zcat-graph-text-tertiary: var(--zcat-dark-3);
+
+  /* graph lines */
+  --zcat-graph-line-primary: var(--zcat-grey-7);
+  --zcat-graph-line-secondary: var(--zcat-grey-2);
+
+    /* -------------------------------------------- ILLUSTRATION -------------------------------------------- */
+
+    --zcat-illus-primary-blue: var(--zcat-primary-1);
+    --zcat-illus-white: var(--zcat-white);
+    --zcat-illus-white-static: var(--zcat-white);
+    --zcat-illus-black: var(--zcat-dark-1);
+    --zcat-illus-tint-blue: var(--zcat-primary-6);
+    --zcat-illus-bg-blue: var(--zcat-primary-7);
+    --zcat-illus-bg-red: var(--zcat-red-4);
+    --zcat-illus-bg-black: var(--zcat-dark-1);
+    --zcat-illus-red: var(--zcat-red-1);
+    --zcat-illus-tint-red: var(--zcat-red-3);
+
+    /* -------------------------------------------- SCROLLBAR -------------------------------------------- */
+
+    --zcat-scrollbar-bg: var(--zcat-grey-1);
+    --zcat-scrollbar-track-bg: var(--zcat-grey-4);
+
+    /* -------------------------------------------- OTHER SHADES -------------------------------------------- */
+
+    --zcat-shades-red-1: var(--zcat-red-1);
+    --zcat-shades-red-2: var(--zcat-red-2);
+    --zcat-shades-red-3: var(--zcat-red-3);
+    --zcat-shades-red-4: var(--zcat-red-4);
+
+    --zcat-shades-green-1: var(--zcat-green-1);
+    --zcat-shades-green-2: var(--zcat-green-2);
+    --zcat-shades-green-3: var(--zcat-green-3);
+    --zcat-shades-green-4: var(--zcat-green-4);
+
+    --zcat-shades-theme-1: var(--zcat-primary-1);
+    --zcat-shades-theme-2: var(--zcat-primary-2);
+    --zcat-shades-theme-3: var(--zcat-primary-3);
+    --zcat-shades-theme-4: var(--zcat-primary-4);
+
+    --zcat-shades-blue-1: var(--zcat-blue-1);
+    --zcat-shades-blue-2: var(--zcat-blue-2);
+    --zcat-shades-blue-3: var(--zcat-blue-3);
+    --zcat-shades-blue-4: var(--zcat-blue-4);
+
+    --zcat-shades-pink-1: var(--zcat-pink-1);
+    --zcat-shades-pink-2: var(--zcat-pink-2);
+    --zcat-shades-pink-3: var(--zcat-pink-3);
+    --zcat-shades-pink-4: var(--zcat-pink-4);
+
+    --zcat-shades-orange-1: var(--zcat-orange-1);
+    --zcat-shades-orange-2: var(--zcat-orange-2);
+    --zcat-shades-orange-3: var(--zcat-orange-3);
+    --zcat-shades-orange-4: var(--zcat-orange-4);
+
+    --zcat-shades-purple-1: var(--zcat-purple-1);
+    --zcat-shades-purple-2: var(--zcat-purple-2);
+    --zcat-shades-purple-3: var(--zcat-purple-3);
+    --zcat-shades-purple-4: var(--zcat-purple-4);
+
+
+    /* -------------------------------------------- Toast -------------------------------------------- */
+
+    --zcat-toast-bg-default: var(--zcat-white);
+    --zcat-toast-border-default: var(--zcat-grey-2);
+
+    --zcat-toast-icon-line-success: var(--zcat-green-1);
+    --zcat-toast-icon-line-danger: var(--zcat-red-1);
+    --zcat-toast-icon-line-warning: var(--zcat-orange-1);
+    --zcat-toast-icon-line-info: var(--zcat-blue-1);
+
+    --zcat-toast-text-primary: var(--zcat-dark-1);
+    --zcat-toast-text-secondary: var(--zcat-dark-2);
+
+
+  /* -------------------------------------------- GHOST Dropdown -------------------------------------------- */
+
+  /* Background */
+  --zcat-dropdown-ghost-bg-primary-hover: var(--zcat-primary-4); 
+
+  /* Text */
+  --zcat-dropdown-ghost-text-primary-default: var(--zcat-primary-1);
+  --zcat-dropdown-ghost-text-primary-hover: var(--zcat-primary-2);
+  --zcat-dropdown-ghost-text-primary-click: var(--zcat-primary-1);
+  --zcat-dropdown-ghost-text-primary-disabled: var(--zcat-primary-3);
+
+  /* Icons */
+  --zcat-dropdown-ghost-icon-primary-default: var(--zcat-primary-1);
+  --zcat-dropdown-ghost-icon-primary-hover: var(--zcat-primary-2);
+  --zcat-dropdown-ghost-icon-primary-click: var(--zcat-primary-1);
+  --zcat-dropdown-ghost-icon-primary-disabled: var(--zcat-primary-3);
+
+  /* -------------------------------------------- AVATAR -------------------------------------------- */
+
+  /* Background */
+  --zcat-avatar-bg-default: var(--zcat-grey-5);
+  --zcat-avatar-bg-secondary: var(--zcat-grey-2); 
+
+  /* Border */
+  --zcat-avatar-border-default: var(--zcat-grey-2); 
+
+  /* Text */
+  --zcat-avatar-text-default: var(--zcat-dark-2); 
+
+  /* Icons */
+  --zcat-avatar-icon-default: var(--zcat-dark-2); 
+
+  /* -------------------------------------------- TOUR -------------------------------------------- */
+
+  /* Background */
+  --zcat-tour-bg-default: var(--zcat-white); 
+  --zcat-carosual-bg-default: var(--zcat-dark-4);
+  --zcat-carosual-bg-active: var(--zcat-dark-1);
+
+  /* Border */
+  --zcat-tour-border-default: var(--zcat-grey-2); 
+
+  /* Text */
+  --zcat-avatar-text-default: var(--zcat-dark-1); 
+
+  /* -------------------------------------------- PROFILE MENU -------------------------------------------- */
+
+  /* Background */
+  --zcat-profileMenu-bg-white: var(--zcat-white); 
+  --zcat-profileMenu-bg-profileArea: var(--zcat-grey-5); 
+
+  /* Border */
+  --zcat-profileMenu-border-default: var(--zcat-grey-2); 
+  --zcat-profileMenu-border-outer: var(--zcat-grey-1);
+
+  /* Text */
+  --zcat-profileMenu-text-heading: var(--zcat-dark-1); 
+  --zcat-profileMenu-text-subText: var(--zcat-dark-2); 
+
+  /* Icon */
+  --zcat-profileMenu-icon-light: var(--zcat-grey-3); 
+  --zcat-profileMenu-icon-white: var(--zcat-white); 
+  --zcat-profileMenu-icon-primary: var(--zcat-dark-1); 
+
+  /* -------------------------------------------- TIME LINE -------------------------------------------- */
+
+  /* Background */
+  --zcat-timeLine-bg-green: var(--zcat-green-4);
+  --zcat-timeLine-bg-greenDot: var(--zcat-green-1);
+  --zcat-timeLine-bg-orange: var(--zcat-orange-4);
+  --zcat-timeLine-bg-orangeDot: var(--zcat-orange-1);
+  --zcat-timeLine-bg-blue: var(--zcat-blue-4);
+  --zcat-timeLine-bg-blueDot: var(--zcat-blue-1);
+  --zcat-timeLine-bg-red: var(--zcat-red-4);
+  --zcat-timeLine-bg-redDot: var(--zcat-red-1);
+
+  /* Border */
+  --zcat-timeLine-border-default: var(--zcat-grey-1);
+
+  /* -------------------------------------------- Project card-------------------------------------------- */
+
+    /* Background */
+  --zcat-projectCard-bg-green: var(--zcat-green-4);
+  --zcat-projectCard-bg-blue: var(--zcat-blue-4);
+  --zcat-projectCard-bg-orange: var(--zcat-orange-4);
+  --zcat-projectCard-bg-pink: var(--zcat-pink-4);
+  --zcat-projectCard-bg-grey: var(--zcat-grey-3);
+
+  /* -------------------------------------------- KEY VALUE PAIR ------------------------------------------------ */
+
+  /* Background */
+  --zcat-keyvalue-drag-bg: var(--zcat-blue-4);
+
+  /* Border */
+  --zcat-keyvalue-drag-border: var(--zcat-blue-4);
+
+}

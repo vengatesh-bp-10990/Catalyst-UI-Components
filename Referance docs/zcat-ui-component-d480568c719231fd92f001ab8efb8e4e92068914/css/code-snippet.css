@@ -1,0 +1,182 @@
+lyte-code-snippet * {
+  box-sizing: border-box;
+}
+lyte-code-snippet {
+  display: block;
+  position: relative;
+  direction: ltr;
+}
+.lyteCSCopyButton {
+  display: none;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+.lyteCSCopyButton .lyteDefaultBtn {
+  /* background: var(--zcat-color-grey2); */
+  color: var(--zcat-body-text-primary);
+  /* border-color: var(--zcat-color-grey1); */
+  /* border-radius: 6px; */
+}
+.lyteCSCopyButton .lyteDefaultBtn:hover {
+  background: var(--zcat-color-primarylight);
+}
+.lyteCSContainer {
+  display: flex;
+  background: var(--zcat-code-bg-reader);
+  border: 1px solid var(--zcat-code-border-default);
+  border-radius: 10px;
+  font: var(--zcat-font-12-20) var(--zcat-font-family-code);
+  overflow: auto;
+  box-sizing: border-box;
+}
+.lyteCSLineNumberContainer {
+  padding: 10px 15px;
+}
+.lyteCSLineNumber {
+  display: block;
+  color: var(--zcat-body-text-secondary);
+  text-align: right;
+}
+.lyteCSCodeContainer {
+  padding: 10px 30px 10px 0;
+  white-space: pre-wrap;
+  flex-grow: 1;
+}
+.lyteTagNameCls {
+  color: var(--zcat-shades-theme-1);
+}
+.lytePunctuationCls {
+  color: var(--zcat-shades-theme-1);
+}
+.lyteContentCls {
+  color: var(--zcat-body-text-primary);
+}
+.lyteAttributeEqualsCls {
+  color: var(--zcat-shades-pink-1);
+}
+.lyteAttributeNameCls {
+  color: var(--zcat-shades-pink-1);
+}
+.lyteAttributeValueCls {
+  color: var(--zcat-shades-green-1);
+}
+.lyteEntityCls {
+  color: var(--zcat-shades-red-1);
+}
+.lyteCSSComment,
+.lyteCommentCls {
+  color: var(--zcat-shades-blue-1);
+}
+.lyteCSSSelector {
+  word-spacing: 5px;
+  color: var(--zcat-shades-green-1);
+}
+.lyteCSSRuleName {
+  color: var(--zcat-body-text-primary);
+}
+.lyteCSSPunctuation {
+  color: var(--zcat-body-text-primary);
+}
+.lyteCSSRuleName + .lyteCSSPunctuation {
+  margin-right: 3px;
+}
+.lyteCSSValueFunction,
+.lyteCSSRuleValue {
+  color: var(--zcat-shades-orange-1);
+}
+.lyteCSSCombinator {
+  color: var(--zcat-shades-pink-1);
+}
+.lyteCSSAttributeName {
+  color: var(--zcat-shades-pink-1);
+}
+.lyteCSSImportant,
+.lyteCSSAttributeValue {
+  color: var(--zcat-shades-theme-1);
+}
+.lyteCSSColorValue {
+  color: var(--zcat-shades-orange-1);
+}
+.lyteJSKeyword {
+  color: var(--zcat-shades-pink-1);
+}
+.lyteJSIndentifier {
+  color: var(--zcat-body-text-primary);
+}
+.lyteJSOperator {
+  color: var(--zcat-shades-pink-1);
+}
+.lyteJSPunctuator {
+  color: var(--zcat-body-text-primary);
+}
+.lyteJSNumber {
+  color: var(--zcat-shades-orange-1);
+}
+.lyteJSStringLiteral {
+  color: var(--zcat-shades-orange-1);
+}
+.lyteJSComment {
+  color: var(--zcat-body-text-disabled);
+}
+.lyteJSRegex {
+  color: var(--zcat-shades-green-1);
+}
+.lyteJSBoolean {
+  color: var(--zcat-shades-blue-1);
+}
+.lyteJSFunction {
+  color: var(--zcat-shades-green-1);
+}
+.lyteJSNull,
+.lyteJSUndefined {
+  color: var(--zcat-shades-blue-1);
+}
+.lyteCodeSnippetTransparentBg .lyteCSContainer {
+  background: transparent;
+}
+.lyteCodeSnippetNumberSectionBg .lyteCSLineNumberContainer {
+  background: var(--zcat-code-bg-reader);
+}
+.lyteCSCopyIcon {
+  display: flex;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  right: 8px;
+  top: 8px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.lyteCSCopyIcon:hover {
+  background: var(--zcat-code-bg-reader);
+}
+.lyteCSCopyIcon::after {
+  content: '';
+  /* background-image: url(../../images/sprite_lyte.svg);
+  background-position: -263px -61px; */
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_1319_43593)'%3E%3Cpath d='M10.6666 5.33337V3.46671C10.6666 2.71997 10.6666 2.3466 10.5213 2.06139C10.3934 1.8105 10.1895 1.60653 9.93857 1.4787C9.65336 1.33337 9.27999 1.33337 8.53325 1.33337H3.46659C2.71985 1.33337 2.34648 1.33337 2.06126 1.4787C1.81038 1.60653 1.60641 1.8105 1.47858 2.06139C1.33325 2.3466 1.33325 2.71997 1.33325 3.46671V8.53337C1.33325 9.28011 1.33325 9.65348 1.47858 9.93869C1.60641 10.1896 1.81038 10.3936 2.06126 10.5214C2.34648 10.6667 2.71985 10.6667 3.46659 10.6667H5.33325M7.46659 14.6667H12.5333C13.28 14.6667 13.6534 14.6667 13.9386 14.5214C14.1895 14.3936 14.3934 14.1896 14.5213 13.9387C14.6666 13.6535 14.6666 13.2801 14.6666 12.5334V7.46671C14.6666 6.71997 14.6666 6.3466 14.5213 6.06139C14.3934 5.8105 14.1895 5.60653 13.9386 5.4787C13.6534 5.33337 13.28 5.33337 12.5333 5.33337H7.46659C6.71985 5.33337 6.34648 5.33337 6.06126 5.4787C5.81038 5.60653 5.60641 5.8105 5.47858 6.06139C5.33325 6.3466 5.33325 6.71997 5.33325 7.46671V12.5334C5.33325 13.2801 5.33325 13.6535 5.47858 13.9387C5.60641 14.1896 5.81038 14.3936 6.06126 14.5214C6.34648 14.6667 6.71985 14.6667 7.46659 14.6667Z' stroke='%23101F3E' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_1319_43593'%3E%3Crect width='16' height='16' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+html[data-user-color-scheme="dark"] .lyteCSCopyIcon::after{
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_1319_43593)'%3E%3Cpath d='M10.6666 5.33337V3.46671C10.6666 2.71997 10.6666 2.3466 10.5213 2.06139C10.3934 1.8105 10.1895 1.60653 9.93857 1.4787C9.65336 1.33337 9.27999 1.33337 8.53325 1.33337H3.46659C2.71985 1.33337 2.34648 1.33337 2.06126 1.4787C1.81038 1.60653 1.60641 1.8105 1.47858 2.06139C1.33325 2.3466 1.33325 2.71997 1.33325 3.46671V8.53337C1.33325 9.28011 1.33325 9.65348 1.47858 9.93869C1.60641 10.1896 1.81038 10.3936 2.06126 10.5214C2.34648 10.6667 2.71985 10.6667 3.46659 10.6667H5.33325M7.46659 14.6667H12.5333C13.28 14.6667 13.6534 14.6667 13.9386 14.5214C14.1895 14.3936 14.3934 14.1896 14.5213 13.9387C14.6666 13.6535 14.6666 13.2801 14.6666 12.5334V7.46671C14.6666 6.71997 14.6666 6.3466 14.5213 6.06139C14.3934 5.8105 14.1895 5.60653 13.9386 5.4787C13.6534 5.33337 13.28 5.33337 12.5333 5.33337H7.46659C6.71985 5.33337 6.34648 5.33337 6.06126 5.4787C5.81038 5.60653 5.60641 5.8105 5.47858 6.06139C5.33325 6.3466 5.33325 6.71997 5.33325 7.46671V12.5334C5.33325 13.2801 5.33325 13.6535 5.47858 13.9387C5.60641 14.1896 5.81038 14.3936 6.06126 14.5214C6.34648 14.6667 6.71985 14.6667 7.46659 14.6667Z' stroke='%23EEEEEE' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_1319_43593'%3E%3Crect width='16' height='16' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+}
+
+code[class*=language-],pre[class*=language-] {
+  background: var(--zcat-code-bg-reader) !important;
+  color: var(--zcat-body-text-primary) !important;
+}
+
+.monaco-editor .line-numbers{
+  color: var(--zcat-code-text-number);
+}
+.monaco-editor .line-numbers.active-line-number{
+  color: var(--zcat-code-text-number-active);
+}
+.lyteMessageBox{
+  display: none;
+}

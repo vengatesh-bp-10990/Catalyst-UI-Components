@@ -1,0 +1,48 @@
+<template tag-name="zcat-label">
+  <div
+    lyte-if="{{zcatProp.type == 'icon'}}"
+    class="zcat-dF zcat-align-center zcat-gap-4"
+  >
+    <lyte-svg
+      lt-prop-path="#{{zcatProp.icon.name}}"
+      lt-prop-class="{{zcatProp.icon.class}} zcat-flex-center"
+    ></lyte-svg>
+    <p class="zcat-text-14 zcat-color-dark1 zcat-text-capitalize">
+      {{zcatProp.label}}
+    </p>
+  </div>
+  <div
+    lyte-if="{{zcatProp.type == 'dot'}}"
+    class="zcat-dF zcat-align-center zcat-gap-4"
+  >
+    <div class="zcat-dot-{{zcatProp.color}}"></div>
+    <p class="zcat-text-14 zcat-color-dark1 zcat-text-capitalize">
+      {{zcatProp.label}}
+    </p>
+  </div>
+  <div
+    lyte-if="{{zcatProp.type == 'badge'}}"
+    class="zcat-badge-{{zcatProp.color}} zcat-text-10 zcat-font-600 zcat-text-capitalize"
+  >
+    {{zcatProp.label}}
+  </div>
+
+  <!-- <div
+    lyte-if="{{zcatProp.size !== 'dot'}}"
+    class="zcat-badge-{{zcatProp.color}} {{zcatProp.size}} {{zcatProp.varient}}-badge zcat-subtitle3 zcat-text-capitalize"
+  >
+    {{zcatProp.label}}
+  </div>
+  <div
+    lyte-if="{{zcatProp.size == 'dot'}}"
+    class="zcat-dF zcat-align-center zcat-gap-2"
+  >
+    <div class="zcat-dot-{{zcatProp.color}}"></div>
+    <p lyte-if="{{zcatProp.color === 'green'}}" class="zcat-text-14 zcat-text-capitalize">Success</p>
+    <p lyte-if="{{zcatProp.color === 'red'}}" class="zcat-text-14 zcat-text-capitalize">Failed</p>
+    <p lyte-if="{{zcatProp.color === 'blue'}}" class="zcat-text-14 zcat-text-capitalize">In Progress</p>
+    <p lyte-if="{{zcatProp.color === 'yellow'}}" class="zcat-text-14 zcat-text-capitalize">Warning</p>
+    <p lyte-if="{{zcatProp.color === 'pink'}}" class="zcat-text-14 zcat-text-capitalize">Pink</p>
+    <p lyte-if="{{zcatProp.color === 'disbaled'}}" class="zcat-text-14 zcat-text-capitalize">Disabled</p>
+  </div> -->
+</template>

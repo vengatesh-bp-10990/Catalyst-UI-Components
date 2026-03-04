@@ -1,0 +1,74 @@
+<template tag-name="zcat-autocomplete">
+    <div class="zcat-dF zcat-direction-column zcat-gap-2">
+        <div class="zcat-dF zcat-gap-2">
+            <div class="zcat-autocomplete-label" lyte-if="{{zcatProp.label}}">{{zcatProp.label}}</div>
+            <lyte-hovercard
+                lt-prop-width="{{zcatProp.tooltip_details.width ? zcatProp.tooltip_details.width : 'fit-content'}}"
+                lt-prop-auto-show="true"
+                lt-prop-keep-alive="true"
+                lt-prop-type="callout"
+                lt-prop-prevent-focus="true"
+                id="hovercard"
+                lt-prop-origin-elem="#tooltipInfoMsg{{zcatProp.tooltip_details.id}}"
+                lt-prop-placement = "{{zcatProp.tooltip_details.placement ? zcatProp.tooltip_details.placement : ''}}" 
+                >
+                <template is="registerYield" yield-name="hoverCardYield">
+                    <lyte-hovercard-content>
+                        <lyte-yield lyte-if="{{zcatProp.tooltip_details.yield}}" yield-name="{{zcatProp.tooltip_details.yield}}"></lyte-yield>
+                        <p lyte-if="{{zcatProp.tooltip_details.value}}">{{zcatProp.tooltip_details.value}}</p>
+                    </lyte-hovercard-content>
+                </template>
+            </lyte-hovercard>
+            <div class="zcat-autocomplete-label-opt" lyte-if="{{zcatProp.label_opt && zcatProp.label}}">(Optional)</div>
+            <div lyte-if="{{zcatProp.label_icon}}" class="zcat-flex-center zcat-cP">
+                <!-- <lyte-svg lt-prop-path="#zcat-icon-info" lt-prop-class="zcat-w12 zcat-h12 zcat-input-label-stroke zcat-dF" id="tooltipInfoMsg{{zcatProp.tooltip_details.id}}" 
+                lyte-hovercard="true"></lyte-svg> -->
+                <zcat-icon id="tooltipInfoMsg{{zcatProp.tooltip_details.id}}"
+                    lyte-hovercard="true"
+                    class="zcat-input-label-stroke"
+                    name="info" 
+                    width="12"
+                    height="12"
+                    stroke="var(--zcat-inputField-icon-label)"
+                    strokeWidth="1.3" 
+                >
+                </zcat-icon>
+            </div>
+        </div>
+        <lyte-autocomplete
+        class="zcat-autocomplete {{zcatProp.size}} {{zcatProp.errorMessage ? 'zcat-invalid' : ''}} {{zcatProp.class}}"
+        data-zcqa="{{zcatProp.zcqa}}"
+        error-message ="{{zcatProp.errorMessage}}"
+        lt-prop-appearance="box"
+        lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.label_opt && !zcatProp.label ? ' (Optional)' : ''}}"
+        lt-prop-yield="true"
+        lt-prop-highlight="true"
+        lt-prop-value="{{lbind(featureObj[zcatProp.key])}}"
+        lt-prop-error-message="Key not found. Please Create new."
+        lt-prop-update-delay="undefined"
+        on-search="{{method('defaultOnSearch')}}"
+        on-select="{{method('defaultOnValueChange')}}"
+        >
+        <template is="registerYield" yield-name="yield">
+            <lyte-drop-box class="autocomplete-dropbox {{zcatProp.size}}">
+                <lyte-drop-body class="{{zcatProp.size}}">
+                    <lyte-drop-item lyte-for="{{zcatProp.list}} as item index" data-value="{{item.index}}">
+                        <lyte-autocomplete-label keywords="{{item.keywords}}">
+                            <div lyte-if="{{zcatProp.menuList_icon}}" class="zcat-autocomplete-icon-warper">
+                                <lyte-svg lt-prop-path="#{{item.icon_name}}" lt-prop-class="{{item.icon_class}} zcat-dF"></lyte-svg>
+                            </div>
+                            {{item.name}}
+                        </lyte-autocomplete-label>
+                        <lyte-autocomplete-description>
+                            {{item.short}}
+                        </lyte-autocomplete-description>
+                    </lyte-drop-item>
+                </lyte-drop-body>
+                <div lyte-if="{{zcatProp.createNewBtn}}" class="lyteautocompleteNewBtn" onclick="{{action('createNew')}}">
+                    Create New <span>"{{featureObj[zcatProp.key]}}"</span>
+                </div>
+            </lyte-drop-box>
+        </template>
+        </lyte-autocomplete>
+    </div>
+</template>

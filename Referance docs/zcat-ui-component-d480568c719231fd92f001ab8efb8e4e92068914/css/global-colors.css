@@ -1,0 +1,163 @@
+/* Globally used CSS primitives */
+
+:root {
+
+    /* Primary */
+    --zcat-primary-1: #2A65F0;
+    --zcat-primary-2: #0755F2;
+    --zcat-primary-3: #7DA2FB;
+    --zcat-primary-4: #E7EEFE;
+    --zcat-primary-5: rgba(42,101, 240, 0.20);
+    /* ILLUSTRATION */
+    --zcat-primary-6: #E8F0FE; 
+    --zcat-primary-7: #F3F7FF;
+
+    --zcat-primary-10: #458BFF;
+    --zcat-primary-20: #5A97FB;
+    --zcat-primary-30: #355A8D;
+    --zcat-primary-40: #1A273D;
+    --zcat-primary-50: rgba(32, 116, 255, 0.20);
+  
+    /* Grey */
+    --zcat-grey-1: #D6DDEF;
+    --zcat-grey-2: #EBEEF6;
+    --zcat-grey-3: #EFF2FA;
+    --zcat-grey-4: #F7F8FB;
+    --zcat-grey-5: #F4F7FE;
+    --zcat-grey-6: #F7FAFF;
+    --zcat-grey-7: #DDE4F6;
+    --zcat-grey-8: #FBFBFB;
+    --zcat-grey-9: rgba(239, 242, 250, 0.24);
+
+    
+    --zcat-grey-10: #484D58;
+    --zcat-grey-20: #2F3136;
+    --zcat-grey-30: #292A2F;
+    --zcat-grey-40: #242424;
+    --zcat-grey-50: #242527;
+    --zcat-grey-60: #1F2022;
+    --zcat-grey-70: #33373F;
+    --zcat-grey-80: #121215;
+    --zcat-grey-90: #111213;
+    --zcat-grey-901: #1E1F21;
+    --zcat-grey-902: #151516;
+    /* ILLUSTRATION */
+    --zcat-grey-100: #2A303F;
+    --zcat-grey-101: #212733;
+    --zcat-grey-102: #828DA4;
+    --zcat-grey-103: #252932;
+    
+    --zcat-grey-104: rgba(41, 42, 47, 0.24);
+
+    /* Green */
+    --zcat-green-1: #29B260;
+    --zcat-green-2: #218E4D;
+    --zcat-green-3: #7FD1A0;
+    --zcat-green-4: #EAF7EF;
+
+    --zcat-green-10: #3E9F64;
+    --zcat-green-20: #3AA564;
+    --zcat-green-30: #2F4326;
+    --zcat-green-40: #1C2622;
+
+    /* Red */
+    --zcat-red-1: #E22020;
+    --zcat-red-2: #B51A1A;
+    --zcat-red-3: #EE7979;
+    --zcat-red-4: #FFEFEF;
+
+    --zcat-red-10: #DE5E60;
+    --zcat-red-20: #E86E6B;
+    --zcat-red-30: #682B2D;
+    --zcat-red-40: #2C2123;
+
+    /* Dark */
+    --zcat-dark-1: #101F3E;
+    --zcat-dark-2: #4D618A;
+    --zcat-dark-3: #7988A8;
+    --zcat-dark-4: #A6B1C9;
+    --zcat-dark-5: rgba(16, 31, 62, 0.70);
+
+    --zcat-dark-10: #EEEEEE;
+    --zcat-dark-20: #AAAAAA;
+    --zcat-dark-30: #888888;
+    --zcat-dark-40: #666666;
+    --zcat-dark-50: #1A1B1D;
+    --zcat-dark-60: rgba(0, 0, 0, 0.70);
+
+    /* Orange */
+    --zcat-orange-1: #C98E06;
+    --zcat-orange-2: #A5760C;
+    --zcat-orange-3: #DAB45F;
+    --zcat-orange-4: #FFF3D7;
+
+    --zcat-orange-10: #AE821C;
+    --zcat-orange-20: #A1874B;
+    --zcat-orange-30: #493F07;
+    --zcat-orange-40: #27231C;
+
+
+    /* White */
+    --zcat-white: #FFFFFF;
+    --zcat-white-20: rgba(255, 255, 255, 0.20);
+
+    /* Gradient */
+    --zcat-gradient-1: #0F2A64;
+    --zcat-gradient-2: #0A245D;
+    --zcat-gradient-3: #FFE1FB;
+    --zcat-gradient-3-1: #FFD2F9;
+    --zcat-gradient-3-2: #FFEFFD;
+    --zcat-gradient-4: #C4E7FD;
+    --zcat-gradient-4-1: #B5DDF6;
+    --zcat-gradient-4-2: #DCF2FF;
+
+
+    --zcat-gradient-30: #46224A;
+    --zcat-gradient-30-1: #520D49;
+    --zcat-gradient-30-2: #493546;
+    --zcat-gradient-40: #08293E;
+    --zcat-gradient-40-1: #2B4B5E;
+    --zcat-gradient-40-2: #29333A;
+   
+
+    /* Branding */
+    --zcat-branding-blue: #226DB4;
+    --zcat-branding-red: #E42527;
+
+    /* Black */
+    --zcat-black: #1A1B1D;
+
+    /* Pink */
+    --zcat-pink-1: #E417B1;
+    --zcat-pink-2: #C51D9B;
+    --zcat-pink-3: #F8B4E7;
+    --zcat-pink-4: #FFEFFB;
+
+    --zcat-pink-10: #DA57B9;
+    --zcat-pink-20: #CD75B8;
+    --zcat-pink-30: #542F4B;
+    --zcat-pink-40: #2D202A;
+  
+    /* Blue */
+    --zcat-blue-1: #2092EF;
+    --zcat-blue-2: #257EC7;
+    --zcat-blue-3: #A6CBEA;
+    --zcat-blue-4: #E8F5FF;
+
+    --zcat-blue-10: #4A8EFF;
+    --zcat-blue-20: #2E88D1;
+    --zcat-blue-30: #2B4254;
+    --zcat-blue-40: #1B2730;
+
+    /* Purple */
+    --zcat-purple-1: #6E3D9E;
+    --zcat-purple-2: #7449A4;
+    --zcat-purple-3: #BDA3DF;
+    --zcat-purple-4: #F1EAFF;
+
+    --zcat-purple-10: #AD7FE4;
+    --zcat-purple-20: #B985F8;
+    --zcat-purple-30: #563973;
+    --zcat-purple-40: #292130;
+
+}

@@ -1,0 +1,176 @@
+<template tag-name="zcat-sub-header">
+  <div class="zcat-dN">
+    <svg
+      id="zcat-icon-leftArrow"
+      viewBox="0 0 6 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5 1L1.09618 4.78462C1.06582 4.81224 1.04162 4.8456 1.02508 4.88265C1.00853 4.91969 1 4.95963 1 5C1 5.04037 1.00853 5.08031 1.02508 5.11735C1.04162 5.1544 1.06582 5.18776 1.09618 5.21538L5 9"
+        stroke="#4D618A"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+    <svg
+      id="zcat-icon-help"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+        stroke="#2A65F0"
+        stroke-width="1.3"
+        stroke-miterlimit="10"
+      />
+      <path
+        d="M15.2625 9.9738C15.15 11.0988 14.5875 11.7738 13.6875 12.3363C13.4625 12.4488 13.35 12.5613 13.125 12.6738C12.675 13.0113 12.225 13.4613 12.225 14.1363H11.1C11.1 13.3488 11.4375 12.7863 12 12.3363C12.45 11.9988 13.0125 11.6613 13.4625 11.2113C14.25 10.4238 14.25 9.29886 13.4625 8.62386C13.125 8.28636 12.675 8.17383 12 8.17383C11.325 8.17383 10.875 8.28636 10.5375 8.62386C10.2 8.96136 9.975 9.29883 9.8625 9.86133L8.625 9.74886C8.7375 8.84886 9.075 8.1738 9.6375 7.7238C10.2 7.2738 10.9875 7.04883 11.8875 7.04883C12.9 7.04883 13.6875 7.2738 14.25 7.7238C15.0375 8.2863 15.2625 9.1863 15.2625 9.9738ZM11.1 16.7238V15.3739H12.3375V16.7238H11.1Z"
+        fill="#2A65F0"
+      />
+    </svg>
+    <svg
+      id="zcat-icon-three-dots"
+      viewBox="0 0 14 4"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="2" cy="2" r="1" fill="#101F3E" stroke="#101F3E" />
+      <circle cx="7" cy="2" r="1" fill="#101F3E" stroke="#101F3E" />
+      <circle cx="12" cy="2" r="1" fill="#101F3E" stroke="#101F3E" />
+    </svg>
+  </div>
+  <div class="zcat-sub-header {{zcatProp.tabs ? '' : 'border-bottom'}}">
+    <div class="zcat-left-alignment">
+      <%if(zcatProp.left.backArrow){%>
+      <zcat-button
+        self="{{self}}"
+        zcat-prop='
+              {
+                "variant": "ghost",
+                "zcqa": "{{zcatPropleft.backArrow.zcqa}}",
+                "size": "small",
+                "color": "grey",
+                "type": "navigation",
+                "icon": {
+                  "position": "right",
+                  "name": "arrow-left"
+                }, 
+                "callback": {
+                  "name": "{{zcatProp.left.backArrow.callback.name}}"
+                }
+              }'
+      ></zcat-button>
+      <% } %>
+      <div class="zcat-dF zcat-align-center zcat-gap-4">
+        <lyte-svg
+          lyte-if="{{zcatProp.left.title.svg.id}}"
+          lt-prop-path="{{zcatProp.left.title.svg.id}}"
+          lt-prop-class="{{zcatProp.left.title.svg.class}}"
+        ></lyte-svg>
+        <h3 class="zcat-text-18 zcat-color-dark1 zcat-font-600">
+          {{zcatProp.left.title.name}}
+        </h3>
+      </div>
+      <%if(zcatProp.left.yield){%>
+      <lyte-yield yield-name="{{zcatProp.left.yield}}"></lyte-yield>
+      <%}%>
+    </div>
+    <div class="zcat-right-alignment">
+      <%zcatProp.right.list.forEach(function(item,index){%>
+      <%if(item.field_type==='button'){%>
+      <zcat-button self="{{self}}" zcat-prop="{{item}}"></zcat-button>
+      <%}%> <%if(item.field_type==='dropdown'){%>
+      <zcat-dropdown self="{{self}}" zcat-prop="{{item}}"></zcat-dropdown>
+      <%}%> <%if(item.field_type==='three-dots-button'){%>
+      <div
+        id="zcat_subheader_{{item.id}}"
+        class="three-dots-btn {{item.disabled ? 'disabled' : ''}}"
+        data-zcqa="{{item.zcqa}}"
+      >
+        <lyte-svg
+          lt-prop-path="#zcat-icon-three-dots"
+          lt-prop-class="zcat-w14 zcat-h16"
+        ></lyte-svg>
+      </div>
+      <lyte-menu
+        lt-prop-yield="true"
+        lt-prop-position="downAlignLeft"
+        lt-prop-query="#zcat_subheader_{{item.id}}"
+      >
+        <template is="registerYield" yield-name="yield">
+          <lyte-menu-body>
+            <lyte-menu-item
+              lyte-for="{{item.menu}} as list index"
+              data-zcqa="{{list.zcqa}}"
+              onclick="{{action('customLbindForSubHeaderMenu', list.callback.name, list)}}"
+            >
+              <div class="zcat-dF zcat-align-center zcat-gap-6">
+                <lyte-svg
+                  lyte-if="{{list.icon.position === 'left'}}"
+                  lt-prop-path="#{{list.icon.name}}"
+                  lt-prop-class="{{list.icon.class}} zcat-flex-center"
+                ></lyte-svg>
+                <p class="zcat-text-14 zcat-color-dark1">{{list.label}}</p>
+                <lyte-svg
+                  lyte-if="{{list.icon.position === 'right'}}"
+                  lt-prop-path="#{{list.icon.name}}"
+                  lt-prop-class="{{list.icon.class}} zcat-flex-center"
+                ></lyte-svg>
+              </div>
+            </lyte-menu-item>
+          </lyte-menu-body>
+        </template>
+      </lyte-menu>
+      <%}%> <%if(item.yield){%>
+      <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+      <%}%> <%})%> <%if(zcatProp.right.help){%>
+      <zcat-button
+        self="{{self}}"
+        zcat-prop='
+              {
+                "label": "Help",
+                "zcqa": "{{zcatProp.header.right.help.zcqa}}",
+                "variant": "ghost",
+                "size": "small",
+                "color": "primary",
+                "icon": {
+                  "position": "left",
+                  "name": "help"
+                }, 
+                "callback": {
+                  "name": "{{zcatProp.header.right.help.callback.name}}"
+                }
+              }                  
+            '
+      >
+      </zcat-button>
+      <%}%>
+    </div>
+  </div>
+
+  <%if(zcatProp.tabs){%>
+  <div class="zcat-subheader-tabs">
+    <% zcatProp.tabs.list.forEach((item, index) => { %>
+    <go-to
+      lt-prop-route="{{item.route}}"
+      lt-prop-dp="{{item.dynamicParams}}"
+      lt-prop-qp="{{item.queryParams}}"
+      lt-prop-class="zcat-link zcat-text-12"
+      lt-prop-custom
+      onclick="{{action('tabClick', item, zcatProp.tabs.callback.name, zcatProp.tabs.level)}}"
+    >
+      <a
+        data-name="{{item.value}}"
+        data-zcqa="{{item.zcqa}}"
+        data-group="lv_{{zcatProp.tabs.level}}"
+        data-zcqa="{{item.value}}"
+        >{{item.label}}</a
+      >
+    </go-to>
+    <%}) %>
+  </div>
+  <%}%>
+</template>

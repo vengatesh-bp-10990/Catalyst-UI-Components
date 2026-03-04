@@ -1,0 +1,259 @@
+/* .zcat-datepicker-box {
+    border: 1px solid var(--zcat-inputField-border-default);
+    color: var(--zcat-inputField-text-active);
+    padding: 8px 28px 8px 8px;
+    background: var(--zcat-inputField-text-active);
+    font-family: var(--zcat-font-family-primary);
+    font-size: 14px;
+    line-height: 20px;
+    width: 100%;
+    height: 36px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    position: relative;
+    background: transparent;
+    cursor: pointer;
+  }
+  .zcat-datepicker-box:hover {
+    border-color: var(--zcat-inputField-border-hover);
+  }
+  .zcat-datepicker-box.drop-active {
+    border-color: var(--zcat-inputField-border-active);
+  }
+  .zcat-datepicker-box .drop-icon {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+  }
+  .zcat-datepicker-box .lytePopover,
+  .timepicker-drop .lytePopover,
+  .timezone-drop .lytePopover {
+    border: 1px solid var(--zcat-inputField-border-default);
+    border-radius: 5px;
+    box-shadow: none;
+  }
+  .zcat-datepicker-box .lytePopover {
+    width: 180px !important;
+  }
+  .zcat-datepicker-box lyte-popover-header,
+  .zcat-datepicker-box lyte-popover-content,
+  .timezone-drop lyte-popover-header {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    font-family: var(--zcat-font-family-primary);
+  }
+  .zcat-datepicker-box lyte-popover-header {
+    margin: 0 0 10px;
+  }
+  .zcat-datepicker-box lyte-popover-footer {
+    margin: 10px 0 0;
+  }
+  .zcat-datepicker-box lyte-popover-content,
+  .timezone-drop lyte-popover-content {
+    line-height: 16px;
+    font-weight: 400;
+    padding: 0 10px;
+  }
+  .zcat-datepicker-box lyte-popover-content:first-child {
+    padding: 10px 10px 0 !important;
+  }
+  .zcat-datepicker-box lyte-popover-content:last-child {
+    padding: 0 10px 10px !important;
+  }
+  .zcat-datepicker-box lyte-popover-content div {
+    padding: 10px;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .zcat-datepicker-box lyte-popover-content div:hover,
+  .zcat-datepicker-box lyte-popover-footer div:hover {
+    background: var(--zcat-inputField-bg-active);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .active-dropdown {
+    color: var(--zcat-body-text-theme);
+    background-color: var(--zcat-menuList-bg-selected);
+  }
+  .border-bottom {
+    border-bottom: 1px solid var(--zcat-body-border-outerdivider);
+  }
+  .border-top {
+    border-top: 1px solid var(--zcat-body-border-outerdivider);
+  }
+  .rotate-270 {
+    rotate: 270deg;
+  }
+  lyte-modal-freeze {
+    opacity: 0.3 !important;
+  } */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+body:has(.filter-popover .lytePopoverVisible) #datepicker-dropdown zcat-icon svg{
+    rotate: 180deg;
+}
+body:not(:has(.filter-popover .lytePopoverVisible)) #datepicker-dropdown zcat-icon svg {
+    rotate: 0deg; 
+}
+.zcat-overflow-elipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 160px;
+}
+.exe-history-dropdown {
+    padding: 8px;
+    background: var(--zcat-color-white);
+    font-family: var(--zcat-font-family-primary);
+    font-size: 14px;
+    line-height: 20px;
+    height: 36px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    position: relative;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.border-primary {
+    border: 1px solid var(--zcat-inputField-border-default);
+}
+.color-primary {
+    color: var(--zcat-inputField-text-active);
+}
+
+.exe-history-dropdown lyte-popover-header {
+    margin: 0 0 10px;
+}
+.exe-history-dropdown lyte-popover-header, .exe-history-dropdown lyte-popover-content, .exe-history-timezone-drop lyte-popover-header {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    font-family: var(--zcat-font-family-primary);
+}
+.border-bottom {
+    border-bottom: 1px solid var(--zcat-menuList-border-default);
+}
+.exe-history-dropdown lyte-popover-content, .exe-history-timezone-drop lyte-popover-content {
+    line-height: 16px;
+    font-weight: 400;
+    padding: 0 8px;
+    margin-bottom: 2px;
+}
+.exe-history-dropdown lyte-popover-content .div {
+    padding: 8px 4px;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+.zcat-text-14 {
+    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+}
+.exe-history-dropdown .lytePopover, .exe-history-timepicker-drop .lytePopover, .exe-history-timezone-drop .lytePopover {
+    padding: 8px 0;
+    box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+    border-radius: 6px;
+    border: 1px solid var(--zcat-menuList-border-default);
+    overflow: hidden;
+    background: var(--zcat-menuList-bg-default);
+}
+.exe-history-dropdown .lytePopover {
+    width: 180px !important;
+    margin-top: 1px;  /* maybe 2px */
+}
+.timezone-footer zcat-timezone zcat-dropdown lyte-drop-button span.lyteDropdownLabel{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 110px;
+}
+
+.timezone-dropdown lyte-drop-header {
+    padding: 10px 10px 0;
+}
+.timezone-dropdown lyte-drop-body {
+    padding: 6px 6px 4px;
+    display: block;
+    max-height: 210px;
+    overflow-y: auto;
+    position: relative;
+}
+.timezone-dropdown lyte-drop-item {
+    border-radius: 6px;
+    padding: 10px 28px 10px 10px;
+    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+    color: var(--zcat-color-dark1);
+    margin-bottom: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+        position: relative;
+    cursor: pointer;
+    display: block;
+    text-align: left;
+    max-width: 100%;
+    -ms-word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* body:has(.filter-popover .lytePopoverVisible) .lyteCalTableCell.lyteCalToday, */
+body:has(.filter-popover .lytePopoverVisible) .lyteCalTableCell.lyteCalSel.lyteCalToday, 
+body:has(.filter-popover .lytePopoverVisible) .lyteCalTableCell.lyteCalToday.lyteCalSel:hover {
+    color: var(--zcat-datePicker-text-active) !important;
+    border: none;
+    background: transparent;
+}
+.exe-history-dropdown lyte-popover-header{
+    padding: 0 8px 8px;
+    color: var(--zcat-menuList-text-default);
+}
+lyte-popover-footer.timezone-footer{
+  border-top: 1px solid var(--zcat-menuList-border-default);
+  padding-left: 8px;
+}
+.exe-history-dropdown.footerPresent .lytePopover{
+  padding: 8px 0 0;
+}
+.exe-history-dropdown lyte-popover-content .div:hover{
+    background: var(--zcat-inputField-bg-active);
+    border-radius: 4px;
+    cursor: pointer;
+}
+.active-dropdown {
+    color: var(--zcat-body-text-theme);
+    background-color: var(--zcat-menuList-bg-selected);
+}
+lyte-popover-footer.timezone-footer:hover{
+    background: var(--zcat-inputField-bg-hover);
+}
+.exe-history-dropdown.zcat-invalid{
+      border-color: var(--zcat-inputField-border-error) !important;
+    background-color: var(--zcat-inputField-bg-error);
+}
+.error-dateselect{
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    font-family: var(--zcat-font-family-primary);
+    color: var(--zcat-inputField-text-error);
+    padding-top: 2px;
+}
+.filter-popover lyte-popover-content .div.custom-range zcat-icon div {
+  padding: 0;
+}

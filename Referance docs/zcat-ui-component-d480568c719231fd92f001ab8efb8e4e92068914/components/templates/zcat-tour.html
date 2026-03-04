@@ -1,0 +1,69 @@
+<template tag-name="zcat-tour">
+    <lyte-tour class="yourTourClass" >
+        <lyte-tour-hint lt-prop-selector=".myHint1">
+            <lyte-tour-step lyte-for="{{zcatProp.list}} as item index" data-index="{{index}}" lt-prop-position="right" lt-prop-arrow-position="center" lt-prop-selector=".myStep{{index + 1}}">
+                <template is="registerYield" yield-name="lyteTourStep">
+                    <div class="zcat-tour-wraper">
+                        <div class="zcat-dF zcat-direction-column zcat-gap-10">
+                            <h2 class="zcat-tour-head">{{item.head}}</h2>
+                            <p class="zcat-tour-desc">{{item.desc}}</p>
+                        </div>
+
+                        <div class="zcat-dF zcat-align-center zcat-justify-between zcat-gap-14 zcat-pt-16">
+                            <div class="zcat-dF zcat-align-center zcat-gap-6">
+                                <div class="zcat-tour-carosual 
+                                            {{activeStepIndex == index ? 'active' : ''}}" 
+                                    data-value="{{index}}" 
+                                    onclick="{{action('carousalClick',this)}}" 
+                                    lyte-for="{{zcatProp.list}} as item index">
+                                </div>
+
+                                <!-- <div class="zcat-tour-carosual" data-value="{{index}}" onclick="{{action('carousalClick',this)}}" lyte-for="{{zcatProp.list}} as item index"></div> -->
+                            </div>
+                            <div class="zcat-dF zcat-align-center zcat-gap-14">
+                                <zcat-button self = "{{self}}" zcat-prop = {{endTourBtnDetails}}>
+                                </zcat-button> 
+                                <zcat-button lyte-if="{{index != zcatProp.list.length - 1}}" self = "{{self}}" zcat-prop = {{nextTourBtnDetails}}
+                                >
+                                </zcat-button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </lyte-tour-step>
+        </lyte-tour-hint>
+        <!-- <lyte-tour-hint lt-prop-selector=".myHint2">
+            <lyte-tour-step lt-prop-selector=".myStep2">
+                <template is="registerYield" yield-name="lyteTourStep">
+                    <div class="zcat-dF zcat-direction-column zcat-gap-10">
+                        <h2 class="zcat-tour-head">Add a new custom profile 2</h2>
+                        <p class="zcat-tour-desc">Configure custom profiles by including permissions and access types based on your needs, that you can assign to project members.</p>
+                    </div>
+                    <div class="zcat-dF zcat-align-center zcat-justify-right zcat-gap-14 zcat-pt-16">
+                        <lyte-tour-next-button> 
+                            <zcat-button self = "{{self}}" zcat-prop = {{endTourBtnDetails}}>
+                            </zcat-button> 
+                        </lyte-tour-next-button>
+                        <lyte-tour-prev-button>  
+                            <zcat-button self = "{{self}}" zcat-prop = {{nextTourBtnDetails}}>
+                            </zcat-button> 
+                        </lyte-tour-prev-button> 
+                        <zcat-button self = "{{self}}" zcat-prop = {{endTourBtnDetails}}>
+                        </zcat-button> 
+                        <zcat-button self = "{{self}}" zcat-prop = {{nextTourBtnDetails}}>
+                        </zcat-button> 
+                    </div>
+                </template>
+            </lyte-tour-step>
+        </lyte-tour-hint> -->
+    </lyte-tour>
+
+
+    <div class="yourAppDummyTargets">
+        <div class="myHint{{index + 1}}" lyte-for="{{zcatProp.list}} as item index">
+            <div class="myStep{{index + 1}}"> test {{index + 1}}</div>
+        </div>
+    </div>
+
+
+</template>

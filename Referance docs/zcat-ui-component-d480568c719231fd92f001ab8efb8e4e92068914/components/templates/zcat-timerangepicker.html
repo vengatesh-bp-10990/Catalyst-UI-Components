@@ -1,0 +1,50 @@
+<template tag-name="zcat-timerangepicker">
+    <h1 class="zcat-text-14 zcat-color-dark1 zcat-pl-20 zcat-pb-10">
+        {{zcatProp.label}}
+    </h1>
+    <div
+    class="zcat-dF zcat-align-center zcat-gap-16 zcat-pl-20 zcat-pb-20"
+    >
+        <!-- <lyte-time-picker
+            lt-prop-value="{{lbind(startTime)}}"
+            lt-prop-time-format="hh:mm:ss A"
+            lt-prop-button='[{"text":"Apply","purpose":"ok"}]'
+            lt-prop-aria-attributes='{"input":"Time Picker"}'
+            lt-prop-id="dateRangePickerStartTime"
+            lt-prop-interval='{"hour":1,"minute":1}'
+        >
+        </lyte-time-picker> -->
+        <lyte-time-picker
+        data-zcqa="{{zcatProp.zcqa}}"
+        lt-prop-id="dateRangePickerStartTime"
+        lt-prop-class='{{zcatProp.class}} {{zcatProp.size}}'
+        lt-prop-value="{{lbind(startTime)}}"
+        lt-prop-time-format="{{zcatProp.time_format}}"
+        lt-prop-button='[{"text":"{{zcatProp.button_text}}","purpose":"ok"}]'
+        lt-prop-aria-attributes='{"input":"{{zcatProp.label}}"}'
+        lt-prop-interval='{{zcatProp.interval}}'
+        lt-prop-placeholder="{{zcatProp.format}}"
+        ></lyte-time-picker>
+        <div class="zcat-timepicker-splitter"></div>
+        <lyte-time-picker
+        data-zcqa="{{zcatProp.zcqa}}"
+        lt-prop-id="dateRangePickerEndTime"
+        lt-prop-class='{{zcatProp.class}} {{zcatProp.size}}'
+        lt-prop-value="{{lbind(endTime)}}"
+        lt-prop-time-format="{{zcatProp.time_format}}"
+        lt-prop-button='[{"text":"{{zcatProp.button_text}}","purpose":"ok"}]'
+        lt-prop-aria-attributes='{"input":"{{zcatProp.label}}"}'
+        lt-prop-interval='{{zcatProp.interval}}'
+        lt-prop-placeholder="{{zcatProp.format}}"
+        ></lyte-time-picker>
+        <!-- <lyte-time-picker
+            lt-prop-id="dateRangePickerEndTime"
+            lt-prop-value="{{lbind(endTime)}}"
+            lt-prop-time-format="hh:mm:ss A"
+            lt-prop-button='[{"text":"Apply","purpose":"ok"}]'
+            lt-prop-aria-attributes='{"input":"Time Picker"}'
+            lt-prop-interval='{"hour":1,"minute":1}'
+        >
+        </lyte-time-picker> -->
+    </div>
+</template>

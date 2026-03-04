@@ -1,0 +1,177 @@
+<template tag-name="zcat-form">
+  <lyte-modal
+    id="{{zcatProp.id}}"
+    lt-prop-show="false"
+    lt-prop-show-close-button="false"
+    lt-prop-width="{{zcatProp.width ? zcatProp.width : '600px'}}"
+    lt-prop-close-on-escape="true"
+    lt-prop-transition='{"animation":"fadeIn","duration":"0.5"}'
+    lt-prop-allow-multiple="true"
+    on-show="{{method('onAfterModalOpen')}}"
+    on-close="{{method('onModalClose')}}"
+  >
+    <template is="registerYield" yield-name="modal">
+      <form class="{{zcatProp.isFormLoading ? 'modal-loader' : ''}}" onsubmit="{{action('submitForm', event)}}">
+        <lyte-modal-header data-name="{{zcatProp.id}}">
+          <div class="zcat-form-header">
+            <div class="zcat-left-alignment">
+              <div class="zcat-dF zcat-direction-column zcat-gap-4">
+                <h3 class="zcat-text-18 zcat-font-medium zcat-color-dark1">
+                  {{zcatProp.header.left.title.name}}
+                </h3>
+                <p class="zcat-text-12 zcat-color-dark2">{{zcatProp.header.left.desc.name}}</p>
+              </div>
+              <%if(zcatProp.header.left.yield){%>
+              <lyte-yield yield-name="{{zcatProp.left.yield}}"></lyte-yield>
+              <%}%>
+            </div>
+            <div class="zcat-right-alignment">
+              <%zcatProp.header.right.list.forEach(function(item,index){%>
+              <%if(item.field_type==='button'){%>
+              <zcat-button self="{{self}}" zcat-prop="{{item}}"></zcat-button>
+              <%}%> <%if(item.field_type==='dropdown'){%>
+              <zcat-dropdown
+                self="{{self}}"
+                zcat-prop="{{item}}"
+              ></zcat-dropdown>
+              <%}%> <%if(item.field_type==='three-dots-button'){%>
+              <div id="zcat_formheader_{{item.id}}" class="three-dots-btn">
+                <lyte-svg
+                  lt-prop-path="#zcat-icon-three-dots"
+                  lt-prop-class="zcat-w14 zcat-h16 zcat-dF"
+                ></lyte-svg>
+              </div>
+              <lyte-menu
+                lt-prop-yield="true"
+                lt-prop-position="downAlignLeft"
+                lt-prop-query="#zcat_formheader_{{item.id}}"
+              >
+                <template is="registerYield" yield-name="yield">
+                  <lyte-menu-body>
+                    <lyte-menu-item
+                      lyte-for="{{item.menu}} as list index"
+                      onclick="{{action('customLbindForSubHeaderMenu', list.callback.name, list)}}"
+                    >
+                      <div class="zcat-dF zcat-align-center zcat-gap-6">
+                        <lyte-svg
+                          lyte-if="{{list.icon.position === 'left'}}"
+                          lt-prop-path="#{{list.icon.name}}"
+                          lt-prop-class="{{list.icon.class}} zcat-flex-center"
+                        ></lyte-svg>
+                        <p class="zcat-text-14 zcat-color-dark1">
+                          {{list.label}}
+                        </p>
+                        <lyte-svg
+                          lyte-if="{{list.icon.position === 'right'}}"
+                          lt-prop-path="#{{list.icon.name}}"
+                          lt-prop-class="{{list.icon.class}} zcat-flex-center"
+                        ></lyte-svg>
+                      </div>
+                    </lyte-menu-item>
+                  </lyte-menu-body>
+                </template>
+              </lyte-menu>
+              <%}%> <%if(item.yield){%>
+              <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+              <%}%> <%})%>
+            </div>
+          </div>
+
+          <%if(zcatProp.header.tabs){%>
+          <div class="zcat-form-header-tabs">
+            <% zcatProp.header.tabs.list.forEach((item, index) => { %>
+            <div
+              class="{{zcatProp.currentPage == index ? 'active-tab' : ''}}"
+              onclick="{{action('customLbindForFormHeaderTab', item, index)}}"
+            >
+              {{item.label}}
+            </div>
+            <%}) %>
+          </div>
+          <%}%>
+        </lyte-modal-header>
+        <lyte-modal-content data-name="{{zcatProp.id}}">
+          <%if(hasPagination){%>
+            <%zcatProp.body[zcatProp.currentPage].forEach((item)=>{%> 
+              <%if(item.yield){%>
+                <lyte-yield error-prop="{{zcatProp.error}}" self="{{self}}" yield-name="{{item.yield}}" data="{{item}}" style="{{item.yield_style}}"></lyte-yield>
+              <%}else if(item.type === 'input' || item.type === 'textarea' || item.type === 'date' || item.type === 'password'){%>
+                <zcat-input error-prop="{{zcatProp.error}}" self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-input>
+              <%}else if(item.type === 'radio'){%>
+                <zcat-radio self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-radio>
+              <%}else if(item.type === 'checkbox'){%>
+                <zcat-checkbox self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-checkbox>
+              <%}else if(item.type === 'dropdown'){%>
+                <zcat-dropdown error-prop="{{zcatProp.error}}" self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-dropdown>
+              <%}else if(item.type === 'fileupload'){%>
+                <zcat-fileupload error-prop="{{zcatProp.error}}" self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-fileupload>
+              <%}else if(item.type === 'linkfield'){%>
+                <zcat-link-field self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-link-field>
+              <%}else if(item.type === 'text'){%>
+                <h3 lyte-if="{{item.title.name.length}}" class="{{item.title.class ? item.title.class : 'zcat-text-16 zcat-color-dark1'}}">{{item.title.name}}</h3>
+                <p lyte-if="{{item.desc.name}}" class="{{item.desc.class ? item.desc.class : 'zcat-text-14 zcat-color-dark2'}}">{{item.desc.name}}</p>
+              <%}%> 
+            <%})%> 
+          <%}else{%> 
+            <%zcatProp.body.forEach((item)=> {%>
+              <%if(item.yield){%>
+                <lyte-yield error-prop="{{zcatProp.error}}" self="{{self}}" yield-name="{{item.yield}}" data="{{item}}" style="{{item.yield_style}}"></lyte-yield>
+              <%}else if(item.type === 'input' || item.type === 'textarea' || item.type === 'date' || item.type === 'password'){%>
+                <zcat-input error-prop="{{zcatProp.error}}" self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-input>
+              <%}else if(item.type === 'radio'){%>
+                <zcat-radio self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-radio>
+              <%}else if(item.type === 'checkbox'){%>
+                <zcat-checkbox self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-checkbox>
+              <%}else if(item.type === 'dropdown'){%>
+                <zcat-dropdown error-prop="{{zcatProp.error}}" self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-dropdown>
+              <%}else if(item.type === 'fileupload'){%>
+                <zcat-fileupload error-prop="{{zcatProp.error}}" self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-fileupload>
+              <%}else if(item.type === 'linkfield'){%>
+                <zcat-link-field self="{{self}}" zcat-prop="{{item}}" style="{{item.yield_style}}"></zcat-link-field>
+              <%}else if(item.type === 'text'){%>
+                <h3 lyte-if="{{item.title.name.length}}" class="{{item.title.class ? item.title.class : 'zcat-text-16 zcat-color-dark1'}}">{{item.title.name}}</h3>
+                <p lyte-if="{{item.desc.name}}" class="{{item.desc.class ? item.desc.class : 'zcat-text-14 zcat-color-dark2'}}">{{item.desc.name}}</p>
+              <%}%> 
+            <%})%> 
+          <%}%>
+        </lyte-modal-content>
+        <lyte-modal-footer data-name="{{zcatProp.id}}" class="zcat-form-footer">
+          <div class="zcat-left-alignment">
+            <!-- <% if(!zcatProp.footer.left.yield) { %>
+            <zcat-button
+              lyte-for="{{zcatProp.footer.left}} as item index"
+              lyte-if="{{hasPagination ? (item.page>=0 ? (item.page == zcatProp.currentPage ? true : false) : true) : true}}"
+              self="{{self}}"
+              zcat-prop="{{item}}"
+            ></zcat-button>
+            <% } %>
+            <% if(zcatProp.footer.left.yield) { %>
+              <lyte-yield yield-name="{{zcatProp.footer.left.yield}}"></lyte-yield>
+            <% } %> -->
+            <% if(zcatProp.footer.left) { %>
+              <% zcatProp.footer.left.forEach((item) => { %>
+                <% if(!item.yield) { %>
+                  <zcat-button 
+                  lyte-if="{{hasPagination ? (item.page>=0 ? (item.page == zcatProp.currentPage ? true : false) : true) : true}}"
+                  self="{{self}}"
+                  zcat-prop="{{item}}"></zcat-button>
+                <% } %>
+                <% if(item.yield) { %>
+                  <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+                <% } %>
+              <% }); %>
+            <% } %>
+          </div>
+          <div class="zcat-right-alignment">
+            <zcat-button
+              lyte-for="{{zcatProp.footer.right}} as item index"
+              lyte-if="{{hasPagination ? (item.page>=0 ? (item.page == zcatProp.currentPage ? true : false) : true) : true}}"
+              self="{{self}}"
+              zcat-prop="{{item}}"
+            ></zcat-button>
+          </div>
+        </lyte-modal-footer>
+      </form>
+    </template>
+  </lyte-modal>
+</template>

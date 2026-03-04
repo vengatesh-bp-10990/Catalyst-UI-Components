@@ -1,0 +1,184 @@
+.lyteMessageBoxContent {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+  color: var(--zcat-color-dark1);
+  background-color: var(--zcat-body-container-bg);
+}
+.lyteMessageBox {
+  padding: 0;
+  z-index: 1080;
+  background: var(--zcat-color-white);
+  border-radius: 6px;
+  color: var(--zcat-color-dark1);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  transition: 0.3s all ease;
+  display: block;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+  position: absolute;
+  min-width: 200px;
+  min-height: auto;
+  box-shadow: var(--zcat-shadow-dark-all);
+  overflow: hidden;
+  border: 1px solid var(--zcat-toast-border-default);
+  /* max-width: 80%;
+  margin: 0 10%; */
+}
+.lyteMessageBox.successMessageIcon,
+.lyteMessageBox.errorMessageIcon,
+.lyteMessageBox.warningMessageIcon,
+.lyteMessageBox.infoMessageIcon {
+  border: 1px solid var(--zcat-body-border-outerdivider);
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  border: 1px solid var(--zcat-toast-border-default);
+  background: var(--zcat-toast-bg-default);
+  box-shadow: 0 0 6px 0 var(--zcat-shadow-bg-default);
+}
+.lyteMessageBox .lyteMessageBoxSymbol {
+  height: 100%;
+  display: inline-block;
+  position: absolute;
+  width: 4px;
+  height: 70%;
+  border-radius: 0 10px 10px 0;
+}
+.lyteMessageBox.successMessageIcon .lyteMessageBoxSymbol {
+  background: var(--zcat-toast-icon-line-success);
+}
+.lyteMessageBox.errorMessageIcon .lyteMessageBoxSymbol {
+  background: var(--zcat-toast-icon-line-danger);
+}
+.lyteMessageBox.warningMessageIcon .lyteMessageBoxSymbol {
+  background: var(--zcat-toast-icon-line-warning);
+}
+.lyteMessageBox.infoMessageIcon .lyteMessageBoxSymbol {
+  background: var(--zcat-toast-icon-line-info);
+}
+.lyteMessageBox .lyteMessageBoxSymbol::before {
+  content: "";
+  background: none;
+  position: absolute;
+  display: inline-block;
+  width: 22px;
+  height: 20px;
+  top: calc(50% - 10px);
+  left: calc(50% - 11px);
+}
+.lyteMessageBox.successMessageIcon .lyteMessageBoxSymbol::before {
+  background-position: -287px -58px;
+}
+.lyteMessageBox.errorMessageIcon .lyteMessageBoxSymbol::before {
+  background-position: -317px -60px;
+  width: 24px;
+  left: calc(50% - 12px);
+}
+.lyteMessageBox.warningMessageIcon .lyteMessageBoxSymbol::before {
+  background-position: -347px -58px;
+}
+.lyteMessageBox.infoMessageIcon .lyteMessageBoxSymbol::before {
+  background-position: -377px -58px;
+}
+.lyteMessageBox .lyteMessageBoxContent {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+  padding: 14px;
+  max-width: 674px;
+}
+.lyteMessageBox .lyteMessageBoxClose {
+  background: none;
+  background-position: center;
+  top: calc(50% - 10px);
+  width: 14px;
+  height: 11px;
+  display: inline-block;
+  position: absolute;
+  cursor: pointer;
+  right: 15px;
+}
+.lyteMessageBoxFadeIn {
+  animation-name: lyteMsgBoxFadeIn;
+}
+@keyframes lyteMsgBoxFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.lyteMessageBoxFadeOut {
+  animation-name: lyteMsgBoxFadeOut;
+}
+@keyframes lyteMsgBoxFadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Toaster */
+.zcat-toast-msg-block {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.zcat-toast-header {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-primary);
+  width: 450px;
+  padding-left: 10px;
+}
+
+.errorMessageIcon .zcat-toast-msg {
+color: var(--zcat-alerts-danger-text-primary);
+/* background-color: var( --zcat-alerts-danger-bg); */
+}
+
+.zcat-toast-msg {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-alerts-warning-text-secondary);
+  margin: 0;
+  width: 450px;
+  padding-left: 10px;
+}
+.zcat-toast-undo {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-color-primary);
+  margin-left: 30px;
+  cursor: pointer;
+}
+.zcat-toast-close {
+  margin: 0 0 0 20px;
+  cursor: pointer;
+}
+.zcat-icon-toast-success {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' fill='none'%3E%3Cpath d='M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z' fill='%2329B360' stroke='%2329B360' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 12L9 14L14.5 9' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  width: 22px;
+  height: 22px;
+}
+.zcat-icon-toast-error {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' fill='none'%3E%3Cpath d='M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z' fill='%23E22020' stroke='%23E22020' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14.5 7.5L7.5 14.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.5 7.5L14.5 14.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  width: 25px;
+  height: 22px;
+}
+.zcat-icon-toast-warning {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' fill='none'%3E%3Cpath d='M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z' fill='%23FFCF54' stroke='%23FFCF54' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M11.0712 14.5703C10.8593 14.5703 10.6521 14.6332 10.4759 14.7509C10.2997 14.8686 10.1624 15.0359 10.0813 15.2317C10.0002 15.4275 9.979 15.6429 10.0203 15.8508C10.0617 16.0586 10.1637 16.2495 10.3136 16.3994C10.4634 16.5492 10.6543 16.6512 10.8622 16.6926C11.07 16.7339 11.2854 16.7127 11.4812 16.6316C11.677 16.5505 11.8443 16.4132 11.962 16.237C12.0798 16.0608 12.1426 15.8536 12.1426 15.6417C12.1389 15.3587 12.0248 15.0884 11.8247 14.8882C11.6246 14.6881 11.3542 14.574 11.0712 14.5703Z' fill='white'/%3E%3Cpath d='M11 6.51172V9.77702V12.226' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  width: 22px;
+  height: 22px;
+}
+.zcat-icon-toast-info {
+  background-image: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 22 22' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z' fill='%232a65f0' stroke='%232a65f0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M11.0712 14.5703C10.8593 14.5703 10.6521 14.6332 10.4759 14.7509C10.2997 14.8686 10.1624 15.0359 10.0813 15.2317C10.0002 15.4275 9.979 15.6429 10.0203 15.8508C10.0617 16.0586 10.1637 16.2495 10.3136 16.3994C10.4634 16.5492 10.6543 16.6512 10.8622 16.6926C11.07 16.7339 11.2854 16.7127 11.4812 16.6316C11.677 16.5505 11.8443 16.4132 11.962 16.237C12.0798 16.0608 12.1426 15.8536 12.1426 15.6417C12.1389 15.3587 12.0248 15.0884 11.8247 14.8882C11.6246 14.6881 11.3542 14.574 11.0712 14.5703Z' fill='white'/%3E%3Cpath d='M11 6.51172V9.77702V12.226' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  width: 22px;
+  height: 22px;
+  transform: rotate(180deg);
+}
+.zcat-icon-toast-close {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  width: 14px;
+  height: 14px;
+}

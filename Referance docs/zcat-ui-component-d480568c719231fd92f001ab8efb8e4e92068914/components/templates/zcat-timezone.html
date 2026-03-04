@@ -1,0 +1,168 @@
+<template tag-name="zcat-timezone" class="zcat-timezone-dropdown">
+
+    <zcat-dropdown
+     self = "{{self}}" zcat-prop = "{{zcatProp}}"
+     key="{{zcatProp.key}}"
+     feature-obj="{{timezone}}"
+      on-option-selected = "{{method('onTimezoneSelected')}}" 
+     >
+    </zcat-dropdown>
+
+
+    <!-- <zcat-dropdown onclick="{{action('onTimezoneSelected')}}"
+     self = "{{self}}" zcat-prop = "{{dropdownObj}}"
+     key="{{dropdownObj.key}}"
+     feature-obj="{{clientObj}}"
+     
+     >
+    </zcat-dropdown> -->
+
+  <!-- <lyte-popover
+    on-before-close='{{method("closepop")}}'
+    lt-prop-wrapper-class="timepicker-drop"
+    id="timezonepicker-dropdown-{{placement}}"
+    lt-prop-origin-elem="#zcat_timezone_{{placement}}"
+    lt-prop-allow-multiple="true"
+    lt-prop-duration="400"
+    lt-prop-header-padding="12px 14px"
+    lt-prop-content-padding="10px"
+    lt-prop-footer-padding="15px 30px"
+    lt-prop-window-spacing='{"top":"30","left":"30","bottom":"30","right":"30"}'
+    lt-prop-freeze="false"
+    lt-prop-type="box"
+    lt-prop-show-close-button="false"
+  >
+    <template is="registerYield" yield-name="popover">
+      <lyte-popover-header
+        class="border-bottom zcat-text-14 zcat-color-dark1 zcat-font-600"
+      >
+        Time Zone View
+      </lyte-popover-header>
+      <lyte-popover-content class="zcat-dF zcat-align-center zcat-pb-10">
+        <div class="zcat-h36">
+          <lyte-dropdown
+            data-name="{{zcatPropName}}"
+            lt-prop-freeze="false"
+            id="dropdownTimezone{{placement}}"
+            lt-prop-position="{{zcatPropPosition ? zcatPropPosition : 'down'}}"
+            on-show="{{method('changeTimezone')}}"
+            on-hide="{{method('onCloseTimezoneDrop')}}"
+            on-change="{{method('onChangeTimeZone')}}"
+            lt-prop-selected="{{if(ifEquals(selectedTimezone,undefined), projectTimezone, selectedTimezone)}}"
+            class="mr-16"
+          >
+            <template is="registerYield" yield-name="yield">
+              <lyte-drop-box id="timezoneSearch">
+                <%if(!showAllTimezones){%>
+                <lyte-drop-body>
+                  <lyte-drop-item
+                    lyte-for="{{preferedTimezone}} as item index"
+                    data-value="{{item.actual_value}}"
+                    >{{item.display_value}}</lyte-drop-item
+                  >
+                </lyte-drop-body>
+
+                <div
+                  onclick="{{action('viewAllTimezones')}}"
+                  class="border-top zcat-p-10 zcat-dF zcat-align-center zcat-justify-center zcat-color-primary zcat-mt-5 zcat-cP zcat-text-14 font-family-primary"
+                >
+                  View all time zones
+                </div>
+
+                <%}else{%>
+                <lyte-drop-header>
+                  <lyte-search
+                    lt-prop-query-selector='{"scope":"#timezoneSearch","search":"lyte-drop-item"}'
+                    lt-prop-placeholder="Search"
+                    lt-prop='{"closeIcon" : true}'
+                    lt-prop-maxlength="250"
+                    on-search="{{method('searchTimezone')}}"
+                  ></lyte-search>
+                </lyte-drop-header>
+                <lyte-drop-body>
+                  <lyte-drop-item
+                    lyte-for="{{allTimezones}} as item index"
+                    data-value="{{item.actual_value}}"
+                    >{{item.display_value}}</lyte-drop-item
+                  >
+                </lyte-drop-body>
+                <%}%>
+                <p lyte-if="{{hasShowNoResult}}" class="no-result-found">
+                  No Result Found
+                </p>
+              </lyte-drop-box>
+            </template>
+          </lyte-dropdown>
+        </div>
+      </lyte-popover-content>
+    </template>
+  </lyte-popover>
+  <div
+    lyte-if="{{placement}}"
+    class="zcat-pl-10 zcat-h36 zcat-dF zcat-align-center zcat-gap-4 zcat-cP"
+    id="zcat_timezone_{{placement}}"
+    onclick="{{action('showpoptimezonedropdown')}}"
+  >
+    <lyte-svg
+      lt-prop-path="#zcat-icon-timezone"
+      lt-prop-class="zcat-dF zcat-w14 zcat-h14"
+    ></lyte-svg>
+    <lyte-text
+      style="width: auto; max-width: 100%"
+      class="zcat-text-14 zcat-color-primary zcat-font-family-primary"
+      lt-prop-value="{{selectedTimezone}}"
+      lt-prop-tooltip-config='{ "position" : "bottom" }'
+    >
+    </lyte-text>
+    <lyte-svg
+      lt-prop-path="#zcat-icon-downArrow"
+      lt-prop-class="zcat-dF zcat-w8 zcat-h6 zcat-ml-2"
+    ></lyte-svg>
+  </div> -->
+
+  <!-- <div class="zcat-h36">
+    <lyte-dropdown
+      id="dropdownTimezone"
+      lt-prop-button-class="lyteExsm textDrpdwn"
+      lt-prop-selected="{{lbind(selectedTimezone)}}"
+      lt-prop-freeze="false"
+      style="width: 250px"
+      on-show="{{method('changeTimezone')}}"
+    >
+      <template is="registerYield" yield-name="yield">
+        <lyte-drop-box id="timezoneSearch">
+        <%if(!showAllTimezones){%>
+          <lyte-drop-body>
+            <lyte-drop-item
+              lyte-for="{{preferedTimezone}} as item index"
+              data-value="{{item.actual_value}}"
+              >{{item.display_value}}</lyte-drop-item
+            >
+          </lyte-drop-body>
+          <div
+            class="dropdown-menu-btn lyteSm"
+            onclick="{{action('viewAllTimezones')}}"
+          >
+            View all time zones
+          </div>
+          <%}else{%>
+          <lyte-drop-header>
+            <lyte-search
+              lt-prop-query-selector='{"scope":"#timezoneSearch","search":"lyte-drop-item"}'
+              lt-prop-placeholder="Search"
+              lt-prop='{"closeIcon" : true}'
+            ></lyte-search>
+          </lyte-drop-header>
+          <lyte-drop-body>
+            <lyte-drop-item
+              lyte-for="{{allTimezones}} as item index"
+              data-value="{{item.actual_value}}"
+              >{{item.display_value}}</lyte-drop-item
+            >
+          </lyte-drop-body>
+          <%}%>
+        </lyte-drop-box>
+      </template>
+    </lyte-dropdown>
+  </div> -->
+</template>

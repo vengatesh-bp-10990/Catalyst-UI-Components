@@ -1,0 +1,567 @@
+lyte-input * {
+  box-sizing: border-box;
+}
+lyte-input {
+  position: relative;
+  display: inline-flex;
+  font-family: var(--zcat-font-family-primary);
+}
+lyte-input::after {
+  content: attr(error-message);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-error);
+  padding-top: 2px;
+}
+lyte-number .lyteLabel,
+lyte-input .lyteLabel {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  font-family: var(--zcat-font-family-primary);
+  font-weight: 600;
+  color: var(--zcat-inputField-text-label);
+}
+.lyteInputDisabled .lyteLabel {
+  color: var(--zcat-inputField-text-disabled);
+}
+lyte-input .lyteField {
+  flex-grow: 1;
+}
+lyte-input.vertical {
+  width: 100%;
+}
+lyte-input.vertical .lyteLabel {
+  margin-bottom: 4px;
+}
+.lyteInputBox .lyteField input,
+.lyteInputBox .lyteField textarea { 
+  padding: 8px;
+  /* height: 36px; */
+  height: 34px;
+  background: var( --zcat-inputField-bg-default);
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-active);
+  border-radius: 6px;
+  resize: none;  
+  border: var(--zcat-inputField-border-default);
+}
+.lyteInputBox .lyteField {
+  border: 1px solid var(--zcat-inputField-border-default);
+  background: var(--zcat-inputField-bg-default);
+  border-radius: 6px;
+  position: relative;
+}
+
+.lyteInputBox.lyteInputDisabled .lyteField {
+  border: 1px solid var(--zcat-inputField-border-disabled) !important;
+}
+/* 
+.lyteInputBox.lyteInputDisabled .lyteField:hover {
+  /* border: 1px solid var(--zcat-inputField-border-disabled);
+} */
+.lyteInputBox .lyteField:hover {
+  border-color: var(--zcat-inputField-border-hover);
+}
+.lyteInputBox.lyteInputFocus .lyteField {
+  border-width: 1px;
+  border-color: var(--zcat-inputField-border-active);
+  /* box-shadow: var(--zcat-shadow-light-all); */
+  border-radius: 6px;
+}
+.zcat-input-mandatory.lyteInputBox .lyteField::before {
+  content: '';
+  position: absolute;
+  left: -0.758px;
+  top: 0px;
+  bottom: 0;
+  width: 3px;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  background-color: var(--zcat-inputField-border-error);
+}
+lyte-input .ltIconShow.lyteField,
+lyte-input[lt-prop-type='search'] .lyteField {
+  position: relative;
+}
+lyte-input[lt-prop-type='textarea'] .lyteField {
+  position: relative;
+  overflow: hidden;
+}
+lyte-input textarea {
+  min-height: 70px;
+  resize: none;
+}
+.lyteTextareaNoResize textarea {
+  resize: none;
+}
+lyte-input input::placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+lyte-input input:-ms-input-placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+lyte-input input::-ms-input-placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+lyte-input input::-ms-clear {
+  display: none;
+}
+lyte-input textarea::placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+lyte-input textarea:-ms-input-placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+lyte-input textarea::-ms-input-placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+
+.lyteInput.vertical[lt-prop-type='search'] input,
+lyte-input[lt-prop-type='search'] input { 
+  /* padding: 8px 30px; */
+  font-family: var(--zcat-font-family-primary);
+  background: var(--zcat-inputField-bg-default);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-active);
+  border: 1px solid var(--zcat-inputField-border-default);
+  border-radius: 6px;
+  height: 36px;
+  /* padding: 8px 30px 8px 26px; */
+  padding: 8px 24px 8px 26px;
+}
+.lyteInput.vertical[lt-prop-type='search'] input:hover,
+lyte-input[lt-prop-type='search'] input:hover {
+  border-color: var(--zcat-inputField-border-hover);
+  background: var(--zcat-inputField-bg-hover);
+}
+.lyteInput.vertical[lt-prop-type='search']:hover,
+lyte-input[lt-prop-type='search']:hover {
+  border-color: var(--zcat-inputField-border-hover);
+  background: var(--zcat-inputField-bg-hover);
+  border-radius: 6px;
+}
+.lyteInput.vertical[lt-prop-type='search'].lyteInputFocus input,
+lyte-input[lt-prop-type='search'].lyteInputFocus input {
+  border-color: var(--zcat-inputField-border-active);
+  box-shadow: var(--zcat-shadow-light-all);
+}
+lyte-search lyte-input[lt-prop-type='search'] .lyteField::before,
+lyte-input[lt-prop-type='search'].lyteComboboxDropboxSearch .lyteField::before {
+  left: 1px;
+}
+lyte-input[lt-prop-type='search'] .searchIcon {
+  position: absolute;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Ccircle cx='6.00889' cy='6.00901' r='4.72325' stroke='%237988A8' stroke-width='1.5'/%3E%3Cpath d='M9.55127 9.55139L13.0937 13.0938' stroke='%237988A8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  width: 14px;
+  height: 14px;
+  left: 8px;
+  top: calc(50% - 8px);
+  opacity: 0.6;
+  margin: 0;
+}
+.lyteInput .lyteField,
+.lyteInput .lyteField:hover,
+.lyteInput.lyteInputFocus .lyteField {
+  border-bottom: none;
+}
+lyte-input .inputCloseIcon::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: -2px;
+  width: 10px;
+  height: 10px;
+  transform: scale(1);
+}
+.zcat-invalid .lyteField,
+.zcat-invalid .lyteField:hover,
+.zcat-invalid .lyteField:focus,
+.zcat-invalid .lyteInputBox.lyteInputFocus .lyteField,
+.zcat-invalid .lyteInputBox.lyteInputFocus:focus .lyteField {
+  border-color: var(--zcat-inputField-border-error) !important;
+}
+.zcat-invalid .lyteField input{
+  background: var(--zcat-inputField-bg-error) !important;
+}
+.zcat-invalid .lyteField::before,
+.zcat-invalid .lyteField:hover::before,
+.zcat-invalid .lyteField:focus::before {
+  background-color: var(--zcat-inputField-bg-error);
+}
+
+/* Input Sizes */
+
+.lyteInputBox .lyteField input.lyteSm {
+  padding: 8px 6px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  height: 28px;
+}
+
+.lyteInputBox .lyteField input.lyteExsm {
+  padding: 8px 4px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+  height: 24px;
+  font-size: 12px;
+}
+
+.lyteInput.vertical[lt-prop-type='search'].lyteInputBox .lyteField input,
+lyte-input[lt-prop-type='search'].lyteInputBox .lyteField input {
+  border: none;
+  padding: 7px 30px;
+}
+lyte-input input:disabled, lyte-input textarea:disabled,
+lyte-input input:disabled:hover, lyte-input textarea:disabled:hover {
+  background: var(--zcat-inputField-bg-disabled) !important;
+  color: var(--zcat-inputField-text-disabled) !important;
+  cursor: not-allowed;
+  border-color: var(--zcat-inputField-border-disabled) !important;
+  box-shadow: none;
+}
+
+/* Input Edit */
+.zcat-edit-input-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--zcat-body-text-primary);
+}
+.zcat-edit-input-box:hover .zcat-edit-input-icon {
+  display: flex;
+}
+.zcat-close-edit-input-icon,
+.zcat-update-edit-input-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: var(--zcat-btn-grey-bg-default);
+  border-radius: 50%;
+}
+.zcat-edit-input-icon {
+  position: relative;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: var(--zcat-btn-grey-bg-hover);
+  border-radius: 50%;
+}
+.zcat-edit-input-icon::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background-image: url('data:image/svg+xml,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.45631 7.80584L1.03771 10.736C1.01886 10.868 1.13199 10.9811 1.26399 10.9623L4.19414 10.5437M1.45631 7.80584L7.84459 1.41751M1.45631 7.80584L4.19414 10.5437M7.84459 1.41751C9.66982 0.0487219 11.9513 2.33022 10.5824 4.15537M7.84459 1.41751L10.5824 4.15537M10.5824 4.15537L4.19414 10.5437" stroke="%23101f3e"/></svg>');
+  width: 12px;
+  height: 12px;
+}
+.zcat-close-edit-input-icon::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  background-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 3.5L3.5 10.5" stroke="%23e22020" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 3.5L10.5 10.5" stroke="%23e22020" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 14px;
+  height: 14px;
+}
+.zcat-update-edit-input-icon::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  background-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.6668 3.5L5.25016 9.91667L2.3335 7" stroke="%2329b260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 14px;
+  height: 14px;
+}
+.zcat-close-edit-input-icon:hover,
+.zcat-update-edit-input-icon:hover,
+.zcat-edit-input-icon:hover {
+  background-color: var(--zcat-btn-grey-bg-hover);
+  cursor: pointer;
+}
+
+/* Password eye icon */
+.lyteInputWithPasswordToggleButton.lyteInputBox input,
+.lyteInputWithPasswordToggleButton.lyteInput input {
+  padding-right: 34px !important;
+}
+.lyteInputPasswordToggleIcon {
+  position: absolute;
+  right: 0;
+  top: calc(50%);
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  background-color: var(--zcat-inputField-bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+}
+.lyteInputPasswordToggleIcon.lyteInputHidePasswordIcon::after {
+  background-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.583496 7.00065C0.583496 7.00065 2.91683 2.33398 7.00016 2.33398C11.0835 2.33398 13.4168 7.00065 13.4168 7.00065C13.4168 7.00065 11.0835 11.6673 7.00016 11.6673C2.91683 11.6673 0.583496 7.00065 0.583496 7.00065Z" stroke="%237988a8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7 8.75C7.9665 8.75 8.75 7.9665 8.75 7C8.75 6.0335 7.9665 5.25 7 5.25C6.0335 5.25 5.25 6.0335 5.25 7C5.25 7.9665 6.0335 8.75 7 8.75Z" stroke="%237988a8" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
+  width: 14px;
+  height: 14px;
+  background-position: 0;
+  opacity: 1;
+}
+.lyteInputBox
+  .lyteField:hover
+  .lyteInputPasswordToggleIcon.lyteInputHidePasswordIcon::after {
+  background-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.583496 7.00065C0.583496 7.00065 2.91683 2.33398 7.00016 2.33398C11.0835 2.33398 13.4168 7.00065 13.4168 7.00065C13.4168 7.00065 11.0835 11.6673 7.00016 11.6673C2.91683 11.6673 0.583496 7.00065 0.583496 7.00065Z" stroke="%23101f3e" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7 8.75C7.9665 8.75 8.75 7.9665 8.75 7C8.75 6.0335 7.9665 5.25 7 5.25C6.0335 5.25 5.25 6.0335 5.25 7C5.25 7.9665 6.0335 8.75 7 8.75Z" stroke="%23101f3e" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
+}
+.lyteInputBox.lyteInputFocus
+  .lyteField
+  .lyteInputPasswordToggleIcon.lyteInputHidePasswordIcon::after {
+  background-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.583496 7.00065C0.583496 7.00065 2.91683 2.33398 7.00016 2.33398C11.0835 2.33398 13.4168 7.00065 13.4168 7.00065C13.4168 7.00065 11.0835 11.6673 7.00016 11.6673C2.91683 11.6673 0.583496 7.00065 0.583496 7.00065Z" stroke="%23255AD8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7 8.75C7.9665 8.75 8.75 7.9665 8.75 7C8.75 6.0335 7.9665 5.25 7 5.25C6.0335 5.25 5.25 6.0335 5.25 7C5.25 7.9665 6.0335 8.75 7 8.75Z" stroke="%23255AD8" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
+}
+.lyteInputBox.lyteInputFocus
+  .lyteField:hover
+  .lyteInputPasswordToggleIcon.lyteInputHidePasswordIcon::after {
+  background-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.583496 7.00065C0.583496 7.00065 2.91683 2.33398 7.00016 2.33398C11.0835 2.33398 13.4168 7.00065 13.4168 7.00065C13.4168 7.00065 11.0835 11.6673 7.00016 11.6673C2.91683 11.6673 0.583496 7.00065 0.583496 7.00065Z" stroke="%23255AD8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7 8.75C7.9665 8.75 8.75 7.9665 8.75 7C8.75 6.0335 7.9665 5.25 7 5.25C6.0335 5.25 5.25 6.0335 5.25 7C5.25 7.9665 6.0335 8.75 7 8.75Z" stroke="%23255AD8" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
+}
+
+.lyteInputPasswordToggleIcon::after {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none"><g clip-path="url(%23clip0_2413_782)"><path d="M10.4652 10.4657C9.46801 11.2258 8.25381 11.6468 7.00016 11.6673C2.91683 11.6673 0.583496 7.00067 0.583496 7.00067C1.3091 5.64844 2.31549 4.46702 3.53516 3.53567M5.77516 2.474C6.17669 2.38001 6.58778 2.33303 7.00016 2.334C11.0835 2.334 13.4168 7.00067 13.4168 7.00067C13.0627 7.6631 12.6404 8.28676 12.1568 8.8615M8.23683 8.23733C8.07662 8.40927 7.88342 8.54717 7.66875 8.64282C7.45409 8.73847 7.22236 8.7899 6.98738 8.79405C6.75241 8.79819 6.51901 8.75497 6.3011 8.66695C6.0832 8.57894 5.88525 8.44793 5.71907 8.28175C5.5529 8.11558 5.42189 7.91763 5.33388 7.69973C5.24586 7.48182 5.20264 7.24842 5.20678 7.01345C5.21093 6.77847 5.26236 6.54674 5.35801 6.33208C5.45366 6.11741 5.59156 5.92421 5.7635 5.764" stroke="%237988a8" stroke-linecap="round" stroke-linejoin="round"/><path d="M0.583496 0.583984L13.4168 13.4173" stroke="%237988a8" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2413_782"><rect width="14" height="14" fill="white"/></clipPath></defs></svg>');
+  width: 14px;
+  height: 14px;
+  background-position: 0;
+  opacity: 1;
+}
+.lyteInputBox.lyteInputFocus .lyteField .lyteInputPasswordToggleIcon::after {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none"><g clip-path="url(%23clip0_2413_782)"><path d="M10.4652 10.4657C9.46801 11.2258 8.25381 11.6468 7.00016 11.6673C2.91683 11.6673 0.583496 7.00067 0.583496 7.00067C1.3091 5.64844 2.31549 4.46702 3.53516 3.53567M5.77516 2.474C6.17669 2.38001 6.58778 2.33303 7.00016 2.334C11.0835 2.334 13.4168 7.00067 13.4168 7.00067C13.0627 7.6631 12.6404 8.28676 12.1568 8.8615M8.23683 8.23733C8.07662 8.40927 7.88342 8.54717 7.66875 8.64282C7.45409 8.73847 7.22236 8.7899 6.98738 8.79405C6.75241 8.79819 6.51901 8.75497 6.3011 8.66695C6.0832 8.57894 5.88525 8.44793 5.71907 8.28175C5.5529 8.11558 5.42189 7.91763 5.33388 7.69973C5.24586 7.48182 5.20264 7.24842 5.20678 7.01345C5.21093 6.77847 5.26236 6.54674 5.35801 6.33208C5.45366 6.11741 5.59156 5.92421 5.7635 5.764" stroke="%232a65f0" stroke-linecap="round" stroke-linejoin="round"/><path d="M0.583496 0.583984L13.4168 13.4173" stroke="%232a65f0" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2413_782"><rect width="14" height="14" fill="white"/></clipPath></defs></svg>');
+}
+
+/* Date Picker */
+.date-input-field input,
+.date-input-field .lyteField {
+  cursor: pointer;
+}
+
+/* Input Key Value Pair */
+.zcat-key-value-pair-list-block {
+  padding: 0;
+  margin: 0;
+}
+.zcat-key-value-pair-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  border-radius: 6px;
+  margin: 0;
+}
+.zcat-key-value-pair-box:hover {
+  background-color: var(--zcat-card-bg-tertiary);
+}
+.keyValueRemoveBtn::after {
+  content: '';
+}
+lyte-autocomplete lyte-dropdown .lyteDummyEventContainer:focus .lyteField,
+lyte-autocomplete .lyteDropButtonDown lyte-input.lyteInputBox .lyteField,
+lyte-autocomplete .lyteDropButtonUp lyte-input.lyteInputBox .lyteField {
+  border: 1px solid var(--zcat-inputField-border-hover);
+  box-shadow: var(--zcat-shadow-bg-default);
+  border-radius: 6px;
+}
+lyte-autocomplete .lyteDropButtonUp lyte-input.lyteInputBox .lyteField,lyte-autocomplete .lyteDropButtonUp lyte-input.lyteInputBox input{
+  border-radius: 6px;
+}
+lyte-autocomplete::after {
+  content: attr(error-message);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-error);
+  padding-top: 2px;
+}
+lyte-autocomplete .lyteDropButtonDown lyte-input.lyteInputBox .lyteField,
+lyte-autocomplete .lyteDropButtonDown lyte-input.lyteInputBox input {
+  border-radius: 6px;
+}
+lyte-drop-box.autocomplete-dropbox {
+  display: flex;
+  flex-direction: column;
+}
+lyte-drop-item .lyteAutoComplete {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-active);
+  position: relative;
+}
+lyte-autocomplete-description {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-label);
+}
+.lyteautocompleteHighlight {
+  background: transparent;
+  color: var(--zcat-inputField-text-active);
+  font-weight: 500;
+}
+.zcat-autocomplete-icon-warper{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.zcat-autocomplete-icon-warper + .lyteautocompleteHighlight {
+ margin-left: 18px; /* or whatever spacing you want */
+}
+.autocomplete-dropbox lyte-drop-item[selected='true'] {
+  background: transparent;
+}
+.autocomplete-dropbox lyte-drop-item.lyteDropdownSelection[selected='true'] {
+  background: var(--zcat-inputField-bg-hover);
+}
+.autocomplete-dropbox lyte-drop-item[selected='true']::before {
+  background: none;
+}
+lyte-autocomplete.searchPresent .lyteAutoCompCloseIconWrapper {
+  right: 5px;
+}
+lyte-autocomplete
+  lyte-input[lt-prop-type='search'].lyteInputBox
+  .lyteField
+  input {
+  padding: 7px 30px 7px 8px;
+}
+.lyteAutoCompCloseIcon {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M10.5 3.5L3.5 10.5" stroke="%237988A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 3.5L10.5 10.5" stroke="%237988A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-position: -2px;
+  width: 10px;
+  height: 10px;
+  transform: scale(1);
+}
+lyte-autocomplete lyte-input[lt-prop-type='search'] .searchIcon,
+lyte-autocomplete .iconSeparator {
+  display: none !important;
+}
+lyte-drop-box.autocomplete-dropbox lyte-drop-body {
+  order: 1;
+}
+lyte-drop-box.autocomplete-dropbox .lyteautocompleteError {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-optional);
+  padding: 20px 16px 12px 16px;
+  text-align: center;
+}
+lyte-drop-box.autocomplete-dropbox .lyteautocompleteNewBtn {
+  order: 3;
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 600 !important;
+  color: var(--zcat-btn-grey-text-default);
+  border-top: 1px solid var(--zcat-menuList-border-default);
+  cursor: pointer;
+  background-color: var(--zcat-menuList-bg-default);
+}
+lyte-drop-box .lyteautocompleteNewBtn span {
+  color: var(--zcat-btn-ghost-text-primary-default);
+  font-weight: 500;
+  margin-top: -2px;
+  margin-left: 5px;
+}
+lyte-drop-box .lyteautocompleteNewBtn:hover {
+  background-color: var(--zcat-btn-ghost-bg-primary-hover);
+}
+
+/* zcat link field */
+.zcat-link-field-box {
+  border-radius: 6px;
+  border: 1px solid var(--zcat-inputField-border-default);
+  background: var(--zcat-inputField-bg-default);
+  font-family: var(--zcat-font-family-code);
+  padding: 8px 12px;
+  height: 36px;
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+lyte-dropdown lyte-drop-button:hover, .lyteInputBox .lyteField:hover input, .lyteInputBox .lyteField:hover textarea {
+  background: var(--zcat-inputField-bg-hover);
+}
+
+/* search comp icons  */
+lyte-search lyte-input[lt-prop-type='search'] .searchIcon{
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M14 14L11.1 11.1M12.6667 7.33333C12.6667 10.2789 10.2789 12.6667 7.33333 12.6667C4.38781 12.6667 2 10.2789 2 7.33333C2 4.38781 4.38781 2 7.33333 2C10.2789 2 12.6667 4.38781 12.6667 7.33333Z" stroke="%23101F3E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  left: 8px;
+}
+lyte-search.lyteSm lyte-input[lt-prop-type='search'] .searchIcon,
+lyte-search.lyteExsm lyte-input[lt-prop-type='search'] .searchIcon
+{
+  left: 6px;
+}
+lyte-search lyte-input[lt-prop-type='search'] .searchIcon{
+    /* background-repeat: no-repeat;
+    background-size: cover; */
+    width: 16px;
+    height: 16px;
+}
+lyte-search.lyteSm lyte-input[lt-prop-type='search'] .searchIcon, 
+lyte-search.lyteExsm lyte-input[lt-prop-type='search'] .searchIcon{
+    width: 14px;
+    height: 14px;
+}
+lyte-search.lyteSm .lyteInput.vertical[lt-prop-type='search'] input{
+    height: 28px;
+    padding: 4px 22px;  
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary); 
+}
+lyte-input .inputCloseIcon::before{  
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4L12 12" stroke="%23101F3E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    width: 16px;
+    height: 16px;
+    transform: unset;
+}  
+lyte-input .inputCloseIcon{
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0;
+    right: 6px;
+}
+lyte-search.lyteSm lyte-input .inputCloseIcon{
+  right: 4px;
+}
+lyte-search.lyteSm lyte-input .inputCloseIcon::before, 
+lyte-search.lyteExsm lyte-input .inputCloseIcon::before{
+    width: 14px;
+    height: 14px; 
+}
+.lyteInput.vertical[lt-prop-type='search'] input, lyte-input[lt-prop-type='search'] input{
+  padding: 8px 24px 8px 26px;
+}
+
+html[data-user-color-scheme="dark"] lyte-input .inputCloseIcon::before  {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4L12 12" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+} 
+html[data-user-color-scheme="dark"] lyte-search lyte-input[lt-prop-type='search'] .searchIcon{
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M14 14L11.1 11.1M12.6667 7.33333C12.6667 10.2789 10.2789 12.6667 7.33333 12.6667C4.38781 12.6667 2 10.2789 2 7.33333C2 4.38781 4.38781 2 7.33333 2C10.2789 2 12.6667 4.38781 12.6667 7.33333Z" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}    
+
+
+.lyteInput.lyteInputDisabled .lyteField:hover{
+  border-bottom: none;
+}
+
+lyte-drop-box.lyteDropdownHidden.autocomplete-dropbox{
+  display: none;
+}

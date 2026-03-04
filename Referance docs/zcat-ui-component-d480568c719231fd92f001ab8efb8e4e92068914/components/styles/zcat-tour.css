@@ -1,0 +1,57 @@
+.lyteTourFreezeLayer{
+    background-color: var(--zcat-popup-bg-blur);
+    opacity: 1;
+}
+.zcat-tour-wraper{
+    width: 375px;
+    padding: 16px;
+}
+.yourAppDummyTargets{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 4px;
+}
+.myStep1,.myStep2,.myStep3{
+    height: 48px;
+    width: 200px;
+    padding: 20px 10px;
+    background: var(--zcat-card-bg-default);
+    border-radius: 6px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--zcat-card-border-default);
+    color: var(--zcat-body-text-primary);
+    box-shadow: 0px 0px 6px 1px var(--zcat-shadow-bg-default);
+}
+.lyteTourStep{
+    border-radius: 6px;
+    border: 1px solid var(--zcat-tour-border-default);
+    background: var(--zcat-tour-bg-default);
+    box-shadow: 2px 2px 10px var(--zcat-shadow-bg-default);
+}
+.zcat-tour-head,.zcat-tour-desc{
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--zcat-avatar-text-default);
+}
+.zcat-tour-desc{
+    font-weight: 400;
+}
+.lyteTourArrow{
+    background: var(--zcat-tour-bg-default);
+}
+.lyteTourLeftArrow,.lyteTourRightArrow,.lyteTourTopArrow,.lyteTourBottomArrow{
+    border-color:var(--zcat-tour-border-default);
+}
+.zcat-tour-carosual{
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--zcat-carosual-bg-default);
+    cursor: pointer;
+}
+.zcat-tour-carosual.active{
+    background-color: var(--zcat-carosual-bg-active);
+}

@@ -1,0 +1,25 @@
+<template tag-name="zcat-empty-template">
+  <div class="zcat-empty-template" style="{{zcatProp.style}}">
+    <lyte-svg
+      lyte-if="{{zcatProp.svg.id}}"
+      lt-prop-class="{{zcatProp.svg.class}}"
+      lt-prop-path="#{{zcatProp.svg.id}}"
+    ></lyte-svg>
+    <h2 class="title">{{zcatProp.title}}</h2>
+    <p class="desc">{{unescape(zcatProp.desc)}}</p>
+    <zcat-button
+      lyte-if="{{zcatProp.button.label}}"
+      zcat-prop="{{zcatProp.button}}"
+    ></zcat-button>
+    <div
+      lyte-if="{{zcatProp.list}}"
+      class="zcat-dF zcat-align-center zcat-justify-center zcat-gap-14 zcat-text-center"
+    >
+      <zcat-button
+        lyte-for="{{zcatProp.list}} as item index"
+        self="{{self}}"
+        zcat-prop="{{item}}"
+      ></zcat-button>
+    </div>
+  </div>
+</template>

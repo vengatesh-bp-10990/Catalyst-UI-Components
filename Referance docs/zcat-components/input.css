@@ -1,0 +1,143 @@
+.zcat-input-icon-wrapper{
+    /* position: relative; */
+    /* width: 500px; */
+  }
+
+.zcat-input-icon-left,
+.zcat-input-icon-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  pointer-events: none; /* So user clicks go through */
+}
+.zcat-textarea-icon-left,
+.zcat-textarea-icon-right{
+  position: absolute;
+  top: 10px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.zcat-inputSm-icon-left {
+  left: 8px;
+}
+.zcat-inputExsm-icon-left {
+  left: 4px;
+  top: 40%;
+}
+
+.zcat-inputSm-icon-right {
+  right: 8px;
+}
+.zcat-inputExsm-icon-right {
+  right: 4px;
+  top: 40%;
+}
+
+/* Add padding inside input to not overlap icon */
+.zcat-input-relative-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%; /* allow wrapping to define actual size */
+}
+.lyteInputBox input {
+  padding-left: 36px;  /* adjust based on icon size */
+  padding-right: 36px;
+}
+.zcat-has-icon-left .lyteField input,
+.zcat-has-icon-left .lyteField textarea { 
+    padding-left: 26px;
+}
+.zcat-has-icon-right .lyteField input,
+.zcat-has-icon-right .lyteField textarea {
+    padding-right: 26px;
+}
+
+/* textarea -small&exsm with icon alignment */
+.zcat-has-icon-left .lyteInputBox .lyteField textarea.lyteSm,
+.zcat-has-icon-left .lyteInputBox .lyteField input.lyteSm{
+  padding-left: 22px;
+}
+.zcat-has-icon-left .lyteInputBox .lyteField textarea.lyteExsm,
+.zcat-has-icon-left .lyteInputBox .lyteField input.lyteExsm{
+  padding-left: 14px;
+}
+.zcat-has-icon-right .lyteInputBox .lyteField textarea.lyteSm,
+.zcat-has-icon-right .lyteInputBox .lyteField input.lyteSm{
+  padding-right: 22px;
+}
+.zcat-has-icon-right .lyteInputBox .lyteField textarea.lyteExsm,
+.zcat-has-icon-right .lyteInputBox .lyteField input.lyteExsm{
+  padding-right: 14px;
+}
+
+ 
+
+
+/* hover related action styles  */
+.lyteInputBox .lyteField input:hover,
+.lyteInputBox .lyteField textarea:hover {
+  background: var(--zcat-inputField-bg-hover);
+  border: var(--zcat-inputField-border-hover);
+}
+.zcat-input-relative-wrapper:hover .zcat-stroke-input-icon path[stroke],
+.lyteInputBox .lyteField textarea:hover .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-placeholder);
+} 
+
+/* active  */
+.lyteInputBox .lyteField input:focus,
+.lyteInputBox .lyteField textarea:focus {
+  background: var(--zcat-inputField-bg-active);
+  border: var(--zcat-inputField-border-active);
+  color: var(--zcat-inputField-text-active)
+}
+.zcat-input-relative-wrapper:focus-within .zcat-stroke-input-icon path[stroke],
+.lyteInputBox .lyteField textarea:focus-within .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-active);
+} 
+
+/* disabled  */
+.lyteInputDisabled + lyte-svg .zcat-stroke-input-icon path[stroke],
+.zcat-input-relative-wrapper:has(.lyteInputDisabled) .zcat-stroke-input-icon path[stroke],
+.lyteInputBox .lyteField textarea:active .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-disabled);
+}
+
+
+
+.zcat-invalid .lyteField input{
+  background: var(--zcat-inputField-bg-error) !important;
+}
+
+
+.lyteInputBox.lyteInputDisabled .lyteField {
+  border: 1px solid var(--zcat-inputField-border-disabled);
+}
+.lyteInputBox.lyteInputDisabled .lyteField:hover {
+  border: 1px solid var(--zcat-inputField-border-disabled) !important;
+}
+
+.input-field-disabled .input-label{
+  color: var(--zcat-inputField-text-disabled);
+}
+.zcat-stroke-input-icon path[stroke]{
+  stroke: var(--zcat-inputField-icon-placeholder);
+}
+
+/* .zcat-input-icon-left.exsm, .zcat-input-icon-right.exsm{
+  top: 40%;
+} */
+
+/* lyte-input textarea{
+  min-height: 36px;
+}
+lyte-input textarea.lyteSm{
+  min-height: 28px;
+}
+lyte-input textarea.lyteExsm{
+  min-height: 24px;
+} */
+

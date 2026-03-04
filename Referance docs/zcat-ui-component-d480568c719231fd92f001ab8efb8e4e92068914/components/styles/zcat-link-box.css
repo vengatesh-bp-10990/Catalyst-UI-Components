@@ -1,0 +1,100 @@
+.zcat-link-box-wraper{
+  border-radius: 6px;
+  border: 1px solid var(--zcat-linkbox-border-default);
+  background: var(--zcat-linkbox-bg-default);
+  height: 36px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+/* .zcat-link-box-wraper:hover{
+  background: var(--zcat-linkbox-bg-hover);
+  border-color: var(--zcat-linkbox-border-hover);
+} */
+.zcat-link-box-small{
+    height: 28px;
+}
+.zcat-link-box-container{
+  width: calc(100% - 34px);
+  padding: 8px 1px 8px 8px;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-size: 14px;
+  color: var(--zcat-linkbox-text-mainText);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background: var(--zcat-linkbox-bg-default);
+  position: relative;
+  height: 34px;
+  box-sizing: border-box;
+  border-radius: 6px 0 0 6px;
+  display: flex;
+  align-items: center;
+  font-family: var(--zcat-font-family-primary);
+}
+/* .zcat-link-box-wraper:hover .zcat-link-box-container{
+  background: var(--zcat-linkbox-bg-hover);
+} */
+.zcat-link-box-small .zcat-link-box-container{
+    height: 26px;
+    font-size: 12px;
+    width: calc(100% - 26px);
+}
+.zcat-link-box-container.zcat-link-box-label-inside{
+    padding-left: 1px;
+}
+.zcat-link-box-container.zcat-link-box-label-left{
+    width: calc(100% - 66px);
+}
+/* :root {
+  --zcat-shadow-dark-left: 6px 0px 4px -2px var(--zcat-shadow-bg-default) inset;
+  --zcat-shadow-dark-right: -6px 0px 4px 0px var(--zcat-shadow-bg-default) inset;
+} */
+.zcat-link-box-container.shadow-left {
+  box-shadow: 6px 0px 4px -2px var(--zcat-shadow-bg-default) inset;
+}
+
+.zcat-link-box-copy-btn.shadow-right {
+  box-shadow: -6px 0px 6px -4px var(--zcat-shadow-bg-default);
+}
+
+/* .zcat-link-box-container.shadow-left.shadow-right {
+  box-shadow: 6px 0px 4px -2px var(--zcat-shadow-bg-default) inset , -6px 0px 4px 0px var(--zcat-shadow-bg-default) inset;
+}  */
+
+.zcat-link-box-copy-btn{
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  background: transparent;
+  border-radius: 0 5px 5px 0;
+  border-left: 1px solid var(--zcat-linkbox-border-default);
+  cursor: pointer;
+}
+
+.zcat-link-box-small .zcat-link-box-copy-btn{
+    width: 26px;
+    height: 26px;
+}
+
+.stroke-dark{
+    stroke: var(--zcat-linkbox-icon-default);
+}
+
+.zcat-link-box-label{
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--zcat-linkbox-text-label1);
+}
+
+.zcat-link-box-wraper .zcat-link-box-label{
+    color: var(--zcat-linkbox-text-mainText);
+    padding-left: 8px;
+}

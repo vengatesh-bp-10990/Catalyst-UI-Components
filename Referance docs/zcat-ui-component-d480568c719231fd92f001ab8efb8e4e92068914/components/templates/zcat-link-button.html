@@ -1,0 +1,75 @@
+<template tag-name="zcat-link-button">
+    <div class="zcat-dF zcat-align-center zcat-w-fc zcat-gap-2 {{zcatProp.disabled ? 'disabled' : ''}}">
+        <lyte-svg
+            lyte-if="{{zcatProp.icon.position === 'left'}}"
+                lt-prop-path="#zcat-icon-{{zcatProp.icon.name}}"      
+                lt-prop-class="zcat-flex-center zcat-stroke-linkbtn-icon 
+                {{ zcatProp.size === 'large' ? 'zcat-w22 zcat-h22' :
+                zcatProp.size === 'default' ? 'zcat-w16 zcat-h16' :
+                zcatProp.size === 'small' ? 'zcat-w14 zcat-h14' :
+                zcatProp.size === 'extra-small' ? 'zcat-w12 zcat-h12' :
+                    'zcat-w16 zcat-h16'
+                }}
+                "
+                class="
+                {{ zcatProp.size === 'large' ? 'zcat-w22 zcat-h22' :
+                    zcatProp.size === 'default' ? 'zcat-w16 zcat-h16' :
+                zcatProp.size === 'small' ? 'zcat-w14 zcat-h14' :
+                zcatProp.size === 'extra-small' ? 'zcat-w12 zcat-h12' :
+                    'zcat-w16 zcat-h16'
+                }}"
+        ></lyte-svg>
+        
+        <a 
+            lyte-if="{{isExternalLink}}" 
+            href="{{zcatProp.route}}" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="zcat-link-btn 
+            {{zcatProp.size === 'extra-small' ? 'exsm' : 
+                zcatProp.size === 'small' ? 'small' :
+               zcatProp.size === 'large' ? 'large' :
+               'default'
+            }}"
+        >
+            {{zcatProp.label}}
+        </a>
+
+        <go-to 
+            lt-prop-route="{{zcatProp.route}}" 
+            lt-prop-class="zcat-link-btn 
+            {{zcatProp.size === 'extra-small' ? 'exsm' : 
+                zcatProp.size === 'small' ? 'small' :
+               zcatProp.size === 'large' ? 'large' :
+               'default'
+            }}"
+            lyte-else
+        >
+            {{zcatProp.label}}
+        </go-to>
+
+        <lyte-svg
+            lyte-if="{{zcatProp.icon.position === 'right'}}"
+                lt-prop-path="#zcat-icon-{{zcatProp.icon.name}}"       
+                lt-prop-class="zcat-flex-center zcat-stroke-linkbtn-icon 
+                {{ zcatProp.size === 'large' ? 'zcat-w22 zcat-h22' :
+                    zcatProp.size === 'default' ? 'zcat-w16 zcat-h16' :
+                zcatProp.size === 'small' ? 'zcat-w14 zcat-h14' :
+                zcatProp.size === 'extra-small' ? 'zcat-w12 zcat-h12' :
+                    'zcat-w16 zcat-h16'
+                }}
+                "
+                class="
+                {{ zcatProp.size === 'large' ? 'zcat-w22 zcat-h22' :
+                    zcatProp.size === 'default' ? 'zcat-w16 zcat-h16' :
+                zcatProp.size === 'small' ? 'zcat-w14 zcat-h14' :
+                zcatProp.size === 'extra-small' ? 'zcat-w12 zcat-h12' :
+                    'zcat-w16 zcat-h16'
+                }}"
+        ></lyte-svg>
+
+    </div>
+
+
+
+</template>

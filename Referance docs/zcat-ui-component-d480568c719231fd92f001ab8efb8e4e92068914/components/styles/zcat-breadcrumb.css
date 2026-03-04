@@ -1,0 +1,34 @@
+lyte-breadcrumb-item{
+    padding: 2px;
+    margin: 0;
+    border-radius: 4px;
+    height: 100%;
+    box-sizing: border-box;
+    display: inline-flex;
+}
+lyte-breadcrumb-body{
+    font: var(--zcat-font-regular) var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    color: var(--zcat-breadcrumbs-text-default);
+}
+lyte-breadcrumb-item:hover{
+    cursor: pointer;
+    background: var(--zcat-breadcrumbs-bg-hover);
+}
+lyte-breadcrumb-item.lyteActive:hover{
+    background: none;
+    pointer-events: none;
+}
+lyte-breadcrumb-item:hover lyte-breadcrumb-body{
+    color: var(--zcat-breadcrumbs-text-hover);
+}
+.lyteActive lyte-breadcrumb-body,lyte-breadcrumb-item.lyteActive:hover lyte-breadcrumb-body{
+    color: var(--zcat-breadcrumbs-text-active);
+    cursor: default;
+}
+lyte-breadcrumb-item::after{
+    display: none;
+}
+.zcat-breadcrumb-divider{
+    color: var(--zcat-breadcrumbs-icon-default);
+    font-size: 14px;
+}

@@ -1,0 +1,43 @@
+crux-column-list {
+  box-shadow: none;
+}
+crux-column-list lyte-menu-body {
+  padding: 10px 10px;
+}
+crux-column-list lyte-search lyte-input[lt-prop-type="search"] input {
+  border: none;
+  padding-left: 30px !important;
+}
+crux-column-list
+  lyte-search
+  lyte-input[lt-prop-type="search"]
+  .lyteField::before {
+  left: 0;
+}
+crux-column-list .divTopBorder {
+  padding: 10px 0px;
+}
+crux-column-list lyte-menu-item {
+  padding: 8px 4px;
+  background: var(--zcat-menuList-bg-default);
+  cursor: default;
+  border-radius: 4px;
+  border: none;
+  margin: 0;
+}
+crux-column-list .cxColListItem.sortable-element-selected,
+crux-column-list lyte-menu-item.sortable-element:hover,
+crux-column-list lyte-menu-item:hover {
+  background: var(--zcat-menuList-bg-hover) !important;
+}
+crux-column-list .cxColListItem::after {
+  right: 10px;
+  top: calc(50% - 4px);
+  opacity: 0.8;
+  scale: 1.2;
+}
+.lyteSortableParent .lyteSortablePlaceholder:hover,
+.lyteSortableParent .lyteSortablePlaceholder {
+  background-color: var(--zcat-menuList-bg-selected);
+  border: 1px solid var(--zcat-menuList-border-default);
+}

@@ -1,0 +1,69 @@
+<template tag-name="zcat-fullpage-modal">
+
+  <lyte-modal
+    id="{{zcatProp.id}}"
+    lt-prop-show="false"
+    lt-prop-show-close-button="false"
+    lt-prop-width="{{zcatProp.width ? zcatProp.width : '100%'}}"
+    lt-prop-close-on-escape="false"
+    lt-prop-transition='{"animation":"fadeIn","duration":"0.5"}'
+    lt-prop-allow-multiple="true"
+    on-show="{{method('onAfterModalOpen')}}"
+    on-close="{{method('onModalClose')}}"
+    on-before-close="{{method('onBeforeModalClose')}}"
+    lt-prop-wrapper-class="fullpage-modal-wrapper"
+  >
+    <template is="registerYield" yield-name="modal">
+        <lyte-modal-header data-name="{{zcatProp.id}}" class="fullpage-modal-header">
+            <div class="fullpage-modal-header-inner">
+                <div class="left zcat-cP" 
+                onclick="{{action('defaultOnTitleClick', zcatProp.title.value)}}"
+                >
+                    <!-- <lyte-svg lt-prop-path="#{{zcatProp.title.leadingLogo.name}}" class="zcat-w24 zcat-h24" lt-prop-class="zcat-w24 zcat-h24 {{zcatProp.title.leadingLogo.class}}"></lyte-svg> -->
+                    <zcat-icon 
+                          class="zcat-mb-2"
+                          name="{{zcatProp.title.leadingLogo.name}}" 
+                          width="24"
+                          height="24"
+                          strokeWidth="1.3"
+                    >
+                    </zcat-icon>
+                    <h5>{{zcatProp.title.name}}</h5>
+                </div>
+                <div class="right">
+                    <zcat-button self="{{self}}"
+                    zcat-prop='{
+                        "variant": "ghost",
+                        "size": "small",
+                        "color": "grey",
+                        "type": "navigation",
+                        "icon": {
+                            "position": "right",
+                            "name": "close",
+                            "width": 16,
+                            "height": 16, 
+                            "stroke": "var(--zcat-btn-grey-icon-default)"
+                        }, 
+                        "callback": {
+                          "name": "{{zcatProp.close.callback.name}}"
+                        }
+                    }' 
+                    ></zcat-button>
+                </div>
+
+            </div>
+        </lyte-modal-header>
+
+        <lyte-modal-content data-name="{{zcatProp.id}}" class="fullpage-modal-content">
+                <lyte-yield 
+                  yield-name="{{zcatProp.body.yield}}" 
+                  style="{{zcatProp.body.yield_style}}" 
+                  error-prop="{{zcatProp.error}}" 
+                  self="{{self}}" 
+                  data="{{zcatProp.body}}">
+                </lyte-yield>
+        </lyte-modal-content>
+    </template>
+  </lyte-modal>
+
+</template>

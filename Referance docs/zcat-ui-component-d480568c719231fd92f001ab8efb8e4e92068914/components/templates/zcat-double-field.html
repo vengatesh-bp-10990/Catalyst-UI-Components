@@ -1,0 +1,74 @@
+<template tag-name="zcat-double-field" class="zcat-pR">
+    <zcat-hovercard
+        lyte-if="{{zcatProp.infoIcon.yield || zcatProp.infoIcon.value}}"
+        zcat-prop="{{zcatProp.infoIcon}}"
+    >
+        <template is="yield" yield-name="{{zcatProp.infoIcon.yield}}">
+        <lyte-yield yield-name="{{zcatProp.infoIcon.yield}}"></lyte-yield>
+        </template>
+    </zcat-hovercard>
+    <div
+        lyte-if="{{zcatProp.label}}"
+        class="zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{zcatProp.disabled ? 'input-field-disabled' : ''}}"
+    >
+        <p
+        class="{{zcatProp.label_class ? zcatProp.label_class : 'zcat-input-label'}} zcat-input-label-default" 
+        >
+        {{zcatProp.label}}
+        <span class="optional-label">{{zcatProp.isOptional && zcatProp.label ? ' (Optional)' : ''}}</span>
+        </p>
+        <div    
+        lyte-if="{{zcatProp.infoIcon.id}}"
+        class="zcat-w12 zcat-h12 zcat-cP"
+        id="tooltipInfoMsg{{zcatProp.infoIcon.id}}" 
+        lyte-hovercard="true"
+        >
+        <!-- <lyte-svg lt-prop-path="#zcat-icon-info" lt-prop-class="zcat-w12 zcat-h12 zcat-input-label-stroke "></lyte-svg> -->
+        <zcat-icon 
+                class="zcat-mb-2 zcat-input-label-stroke"
+                name="info" 
+                width="12"
+                height="12"
+                stroke="var(--zcat-inputField-icon-label)"
+                strokeWidth="1.3"
+            >
+            </zcat-icon>
+        </div>
+    </div>
+
+    <div class="zcat-dF double-field-outer {{zcatProp.errorMessage ? 'zcat-invalid' : ''}}"
+    error-message="{{zcatProp.errorMessage}}"
+    >
+        <template lyte-for="{{zcatProp.fieldList}} as item index">
+            
+            <zcat-input 
+            lyte-if="{{item.type === 'textbox'}}" 
+            self="{{self}}" 
+            zcat-prop="{{item.fieldObj}}"
+            field-class="{{
+                index === 0 ? 'zcat-field-first' : 
+                index === zcatProp.fieldList.length - 1 ? 'zcat-field-last' : 
+                'zcat-field-mid'
+            }}"
+            feature-obj="{{lbind(userObj)}}"
+            >
+            </zcat-input>
+
+            <zcat-dropdown 
+            lyte-if="{{item.type === 'dropdown'}}" 
+            self="{{self}}" 
+            zcat-prop="{{item.fieldObj}}"
+            field-class="{{
+                index === 0 ? 'zcat-field-first' : 
+                index === zcatProp.fieldList.length - 1 ? 'zcat-field-last' : 
+                'zcat-field-mid'
+            }}"
+            feature-obj="{{lbind(userObj)}}"
+            >
+            </zcat-dropdown>
+
+        </template>
+    </div>
+
+
+</template>

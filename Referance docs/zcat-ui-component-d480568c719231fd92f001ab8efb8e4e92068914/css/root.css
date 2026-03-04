@@ -1,0 +1,238 @@
+:root {
+  /* Font Family */
+  --zcat-font-family-primary: Inter, sans-serif;
+  --zcat-font-family-code: Roboto Mono, sans-serif;
+
+  /* colors */
+  --zcat-color-dark1: #101f3e;
+  --zcat-color-dark2: #4d618a;
+  --zcat-color-dark3: #7988a8;
+  --zcat-color-dark4: #a6b1c9;
+  --zcat-color-white: #ffffff;
+  --zcat-color-grey1: #d6ddef;
+  --zcat-color-grey2: #eff2fa;
+  --zcat-color-grey3: #eff2fa;
+  --zcat-color-grey4: #f7f8fb;
+  --zcat-color-grey5: #f4f7fe;
+  --zcat-color-grey6: #f8f9fb;
+  --zcat-color-grey7: #f7faff;
+  --zcat-color-primary: #2a65f0;
+  --zcat-color-primaryhover: #255ad8;
+  --zcat-color-primarylight: #e7eefe;
+  --zcat-color-red: #e22020;
+  --zcat-color-redhover: #c61a1a;
+  --zcat-color-redbg: #ffebeb;
+  --zcat-color-green: #29b260;
+  --zcat-color-greenhover: #3cb056;
+  --zcat-color-greenbg: #eaffee;
+  --zcat-color-yellow: #ffcf54;
+  --zcat-color-yellowhover: #fead34;
+  --zcat-color-yellowbg: #fff8e5;
+  --zcat-color-pink: #e424ba;
+  --zcat-color-pinkhover: #c637a6;
+  --zcat-color-pinkbg: #fdedf9;
+
+  /* Font Size & Line Height */
+  --zcat-font-24-30: 24px/30px;
+  --zcat-font-20-24: 20px/24px;
+  --zcat-font-18-22: 18px/22px;
+  --zcat-font-16-22: 16px/22px;
+  --zcat-font-16-20: 16px/20px;
+  --zcat-font-14-20: 14px/20px;
+  --zcat-font-12-20: 12px/20px;
+  --zcat-font-12-16: 12px/16px;
+  --zcat-font-10-12: 10px/12px;
+
+  /* Font weight  */
+  --zcat-font-semibold: 600;
+  --zcat-font-medium: 500;
+  --zcat-font-regular: 400;
+
+  /* Button Fonts */
+  --zcat-button-font-default: 14px/20px;
+  --zcat-button-font-sm: 14px/20px;
+  --zcat-button-font-exsm: 12px/16px;
+  --zcat-button-font-lg: 16px/22px;
+  --zcat-button-font-weight: 500;
+
+  /* Input fields Fonts  */
+  --zcat-input-label-font: 12px/16px;
+  --zcat-input-text-font-default: 14px/20px;
+  --zcat-input-text-font-small: 14px/20px;
+  --zcat-input-text-font-exsm: 12px/16px;
+
+  --zcat-input-label-font-weight: 600;
+  --zcat-input-text-font-weight: 400;
+
+  /* Code Blocks Fonts */
+  --zcat-code-body-font: 12px/20px;
+  --zcat-code-subtitle-font: 12px/20px;
+  --zcat-code-font-regular: 400;
+  --zcat-code-font-semibold: 600;
+
+    /* Side Menu Fonts  */
+  --zcat-sidemenu-font: 10px/12px;
+  --zcat-sidemenu-font-regular: 400;
+
+  /* Heading Fonts  */
+  --zcat-heading-font-h1: 40px/normal;
+  --zcat-heading-font-h2: 32px/normal;
+  --zcat-heading-font-h3: 24px/30px;
+  --zcat-heading-font-h4: 20px/24px;
+  --zcat-heading-font-h5: 18px/22px;
+  --zcat-heading-font-h6: 16px/20px;
+  --zcat-heading-font-weight: 600;
+  --zcat-heading-lheight-normal: normal;
+
+  /* Box Shadow */
+  --zcat-shadow-dark-all: 0px 0px 16px 4px rgba(121, 136, 168, 0.08);
+  --zcat-shadow-dark-top: 0px -6px 16px 4px rgba(121, 136, 168, 0.08);
+  --zcat-shadow-dark-right: 6px 0px 16px 4px rgba(121, 136, 168, 0.08);
+  --zcat-shadow-dark-bottom: 0px 6px 16px 4px rgba(121, 136, 168, 0.08);
+  --zcat-shadow-dark-left: -6px 0px 16px 4px rgba(121, 136, 168, 0.08);
+  --zcat-shadow-light-all: 0px 0px 10px 4px rgba(121, 136, 168, 0.04);
+  --zcat-shadow-light-top: 0px -4px 10px 4px rgba(121, 136, 168, 0.04);
+  --zcat-shadow-light-right: 4px 0px 10px 4px rgba(121, 136, 168, 0.04);
+  --zcat-shadow-light-bottom: 0px 4px 10px 4px rgba(121, 136, 168, 0.04);
+  --zcat-shadow-light-left: -4px 0px 10px 4px rgba(121, 136, 168, 0.04);
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-weight: 400;
+  font-style: normal;
+  font-display: 'block';
+  src: url('//static.zohocdn.com/webfonts/interregular/font.eot');
+  src: url('//static.zohocdn.com/webfonts/interregular/font.eot?#iefix')
+      format('eot'),
+    url('//static.zohocdn.com/webfonts/interregular/font.woff2') format('woff2'),
+    url('//static.zohocdn.com/webfonts/interregular/font.woff') format('woff'),
+    url('//static.zohocdn.com/webfonts/interregular/font.ttf')
+      format('truetype'),
+    url('//static.zohocdn.com/webfonts/interregular/font.svg#Inter-Regular')
+      format('svg');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 500;
+  font-style: normal;
+  font-display: 'block';
+  src: url('//static.zohocdn.com/webfonts/intermedium/font.eot');
+  src: url('//static.zohocdn.com/webfonts/intermedium/font.eot?#iefix')
+      format('eot'),
+    url('//static.zohocdn.com/webfonts/intermedium/font.woff2') format('woff2'),
+    url('//static.zohocdn.com/webfonts/intermedium/font.woff') format('woff'),
+    url('//static.zohocdn.com/webfonts/intermedium/font.ttf') format('truetype'),
+    url('//static.zohocdn.com/webfonts/intermedium/font.svg#Inter-Medium')
+      format('svg');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 600;
+  font-style: normal;
+  font-display: 'block';
+  src: url('//static.zohocdn.com/webfonts/intersemibold/font.eot');
+  src: url('//static.zohocdn.com/webfonts/intersemibold/font.eot?#iefix')
+      format('eot'),
+    url('//static.zohocdn.com/webfonts/intersemibold/font.woff2')
+      format('woff2'),
+    url('//static.zohocdn.com/webfonts/intersemibold/font.woff') format('woff'),
+    url('//static.zohocdn.com/webfonts/intersemibold/font.ttf')
+      format('truetype'),
+    url('//static.zohocdn.com/webfonts/intersemibold/font.svg#Inter-SemiBold')
+      format('svg');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 700;
+  font-style: normal;
+  font-display: 'block';
+  src: url('//static.zohocdn.com/webfonts/interbold/font.eot');
+  src: url('//static.zohocdn.com/webfonts/interbold/font.eot?#iefix')
+      format('eot'),
+    url('//static.zohocdn.com/webfonts/interbold/font.woff2') format('woff2'),
+    url('//static.zohocdn.com/webfonts/interbold/font.woff') format('woff'),
+    url('//static.zohocdn.com/webfonts/interbold/font.ttf') format('truetype'),
+    url('//static.zohocdn.com/webfonts/interbold/font.svg#Inter-Bold')
+      format('svg');
+}
+@font-face {
+  font-family: 'Zoho Puvi'; 
+  src: url('https://static.zohocdn.com/zohofonts/zohopuvi/4.0/Zoho_Puvi_Regular.woff2') format('woff2'),
+       url('https://static.zohocdn.com/zohofonts/zohopuvi/4.0/Zoho_Puvi_Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Zoho Puvi';
+  src: url('https://static.zohocdn.com/zohofonts/zohopuvi/4.0/Zoho_Puvi_Medium.woff2') format('woff2'),
+       url('https://static.zohocdn.com/zohofonts/zohopuvi/4.0/Zoho_Puvi_Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Zoho Puvi';
+  src: url('https://static.zohocdn.com/zohofonts/zohopuvi/4.0/Zoho_Puvi_Semibold.woff2') format('woff2'),
+       url('https://static.zohocdn.com/zohofonts/zohopuvi/4.0/Zoho_Puvi_Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-weight: 400;
+  font-style: normal;
+  font-display: 'block';
+  src: url('//static.zohocdn.com/webfonts/robotomonoregular/font.eot');
+  src: url('//static.zohocdn.com/webfonts/robotomonoregular/font.eot?#iefix')
+      format('eot'),
+    url('//static.zohocdn.com/webfonts/robotomonoregular/font.woff2')
+      format('woff2'),
+    url('//static.zohocdn.com/webfonts/robotomonoregular/font.woff')
+      format('woff'),
+    url('//static.zohocdn.com/webfonts/robotomonoregular/font.ttf')
+      format('truetype'),
+    url('//static.zohocdn.com/webfonts/robotomonoregular/font.svg#RobotoMono-Regular')
+      format('svg');
+}
+@font-face {
+  font-family: 'Roboto Mono';
+  font-weight: 500;
+  font-style: normal;
+  font-display: 'block';
+  src: url('//static.zohocdn.com/webfonts/robotomonomedium/font.eot');
+  src: url('//static.zohocdn.com/webfonts/robotomonomedium/font.eot?#iefix')
+      format('eot'),
+    url('//static.zohocdn.com/webfonts/robotomonomedium/font.woff2')
+      format('woff2'),
+    url('//static.zohocdn.com/webfonts/robotomonomedium/font.woff')
+      format('woff'),
+    url('//static.zohocdn.com/webfonts/robotomonomedium/font.ttf')
+      format('truetype'),
+    url('//static.zohocdn.com/webfonts/robotomonomedium/font.svg#RobotoMono-Medium')
+      format('svg');
+}
+@font-face {
+  font-family: 'Roboto Mono';
+  font-weight: 700;
+  font-style: normal;
+  font-display: 'block';
+  src: url('//static.zohocdn.com/webfonts/robotomonobold/font.eot');
+  src: url('//static.zohocdn.com/webfonts/robotomonobold/font.eot?#iefix')
+      format('eot'),
+    url('//static.zohocdn.com/webfonts/robotomonobold/font.woff2')
+      format('woff2'),
+    url('//static.zohocdn.com/webfonts/robotomonobold/font.woff') format('woff'),
+    url('//static.zohocdn.com/webfonts/robotomonobold/font.ttf')
+      format('truetype'),
+    url('//static.zohocdn.com/webfonts/robotomonobold/font.svg#RobotoMono-Bold')
+      format('svg');
+}
+[data-font-family="puvi"] {
+  --zcat-font-family-primary: Zoho Puvi, sans-serif;
+}

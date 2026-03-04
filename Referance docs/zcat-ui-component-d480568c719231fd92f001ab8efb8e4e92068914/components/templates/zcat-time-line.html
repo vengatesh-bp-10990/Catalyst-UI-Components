@@ -1,0 +1,59 @@
+<template tag-name="zcat-time-line">
+    <div class="zcat-dN">
+        <svg xmlns="http://www.w3.org/2000/svg" id="zcat-icon-edit" viewBox="0 0 12 12" fill="none">
+            <g clip-path="url(#clip0_5788_13083)">
+                <path d="M5.5 1.99999H3.4C2.55992 1.99999 2.13988 1.99999 1.81901 2.16348C1.53677 2.30729 1.3073 2.53676 1.16349 2.81901C1 3.13987 1 3.55991 1 4.39999V8.59999C1 9.44007 1 9.86011 1.16349 10.181C1.3073 10.4632 1.53677 10.6927 1.81901 10.8365C2.13988 11 2.55992 11 3.4 11H7.6C8.44008 11 8.86012 11 9.18099 10.8365C9.46323 10.6927 9.6927 10.4632 9.83651 10.181C10 9.86011 10 9.44007 10 8.59999V6.49999M3.99999 7.99999H4.83726C5.08185 7.99999 5.20414 7.99999 5.31923 7.97236C5.42127 7.94786 5.51881 7.90746 5.60828 7.85263C5.7092 7.79079 5.79568 7.70431 5.96863 7.53136L10.75 2.74999C11.1642 2.33578 11.1642 1.66421 10.75 1.24999C10.3358 0.835778 9.66421 0.835777 9.25 1.24999L4.46862 6.03136C4.29567 6.20431 4.20919 6.29079 4.14735 6.39171C4.09252 6.48118 4.05211 6.57872 4.02762 6.68076C3.99999 6.79585 3.99999 6.91814 3.99999 7.16273V7.99999Z" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <defs>
+                <clipPath id="clip0_5788_13083">
+                <rect width="12" height="12" fill="white"/>
+                </clipPath>
+            </defs>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="zcat-icon-loading" viewBox="0 0 12 12" fill="none">
+            <g clip-path="url(#clip0_5788_13088)">
+                <path d="M6 1V3M6 9V11M3 6H1M11 6H9M9.53921 9.53921L8.125 8.125M9.53921 2.49997L8.125 3.91418M2.46079 9.53921L3.875 8.125M2.46079 2.49997L3.875 3.91418" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <defs>
+                <clipPath id="clip0_5788_13088">
+                <rect width="12" height="12" fill="white"/>
+                </clipPath>
+            </defs>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="zcat-icon-refresh" viewBox="0 0 12 12" fill="none">
+            <g clip-path="url(#clip0_5788_13091)">
+                <path d="M1 5C1 5 1.06066 4.57538 2.81802 2.81802C4.57538 1.06066 7.42462 1.06066 9.18198 2.81802C9.80462 3.44066 10.2067 4.20036 10.3881 5M1 5V2M1 5H4M11 7C11 7 10.9393 7.42462 9.18198 9.18198C7.42462 10.9393 4.57538 10.9393 2.81802 9.18198C2.19538 8.55934 1.79335 7.79964 1.61191 7M11 7V10M11 7H8" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <defs>
+                <clipPath id="clip0_5788_13091">
+                <rect width="12" height="12" fill="white"/>
+                </clipPath>
+            </defs>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="zcat-icon-notify" viewBox="0 0 12 12" fill="none">
+            <g clip-path="url(#clip0_5788_13094)">
+                <path d="M6.99989 10.5H4.99989M8.99989 4C8.99989 3.20435 8.68382 2.44129 8.12121 1.87868C7.5586 1.31607 6.79554 1 5.99989 1C5.20424 1 4.44118 1.31607 3.87857 1.87868C3.31596 2.44129 2.99989 3.20435 2.99989 4C2.99989 5.54509 2.61012 6.60298 2.17472 7.30271C1.80745 7.89294 1.62382 8.18805 1.63055 8.27038C1.63801 8.36154 1.65732 8.3963 1.73078 8.45079C1.79712 8.5 2.09618 8.5 2.69431 8.5H9.30546C9.90359 8.5 10.2027 8.5 10.269 8.45079C10.3425 8.3963 10.3618 8.36154 10.3692 8.27038C10.376 8.18805 10.1923 7.89294 9.82506 7.30271C9.38965 6.60298 8.99989 5.54509 8.99989 4Z" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <defs>
+                <clipPath id="clip0_5788_13094">
+                <rect width="12" height="12" fill="white"/>
+                </clipPath>
+            </defs>
+        </svg>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item {{item.icon_name ? 'timeline-item-withicon' : ''}}" lyte-for="{{zcatProp.list}} as item index">
+            <div class="timeline-icon" lyte-if="{{item.icon_name}}">
+                <lyte-svg
+                lt-prop-path="#{{item.icon_name}}"
+                lt-prop-class="zcat-w12 zcat-h12 zcat-flex-center"
+                ></lyte-svg>
+            </div>
+            <div lyte-else class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h3 class="timeline-content-head">{{item.head}}</h3>
+                <p class="timeline-content-desc">{{item.desc}}</p>
+            </div>
+        </div>
+    </div>
+</template>

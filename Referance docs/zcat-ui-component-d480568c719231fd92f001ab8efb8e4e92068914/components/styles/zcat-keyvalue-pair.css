@@ -1,0 +1,4 @@
+.lyteSortableParent .lyteSortablePlaceholder:hover, .lyteSortableParent .lyteSortablePlaceholder{
+    border: 1px solid var(--zcat-keyvalue-drag-border);
+    background: var(--zcat-keyvalue-drag-bg);
+}

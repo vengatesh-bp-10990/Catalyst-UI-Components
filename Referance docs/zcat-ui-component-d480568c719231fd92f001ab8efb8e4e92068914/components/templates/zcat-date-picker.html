@@ -1,0 +1,31 @@
+<template tag-name="zcat-date-picker">
+    <lyte-input
+    lt-prop-class='{{zcatProp.class}} {{zcatProp.size}}'
+    data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-width="{{zcatProp.width ? 'zcatProp.width' : '400px'}}"
+    lt-prop-appearance="box"
+    lt-prop-label="{{zcatProp.label}}"
+    lt-prop-placeholder="{{zcatProp.placeholder}}"
+    lt-prop-format="{{zcatProp.format}}"
+    lt-prop-value="{{lbind(formData[zcatProp.key])}}"
+    lt-prop-month-header-format="{{zcatProp.header_format}}"
+    lt-prop-header-type="dropdown"
+    lt-prop-type="date"
+    lt-prop-aria="{{zcatProp.aria ? 'zcatProp.aria' : 'true'}}"
+    lt-prop-fill-rows="{{zcatProp.fill_rows ? 'zcatProp.fill_rows' : 'false'}}"
+    lt-prop-boundary="{{zcatProp.label}}"
+    lt-prop-wheel="{{zcatProp.scope ? 'zcatProp.scope' : 'false'}}"
+    lt-prop-yield="{{zcatProp.yield ? 'zcatProp.yield' : 'false'}}"
+    lt-prop-position="{{zcatProp.position ? 'zcatProp.position' : 'down'}}"
+    lt-prop-current-date= "{{zcatProp.current_date}}"
+    lt-prop-calendar-class="{{zcatProp.calender_class}}"
+    lt-prop-bind-to-body= true
+    lt-prop-prevent-selection= false
+    lt-prop-readonly="{{zcatProp.readonly ? 'zcatProp.readonly' : 'false'}}" 
+    lt-prop-prevent-keys= false
+    lt-prop-calendar-properties='{"numberOfRows":"{{zcatProp.calender_properties}}","disableNavKeyOutOfRange":"true"}'
+    lt-prop-scope='{{zcatProp.scope}}'
+    lt-prop-disable-nav-key-out-of-range="true"
+    lt-prop-min-date="{{zcatProp.min_date}}"
+    ></lyte-input>
+</template>

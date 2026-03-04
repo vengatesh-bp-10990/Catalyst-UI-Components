@@ -1,0 +1,22 @@
+<template tag-name="zcat-breadcrumb">
+    <lyte-breadcrumb lt-prop-yield = true>
+        <template is="registerYield" yield-name="yield">
+            <lyte-breadcrumb-structure class="zcat-dF zcat-align-center zcat-gap-4">
+                <div class="zcat-dF zcat-align-center zcat-gap-4" 
+                        lyte-for="{{zcatProp.options}} as item index">
+                    <lyte-breadcrumb-item data-zcqa="{{item.zcqa}}"
+                        onclick="{{action('breadcrumbClick', item)}}"
+                        data-value="{{item.order}}">
+                        <lyte-breadcrumb-body>
+                            {{item.name}}
+                        </lyte-breadcrumb-body>
+                    </lyte-breadcrumb-item>
+                    <div lyte-if="{{index != zcatProp.options.length - 1}}" 
+                    class="zcat-breadcrumb-divider">/</div>
+                </div>
+            </lyte-breadcrumb-structure>
+        </template>
+    </lyte-breadcrumb>
+    <!-- <lyte-breadcrumb lt-prop-label = 'name' lt-prop-data = {{zcatProp.options}} on-click ="{{method('someMethod')}}">
+    </lyte-breadcrumb> -->
+</template>

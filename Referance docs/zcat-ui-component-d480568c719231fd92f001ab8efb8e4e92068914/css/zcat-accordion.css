@@ -1,0 +1,219 @@
+lyte-accordion * {
+  box-sizing: border-box;
+}
+lyte-accordion p {
+  margin: 0;
+}
+lyte-accordion h1,
+lyte-accordion h2,
+lyte-accordion h3,
+lyte-accordion h4,
+lyte-accordion h5,
+lyte-accordion h6 {
+  font-weight: 600 !important;
+  margin: 0;
+}
+
+lyte-accordion {
+  display: block;
+  position: relative;
+}
+.zcat-accordion-head{
+  color: var(--zcat-accordion-text-default);
+}
+.zcat-accordion-desc{
+  color: var(--zcat-accordion-text-secondary);
+}
+.primary-accordion lyte-accordion-item {
+  margin: 0 0 20px 0;
+  border: 1px solid var(--zcat-accordion-border-default);
+  display: block;
+  background: var(--zcat-accordion-bg-default);
+  border-radius: 6px;
+}
+.primary-accordion lyte-accordion-item:hover {
+  border-bottom-color: var(--zcat-accordion-border-default);
+}
+.primary-accordion lyte-accordion-header{
+  padding: 10px;
+  background: var(--zcat-accordion-bg-default);
+  color: var(--zcat-accordion-text-secondary);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  text-align: left;
+  outline: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.primary-accordion lyte-accordion-header:hover {
+  color: var(--zcat-accordion-text-secondary);
+  background: var(--zcat-accordion-bg-hover);
+}
+/* .primary-accordion lyte-accordion-header .title {
+  width: 90%;
+  font: var(--zcat-font-16-20) var(--zcat-font-family-primary);
+  color: var(--zcat-color-dark1);
+  font-weight: 600;
+  margin: 0 0 5px 0;
+} */
+/* .primary-accordion lyte-accordion-header .desc {
+  width: 90%;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-color-dark2);
+  font-weight: 400;
+  margin: 0;
+} */
+.primary-accordion .lyteAccordionActive {
+  border-bottom-color: var(--zcat-accordion-border-default);
+  box-shadow: var(--zcat-shadow-light-bottom);
+}
+.primary-accordion .lyteAccordionActive lyte-accordion-header {
+  color: var(--zcat-accordion-text-default);
+  background: var(--zcat-accordion-bg-default);
+  border-bottom: 1px solid var(--zcat-accordion-border-default);
+  border-radius: 6px 6px 0 0;
+}
+.primary-accordion .lyteAccordionActive lyte-accordion-header:hover {
+  color: var(--zcat-accordion-text-default);
+  background: var(--zcat-accordion-bg-hover);
+}
+.primary-accordion .lyteAccordionActive lyte-accordion-header {
+  background: var(--zcat-accordion-bg-active);
+}
+.primary-accordion.lyteAccordionNested .lyteAccordionActive lyte-accordion-header{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+.primary-accordion lyte-accordion-body {
+  width: auto;
+  padding: 0;
+  color: var(--zcat-accordion-text-secondary);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+  text-align: left;
+  display: block;
+  overflow: hidden;
+  transition: height ease-out 0.3s, padding ease-out 0.3s;
+}
+.primary-accordion lyte-icon.lyteAccordionArrow,.primary-accordion .lyteAccordionActive lyte-icon.lyteAccordionArrow,.primary-accordion.lyteAccordionNested .lyteAccordionActive > lyte-accordion-header lyte-icon.lyteAccordionArrow {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5.00202 5L9 1' stroke='%23101f3e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  width: 10px;
+  height: 6px;
+  position: unset;
+  display: inline-block;
+  margin-top: 1px;
+}
+html[data-user-color-scheme="dark"] .primary-accordion lyte-icon.lyteAccordionArrow,html[data-user-color-scheme="dark"] .primary-accordion .lyteAccordionActive lyte-icon.lyteAccordionArrow,html[data-user-color-scheme="dark"] .primary-accordion.lyteAccordionNested .lyteAccordionActive > lyte-accordion-header lyte-icon.lyteAccordionArrow {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5.00202 5L9 1' stroke='%23AAAAAA' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.primary-accordion .lyteAccordionActive,
+.primary-accordion lyte-accordion-item:hover {
+  border: 1px solid var(--zcat-accordion-border-default);
+}
+.primary-accordion .lyteAccordionArrowBlock {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-left: auto;
+}
+.primary-accordion .lyteAccordionActive .lyteAccordionArrowBlock {
+  background-color: var(--zcat-btn-grey-bg-hover);
+  transform: rotate(180deg);
+}
+lyte-accordion-header:hover .lyteAccordionArrowBlock {
+  background-color: var(--zcat-btn-grey-bg-hover);
+}
+.primary-accordion
+  .lyteAccordionActive
+  lyte-accordion-header:hover
+  .lyteAccordionArrowBlock {
+  background-color: var(--zcat-btn-grey-bg-hover);
+}
+.primary-accordion .accordian-icon-wraper,.primary-accordion .accordian-icon-without-desc{
+  width: 36px;
+  height: 36px;
+  background: var(--zcat-accordion-icon-bg-default);
+  border-radius: 50%;
+}
+.primary-accordion .accordian-icon-without-desc{
+  width: 24px;
+  height: 24px;
+}
+/* .primary-accordion .lyteAccordionActive .active-line {
+  background: var(--zcat-accordion-border-theme);
+} */
+.secondary-accordion lyte-accordion-header,.lyteAccordionNested.secondary-accordion lyte-accordion-header {
+  padding: 2px 6px;
+  color: var(--zcat-secondary-accordion-text-default);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  text-align: left;
+  position: relative;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.secondary-accordion lyte-accordion-header:hover,.lyteAccordionNested.secondary-accordion lyte-accordion-header:hover,.lyteAccordionNested.secondary-accordion .lyteAccordionActive lyte-accordion-header{
+  background: var(--zcat-secondary-accordion-bg-hover);
+  color: var(--zcat-secondary-accordion-text-hover);
+}
+lyte-accordion-header .show-title {
+  display: block;
+}
+.lyteAccordionActive lyte-accordion-header .show-title {
+  display: none;
+}
+lyte-accordion-header .hide-title {
+  display: none;
+}
+.lyteAccordionActive lyte-accordion-header .hide-title {
+  display: block;
+}
+.secondary-accordion lyte-icon.lyteAccordionArrow,.lyteAccordionNested.secondary-accordion lyte-icon.lyteAccordionArrow,.lyteAccordionNested.secondary-accordion .lyteAccordionActive > lyte-accordion-header lyte-icon.lyteAccordionArrow {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 10.5L8.75 7L5.25 3.5" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 14px;
+  height: 14px;
+  position: unset;
+  display: inline-block;
+  margin-top: 0;
+}
+html[data-user-color-scheme="dark"] .secondary-accordion lyte-icon.lyteAccordionArrow,html[data-user-color-scheme="dark"] .lyteAccordionNested.secondary-accordion lyte-icon.lyteAccordionArrow,html[data-user-color-scheme="dark"] .lyteAccordionNested.secondary-accordion .lyteAccordionActive > lyte-accordion-header lyte-icon.lyteAccordionArrow{
+  background: url('data:image/svg+xml,%3Csvg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M5.25 10.5L8.75 7L5.25 3.5" stroke="%23458BFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
+}
+.secondary-accordion .lyteAccordionActive lyte-icon.lyteAccordionArrow,.lyteAccordionNested.secondary-accordion .lyteAccordionActive lyte-icon.lyteAccordionArrow,.lyteAccordionNested.secondary-accordion .lyteAccordionActive > lyte-accordion-header lyte-icon.lyteAccordionArrow {
+  transform: rotate(90deg);
+}
+.secondary-accordion lyte-accordion-item,.lyteAccordionNested.secondary-accordion lyte-accordion-item {
+  margin: 0 0 20px 0;
+  border: none;
+  display: block;
+  background: var(--zcat-accordion-bg-default);
+  border-radius: 6px;
+}
+.secondary-accordion lyte-accordion-body,.lyteAccordionNested.secondary-accordion lyte-accordion-body {
+  width: auto;
+  padding: 0;
+  color: var(--zcat-accordion-text-secondary);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+  text-align: left;
+  display: block;
+  overflow: hidden;
+  transition: height ease-out 0.3s, padding ease-out 0.3s;
+}
+.primary-accordion lyte-accordion-item:last-child,
+.secondary-accordion lyte-accordion-item:last-child,.lyteAccordionNested.secondary-accordion lyte-accordion-item:last-child {
+  margin: 0;
+}
+.zcat-sec-accordion{
+  margin-top: 10px;
+  padding: 16px;
+  border: 1px solid var(--zcat-accordion-border-default);
+  border-radius: 6px;
+  box-shadow: 0px 4px 4px 0px var(--zcat-shadow-bg-default);
+}

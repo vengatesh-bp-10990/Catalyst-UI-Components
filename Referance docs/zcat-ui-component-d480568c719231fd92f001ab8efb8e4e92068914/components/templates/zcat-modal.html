@@ -1,0 +1,172 @@
+<template tag-name="zcat-modal">
+  <div class="zcat-dN">
+    <svg
+      id="zcat-icon-three-dots"
+      viewBox="0 0 14 4"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="2" cy="2" r="1" fill="#101F3E" stroke="#101F3E" />
+      <circle cx="7" cy="2" r="1" fill="#101F3E" stroke="#101F3E" />
+      <circle cx="12" cy="2" r="1" fill="#101F3E" stroke="#101F3E" />
+    </svg>
+    <svg id="zcat-icon-avatar" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M13.3333 14C13.3333 13.0696 13.3333 12.6044 13.2185 12.2259C12.9599 11.3736 12.293 10.7067 11.4407 10.4482C11.0622 10.3333 10.597 10.3333 9.66662 10.3333H6.3333C5.40292 10.3333 4.93773 10.3333 4.5592 10.4482C3.70693 10.7067 3.03999 11.3736 2.78145 12.2259C2.66663 12.6044 2.66663 13.0696 2.66663 14M11 5C11 6.65685 9.65681 8 7.99996 8C6.3431 8 4.99996 6.65685 4.99996 5C4.99996 3.34315 6.3431 2 7.99996 2C9.65681 2 11 3.34315 11 5Z" stroke="#4D618A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <lyte-modal
+    id="{{zcatProp.id}}"
+    lt-prop-show="false"
+    lt-prop-show-close-button="false"
+    lt-prop-width="{{zcatProp.width ? zcatProp.width : '600px'}}"
+    lt-prop-close-on-escape="true"
+    lt-prop-transition='{"animation":"fadeIn","duration":"0.5"}'
+    lt-prop-allow-multiple="true"
+    on-show="{{method('onAfterModalOpen')}}"
+    on-close="{{method('onModalClose')}}"
+    on-before-close="{{method('onBeforeModalClose')}}"
+    lt-prop-wrapper-class="{{zcatProp.deleteModalInput ? 'delete-modal--input' : ''}} {{zcatProp.deleteModalNoInput ? 'delete-modal--noinput' : ''}}"
+  >
+    <template is="registerYield" yield-name="modal">
+      <form if="{{lbind(isPopUpOpen)}}" class="{{zcatProp.isFormLoading ? 'modal-loader' : ''}}" onsubmit="{{action('submitForm', event)}}">
+        <lyte-modal-header data-name="{{zcatProp.id}}">
+          <div class="zcat-form-header">
+            <!-- new design - SK -->
+            <div class="zcat-left-alignment">
+              <div class="zcat-dF zcat-align-center zcat-gap-6">
+                <!-- back button 
+                <%if(zcatProp.header.left.backArrow){%>
+                <zcat-button self="{{self}}" zcat-prop='
+                  {
+                    "variant": "ghost",
+                    "size": "small",
+                    "color": "grey",
+                    "type": "navigation",
+                    "icon": {
+                      "position": "right",
+                      "name": "zcat-icon-leftArrow",
+                      "class": "zcat-w16 zcat-h16 zcat-stroke-greybtn-icon"
+                    },
+                    "callback": {
+                      "name": "{{zcatProp.header.left.backArrow.callback}}"
+                    }
+                  }
+                '
+                click-action="{{method(zcatProp.header.left.backArrow.callback)}}"
+                ></zcat-button>
+                <% } %>   -->
+                
+                <%if(zcatProp.header.left.frontYield){%>
+                <lyte-yield yield-name="{{zcatProp.left.frontYield}}"></lyte-yield>
+                <%}%>
+                <div lyte-if="{{zcatProp.header.left.avatar}}">
+                  <zcat-avatar zcat-prop = "{{zcatProp.header.left.avatar}}" self = "{{self}}">
+                  </zcat-avatar>
+                </div>
+                <h5>
+                  {{zcatProp.header.left.title.name}}
+                </h5>
+
+                <%if(zcatProp.header.left.badge){%>
+                <zcat-label self = "{{self}}" zcat-prop = {{zcatProp.header.left.badge}}> </zcat-label>
+                <%}%>
+                <%if(zcatProp.header.left.yield){%>
+                <lyte-yield yield-name="{{zcatProp.left.yield}}"></lyte-yield>
+                <%}%>
+
+              </div>
+              <p lyte-if="{{zcatProp.header.left.desc.name}}" class="zcat-text-12 zcat-color-dark2 zcat-mt-4">{{zcatProp.header.left.desc.name}}</p>
+            </div>
+
+            <%if(zcatProp.header.tabsSecondary){%>
+            <div class="zcat-subheader-tabs zcat-secondary-tab">
+              <% zcatProp.header.tabsSecondary.list.forEach((item, index) => { %>
+              <go-to
+                lt-prop-route="{{item.route}}"
+                lt-prop-dp="{{item.dynamicParams}}"
+                lt-prop-qp="{{item.queryParams}}"
+                lt-prop-class="zcat-link zcat-text-12"
+                lt-prop-custom
+                onclick="{{action('routeChange', item.route)}}"
+              >
+                <a class="{{zcatProp.header.tabsSecondary.selectedTab == item.route ? 'active-tab' : ''}}"
+                data-zcqa="{{item.zcqa}}-{{index}}"  
+                >{{item.label}}</a
+                >
+              </go-to>
+              <%}) %>
+            </div>
+            <%}%>
+
+
+            <div class="zcat-right-alignment">
+              <%if(item.yield){%>
+              <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+              <%}%>
+            </div>
+          </div>
+
+          
+          <%if(zcatProp.header.tabsPrimary){%>
+            <div class="zcat-subheader-tabs">
+              <% zcatProp.header.tabsPrimary.list.forEach((item, index) => { %>
+              <go-to
+                lt-prop-route="{{item.route}}"
+                lt-prop-dp="{{item.dynamicParams}}"
+                lt-prop-qp="{{item.queryParams}}"
+                lt-prop-class="zcat-link zcat-text-12"
+                lt-prop-custom
+                onclick="{{action('routeChange', item.route)}}"
+              >
+                <a class="{{zcatProp.header.tabsPrimary.selectedTab == item.route ? 'active-tab' : ''}}"
+                data-zcqa="{{item.zcqa}}-{{index}}"  
+                >{{item.label}}</a
+                >
+              </go-to>
+              <%}) %>
+            </div>
+            <%}%>
+        </lyte-modal-header>
+
+        <lyte-modal-content data-name="{{zcatProp.id}}">
+                <lyte-yield 
+                  yield-name="modal_body" 
+                  error-prop="{{zcatProp.error}}" 
+                  self="{{self}}" 
+                  data="{{zcatProp.body}}">
+                </lyte-yield>
+        </lyte-modal-content>
+        
+        <lyte-modal-footer data-name="{{zcatProp.id}}" class="zcat-form-footer">
+          <div class="zcat-left-alignment">
+            <% if(zcatProp.footer.left) { %>
+              <% zcatProp.footer.left.forEach((item) => { %>
+                <% if(!item.yield) { %>
+                  <zcat-button self="{{self}}" zcat-prop="{{item}}"></zcat-button>
+                <% } %>
+                <% if(item.yield) { %>
+                  <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+                <% } %>
+              <% }); %>
+            <% } %>
+          </div>
+          <div class="zcat-right-alignment">
+            <% if(zcatProp.footer.right) { %>
+              <% zcatProp.footer.right.forEach((item) => { %>
+                <% if(!item.yield) { %>
+                  <zcat-button self="{{self}}" zcat-prop="{{item}}"></zcat-button>
+                <% } %>
+                <% if(item.yield) { %>
+                  <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+                <% } %>
+              <% }); %>
+            <% } %>
+          </div>
+        </lyte-modal-footer>
+
+
+      </form>
+    </template>
+  </lyte-modal>
+
+</template>

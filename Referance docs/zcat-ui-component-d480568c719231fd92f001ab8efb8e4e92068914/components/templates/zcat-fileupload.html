@@ -1,0 +1,536 @@
+<template tag-name="zcat-fileupload">
+  <zcat-hovercard
+    lyte-if="{{zcatProp.infoIcon.yield || zcatProp.infoIcon.value}}"
+    zcat-prop="{{zcatProp.infoIcon}}"
+  >
+    <template is="yield" yield-name="{{zcatProp.infoIcon.yield}}">
+      <lyte-yield yield-name="{{zcatProp.infoIcon.yield}}"></lyte-yield>
+    </template>
+  </zcat-hovercard>
+  <div
+    lyte-if="{{zcatProp.label}}"
+    class="zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{zcatProp.disabled ? 'input-field-disabled' : ''}}"
+  >
+    <p
+    class="{{zcatProp.label_class ? zcatProp.label_class : 'zcat-input-label'}} zcat-input-label-default" 
+    >
+      {{zcatProp.label}}
+      <span class="optional-label">{{zcatProp.isOptional && zcatProp.label ? ' (Optional)' : ''}}</span>
+    </p>
+    <div    
+      lyte-if="{{zcatProp.infoIcon.id}}"
+      class="zcat-w12 zcat-h12 zcat-cP"
+      id="tooltipInfoMsg{{zcatProp.infoIcon.id}}" 
+      lyte-hovercard="true"
+    >
+      <!-- <lyte-svg lt-prop-path="#zcat-icon-info" lt-prop-class="zcat-w12 zcat-h12 zcat-input-label-stroke zcat-mb-2"></lyte-svg> -->
+      <zcat-icon 
+              class="zcat-mb-2 zcat-input-label-stroke"
+              name="info" 
+              width="12"
+              height="12"
+              stroke="var(--zcat-inputField-icon-label)"
+              strokeWidth="1.3"
+        >
+        </zcat-icon>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------ -->
+  <%if(zcatProp.variant === 'primary' && zcatProp.type === 'single'){ %>
+  <lyte-fileupload
+  data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-yield="true"
+    lt-prop-name="{{zcatProp.name}}"
+    lt-prop-multiple="{{zcatProp.multiple}}"
+    lt-prop-accept="{{zcatProp.accept ? zcatProp.accept : 'application/zip'}}"
+    id="{{zcatProp.id}}"
+    lt-prop-id="{{zcatProp.id}}"
+    lt-prop-class="{{zcatProp.class}}"
+    error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+    class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : 'vertical'}} 
+    {{zcatProp.loading ? 'fileupload-loading' : ''}}"    
+    lt-prop-upload-multiple="{{zcatProp.uploadMultiple}}"
+    lt-prop-upload-multiple-count="{{zcatProp.uploadMultipleCount}}"
+    lt-prop-file-limit="{{zcatProp.fileLimit}}"
+    lt-prop-minimum-file-size="{{zcatProp.minimumFileSize}}"
+    lt-prop-total-files-size='{{zcatProp.totalFilesSize}}'
+    lt-prop-parallel="{{zcatProp.parallel}}"
+    lt-prop-auto-upload="{{zcatProp.autoUpload}}"
+    lt-prop-trigger-upload="{{zcatProp.triggerUpload}}"
+    lt-prop-param-name="{{zcatProp.paramName}}"
+    lt-prop-thumb="{{zcatProp.thumb}}"
+    lt-prop-tabindex="{{zcatProp.tabindex}}"
+    lt-prop-retry="{{zcatProp.retry}}"
+    lt-prop-files="{{lbind(zcatProp.files)}}"
+    lt-prop-folder="{{zcatProp.folder}}"
+    lt-prop-file-unit="{{zcatProp.fileUnit}}"
+    lt-prop-digits="{{zcatProp.digits}}"
+    lt-prop-message="{{zcatProp.message}}"
+    lt-prop-chunk="{{zcatProp.chunk}}"
+    lt-prop-chunk-size="{{zcatProp.chunkSize}}"
+    lt-prop-parallel-chunk-upload="{{zcatProp.parallelChunkUpload}}"
+    lt-prop-parallel-chunk-count="{{zcatProp.parallelChunkCount}}"
+    lt-prop-chunk-retry="{{zcatProp.chunkRetry}}"
+    lt-prop-ajax="{{zcatProp.ajax}}"
+    lt-prop-appearance="{{zcatProp.appearance}}"
+    lt-prop-disabled="{{zcatProp.disabled}}"
+    lt-prop-failure-message="{{zcatProp.failureMessage}}"
+    lt-prop-retry-text="{{zcatProp.retryText}}"
+    lt-prop-allow-replace="{{zcatProp.allowReplace}}"
+    lt-prop-files-count="{{zcatProp.filesCount ? zcatProp.filesCount : 100000}}"
+    before-render="{{method('defaultBeforeRender')}}"
+    after-render="{{method('defaultAfterRender')}}"
+    on-reject='{{method("defaultOnReject")}}'
+    on-add='{{method("defaultOnAdd")}}'
+    on-before-remove="{{method('defaultOnBeforeRemove')}}"
+    on-remove="{{method('defaultOnRemove')}}"
+    on-success="{{method('defaultOnSuccess')}}"
+    on-failure="{{method('defaultOnFailure')}}"
+    on-request-success="{{method('defaultOnRequestSuccess')}}"
+    on-request-failure="{{method('defaultOnRequestFailure')}}"
+    on-file-success="{{method('defaultOnFileSuccess')}}"
+    on-file-failure="{{method('defaultOnFileFailure')}}"
+    on-progress="{{method('defaultOnProgress')}}"
+    on-retry="{{method('defaultOnRetry')}}"
+    on-chunk-success="{{method('defaultOnChunkSuccess')}}"
+    on-chunk-error="{{method('defaultOnChunkError')}}"
+    on-before-send="{{method('defaultOnBeforeSend')}}"
+    on-send="{{method('defaultOnSend')}}"
+    on-drag-enter="{{method('defaultOnDragEnter')}}"
+    on-drag-over="{{method('defaultOnDragOver')}}"
+    on-drag-leave="{{method('defaultOnDragLeave')}}"
+    on-before-drop="{{method('defaultOnBeforeDrop')}}"
+    on-drop="{{method('defaultOnDrop')}}"
+    on-before-paste="{{method('defaultOnBeforePaste')}}"
+    on-paste="{{method('defaultOnPaste')}}"
+    on-before-open="{{method('defaultOnBeforeOpen')}}"
+    on-select="{{method('defaultOnSelect')}}"
+  >
+    <template is="registerYield" yield-name="file">
+      <lyte-file-select-area>
+        <lyte-file-message
+          class="lyteInputFileUpd {{if(queueList.length, 'lyteHide', '')}}"
+        >
+          <zcat-icon 
+            width="16"
+            height="16"
+            stroke="var(--zcat-inputField-icon-placeholder)"
+            name="{{zcatProp.loading ? 'loading-sun' : 'upload-cloud'}}"
+          >
+          </zcat-icon>
+          <span class="placeholder">
+          {{
+            zcatProp.loading
+              ? (zcatProp.loadingPlaceholder ? zcatProp.loadingPlaceholder : "Hold on your file has been uploading")
+              : (zcatProp.placeholder ? zcatProp.placeholder + (zcatProp.isOptional && !zcatProp.label ? " (Optional)" : "") : "Drag and drop, or browse to upload your file")
+          }}
+          </span>
+        </lyte-file-message>
+        <div class="lyteFileUpdList">
+          <%queueList.forEach(function(item,index){%>
+          <div class="lyteInputFileUpd {{item.status}}">
+            <div class="zcat-dF zcat-gap-4 zcat-align-center">
+              <zcat-icon 
+                width="16"
+                height="16"
+                stroke="var(--zcat-inputField-icon-active)"
+                name="{{uploadedIcon}}"
+              >
+              </zcat-icon>
+              <p class="lyteuploadedfilename">{{item.name}}</p>
+            </div>
+            <div class="zcat-p-4 zcat-dF zcat-align-center">
+              <lyte-file-close data-value="{{item.id}}" class="{{item.status}}" data-zcqa="{{item.zcqa}}">
+              </lyte-file-close>
+            </div>
+          </div>
+          <%if(item.status=="error"){%>
+          <lyte-file-retry data-value="{{item.id}}">
+            <span class="lyteFileUpdFailMsg">
+              {{zcatProp.failureMessage}}
+            </span>
+            <span class="lyteFileUpdRetryMsg"> {{zcatProp.retryText}} </span>
+          </lyte-file-retry>
+          <%}%> <%})%>
+        </div>
+      </lyte-file-select-area>
+    </template>
+  </lyte-fileupload>
+  <%}else if(zcatProp.variant === 'primary' && zcatProp.type === 'multiple'){%>
+    <lyte-fileupload
+    data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-yield="true"
+    lt-prop-name="{{zcatProp.name}}"
+    lt-prop-multiple="{{zcatProp.multiple}}"
+    lt-prop-accept="{{zcatProp.accept ? zcatProp.accept : 'application/zip'}}"
+    id="{{zcatProp.id}}"
+    lt-prop-id="{{zcatProp.id}}"
+    lt-prop-class="{{zcatProp.class}}"
+    error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+    class="{{zcatProp.type === 'multiple' ? 'multi-file-upload': ''}} {{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : 'vertical'}} 
+    {{zcatProp.loading ? 'fileupload-loading' : ''}}"
+    lt-prop-upload-multiple="{{zcatProp.uploadMultiple}}"
+    lt-prop-upload-multiple-count="{{zcatProp.uploadMultipleCount}}"
+    lt-prop-file-limit="{{zcatProp.fileLimit}}"
+    lt-prop-minimum-file-size="{{zcatProp.minimumFileSize}}"
+    lt-prop-total-files-size="{{zcatProp.totalFilesSize}}"
+    lt-prop-parallel="{{zcatProp.parallel}}"
+    lt-prop-auto-upload="{{zcatProp.autoUpload}}"
+    lt-prop-trigger-upload="{{zcatProp.triggerUpload}}"
+    lt-prop-param-name="{{zcatProp.paramName}}"
+    lt-prop-thumb="{{zcatProp.thumb}}"
+    lt-prop-tabindex="{{zcatProp.tabindex}}"
+    lt-prop-retry="{{zcatProp.retry}}"
+    lt-prop-files="{{lbind(zcatProp.files)}}"
+    lt-prop-folder="{{zcatProp.folder}}"
+    lt-prop-file-unit="{{zcatProp.fileUnit}}"
+    lt-prop-digits="{{zcatProp.digits}}"
+    lt-prop-message="{{zcatProp.message}}"
+    lt-prop-chunk="{{zcatProp.chunk}}"
+    lt-prop-chunk-size="{{zcatProp.chunkSize}}"
+    lt-prop-parallel-chunk-upload="{{zcatProp.parallelChunkUpload}}"
+    lt-prop-parallel-chunk-count="{{zcatProp.parallelChunkCount}}"
+    lt-prop-chunk-retry="{{zcatProp.chunkRetry}}"
+    lt-prop-ajax="{{zcatProp.ajax}}"
+    lt-prop-appearance="{{zcatProp.appearance}}"
+    lt-prop-disabled="{{zcatProp.disabled}}"
+    lt-prop-failure-message="{{zcatProp.failureMessage}}"
+    lt-prop-retry-text="{{zcatProp.retryText}}"
+    lt-prop-allow-replace="{{zcatProp.allowReplace}}"
+    lt-prop-files-count="{{zcatProp.filesCount ? zcatProp.filesCount : 100000}}"
+    before-render="{{method('defaultBeforeRender')}}"
+    after-render="{{method('defaultAfterRender')}}"
+    on-reject='{{method("defaultOnReject")}}'
+    on-add='{{method("defaultOnAdd")}}'
+    on-before-remove="{{method('defaultOnBeforeRemove')}}"
+    on-remove="{{method('defaultOnRemove')}}"
+    on-success="{{method('defaultOnSuccess')}}"
+    on-failure="{{method('defaultOnFailure')}}"
+    on-request-success="{{method('defaultOnRequestSuccess')}}"
+    on-request-failure="{{method('defaultOnRequestFailure')}}"
+    on-file-success="{{method('defaultOnFileSuccess')}}"
+    on-file-failure="{{method('defaultOnFileFailure')}}"
+    on-progress="{{method('defaultOnProgress')}}"
+    on-retry="{{method('defaultOnRetry')}}"
+    on-chunk-success="{{method('defaultOnChunkSuccess')}}"
+    on-chunk-error="{{method('defaultOnChunkError')}}"
+    on-before-send="{{method('defaultOnBeforeSend')}}"
+    on-send="{{method('defaultOnSend')}}"
+    on-drag-enter="{{method('defaultOnDragEnter')}}"
+    on-drag-over="{{method('defaultOnDragOver')}}"
+    on-drag-leave="{{method('defaultOnDragLeave')}}"
+    on-before-drop="{{method('defaultOnBeforeDrop')}}"
+    on-drop="{{method('defaultOnDrop')}}"
+    on-before-paste="{{method('defaultOnBeforePaste')}}"
+    on-paste="{{method('defaultOnPaste')}}"
+    on-before-open="{{method('defaultOnBeforeOpen')}}"
+    on-select="{{method('defaultOnSelect')}}"
+  >
+    <template is="registerYield" yield-name="file">
+      <lyte-file-select-area class="{{if(queueList.length, 'fileUploaded', '')}}">
+        <lyte-file-message
+          class="lyteInputFileUpd {{if(queueList.length, 'fileUploaded', '')}}"
+        >
+          <zcat-icon 
+            width="16"
+            height="16"
+            stroke="var(--zcat-inputField-icon-placeholder)"
+            name="{{zcatProp.loading ? 'loading-sun' : 'upload-cloud'}}"
+          >
+          </zcat-icon>
+          <span class="placeholder">
+          {{
+            zcatProp.loading
+              ? (zcatProp.loadingPlaceholder ? zcatProp.loadingPlaceholder : "Hold on your file has been uploading")
+              : (zcatProp.placeholder + (zcatProp.isOptional && !zcatProp.label ? " (Optional)" : ""))
+          }}
+          </span>
+        </lyte-file-message>
+        <div class="lyteFileUpdList">
+          <%queueList.forEach(function(item,index){%>
+          <div class="lyteInputFileUpd {{item.status}}">
+            <div class="zcat-dF zcat-gap-4 zcat-align-center">
+              <zcat-icon 
+                width="16"
+                height="16"
+                stroke="var(--zcat-inputField-icon-active)"
+                name="{{uploadedIcon}}"
+              >
+              </zcat-icon>
+              <p class="lyteuploadedfilename">{{item.name}}</p>
+            </div>
+            <div class="zcat-p-4 zcat-dF zcat-align-center">
+              <lyte-file-close data-value="{{item.id}}" class="{{item.status}}" data-zcqa="{{item.zcqa}}">
+              </lyte-file-close>
+            </div>
+          </div>
+          <%if(item.status=="error"){%>
+          <lyte-file-retry data-value="{{item.id}}">
+            <span class="lyteFileUpdFailMsg">
+              {{zcatProp.failureMessage}}
+            </span>
+            <span class="lyteFileUpdRetryMsg"> {{zcatProp.retryText}} </span>
+          </lyte-file-retry>
+          <%}%> <%})%>
+        </div>
+      </lyte-file-select-area>
+    </template>
+  </lyte-fileupload>
+  
+  <%}else if(zcatProp.variant === 'secondary' && zcatProp.type === 'single'){%>
+  <lyte-fileupload
+  data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-yield="true"
+    lt-prop-name="{{zcatProp.name}}"
+    lt-prop-multiple="{{zcatProp.multiple}}"
+    lt-prop-accept="{{zcatProp.accept ? zcatProp.accept : 'application/zip'}}"
+    id="{{zcatProp.id}}"
+    lt-prop-id="{{zcatProp.id}}"
+    lt-prop-class="{{zcatProp.class}}"
+    error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+    class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : 'vertical'}} 
+    {{zcatProp.loading ? 'fileupload-loading' : ''}}"
+    lt-prop-upload-multiple="{{zcatProp.uploadMultiple}}"
+    lt-prop-upload-multiple-count="{{zcatProp.uploadMultipleCount}}"
+    lt-prop-file-limit="{{zcatProp.fileLimit}}"
+    lt-prop-minimum-file-size="{{zcatProp.minimumFileSize}}"
+    lt-prop-total-files-size="{{zcatProp.totalFilesSize}}"
+    lt-prop-parallel="{{zcatProp.parallel}}"
+    lt-prop-auto-upload="{{zcatProp.autoUpload}}"
+    lt-prop-trigger-upload="{{zcatProp.triggerUpload}}"
+    lt-prop-param-name="{{zcatProp.paramName}}"
+    lt-prop-thumb="{{zcatProp.thumb}}"
+    lt-prop-tabindex="{{zcatProp.tabindex}}"
+    lt-prop-retry="{{zcatProp.retry}}"
+    lt-prop-files="{{lbind(zcatProp.files)}}"
+    lt-prop-folder="{{zcatProp.folder}}"
+    lt-prop-file-unit="{{zcatProp.fileUnit}}"
+    lt-prop-digits="{{zcatProp.digits}}"
+    lt-prop-message="{{zcatProp.message}}"
+    lt-prop-chunk="{{zcatProp.chunk}}"
+    lt-prop-chunk-size="{{zcatProp.chunkSize}}"
+    lt-prop-parallel-chunk-upload="{{zcatProp.parallelChunkUpload}}"
+    lt-prop-parallel-chunk-count="{{zcatProp.parallelChunkCount}}"
+    lt-prop-chunk-retry="{{zcatProp.chunkRetry}}"
+    lt-prop-ajax="{{zcatProp.ajax}}"
+    lt-prop-appearance="{{zcatProp.appearance}}"
+    lt-prop-disabled="{{zcatProp.disabled}}"
+    lt-prop-failure-message="{{zcatProp.failureMessage}}"
+    lt-prop-retry-text="{{zcatProp.retryText}}"
+    lt-prop-allow-replace="{{zcatProp.allowReplace}}"
+    lt-prop-files-count="{{zcatProp.filesCount ? zcatProp.filesCount : 100000}}"
+    before-render="{{method('defaultBeforeRender')}}"
+    after-render="{{method('defaultAfterRender')}}"
+    on-reject='{{method("defaultOnReject")}}'
+    on-add='{{method("defaultOnAdd")}}'
+    on-before-remove="{{method('defaultOnBeforeRemove')}}"
+    on-remove="{{method('defaultOnRemove')}}"
+    on-success="{{method('defaultOnSuccess')}}"
+    on-failure="{{method('defaultOnFailure')}}"
+    on-request-success="{{method('defaultOnRequestSuccess')}}"
+    on-request-failure="{{method('defaultOnRequestFailure')}}"
+    on-file-success="{{method('defaultOnFileSuccess')}}"
+    on-file-failure="{{method('defaultOnFileFailure')}}"
+    on-progress="{{method('defaultOnProgress')}}"
+    on-retry="{{method('defaultOnRetry')}}"
+    on-chunk-success="{{method('defaultOnChunkSuccess')}}"
+    on-chunk-error="{{method('defaultOnChunkError')}}"
+    on-before-send="{{method('defaultOnBeforeSend')}}"
+    on-send="{{method('defaultOnSend')}}"
+    on-drag-enter="{{method('defaultOnDragEnter')}}"
+    on-drag-over="{{method('defaultOnDragOver')}}"
+    on-drag-leave="{{method('defaultOnDragLeave')}}"
+    on-before-drop="{{method('defaultOnBeforeDrop')}}"
+    on-drop="{{method('defaultOnDrop')}}"
+    on-before-paste="{{method('defaultOnBeforePaste')}}"
+    on-paste="{{method('defaultOnPaste')}}"
+    on-before-open="{{method('defaultOnBeforeOpen')}}"
+    on-select="{{method('defaultOnSelect')}}"
+  >
+    <template is="registerYield" yield-name="file">
+      <lyte-file-select-area>
+        <lyte-file-message
+          class="lyteFileUpd {{if(queueList.length, 'lyteHide', '')}}"
+        >
+          <zcat-icon 
+            width="24"
+            height="24"
+            stroke="var(--zcat-inputField-icon-placeholder)"
+            name="{{zcatProp.loading ? 'loading-sun' : 'upload-cloud'}}"
+          >
+          </zcat-icon>
+          <span class="placeholder">
+          {{
+            zcatProp.loading
+              ? (zcatProp.loadingPlaceholder ? zcatProp.loadingPlaceholder : "Hold on your file has been uploading")
+              : (zcatProp.placeholder + (zcatProp.isOptional && !zcatProp.label ? " (Optional)" : ""))
+          }}
+          </span>
+        </lyte-file-message>
+        <div class="lyteFileUpdList">
+          <%queueList.forEach(function(item,index){%>
+          <div class="lyteFileUploadedList {{item.status}}">
+            <zcat-icon 
+            width="24"
+            height="24"
+            stroke="var(--zcat-inputField-icon-active)"
+            name="{{uploadedIcon}}"
+            >
+            </zcat-icon>
+            <div class="zcat-dF zcat-align-center zcat-gap-4">
+              <span class="lyteuploadedfilename">
+                 {{item.name}} 
+              </span>
+              <lyte-file-close data-value="{{item.id}}" class="{{item.status}}" data-zcqa="{{item.zcqa}}">
+              </lyte-file-close>
+            </div>
+
+          </div>
+          <%if(item.status=="error"){%>
+          <lyte-file-retry data-value="{{item.id}}">
+            <span class="lyteFileUpdFailMsg">
+              {{zcatProp.failureMessage}}
+            </span>
+            <span class="lyteFileUpdRetryMsg"> {{zcatProp.retryText}} </span>
+          </lyte-file-retry>
+          <%}%> <%})%>
+        </div>
+      </lyte-file-select-area>
+    </template>
+  </lyte-fileupload>
+  <%}
+  else if(zcatProp.variant === 'secondary' && zcatProp.type === 'multiple'){%>
+  <lyte-fileupload
+  data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-yield="true"
+    lt-prop-name="{{zcatProp.name}}"
+    lt-prop-multiple="{{zcatProp.multiple}}"
+    lt-prop-accept="{{zcatProp.accept ? zcatProp.accept : 'application/zip'}}"
+    id="{{zcatProp.id}}"
+    lt-prop-id="{{zcatProp.id}}"
+    lt-prop-class="{{zcatProp.class}}"
+    error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+    class="{{zcatProp.type === 'multiple' ? 'multi-file-upload': ''}} {{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : 'vertical'}} 
+    {{zcatProp.loading ? 'fileupload-loading' : ''}}"
+    lt-prop-upload-multiple="{{zcatProp.uploadMultiple}}"
+    lt-prop-upload-multiple-count="{{zcatProp.uploadMultipleCount}}"
+    lt-prop-file-limit="{{zcatProp.fileLimit}}"
+    lt-prop-minimum-file-size="{{zcatProp.minimumFileSize}}"
+    lt-prop-total-files-size="{{zcatProp.totalFilesSize}}"
+    lt-prop-parallel="{{zcatProp.parallel}}"
+    lt-prop-auto-upload="{{zcatProp.autoUpload}}"
+    lt-prop-trigger-upload="{{zcatProp.triggerUpload}}"
+    lt-prop-param-name="{{zcatProp.paramName}}"
+    lt-prop-thumb="{{zcatProp.thumb}}"
+    lt-prop-tabindex="{{zcatProp.tabindex}}"
+    lt-prop-retry="{{zcatProp.retry}}"
+    lt-prop-files="{{lbind(zcatProp.files)}}"
+    lt-prop-folder="{{zcatProp.folder}}"
+    lt-prop-file-unit="{{zcatProp.fileUnit}}"
+    lt-prop-digits="{{zcatProp.digits}}"
+    lt-prop-message="{{zcatProp.message}}"
+    lt-prop-chunk="{{zcatProp.chunk}}"
+    lt-prop-chunk-size="{{zcatProp.chunkSize}}"
+    lt-prop-parallel-chunk-upload="{{zcatProp.parallelChunkUpload}}"
+    lt-prop-parallel-chunk-count="{{zcatProp.parallelChunkCount}}"
+    lt-prop-chunk-retry="{{zcatProp.chunkRetry}}"
+    lt-prop-ajax="{{zcatProp.ajax}}"
+    lt-prop-appearance="{{zcatProp.appearance}}"
+    lt-prop-disabled="{{zcatProp.disabled}}"
+    lt-prop-failure-message="{{zcatProp.failureMessage}}"
+    lt-prop-retry-text="{{zcatProp.retryText}}"
+    lt-prop-allow-replace="{{zcatProp.allowReplace}}"
+    lt-prop-files-count="{{zcatProp.filesCount ? zcatProp.filesCount : 100000}}"
+    before-render="{{method('defaultBeforeRender')}}"
+    after-render="{{method('defaultAfterRender')}}"
+    on-reject='{{method("defaultOnReject")}}'
+    on-add='{{method("defaultOnAdd")}}'
+    on-before-remove="{{method('defaultOnBeforeRemove')}}"
+    on-remove="{{method('defaultOnRemove')}}"
+    on-success="{{method('defaultOnSuccess')}}"
+    on-failure="{{method('defaultOnFailure')}}"
+    on-request-success="{{method('defaultOnRequestSuccess')}}"
+    on-request-failure="{{method('defaultOnRequestFailure')}}"
+    on-file-success="{{method('defaultOnFileSuccess')}}"
+    on-file-failure="{{method('defaultOnFileFailure')}}"
+    on-progress="{{method('defaultOnProgress')}}"
+    on-retry="{{method('defaultOnRetry')}}"
+    on-chunk-success="{{method('defaultOnChunkSuccess')}}"
+    on-chunk-error="{{method('defaultOnChunkError')}}"
+    on-before-send="{{method('defaultOnBeforeSend')}}"
+    on-send="{{method('defaultOnSend')}}"
+    on-drag-enter="{{method('defaultOnDragEnter')}}"
+    on-drag-over="{{method('defaultOnDragOver')}}"
+    on-drag-leave="{{method('defaultOnDragLeave')}}"
+    on-before-drop="{{method('defaultOnBeforeDrop')}}"
+    on-drop="{{method('defaultOnDrop')}}"
+    on-before-paste="{{method('defaultOnBeforePaste')}}"
+    on-paste="{{method('defaultOnPaste')}}"
+    on-before-open="{{method('defaultOnBeforeOpen')}}"
+    on-select="{{method('defaultOnSelect')}}"
+  >
+    <template is="registerYield" yield-name="file">
+      <lyte-file-select-area class="{{if(queueList.length, 'fileUploaded', '')}}">
+        <lyte-file-message
+          class="lyteFileUpd {{if(queueList.length, 'fileUploaded', '')}}"
+        >
+          <zcat-icon 
+            width="24"
+            height="24"
+            stroke="var(--zcat-inputField-icon-placeholder)"
+            name="{{zcatProp.loading ? 'loading-sun' : 'upload-cloud'}}"
+          >
+          </zcat-icon>
+          <span class="placeholder">
+          {{
+            zcatProp.loading
+              ? (zcatProp.loadingPlaceholder ? zcatProp.loadingPlaceholder : "Hold on your file has been uploading")
+              : (zcatProp.placeholder + (zcatProp.isOptional && !zcatProp.label ? " (Optional)" : ""))
+          }}
+          </span>
+        </lyte-file-message>
+
+
+        <div class="lyteFileUpdList">
+          <%queueList.forEach(function(item,index){%>
+          <div class="lyteInputFileUpd {{item.status}}">
+            <div class="zcat-dF zcat-gap-4 zcat-align-center">
+              <zcat-icon 
+                width="16"
+                height="16"
+                stroke="var(--zcat-inputField-icon-active)"
+                name="{{uploadedIcon}}"
+              >
+              </zcat-icon>
+              <p class="lyteuploadedfilename">{{item.name}}</p>
+            </div>
+            <div class="zcat-p-4 zcat-dF zcat-align-center">
+              <lyte-file-close data-value="{{item.id}}" class="{{item.status}}" data-zcqa="{{item.zcqa}}">
+              </lyte-file-close>
+            </div>
+          </div>
+          <%if(item.status=="error"){%>
+          <lyte-file-retry data-value="{{item.id}}">
+            <span class="lyteFileUpdFailMsg">
+              {{zcatProp.failureMessage}}
+            </span>
+            <span class="lyteFileUpdRetryMsg"> {{zcatProp.retryText}} </span>
+          </lyte-file-retry>
+          <%}%> <%})%>
+        </div>
+      </lyte-file-select-area>
+    </template>
+  </lyte-fileupload>
+  
+  <%}%>
+
+
+
+
+
+
+
+
+
+</template>

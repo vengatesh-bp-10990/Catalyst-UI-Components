@@ -1,0 +1,284 @@
+<template tag-name="zcat-popover">
+    <div class="zcat-dN">
+        <svg id="zcat-icon-edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
+            <g clip-path="url(#clip0_1465_21523)">
+                <path d="M7.33337 2.66666H4.53337C3.41327 2.66666 2.85322 2.66666 2.42539 2.88464C2.04907 3.07639 1.74311 3.38235 1.55136 3.75867C1.33337 4.1865 1.33337 4.74655 1.33337 5.86666V11.4667C1.33337 12.5868 1.33337 13.1468 1.55136 13.5746C1.74311 13.951 2.04907 14.2569 2.42539 14.4487C2.85322 14.6667 3.41327 14.6667 4.53337 14.6667H10.1334C11.2535 14.6667 11.8135 14.6667 12.2414 14.4487C12.6177 14.2569 12.9236 13.951 13.1154 13.5746C13.3334 13.1468 13.3334 12.5868 13.3334 11.4667V8.66666M5.33336 10.6667H6.44972C6.77584 10.6667 6.9389 10.6667 7.09235 10.6298C7.2284 10.5972 7.35846 10.5433 7.47775 10.4702C7.61231 10.3877 7.72761 10.2724 7.95821 10.0418L14.3334 3.66666C14.8857 3.11437 14.8857 2.21894 14.3334 1.66666C13.7811 1.11437 12.8857 1.11437 12.3334 1.66665L5.9582 8.04182C5.72759 8.27242 5.61229 8.38772 5.52984 8.52228C5.45673 8.64157 5.40286 8.77163 5.3702 8.90768C5.33336 9.06113 5.33336 9.22419 5.33336 9.55031V10.6667Z" 
+                stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g> 
+            <defs>
+                <clipPath id="clip0_1465_21523">
+                <rect width="16" height="16" fill="white"/>
+                </clipPath>
+            </defs>
+        </svg>
+        <svg id="zcat-icon-delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
+            <path d="M10.6667 3.99998V3.46665C10.6667 2.71991 10.6667 2.34654 10.5213 2.06133C10.3935 1.81044 10.1895 1.60647 9.93865 1.47864C9.65344 1.33331 9.28007 1.33331 8.53333 1.33331H7.46667C6.71993 1.33331 6.34656 1.33331 6.06135 1.47864C5.81046 1.60647 5.60649 1.81044 5.47866 2.06133C5.33333 2.34654 5.33333 2.71991 5.33333 3.46665V3.99998M2 3.99998H14M12.6667 3.99998V11.4666C12.6667 12.5868 12.6667 13.1468 12.4487 13.5746C12.2569 13.951 11.951 14.2569 11.5746 14.4487C11.1468 14.6666 10.5868 14.6666 9.46667 14.6666H6.53333C5.41323 14.6666 4.85318 14.6666 4.42535 14.4487C4.04903 14.2569 3.74307 13.951 3.55132 13.5746C3.33333 13.1468 3.33333 12.5868 3.33333 11.4666V3.99998"
+            stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg id="zcat-icon-download-cloud" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
+            <path d="M2.66659 10.8282C1.86259 10.29 1.33325 9.37347 1.33325 8.33333C1.33325 6.77095 2.52759 5.48753 4.05308 5.34625C4.36513 3.44809 6.01341 2 7.99992 2C9.98642 2 11.6347 3.44809 11.9468 5.34625C13.4722 5.48753 14.6666 6.77095 14.6666 8.33333C14.6666 9.37347 14.1372 10.29 13.3333 10.8282M5.33325 11.3333L7.99992 14M7.99992 14L10.6666 11.3333M7.99992 14V8" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+    </div>
+    <lyte-beta-popover
+    id="popover"
+                                            lt-prop-origin-elem="#{{zcatProp.id}}"
+                                            class="main-popover" 
+                                            lt-prop-show-close-button = "false"
+                                            lt-prop-type = "box"
+                                            lt-prop-allow-multiple = true
+                                            lt-prop-wrapper-class="lyte-popover-wrapper"
+                                            lt-prop-auto-show="true"
+                                            lt-prop-placement = "bottomRight top"
+                                            on-close="{{method('onDefaultClose', 'lyte_popover_item_' + data.id)}}"
+                                            on-show="{{method('defaultOnShow')}}"
+                                        >
+                                            <template is='registerYield' yield-name='popover'>
+                                                <lyte-popover-header lyte-if="{{zcatProp.isSearchable}}"> 
+                                                    <div class="header-search-parent">
+                                                        <lyte-search
+                                                        data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                                                            on-search="{{method('onDropdownSearch', zcatProp.onSearch)}}"
+                                                            lt-prop-query-selector='{"scope" : "lyte-drop-box.checkboxBoxClass", "search" : "lyte-popover-item"}'
+                                                            lt-prop-placeholder="Search"
+                                                            lt-prop='{"closeIcon" : true}'
+                                                            class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+                                                        ></lyte-search> 
+                                                    </div>             
+                                                </lyte-popover-header>
+                                                <lyte-popover-content 
+                                                    class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+                                                    {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+                                                    {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+                                                >
+
+                                                    <h4 class="zcat-mb-6" lyte-if="{{zcatProp.dropLabel}}">{{zcatProp.dropLabel}}</h4>
+
+                                                    <div lyte-for="{{zcatProp.options}} as data index" class="zcat-dF zcat-align-item">
+                                                        <lyte-popover-item data-value="{{data.value}}"
+                                                        data-zcqa="{{data.zcqa}}-{{index}}"
+                                                        id="lyte_popover_item_{{data.id}}"
+                                                        onmouseenter="{{action('setHoverClass', 'lyte_popover_item_' + data.id)}}"
+                                                        onmouseleave="{{action('removeHoverClass', 'lyte_popover_item_' + data.id)}}"
+                                                        aria-selected="{{data.selected ? 'true' : 'false'}}"
+                                                        selected="{{data.selected ? 'true' : 'false'}}"
+                                                        onclick="{{action('handleDropItemClick', 'lyte_popover_item_' + data.id , data.value, data.itemOnClick)}}"
+                                                        class="{{data.nestedPopover ? 'nested-popover-item' : ''}} 
+                                                        {{data.disabled ? 'popover-item-disabled' : ''}}"
+                                                        >
+                                                            <div lyte-if="{{data.icon}}">
+                                                                <div class="zcat-dF zcat-align-center zcat-gap-4">
+                                                                <!-- <lyte-svg lt-prop-path="#{{data.icon.name}}" lt-prop-class="zcat-stroke-icon-active 
+                                                                    {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" 
+                                                                    class="menu-lyte-svg-class {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}">
+                                                                </lyte-svg> -->
+                                                                <zcat-icon 
+                                                                    class="menu-lyte-svg-class zcat-stroke-icon-active"
+                                                                    name="{{data.icon.name}}" 
+                                                                    width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                                                                    height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                                                                    stroke="var(--zcat-menuList-icon-active)"
+                                                                    strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                                                                >
+                                                                </zcat-icon>
+                                                                <p class="zcat-body1">{{data.name}}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="zcat-body1" lyte-else>
+                                                                {{data.name}}                    
+                                                            </div>
+                                                            <!-- <lyte-svg                                                        
+                                                                lyte-if="{{data.nestedPopover}}"
+                                                                lt-prop-path="#zcat-icon-rightArrow" 
+                                                                lt-prop-class="zcat-h14 zcat-w14 zcat-stroke-icon-active"
+                                                                class="zcat-w14 zcat-h14"
+                                                            >
+                                                            </lyte-svg> -->
+                                                            <zcat-icon                                                        
+                                                                lyte-if="{{data.nestedPopover}}"
+                                                                    class="zcat-stroke-icon-active"
+                                                                    name="arrow-right" 
+                                                                    width="14"
+                                                                    height="14"
+                                                                    stroke="var(--zcat-menuList-icon-active)"
+                                                                    strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                                                                >
+                                                                </zcat-icon>
+                                                        </lyte-popover-item>
+                                                        <template is="yield" yield-name="{{data.yield}}">
+                                                            <lyte-yield yield-name="{{data.yield}}"></lyte-yield>
+                                                        </template>
+                                                    </div>
+
+                                                    <div lyte-if="{{zcatProp.isLoading}}" class="lyteDropdownText">
+                                                        Loading ...
+                                                    </div>
+                                                    <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                                                        {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+                                                    </div>
+
+
+                                                </lyte-popover-content>
+                                                <lyte-popover-footer class='right'   
+                                                    lyte-if="{{zcatProp.createNewBtn.label}}"
+                                                >
+                                                    <div  class="lyte-drop-footer"             
+                                                    lyte-if="{{zcatProp.createNewBtn.label}}"
+                                                    style="border-top: 1px solid var(--zcat-menuList-border-default);"
+                                                    >                
+                                                        <zcat-button self = "{{self}}" zcat-prop = '{
+                                                        "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                                                        "variant": "ghost",
+                                                            "size": "default",
+                                                            "color": "primary",
+                                                            "icon": {
+                                                            "position": "left",
+                                                            "name": "zcat-icon-plus",
+                                                            "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                                                            },
+                                                            "width": "zcat-w100p",
+                                                            "ltPropClassCss": "btn-radius-top0", 
+                                                            "callback": {
+                                                                "name": "{{zcatProp.createNewBtn.callback.name}}"
+                                                            }
+                                                        }'
+                                                        >
+                                                        </zcat-button>            
+                                                    </div>
+                                                </lyte-popover-footer>
+                                            </template>
+                                        </lyte-beta-popover>
+
+                                        <div lyte-for="{{zcatProp.options}} as eachOptionsData index">
+                                        <lyte-beta-popover
+                                            id="popover-1"
+                                            lt-prop-origin-elem="#lyte_popover_item_{{eachOptionsData.id}}"
+                                            class="sub-popover-{{eachOptionsData.id}}" 
+                                            lt-prop-show-close-button = "false"
+                                            lt-prop-type = "box"
+                                            lt-prop-allow-multiple = true
+                                            lt-prop-wrapper-class="lyte-popover-wrapper-1"
+                                            lt-prop-auto-show="true"
+                                            lyte-if="{{eachOptionsData.nestedPopover}}"
+                                            lt-prop-placement = "right left"
+                                        >
+                                            <template is='registerYield' yield-name='popover'>
+                                                <lyte-popover-header lyte-if="{{eachOptionsData.isSearchable}}"> 
+                                                    <div class="header-search-parent">
+                                                        <lyte-search
+                                                        data-zcqa="{{eachOptionsData.isSearchable.zcqa}}"
+                                                            on-search="{{method('onDropdownSearch', eachOptionsData.onSearch)}}"
+                                                            lt-prop-query-selector='{"scope" : "lyte-drop-box.checkboxBoxClass", "search" : "lyte-popover-item"}'
+                                                            lt-prop-placeholder="Search"
+                                                            lt-prop='{"closeIcon" : true}'
+                                                            class="{{eachOptionsData.size === 'small' || eachOptionsData.size == 'extra-small' ? 'lyteSm' : ''}}"
+                                                        ></lyte-search> 
+                                                    </div>             
+                                                </lyte-popover-header>
+                                                <lyte-popover-content 
+                                                    class="{{eachOptionsData.size == 'small' ? 'lyteSm' : eachOptionsData.size == 'extra-small' ? 'lyteExsm' : ''}} 
+                                                    {{eachOptionsData.isSearchable ? 'zcat-pt-6' : ''}} 
+                                                    {{eachOptionsData.createNewBtn ? 'zcat-pb-6': ''}}"
+                                                >
+
+                                                    <h4 class="zcat-mb-6" lyte-if="{{eachOptionsData.dropLabel}}">{{eachOptionsData.dropLabel}}</h4>
+
+                                                    <div lyte-for="{{eachOptionsData.options}} as eachOptionsData_data index">
+                                                        <lyte-popover-item data-value="{{eachOptionsData_data.value}}"
+                                                        data-zcqa="{{eachOptionsData_data.zcqa}}-{{index}}"
+                                                        id="lyte_popover_item_{{eachOptionsData_data.id}}"
+                                                        onmouseenter="{{action('setHoverClass', 'lyte_popover_item_' + eachOptionsData_data.id)}}"
+                                                        onmouseleave="{{action('removeHoverClass', 'lyte_popover_item_' + eachOptionsData_data.id)}}"
+                                                        aria-selected="{{eachOptionsData_data.selected ? 'true' : 'false'}}"
+                                                        selected="{{eachOptionsData_data.selected ? 'true' : 'false'}}"
+                                                        onclick="{{action('handleDropItemClick', 'lyte_popover_item_' + eachOptionsData_data.id , eachOptionsData_data.value, eachOptionsData_data.itemOnClick)}}"
+                                                        classss="{{data.nestedPopover ? 'nested-popover-item' : ''}}"
+                                                        class="{{eachOptionsData_data.nestedPopover ? 'nested-popover-item' : ''}} 
+                                                        {{data.disabled ? 'popover-item-disabled' : ''}}"    
+                                                        >
+                                                        <!--the above class added sept6-->
+                                                            <div lyte-if="{{eachOptionsData_data.icon}}">
+                                                                <div class="zcat-dF zcat-align-center zcat-gap-4">
+                                                                <!-- <lyte-svg lt-prop-path="#{{eachOptionsData_data.icon.name}}" lt-prop-class="zcat-stroke-icon-active 
+                                                                    {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" 
+                                                                    class="menu-lyte-svg-class {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}">
+                                                                </lyte-svg> -->
+                                                                <zcat-icon 
+                                                                    class="menu-lyte-svg-class zcat-stroke-icon-active"
+                                                                    name="{{eachOptionsData_data.icon.name}}" 
+                                                                    width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                                                                    height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                                                                    stroke="var(--zcat-menuList-icon-active)"
+                                                                    strokeWidth="{{eachOptionsData_data.icon.strokeWidth || 1.3}}"
+                                                                >
+                                                                </zcat-icon>
+                                                                <p>{{eachOptionsData_data.name}}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div lyte-else>
+                                                                {{eachOptionsData_data.name}}                    
+                                                            </div>
+                                                        </lyte-popover-item>
+                                                        <template is="yield" yield-name="{{eachOptionsData_data.yield}}">
+                                                            <lyte-yield yield-name="{{eachOptionsData_data.yield}}"></lyte-yield>
+                                                        </template>
+                                                        <!-- <lyte-svg                                                        
+                                                            lyte-if="{{eachOptionsData_data.nestedPopover}}"
+                                                            lt-prop-path="#zcat-icon-downArrow" 
+                                                            lt-prop-class="zcat-h14 zcat-w14"
+                                                            class="zcat-w14 zcat-h14"
+                                                        >
+                                                        </lyte-svg> -->
+                                                        <zcat-icon                                                        
+                                                                lyte-if="{{eachOptionsData_data.nestedPopover}}"
+                                                                    class="zcat-stroke-icon-active"
+                                                                    name="arrow-down" 
+                                                                    width="14"
+                                                                    height="14"
+                                                                    stroke="var(--zcat-menuList-icon-active)"
+                                                                    strokeWidth="1.3"
+                                                                >
+                                                                </zcat-icon>
+                                                    </div>
+
+                                                    <div lyte-if="{{eachOptionsData.isLoading}}" class="lyteDropdownText">
+                                                        Loading ...
+                                                    </div>
+                                                    <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                                                        {{eachOptionsData.noResult ? eachOptionsData.noResult : 'No Result Found'}}
+                                                    </div>
+
+
+                                                </lyte-popover-content>
+                                                <lyte-popover-footer class='right'  
+                                                    lyte-if="{{zcatProp.createNewBtn.label}}"
+                                                >
+                                                    <div  class="lyte-drop-footer"             
+                                                    lyte-if="{{eachOptionsData.createNewBtn.label}}"
+                                                    style="border-top: 1px solid var(--zcat-menuList-border-default);"
+                                                    >                
+                                                        <zcat-button self = "{{self}}" zcat-prop = '{
+                                                        "label": "{{eachOptionsData.createNewBtn.label ? eachOptionsData.createNewBtn.label : "Create New"}}",
+                                                        "variant": "ghost",
+                                                            "size": "default",
+                                                            "color": "primary",
+                                                            "icon": {
+                                                            "position": "left",
+                                                            "name": "zcat-icon-plus",
+                                                            "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                                                            },
+                                                            "width": "zcat-w100p",
+                                                            "ltPropClassCss": "btn-radius-top0", 
+                                                            "callback": {
+                                                                "name": "{{eachOptionsData.createNewBtn.callback.name}}"
+                                                            }
+                                                        }'
+                                                        >
+                                                        </zcat-button>            
+                                                    </div>
+                                                </lyte-popover-footer>
+                                            </template>
+                                        </lyte-beta-popover>
+                                        </div>
+
+</template>

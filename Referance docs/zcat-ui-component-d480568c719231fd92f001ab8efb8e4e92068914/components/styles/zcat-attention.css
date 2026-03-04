@@ -1,0 +1,72 @@
+.zcat-attention-container{
+    padding: 10px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+}
+.zcat-atten-info{
+    border: 1px solid var(--zcat-alerts-info-border);
+    background: var(--zcat-alerts-info-bg);
+}
+.zcat-atten-danger{
+    border: 1px solid var(--zcat-alerts-danger-border);
+    background: var(--zcat-alerts-danger-bg);
+}
+.zcat-atten-success{
+    border: 1px solid var(--zcat-alerts-success-border);
+    background: var(--zcat-alerts-success-bg);
+}
+.zcat-atten-warning{
+    border: 1px solid var(--zcat-alerts-warning-border);
+    background: var(--zcat-alerts-warning-bg);
+}
+.zcat-atten-default{
+    border: 1px solid var(--zcat-attention-default-border);
+    background: var(--zcat-attention-default-bg);
+}
+.zcat-atten-info .zcat-attention-head,.zcat-atten-danger .zcat-attention-head,.zcat-atten-success .zcat-attention-head,.zcat-atten-warning .zcat-attention-head,.zcat-atten-default .zcat-attention-head{
+    color: var(--zcat-alerts-info-text-primary);
+}
+.zcat-atten-info .zcat-attention-desc,.zcat-atten-danger .zcat-attention-desc,.zcat-atten-success .zcat-attention-desc,.zcat-atten-warning .zcat-attention-desc,.zcat-atten-default .zcat-attention-desc{
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    color: var(--zcat-alerts-info-text-secondary);
+}
+.zcat-atten-info .zcat-stroke-color{
+    stroke: var(--zcat-alerts-info-icon);
+}
+.zcat-atten-danger .zcat-attention-head{
+    color: var(--zcat-alerts-danger-text-primary);
+}
+.zcat-atten-danger .zcat-attention-desc{
+    color: var(--zcat-alerts-danger-text-secondary);
+}
+.zcat-atten-danger .zcat-stroke-color{
+    stroke: var(--zcat-alerts-danger-icon);
+}
+.zcat-atten-success .zcat-attention-head{
+    color: var(--zcat-alerts-success-text-primary);
+}
+.zcat-atten-success .zcat-attention-desc{
+    color: var(--zcat-alerts-success-text-secondary);
+}
+.zcat-atten-success .zcat-stroke-color{
+    stroke: var(--zcat-alerts-success-icon);
+}
+.zcat-atten-warning .zcat-attention-head{
+    color: var(--zcat-alerts-warning-text-primary);
+}
+.zcat-atten-warning .zcat-attention-desc{
+    color: var(--zcat-alerts-warning-text-secondary);
+}
+.zcat-atten-warning .zcat-stroke-color{
+    stroke: var(--zcat-alerts-warning-icon);
+}
+.zcat-atten-default .zcat-attention-head{
+    color: var(--zcat-attention-default-text-primary);
+}
+.zcat-atten-default .zcat-attention-desc{
+    color: var(--zcat-attention-default-text-secondary);
+}
+.zcat-atten-default .zcat-stroke-color{
+    stroke: var(--zcat-attention-default-icon);
+}

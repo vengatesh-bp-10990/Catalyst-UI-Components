@@ -1,0 +1,177 @@
+lyte-step * {
+  box-sizing: border-box;
+}
+lyte-step{
+  width: 100%;
+}
+.lyteStepBullet {
+  display: flex;
+  justify-content: center;
+}
+.lyteStepBullet lyte-step-item {
+  width: 31%;
+  display: flex;
+  flex-wrap: wrap;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  align-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 0;
+  position: relative;
+}
+.lyteStepBullet lyte-step-head {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: transparent;
+  cursor: pointer;
+  counter-reset: section;
+  background: var(--zcat-stepper-bg-default);
+  border: 1px solid var(--zcat-stepper-border-default);
+  text-indent: 0;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 6px 0px var(--zcat-shadow-bg-default);
+}
+
+.lyteStepBullet lyte-step-head::before {
+  content: attr(step-value);
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  font-weight: 600;
+  color: var(--zcat-stepper-text-default);
+  width: 0px;
+  height: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: transparent;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 10;
+}
+.lyteStepBullet lyte-step-head:hover::before {
+  transform: scale(1);
+}
+.lyteStepBullet .lyteActive lyte-step-head {
+  background: var(--zcat-stepper-border-active);
+  border: 2px solid var(--zcat-stepper-bg-active);
+  box-shadow: none;
+}
+.lyteStepBullet .lyteActive:last-of-type lyte-step-head,
+.lyteStepBullet .lyteCompleted lyte-step-head {
+  background: var(--zcat-stepper-bg-completed);
+  border-color: var(--zcat-stepper-bg-completed);
+  box-shadow: none;
+}
+/* .lyteStepBullet lyte-step-item.lyteActive:last-of-type lyte-step-head::before,
+.lyteStepBullet .lyteCompleted lyte-step-head::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='9' viewBox='0 0 12 9' fill='none'%3E%3Cpath d='M10.6668 1.5L4.25016 7.91667L1.3335 5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 15px;
+  height: 12px;
+  transform: scale(1);
+  background-color: transparent;
+  color: transparent;
+} */
+.lyteStepBullet .lyteActive lyte-step-head::before,.lyteStepBullet .lyteCompleted lyte-step-head::before,.lyteStepBullet lyte-step-item.lyteActive:last-of-type lyte-step-head::before {
+  transform: scale(1);
+  counter-increment: section;
+  width: 20px;
+  height: 20px;
+  background: var(--zcat-stepper-bg-active);
+  color: var(--zcat-stepper-text-number);
+  box-sizing: border-box;
+}
+.lyteStepBullet .lyteCompleted lyte-step-head::before,.lyteStepBullet lyte-step-item.lyteActive:last-of-type lyte-step-head::before {
+  background: var(--zcat-stepper-bg-completed);
+  border: 1px solid var(--zcat-stepper-border-active);
+}
+/* .lyteStepBullet lyte-step-head::after,.lyteStepBullet .lyteCompleted lyte-step-head::after {
+  content: "";
+  position: absolute;
+  width: 125px;
+  height: 0px;
+  vertical-align: middle;
+  border-top: 1px dashed var(--zcat-stepper-divider-default);
+  background: none;
+  left: 19px;
+  z-index: -1;
+}
+.lyteStepBullet .lyteActive lyte-step-head::after{
+  border-color: var(--zcat-stepper-bg-active);
+}
+.lyteStepBullet .lyteCompleted lyte-step-head::after {
+  border-color: var(--zcat-stepper-divider-completed);
+  background: none;
+} */
+.lyteStepBullet lyte-step-item:last-of-type {
+  width: auto;
+}
+.lyteStepBullet lyte-step-item lyte-step-head::after {
+  content: none;
+}
+.lyteStepBullet lyte-step-body {
+  color: var(--zcat-stepper-text-default);
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  display: block;
+  position: relative;
+  text-align: center;
+  padding: 0 4px;
+  background: var(--zcat-body-container-bg);
+  transform: none;
+  cursor: pointer;
+  display: flex;
+}
+.lyteStepBullet .lyteCompleted lyte-step-body .lyteStepBody,
+.lyteStepBullet .lyteActive lyte-step-body .lyteStepBody {
+  color: var(--zcat-stepper-text-active);
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  font-weight: 600;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: normal;
+  text-align: left;
+}
+.lyteStepBullet .lyteCompleted lyte-step-body,
+.lyteStepBullet .lyteActive lyte-step-body{
+  max-width: calc(100% - 26px);
+}
+
+lyte-step-item::after {
+  content: "";
+  position: absolute;
+  height: 0px;
+  border-top: 1px dashed var(--zcat-stepper-divider-default);
+  background: none;
+  z-index: -1;
+  display: block;
+  width: calc(100% - 4px);
+}
+
+.lyteStepBullet lyte-step-item.lyteActive::after {
+  border-color: var(--zcat-stepper-bg-active);
+}
+
+.lyteStepBullet lyte-step-item.lyteCompleted::after {
+  border-color: var(--zcat-stepper-divider-completed);
+  background: none;
+}
+
+.lyteStepBullet lyte-step-item:last-of-type::after {
+  content: none;
+}
+
+.lyteStepBullet .lyteActive lyte-step-body, .lyteStepBullet .lyteCompleted lyte-step-body{
+  color: var(--zcat-stepper-text-active);
+}

@@ -1,0 +1,679 @@
+zcat-button * {
+  box-sizing: border-box;
+}
+
+lyte-button .lyte-button {
+  position: relative;
+  display: inline-block;
+  font-weight: 500 !important;
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-default) var(--zcat-font-family-primary);
+  padding: 0 10px;
+  width: auto;
+  border-radius: 6px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  user-select: none;
+  cursor: pointer;
+  height: 36px;
+  /* min-width: 36px; */
+  white-space: nowrap;
+}
+
+.lytePrimaryBtn {
+  background: var(--zcat-btn-fill-bg-primary-default);
+  color: var(--zcat-btn-fill-text-default);
+}
+.lytePrimaryBtn:hover {
+  background: var(--zcat-btn-fill-bg-primary-hover);
+  color: var( --zcat-btn-fill-text-default);
+  border-color: transparent;
+}
+.lytePrimaryBtn:active {
+  background: var(--zcat-btn-fill-bg-primary-click);
+}
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.lyte-button.lyteSecondary {
+  background: var(--zcat-btn-grey-bg-default);
+  color: var(--zcat-btn-grey-text-default);
+  border-color: var(--zcat-btn-grey-border-default);
+}
+.lyte-button.lyteSecondary:hover {
+  background: var(--zcat-btn-grey-bg-hover);
+  border-color: var(--zcat-btn-grey-border-hover);
+  color: var(--zcat-btn-grey-text-hover);
+}
+.lyte-button.lyteSecondary:active {
+  background: var(--zcat-btn-grey-bg-click);
+  color: var(--zcat-btn-grey-text-click);
+  border-color: var(--zcat-btn-grey-border-click);
+}
+
+.lyteTertiaryBtn {
+  background: transparent;
+  color: var(--zcat-btn-ghost-text-primary-default);
+}
+.lyteTertiaryBtn:hover,
+.lyteTertiaryBtn:active {
+  background: var(--zcat-btn-ghost-bg-primary-hover);
+  border-color: transparent;
+}
+
+lyte-button .lyte-button.lytePrimaryLineBtn {
+  background: transparent;
+  color: var(--zcat-btn-outline-text-primary-default);
+  border-color: var(--zcat-btn-outline-border-primary-default);
+}
+lyte-button .lyte-button.lytePrimaryLineBtn:hover,
+lyte-button .lyte-button.lytePrimaryLineBtn:active {
+  background: var(--zcat-btn-outline-bg-primaryHover);
+  border-color: var(--zcat-btn-outline-border-primary-default);
+}
+
+.lyteFailure {
+  background: var( --zcat-btn-fill-bg-danger-default);
+  color: var(--zcat-btn-fill-text-default);
+}
+.lyteFailure:hover {
+  background: var(--zcat-btn-fill-bg-danger-hover);
+  border: 1px solid var(--zcat-btn-fill-bg-danger-hover);
+}
+.lyteFailure:active {
+  background: var(--zcat-btn-fill-bg-danger-click);
+}
+
+lyte-button.sm-btn .lyte-button {
+  padding: 4px 12px;
+}
+
+/* Button Sizes */
+lyte-button .lyteSm {
+  padding: 0 6px;
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-sm) var(--zcat-font-family-primary);
+  height: 28px;
+  /* min-width: 28px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+}
+
+lyte-button .lyteExsm {
+  padding: 0 6px;
+  height: 24px;
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-exsm) var(--zcat-font-family-primary);
+  border-radius: 6px;
+  /* min-width: 16px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+lyte-button .lyteLg{
+  height: 50px;
+  padding: 0 14px;  
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-lg) var(--zcat-font-family-primary);
+  /* min-width: 50px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Button Loader */
+.button-loader-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+  opacity: 0;
+}
+.button-loader {
+  border-width: 1.5px;
+  border-style: solid;
+  border-radius: 50%;
+  border-top: 1.5px solid transparent;
+  width: 16px;
+  height: 16px;
+  -webkit-animation: button-loader 1.5s linear infinite;
+  animation: button-loader 1.5s linear infinite;
+}
+lyte-button.loading button,
+lyte-button.loading button .button-loader-container {
+  pointer-events: none;
+  opacity: 1;
+}
+
+@-webkit-keyframes button-loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes button-loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+lyte-button p {
+  margin: 0;
+}
+lyte-button.loading p {
+  opacity: 0;
+}
+lyte-button.loading .button-loader {
+  opacity: 1;
+}
+
+/* Key value btn */
+lyte-button .lyte-button.keyValueAddBtn,
+lyte-button .lyte-button.keyValueRemoveBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--zcat-btn-grey-bg-default);
+  color: var(--zcat-btn-grey-text-default);
+}
+lyte-button .lyte-button.keyValueAddBtn:hover,
+lyte-button .lyte-button.keyValueAddBtn:active,
+lyte-button .lyte-button.keyValueRemoveBtn:hover,
+lyte-button .lyte-button.keyValueRemoveBtn:active {
+  background: var(--zcat-btn-grey-bg-hover);
+}
+lyte-button .lyte-button.keyValueRemoveBtn::after {
+  content: '';
+  background-image: url('data:image/svg+xml,<svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.49951 1H8.64237" stroke="%23101F3E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 10px;
+  height: 2px;
+}
+
+html[data-user-color-scheme="dark"] lyte-button .lyte-button.keyValueRemoveBtn::after {
+  content: '';
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3.33331 8H12.6666" stroke="%23EEEEEE" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
+}
+
+/* Button */
+.transparent-btn .lyte-button.lyteSecondary,
+.transparent-btn .lyte-button.lyteSecondary:hover {
+  background: transparent !important;
+  color: transparent !important;
+  border-color: transparent !important;
+  padding: 0 !important;
+}
+
+/* Split button styles Starts  */
+lyte-button .lyte-button.fill.split-line{
+  border-right: 1px solid var(--zcat-btn-fill-splitLine-default) !important;  /* this !important is must  */
+}
+lyte-button .lyte-button.split-body-br-6{
+  border-radius: 6px 0 0 6px;
+}
+lyte-button .lyte-button.split-body-br-4{
+  border-radius: 4px 0 0 4px;
+}
+lyte-button .lyte-button.split-btn-arrow-br-6{
+  border-radius: 0 6px 6px 0;
+} 
+lyte-button .lyte-button.split-btn-arrow-br-4{
+  border-radius: 0 4px 4px 0;
+}
+lyte-button .lyte-button.split-border{
+  border-right: var(--zcat-btn-fill-splitLine-default);
+}
+/* Split button styles Ends  */
+
+
+/* Navigation button styles Starts  */
+lyte-button .lyte-button.round{
+  border-radius: 50%;
+  border: none;
+}
+
+/* Fill button styles Starts  */
+lyte-button .lyte-button.fill{
+  color: var(--zcat-btn-fill-text-default) !important;
+}
+lyte-button .lyte-button.fill.primary{
+  background: var(--zcat-btn-fill-bg-primary-default);
+  border: none;
+}
+lyte-button .lyte-button.fill.success{
+  background: var(--zcat-btn-fill-bg-success-default);
+  border: none;
+}
+lyte-button .lyte-button.fill.danger{
+  background: var(--zcat-btn-fill-bg-danger-default);
+  border: none;
+}
+
+/* Hover fill btn */ 
+lyte-button .lyte-button.fill.primary:hover{
+  background: var(--zcat-btn-fill-bg-primary-hover);
+}
+lyte-button .lyte-button.fill.success:hover{
+  background: var(--zcat-btn-fill-bg-success-hover);
+}
+lyte-button .lyte-button.fill.danger:hover{
+  background: var(--zcat-btn-fill-bg-danger-hover);
+}
+
+/* active  */
+lyte-button .lyte-button.fill:active{
+  color: var(--zcat-btn-fill-text-click);
+}
+lyte-button .lyte-button.fill.primary:active{
+  background: var(--zcat-btn-fill-bg-primary-click);
+}
+lyte-button .lyte-button.fill.success:active{
+  background: var(--zcat-btn-fill-bg-success-click);
+}
+lyte-button .lyte-button.fill.danger:active{
+  background: var(--zcat-btn-fill-bg-danger-click);
+}
+lyte-button .lyte-button.fill.primary:active .zcat-stroke-fillbtn-icon path[stroke],
+lyte-button .lyte-button.fill.success:active .zcat-stroke-fillbtn-icon path[stroke],
+lyte-button .lyte-button.fill.danger:active .zcat-stroke-fillbtn-icon path[stroke],
+lyte-button .lyte-button.fill:active .zcat-stroke-fillbtn-icon path[stroke]
+{
+  stroke: var(--zcat-btn-fill-icon-click);
+}
+
+/* disabled - fill   */
+lyte-button .lyte-button.fill:disabled{
+  color: var(--zcat-btn-fill-text-disabled);
+}
+lyte-button .lyte-button.fill.primary:disabled{
+  background: var(--zcat-btn-fill-bg-primary-disabled);
+}
+lyte-button .lyte-button.fill.success:disabled{
+  background: var(--zcat-btn-fill-bg-success-disabled);
+}
+lyte-button .lyte-button.fill.danger:disabled{
+  background: var(--zcat-btn-fill-bg-danger-disabled);
+}
+lyte-button .lyte-button.fill.primary:disabled .zcat-stroke-fillbtn-icon path[stroke],
+lyte-button .lyte-button.fill.success:disabled .zcat-stroke-fillbtn-icon path[stroke],
+lyte-button .lyte-button.fill.danger:disabled .zcat-stroke-fillbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-fill-icon-disabled);
+}
+
+
+/* Outline button styles Starts  */
+lyte-button .lyte-button.outline, lyte-button .lyte-button.lyteLineBtn{
+  background: transparent;
+}
+lyte-button .lyte-button.outline.primary, lyte-button .lyte-button.lyteLineBtn{
+  color: var(--zcat-btn-outline-text-primary-default);
+  border-color: var(--zcat-btn-outline-border-primary-default);
+}
+lyte-button .lyte-button.outline.success{
+  color: var(--zcat-btn-outline-text-success-default);
+  border-color: var(--zcat-btn-outline-border-success-default);
+}
+lyte-button .lyte-button.outline.danger{
+  color: var(--zcat-btn-outline-text-danger-default);
+  border-color: var(--zcat-btn-outline-border-danger-default);
+}
+
+/* Hover outline btn  */
+lyte-button .lyte-button.outline.primary:hover, lyte-button .lyte-button.lyteLineBtn:hover{
+  color: var(--zcat-btn-outline-text-primary-hover);
+  border-color: var(--zcat-btn-outline-border-primary-hover);
+  background: var(--zcat-btn-outline-bg-primaryHover);
+}
+lyte-button .lyte-button.outline.success:hover{
+  color: var(--zcat-btn-outline-text-success-hover);
+  border-color: var(--zcat-btn-outline-border-success-hover);
+  background: var(--zcat-btn-outline-bg-successHover);
+}
+lyte-button .lyte-button.outline.danger:hover{
+  color: var(--zcat-btn-outline-text-danger-hover);
+  border-color: var(--zcat-btn-outline-border-danger-hover);
+  background: var(--zcat-btn-outline-bg-dangerHover);
+}
+/* icons -outlineBtn:hover */
+lyte-button .lyte-button.outline.primary:hover .zcat-stroke-outline-primarybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-primary-hover)
+}
+lyte-button .lyte-button.outline.success:hover .zcat-stroke-outline-successbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-success-hover)
+}
+lyte-button .lyte-button.outline.danger:hover .zcat-stroke-outline-dangerbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-danger-hover)
+}
+
+/* Active state  */
+lyte-button .lyte-button.outline.primary:active, lyte-button .lyte-button.lyteLineBtn:active{
+  border-color: var(--zcat-btn-outline-border-primary-click);
+  background: transparent;
+}
+lyte-button .lyte-button.outline.success:active{
+  border-color: var(--zcat-btn-outline-border-success-click);
+  background: transparent;
+}
+lyte-button .lyte-button.outline.danger:active{
+  border-color: var(--zcat-btn-outline-border-danger-click);
+  background: transparent;
+}
+lyte-button .lyte-button.outline.primary:active p,
+lyte-button .lyte-button.lyteLineBtn:active p {
+  color: var(--zcat-btn-outline-text-primary-click);
+}
+lyte-button .lyte-button.outline.success:active p{
+  color: var(--zcat-btn-outline-text-success-click);
+}
+lyte-button .lyte-button.outline.danger:active p{
+  color: var(--zcat-btn-outline-text-danger-click);
+}
+/* icons -outlineBtn:active */
+lyte-button .lyte-button.outline.primary:active .zcat-stroke-outline-primarybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-primary-click)
+}
+lyte-button .lyte-button.outline.success:active .zcat-stroke-outline-successbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-success-click)
+}
+lyte-button .lyte-button.outline.danger:active .zcat-stroke-outline-dangerbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-danger-click)
+}
+
+/* disabled  */
+lyte-button .lyte-button.outline.primary:disabled, lyte-button .lyte-button.lyteLineBtn:disabled{
+  border-color: var(--zcat-btn-outline-border-primary-disabled);
+  background: transparent;
+}
+lyte-button .lyte-button.outline.success:disabled{
+  border-color: var(--zcat-btn-outline-border-success-disabled);
+  background: transparent;
+}
+lyte-button .lyte-button.outline.danger:disabled{
+  border-color: var(--zcat-btn-outline-border-danger-disabled);
+  background: transparent;
+}
+lyte-button .lyte-button.outline.primary:disabled p, lyte-button .lyte-button.lyteLineBtn:disabled p{
+  color: var(--zcat-btn-outline-text-primary-disabled);
+}
+lyte-button .lyte-button.outline.success:disabled p{
+  color: var(--zcat-btn-outline-text-success-disabled);
+}
+lyte-button .lyte-button.outline.danger:disabled p{
+  color: var(--zcat-btn-outline-text-danger-disabled);
+}
+
+/* icons -outlineBtn:disabled */
+lyte-button .lyte-button.outline.primary:disabled .zcat-stroke-outline-primarybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-primary-disabled)
+}
+lyte-button .lyte-button.outline.success:disabled .zcat-stroke-outline-successbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-success-disabled)
+}
+lyte-button .lyte-button.outline.danger:disabled .zcat-stroke-outline-dangerbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-danger-disabled)
+}
+
+/* GREY btn - hover, active for icon & text  */
+/* Hover state  */
+lyte-button .lyte-button.grey:hover p{
+  color: var(--zcat-btn-grey-text-hover);
+}
+lyte-button .lyte-button.grey:hover .zcat-stroke-greybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-grey-icon-hover);
+}
+
+/* Click  */
+lyte-button .lyte-button.grey:active p{
+  color: var(--zcat-btn-grey-text-click);
+}
+lyte-button .lyte-button.grey:active .zcat-stroke-greybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-grey-icon-click);
+}
+
+/* disabled  */
+lyte-button .lyte-button.grey:disabled p{
+  color: var(--zcat-btn-grey-text-disabled);
+}
+lyte-button .lyte-button.grey:disabled .zcat-stroke-greybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-grey-icon-disabled);
+}
+lyte-button .lyte-button.grey:disabled{
+  background: var(--zcat-btn-grey-bg-disabled);
+  border: var(--zcat-btn-grey-border-disabled);
+}
+
+/* Ghost button styles starts  */
+lyte-button .lyte-button.ghost{
+  border: transparent;
+  background: transparent;
+}
+lyte-button .lyte-button.ghost.primary, lyte-button .lyte-button.ghost.primary p{
+  color: var(--zcat-btn-ghost-text-primary-default);
+}
+lyte-button .lyte-button.ghost.success, lyte-button .lyte-button.ghost.success p{
+  color: var(--zcat-btn-ghost-text-success-default);
+}
+lyte-button .lyte-button.ghost.danger, lyte-button .lyte-button.ghost.danger p{
+  color: var(--zcat-btn-ghost-text-danger-default);
+}
+
+/* hover   */
+lyte-button .lyte-button.ghost.primary:hover{
+  background: var(--zcat-btn-ghost-bg-primary-hover);
+}
+lyte-button .lyte-button.ghost.success:hover{
+  /* color: var(--zcat-btn-ghost-text-success-hover); */
+  background: var(--zcat-btn-ghost-bg-success-hover);
+}
+lyte-button .lyte-button.ghost.danger:hover{
+  /* color: var(--zcat-btn-ghost-text-danger-hover); */
+  background: var(--zcat-btn-ghost-bg-danger-hover);
+}
+lyte-button .lyte-button.ghost.primary:hover p{
+  color: var(--zcat-btn-ghost-text-primary-hover);
+}
+lyte-button .lyte-button.ghost.success:hover p{
+  color: var(--zcat-btn-ghost-text-success-hover);
+}
+lyte-button .lyte-button.ghost.danger:hover p{
+  color: var(--zcat-btn-ghost-text-danger-hover);
+}
+
+lyte-button .lyte-button.ghost.primary:hover .zcat-stroke-ghost-primarybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-primary-hover)
+}
+lyte-button .lyte-button.ghost.success:hover .zcat-stroke-ghost-successbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-success-hover)
+}
+lyte-button .lyte-button.ghost.danger:hover .zcat-stroke-ghost-dangerbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-danger-hover)
+}
+
+/* active - click  */
+lyte-button .lyte-button.ghost.primary:active p{
+  color: var(--zcat-btn-ghost-text-primary-click);
+  /* background: var(--zcat-btn-ghost-bg-primary-click); */
+}
+lyte-button .lyte-button.ghost.success:active p{
+  color: var(--zcat-btn-ghost-text-success-click);
+  /* background: var(--zcat-btn-ghost-bg-success-click); */
+}
+lyte-button .lyte-button.ghost.danger:active p{
+  color: var(--zcat-btn-ghost-text-danger-click);
+  /* background: var(--zcat-btn-ghost-bg-danger-click); */
+}
+lyte-button .lyte-button.ghost.primary:active,
+lyte-button .lyte-button.ghost.danger:active,
+lyte-button .lyte-button.ghost.success:active{
+  background: transparent;
+}
+/* icon active for ghost  */
+lyte-button .lyte-button.ghost.primary:active .zcat-stroke-ghost-primarybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-primary-click)
+}
+lyte-button .lyte-button.ghost.success:active .zcat-stroke-ghost-successbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-success-click)
+}
+lyte-button .lyte-button.ghost.danger:active .zcat-stroke-ghost-dangerbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-danger-click)
+}
+
+/* disabled -   */
+lyte-button .lyte-button.ghost.primary:disabled p{
+  color: var(--zcat-btn-ghost-text-primary-disabled);
+}
+lyte-button .lyte-button.ghost.success:disabled p {
+  color: var(--zcat-btn-ghost-text-success-disabled);
+}
+lyte-button .lyte-button.ghost.danger:disabled p{
+  color: var(--zcat-btn-ghost-text-danger-disabled);
+}
+/* icon active for ghost  */
+lyte-button .lyte-button.ghost.primary:disabled .zcat-stroke-ghost-primarybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-primary-disabled)
+}
+lyte-button .lyte-button.ghost.success:disabled .zcat-stroke-ghost-successbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-success-disabled)
+}
+lyte-button .lyte-button.ghost.danger:disabled .zcat-stroke-ghost-dangerbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-danger-disabled)
+}
+
+
+
+/* lyte-button .lyte-button.ghost.grey,  GREY GHOST - navigation */
+lyte-button .lyte-button.ghost.round{
+  background: transparent;
+}
+lyte-button .lyte-button.ghost.round:hover{
+  background: var(--zcat-btn-grey-bg-hover);
+}
+
+lyte-button .lyte-button.ghost.round:active{
+  background: var(--zcat-btn-grey-bg-click);
+}
+lyte-button .lyte-button.ghost.round:active p{
+  color: var(--zcat-btn-grey-text-click);
+}
+
+lyte-button .lyte-button.ghost.round:active .zcat-stroke-greybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-grey-icon-click);
+}
+
+lyte-button .lyte-button.ghost.round:disabled{
+  background: var(--zcat-btn-grey-bg-disabled);
+}
+lyte-button .lyte-button.ghost.round:disabled .zcat-stroke-greybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-grey-icon-disabled);
+}
+
+/* Grey navigation */
+lyte-button .lyte-button.grey.round:hover{
+  border: none;
+}
+/* ONLY_ICON buttons width  */
+lyte-button .lyte-button.icon-only {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+} 
+lyte-button .lyte-button.lyteSm.icon-only{
+  width: 28px;
+}
+lyte-button .lyte-button.lyteExsm.icon-only{
+  width: 24px;
+}
+lyte-button .lyte-button.lyteLg.icon-only{   
+  width: 50px;
+}
+
+/* button loader size  */
+lyte-button .lyte-button.lyteSm .button-loader{
+  width: 14px;
+  height: 14px
+}
+lyte-button .lyte-button.lyteExsm .button-loader{
+  width: 12px;
+  height: 12px
+}
+lyte-button .lyte-button.lyteLg .button-loader{
+  width: 22px;
+  height: 22px
+}
+
+.lyte-button.lyteSecondary.split-line:hover {
+  border-right: none;
+}
+
+/* Width full button  */
+lyte-button .lyte-button.zcat-w100p {
+  width: 100%
+}
+zcat-button lyte-button .lyte-button lyte-yield[yield-name="text"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.zcat-stroke-ghostgrey-active path[stroke]{
+  stroke: var(--zcat-menuList-icon-active);
+}
+
+
+
+.zcat-stroke-dark1 path[stroke]{
+  stroke: var(--zcat-body-icons-static-primary)
+}
+.zcat-stroke-fillbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-fill-icon-default);
+}
+.zcat-stroke-outline-primarybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-primary-default)
+}
+.zcat-stroke-outline-successbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-success-default)
+}
+.zcat-stroke-outline-dangerbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-outline-icon-danger-default)
+}
+.zcat-stroke-ghost-primarybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-primary-default)
+}
+.zcat-stroke-ghost-successbtn-icon path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-success-default)
+}
+.zcat-stroke-ghost-dangerbtn-ico path[stroke]n{
+  stroke: var(--zcat-btn-ghost-icon-danger-default)
+}
+.zcat-stroke-greybtn-icon path[stroke]{
+  stroke: var(--zcat-btn-grey-icon-default);   
+}
+
+/* input field  */
+.zcat-stroke-input-icon path[stroke]{
+  stroke: var(--zcat-inputField-icon-placeholder);
+}
+
+/* dropdown - menu list icon  */
+.zcat-stroke-icon-active path[stroke]{
+  stroke: var(--zcat-menuList-icon-active);
+}
+.zcat-stroke-icon-tooltip path[stroke]{
+  stroke: var(--zcat-body-icons-static-primary);
+}
+
+
+
+

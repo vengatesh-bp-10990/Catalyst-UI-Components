@@ -1,0 +1,28 @@
+.zcat-avatar-wraper,.zcat-avatar-small,.zcat-avatar-large{
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--zcat-avatar-bg-default);
+    border: 1px solid var(--zcat-avatar-border-default);
+}
+.zcat-avatar-small{
+    width: 16px;
+    height: 16px;
+}
+.zcat-avatar-large{
+    width: 30px;
+    height: 30px;
+}
+.zcat-avatar-disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.zcat-avatar-letter{
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--zcat-avatar-text-default);
+    text-transform: capitalize;
+}

@@ -1,0 +1,33 @@
+<template tag-name="zcat-label-value-pairs">
+  <table class="zcat-label-value-pairs">
+    <tbody>
+      <% record.forEach((row) => { %>
+      <tr>
+        <% row.forEach((item) => { %>
+        <td>
+          <lyte-text
+            class="key"
+            lt-prop-value="{{ item.key }}"
+            lt-prop-tooltip-config='{ "position" : "bottom" }'
+          >
+          </lyte-text>
+        </td>
+        <td>:</td>
+        <td>
+          <%if(item.yield){ %>
+          <lyte-yield yield-name="{{ item.yield }}" value="{{item.value}}"></lyte-yield>
+          <%}else {%>
+          <lyte-text
+            class="{{item.class ? item.class : 'value'}}"
+            lt-prop-value="{{ item.value }}"
+            lt-prop-tooltip-config='{ "position" : "bottom" }'
+          >
+          </lyte-text>
+          <%}%>
+        </td>
+        <% }) %>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</template>

@@ -1,0 +1,21 @@
+.zcat-empty-template {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.zcat-empty-template .title {
+  font: var(--zcat-font-16-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-primary);
+  margin: 20px 0 10px 0;
+  font-weight: 600;
+}
+.zcat-empty-template .desc {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-primary);
+  margin: 0 0 24px 0;
+  width: 70%;
+}

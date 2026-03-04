@@ -1,0 +1,56 @@
+<template tag-name="zcat-keyvaluepair">
+  <div
+    lyte-if="{{zcatProp.label}}"
+    class="zcat-dF zcat-align-center zcat-gap-4"
+  >
+    <p
+      class="{{zcatProp.label_class ? zcatProp.label_class : 'zcat-input-label'}}"
+    >
+      {{zcatProp.label}}
+    </p>
+    <div
+      lyte-if="{{zcatProp.infoIcon.id}}"
+      class="tooltip-info-icon"
+      id="tooltipInfoMsg{{zcatProp.infoIcon.id}}"
+      lyte-hovercard="true"
+    ></div>
+  </div>
+  <ul class="zcat-key-value-pair-list-block">
+    <li
+      class="zcat-key-value-pair-box {{!item.isKeyValid || item.isKeyDuplicate || !item.isValueValid ? 'invalid' : ''}}"
+      lyte-for="{{dataList}} as item index"
+    >
+      <lyte-input
+        data-zcqa="zcat_Key_Value_Pair_Key{{index}}"
+        lt-prop-id="zcat_Key_Value_Pair_Key{{index}}"
+        class="zcat-w100p {{!item.isKeyValid || item.isKeyDuplicate ? 'zcat-invalid' : ''}}"
+        error-message="{{!item.isKeyValid ? 'Key is required' : item.isKeyDuplicate ? 'Duplicate key' : ''}}"
+        lt-prop-appearance="box"
+        lt-prop-value="{{item.key}}"
+        lt-prop-placeholder="Enter the key"
+        on-value-change="{{method('handleKeyChange', index, this)}}"
+        onkeydown="{{action('addEnterListener',event)}}"
+      >
+      </lyte-input>
+      <lyte-input
+        data-zcqa="zcat_Key_Value_Pair_Key{{index}}"
+        lt-prop-id="zcat_Key_Value_Pair_Value{{index}}"
+        class="zcat-w100p {{!item.isValueValid ? 'zcat-invalid' : ''}}"
+        error-message="{{!item.isValueValid ? 'Value is required' : ''}}"
+        lt-prop-appearance="box"
+        lt-prop-value="{{item.value}}"
+        lt-prop-placeholder="Enter the value"
+        on-value-change="{{method('handleValueChange', index, this)}}"
+      ></lyte-input>
+      <lyte-button
+        data-zcqa="key_value_pair_minus_btn"
+        class="{{index+1 == dataList.length ? 'zcat-vH' : ''}}"
+        lt-prop-class="keyValueRemoveBtn"
+        lt-prop-appearance=""
+        onclick="{{action('removeFromDataList', index)}}"
+      >
+        <template is="registerYield" yield-name="text"> </template>
+      </lyte-button>
+    </li>
+  </ul>
+</template>

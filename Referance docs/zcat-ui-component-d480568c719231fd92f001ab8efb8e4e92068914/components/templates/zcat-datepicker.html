@@ -1,0 +1,76 @@
+<template tag-name="zcat-datepicker">
+  <lyte-popover
+    id="simpleDateTimePickerPopover"
+    lt-prop-content-padding="0px"
+    lt-prop-show-close-button="false"
+    lt-prop-wrapper-class="calendarPopover"
+    lt-prop-origin-elem="#calendarPopoverInput"
+    lt-prop-type="box"
+    lt-prop-close-on-escape="false"
+  >
+    <template is="registerYield" yield-name="popover">
+      <lyte-popover-content style="padding: 0px">
+        <h1 class="zcat-text-14 zcat-color-dark1 zcat-pt-10 zcat-pl-20">
+          Select Date
+        </h1>
+        <lyte-calendar
+          id="simpleDatePicker"
+          lt-prop-header-type="dropdown"
+          lt-prop-current-date="{{lbind(selectedDate)}}"
+          lt-prop-format="DD/MM/YYYY"
+          lt-prop-month-header-format="MMM YYYY"
+          lt-prop-fill-rows="false"
+        ></lyte-calendar>
+        <h1 class="zcat-text-14 zcat-color-dark1 zcat-pl-20 zcat-pb-10">
+          Select Time
+        </h1>
+        <lyte-time-picker
+          style="padding: 0 0 20px 20px"
+          lt-prop-value="{{lbind(selectedTime)}}"
+          lt-prop-time-format="hh:mm:ss A"
+          lt-prop-button='[{"text":"Apply","purpose":"ok"}]'
+          lt-prop-aria-attributes='{"input":"Time Picker"}'
+          lt-prop-id="simpleTimePicker"
+          lt-prop-interval='{"hour":1,"minute":1}'
+        ></lyte-time-picker>
+        <div class="zcat-calendar-footer">
+          <lyte-button
+            lt-prop-size="extra-small"
+            lt-prop-appearance=""
+            lt-prop-class="lyteTertiaryBtn"
+            onclick="{{action('resetCalendarData')}}"
+          >
+            <template is="registerYield" yield-name="text">Reset</template>
+          </lyte-button>
+          <div class="zcat-dF zcat-align-center zcat-gap-10">
+            <lyte-button
+              lt-prop-size="extra-small"
+              lt-prop-appearance="secondary"
+              onclick="{{action('closeCalendar')}}"
+            >
+              <template is="registerYield" yield-name="text">Close</template>
+            </lyte-button>
+            <lyte-button
+              lt-prop-size="extra-small"
+              lt-prop-appearance="primary"
+              onclick="{{action('applyCalendarData')}}"
+            >
+              <template is="registerYield" yield-name="text">Apply</template>
+            </lyte-button>
+          </div>
+        </div>
+      </lyte-popover-content>
+    </template>
+  </lyte-popover>
+  <lyte-input
+    id="calendarPopoverInput"
+    class="date-input-field"
+    lt-prop-width="300px"
+    lt-prop-appearance="box"
+    lt-prop-label="Select Date and Time"
+    lt-prop-placeholder="DD/MM/YYYY"
+    lt-prop-readonly="true"
+    lt-prop-value="{{dateTimePickerValue}}"
+    onclick="{{action('openCalendar')}}"
+  ></lyte-input>
+</template>

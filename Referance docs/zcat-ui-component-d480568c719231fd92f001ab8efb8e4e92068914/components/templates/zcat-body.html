@@ -1,0 +1,331 @@
+<template tag-name="zcat-body">
+  <!-- <div class="zcat-dN">
+    <svg id="zcat-icon-threeDots" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
+            <path d="M8.00002 8.66668C8.36821 8.66668 8.66669 8.3682 8.66669 8.00001C8.66669 7.63182 8.36821 7.33334 8.00002 7.33334C7.63183 7.33334 7.33335 7.63182 7.33335 8.00001C7.33335 8.3682 7.63183 8.66668 8.00002 8.66668Z" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.6667 8.66668C13.0349 8.66668 13.3334 8.3682 13.3334 8.00001C13.3334 7.63182 13.0349 7.33334 12.6667 7.33334C12.2985 7.33334 12 7.63182 12 8.00001C12 8.3682 12.2985 8.66668 12.6667 8.66668Z" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.33335 8.66668C3.70154 8.66668 4.00002 8.3682 4.00002 8.00001C4.00002 7.63182 3.70154 7.33334 3.33335 7.33334C2.96516 7.33334 2.66669 7.63182 2.66669 8.00001C2.66669 8.3682 2.96516 8.66668 3.33335 8.66668Z" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg> 
+    <svg id="zcat-icon-slate" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16" fill="none">
+      <path d="M8.47655 15.9968L0.979675 11.6687C0.5453 11.4187 0.27655 10.9515 0.27655 10.4515V9.00154C0.27655 8.55466 0.492175 8.12966 0.853113 7.8656L4.90624 4.90779L7.96874 6.67654L4.11405 9.4906L8.47811 12.0093L8.47655 15.9968ZM4.96561 6.02498L1.40624 8.62341C1.28593 8.71091 1.21405 8.8531 1.21405 9.00154V10.4515C1.21405 10.6187 1.30468 10.7734 1.44843 10.8578L7.53905 14.3734V12.5515L3.22968 10.0625C3.0453 9.95623 2.92968 9.76716 2.91874 9.55466C2.9078 9.34216 3.00311 9.14216 3.17499 9.0156L6.25468 6.76716L4.96561 6.02498Z" fill="#226DB4"/>
+      <path d="M9.18593 11.1484L6.12343 9.37966L9.97655 6.56716L5.50311 3.98435V-0.00158691L13.0156 4.33435C13.45 4.58435 13.7187 5.05154 13.7187 5.55154V7.12498C13.7187 7.57185 13.5031 7.99685 13.1422 8.26091L9.18593 11.1484ZM7.83905 9.28747L9.12655 10.0312L12.589 7.5031C12.7094 7.4156 12.7812 7.27341 12.7812 7.12498V5.5531C12.7812 5.38591 12.6906 5.23123 12.5469 5.14685L6.44061 1.62185V3.44373L10.8609 5.99529C11.0453 6.10154 11.1609 6.2906 11.1734 6.5031C11.1844 6.7156 11.089 6.9156 10.9187 7.04216L7.83905 9.28747Z" fill="#E42527"/>
+    </svg>
+    <svg id="zcat-icon-help" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="none">
+            <g clip-path="url(#clip0_6235_2603)">
+                <path d="M5.30246 5.24996C5.4396 4.8601 5.7103 4.53136 6.0666 4.32195C6.4229 4.11255 6.84182 4.03601 7.24915 4.10587C7.65648 4.17574 8.02594 4.38752 8.29209 4.70368C8.55824 5.01985 8.70391 5.42001 8.70329 5.83329C8.70329 6.99996 6.95329 7.58329 6.95329 7.58329M6.99996 9.91663H7.00579M12.8333 6.99996C12.8333 10.2216 10.2216 12.8333 6.99996 12.8333C3.7783 12.8333 1.16663 10.2216 1.16663 6.99996C1.16663 3.7783 3.7783 1.16663 6.99996 1.16663C10.2216 1.16663 12.8333 3.7783 12.8333 6.99996Z" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <defs>
+                <clipPath id="clip0_6235_2603">
+                <rect width="14" height="14" fill="white"/>
+                </clipPath>
+            </defs>
+    </svg> 
+  </div> -->
+
+  <div class="body-wrapper">
+    <div
+      data-name="{{zcatProp.id}}"
+      class="{{zcatProp.header.tabsSecondary || zcatProp.header.tabsPrimary ? 'header-border' : ''}} 
+        {{zcatProp.header.tabsSecondary ? 'secondary-tab-height' : ''}}
+        "
+      lyte-if="{{zcatProp.header}}"
+    >
+      <div
+        class="zcat-form-header sub-header-outer {{zcatProp.header.tabsSecondary || zcatProp.header.tabsPrimary ? '' : 'header-border'}}
+          
+          "
+      >
+        <div
+          class="zcat-left-alignment 
+            {{zcatProp.header.tabsSecondary ? 'zcat-w33p' : 'zcat-w50p'}}"
+        >
+          <div
+            lyte-if="{{zcatProp.header.left.logo}}"
+            class="zcat-dF zcat-gap-6 zcat-align-center zcat-cP"
+            onclick="{{action('defaultOnTitleClick', zcatProp.header.left.title.value)}}"
+            data-zcqa="{{zcatProp.header.left.logo.zcqa}}"
+          >
+            <!-- <lyte-svg lt-prop-path="#{{zcatProp.header.left.logo.name}}" class="zcat-w24 zcat-h24" lt-prop-class="zcat-w24 zcat-h24 {{zcatProp.header.left.logo.classs}}"></lyte-svg> -->
+            <zcat-icon
+              class="zcat-flex-center"
+              name="{{zcatProp.header.left.logo.name}}"
+              width="24"
+              height="24"
+              stroke="{{zcatProp.header.left.logo.stroke}}"
+              strokeWidth="{{zcatProp.header.left.logo.strokeWidth || 1.3}}"
+            >
+            </zcat-icon>
+
+            <h5 title="{{zcatProp.header.left.title.name}}">
+              {{zcatProp.header.left.title.name}}
+            </h5>
+          </div>
+
+          <div class="zcat-dF zcat-align-center zcat-gap-6" lyte-else>
+            <%if(zcatProp.header.left.frontYield){%>
+            <lyte-yield
+              yield-name="{{zcatProp.header.left.frontYield}}"
+            ></lyte-yield>
+            <%}%>
+            <!-- back button  -->
+            <%if(zcatProp.header.left.backArrow){%>
+            <zcat-button
+              self="{{self}}"
+              zcat-prop='
+                  {
+                    "variant": "ghost",
+                    "zcqa": "{{zcatProp.header.left.backArrow.zcqa}}",
+                    "size": "small",
+                    "color": "grey",
+                    "type": "navigation",
+                    "icon": {
+                      "position": "right",
+                      "name": "arrow-left"
+                    }, 
+                    "callback": {
+                      "name": "{{zcatProp.header.left.backArrow.callback.name}}"
+                    }
+                  }
+                '
+            ></zcat-button>
+            <% } %>
+
+            <div lyte-if="{{zcatProp.header.left.avatar}}">
+              <zcat-avatar
+                zcat-prop="{{zcatProp.header.left.avatar}}"
+                self="{{self}}"
+              >
+              </zcat-avatar>
+            </div>
+            <h5 title="{{zcatProp.header.left.title.name}}">
+              {{zcatProp.header.left.title.name}}
+            </h5>
+
+            <%if(zcatProp.header.left.info){%>
+            <!-- <lyte-svg 
+                    lyte-hovercard = "true" 
+                    id = "tooltipInfoMsghovercardId"
+                    lt-prop-path="#zcat-icon-info" lt-prop-class="zcat-w12 zcat-h12 zcat-stroke-dark2" 
+                    class="zcat-w12 zcat-h12 zcat-dF subheader-info"
+                >
+                </lyte-svg> -->
+
+            <zcat-icon
+              lyte-hovercard="true"
+              id="tooltipInfoMsghovercardId"
+              class="zcat-dF subheader-info"
+              name="info"
+              width="12"
+              height="12"
+              stroke="var(--zcat-body-icons-static-secondary)"
+              strokeWidth="{{zcatProp.header.left.logo.strokeWidth || 1.3}}"
+            >
+            </zcat-icon>
+
+            <zcat-hovercard
+              class="zcat-dN"
+              zcat-prop='
+                    {
+                      "id": "hovercardId",
+                      "value": "{{zcatProp.header.left.info.tooltip}}"
+                    }
+                  '
+            >
+            </zcat-hovercard>
+            <%}%> <%if(zcatProp.header.left.refresh){%>
+            <zcat-button
+              self="{{self}}"
+              zcat-prop='
+                    {
+                      "variant": "ghost",
+                      "zcqa": "{{zcatProp.header.left.refresh.zcqa}}",
+                      "size": "small",
+                      "color": "primary",
+                      "type": "navigation",
+                      "icon": {
+                        "position": "right",
+                        "name": "refresh"
+                      }, 
+                      "callback": {
+                        "name": "{{zcatProp.header.left.refresh.callback.name}}"
+                      }
+                    }                  
+                  '
+            >
+            </zcat-button>
+            <%}%> <%if(zcatProp.header.left.badge){%>
+            <zcat-label
+              self="{{self}}"
+              zcat-prop="{{zcatProp.header.left.badge}}"
+            >
+            </zcat-label>
+            <%}%> <%if(zcatProp.header.left.yield){%>
+            <lyte-yield
+              yield-name="{{zcatProp.header.left.yield}}"
+            ></lyte-yield>
+            <%}%>
+          </div>
+          <p
+            lyte-if="{{zcatProp.header.left.desc.name}}"
+            class="zcat-text-12 zcat-color-dark2 zcat-mt-4"
+          >
+            {{zcatProp.header.left.desc.name}}
+          </p>
+        </div>
+
+        <%if(zcatProp.header.tabsSecondary){%>
+        <div
+          class="{{zcatProp.header.tabsSecondary ? 'zcat-w33p' : 'zcat-w50p'}} zcat-flex-center"
+        >
+          <div class="zcat-subheader-tabs zcat-secondary-tab">
+            <% zcatProp.header.tabsSecondary.list.forEach((item, index) => { %>
+            <go-to
+              lt-prop-route="{{item.route}}"
+              lt-prop-dp="{{item.dynamicParams}}"
+              lt-prop-qp="{{item.queryParams}}"
+              lt-prop-class="zcat-link zcat-text-12"
+              lt-prop-custom=""
+              data-value="{{item.value}}"
+              onclick="{{action('tabClick', item, item.callback.name, zcatProp.tabsSecondary.level)}}"
+            >
+              <a 
+                data-zcqa="{{item.zcqa}}-{{index}}"
+                data-name="{{item.value}}"
+                data-group="lv_{{zcatProp.tabs.level}}"
+                >{{item.label}}</a
+              >
+            </go-to>
+            <%}) %>
+          </div>
+        </div>
+        <%}%>
+
+        <div
+          class="zcat-right-alignment {{zcatProp.header.tabsSecondary ? 'zcat-w33p' : 'zcat-w50p'}}"
+        >
+          <%if(zcatProp.header.right.yield){%>
+          <lyte-yield yield-name="{{zcatProp.header.right.yield}}"></lyte-yield>
+          <%}%> <%if(zcatProp.header.right.defButton){%>
+          <zcat-button
+            self="{{self}}"
+            zcat-prop='
+                    {
+                      "variant": "grey",
+                      "zcqa": "{{zcatProp.header.right.defButton.zcqa}}",
+                      "size": "small",
+                      "color": "primary",
+                      "label": "{{zcatProp.header.right.defButton.label}}", 
+                      "callback": {
+                        "name": "{{zcatProp.header.right.defButton.callback.name}}"
+                      }
+                    }                  
+                  '
+          >
+          </zcat-button>
+          <%}%> <%if(zcatProp.header.right.moreButton.popoverObj.id){%>
+          <zcat-button
+            self="{{selfButton}}"
+            zcat-prop='
+                    {
+                      "id": "{{zcatProp.header.right.moreButton.popoverObj.id}}",
+                      "zcqa": "{{zcatProp.header.right.moreButton.popoverObj.zcqa}}",
+                      "variant": "grey",
+                      "size": "small",
+                      "color": "grey",
+                      "icon": {
+                        "position": "right",
+                        "name": "three-dots"
+                      },
+                      "callback": {
+                        "name": "openPopover"
+                      }
+                    }                  
+                  '
+          >
+          </zcat-button>
+          <zcat-popover
+            class="zcat-dN"
+            self="{{self}}"
+            zcat-prop="{{zcatProp.header.right.moreButton.popoverObj}}"
+          ></zcat-popover>
+          <%}%> <%if(zcatProp.header.right.help){%>
+          <zcat-button
+            self="{{self}}"
+            zcat-prop='
+                    {
+                      "label": "Help",
+                      "zcqa": "{{zcatProp.header.right.help.zcqa}}",
+                      "variant": "ghost",
+                      "size": "small",
+                      "color": "primary",
+                      "icon": {
+                        "position": "left",
+                        "name": "help"
+                      } , 
+                      "callback": {
+                        "name": "{{zcatProp.header.right.help.callback.name}}"
+                      }                     
+                    }                  
+                  '
+          >
+          </zcat-button>
+          <%}%>
+        </div>
+      </div>
+      <%if(zcatProp.header.tabsPrimary){%>
+      <div class="zcat-subheader-tabs">
+        <% zcatProp.header.tabsPrimary.list.forEach((item, index) => { %>
+        <go-to
+          lt-prop-route="{{item.route}}"
+          lt-prop-dp="{{item.dynamicParams}}"
+          lt-prop-qp="{{item.queryParams}}"
+          lt-prop-class="zcat-link zcat-text-12"
+          lt-prop-custom=""
+          data-value="{{item.value}}"
+          onclick="{{action('tabClick', item, item.callback.name, zcatProp.tabsPrimary.level)}}"
+        >
+          <a 
+            data-zcqa="{{item.zcqa}}-{{index}}"
+            data-name="{{item.value}}"
+            data-group="lv_{{zcatProp.header.tabsPrimary.level}}"
+            >{{item.label}}</a
+          >
+        </go-to>
+        <%}) %>
+      </div>
+      <%}%>
+      <!-- new  -->
+      <!-- <%if(zcatProp.header.tabsPrimary){%>
+            <div class="zcat-subheader-tabs">
+              <% zcatProp.header.tabsPrimary.list.forEach((item, index) => { %>
+              <go-to
+                lt-prop-route="{{item.route}}"
+                lt-prop-dp="{{item.dynamicParams}}"
+                lt-prop-qp="{{item.queryParams}}"
+                lt-prop-class="zcat-link zcat-text-12"
+                lt-prop-custom=""
+                onclick="{{action('tabClick', item, item.route, zcatProp.header.tabsPrimary.callback.name, 
+                zcatProp.header.tabsPrimary.level)}}"
+              >
+                <a
+                data-name="{{item.value}}" data-zcqa="{{item.zcqa}}" 
+                data-group="lv_{{zcatProp.header.tabsPrimary.level}}" data-zcqa="{{item.value}}"
+                  >{{item.label}}</a
+                >
+              </go-to>
+              <%}) %>
+            </div>
+            <%}%> -->
+    </div>
+
+    <div
+      class="zcat-outer-layout {{zcatProp.pageScroll ? '' : 'zcat-oA'}} {{zcatProp.header.tabsPrimary.list.length > 0 ? 'zcat-primary-tab-present' : ''}} 
+          {{zcatProp.header.tabsSecondary.list.length > 0 ? 'zcat-secondary-tab-present' : ''}}
+          "
+    >
+      <div class="zcat-inner-layout">
+        <lyte-yield yield-name="yield"></lyte-yield>
+      </div>
+    </div>
+  </div>
+
+</template>

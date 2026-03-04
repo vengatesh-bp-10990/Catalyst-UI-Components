@@ -1,0 +1,184 @@
+<template tag-name="zcat-daterangepicker">
+  <div class="zcat-dN">
+    <svg xmlns="http://www.w3.org/2000/svg" id="zcat-icon-calender" viewBox="0 0 16 16" fill="none">
+      <path d="M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" id="zcat-icon-timezone" viewBox="0 0 14 14" fill="none">
+      <g clip-path="url(#clip0_6678_776)">
+        <path d="M1.16669 6.99999H12.8334M1.16669 6.99999C1.16669 10.2217 3.77836 12.8333 7.00002 12.8333M1.16669 6.99999C1.16669 3.77833 3.77836 1.16666 7.00002 1.16666M12.8334 6.99999C12.8334 10.2217 10.2217 12.8333 7.00002 12.8333M12.8334 6.99999C12.8334 3.77833 10.2217 1.16666 7.00002 1.16666M7.00002 1.16666C8.4591 2.76403 9.28829 4.83701 9.33335 6.99999C9.28829 9.16297 8.4591 11.236 7.00002 12.8333M7.00002 1.16666C5.54094 2.76403 4.71175 4.83701 4.66669 6.99999C4.71175 9.16297 5.54094 11.236 7.00002 12.8333" stroke="inherit" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <defs>
+        <clipPath id="clip0_6678_776">
+          <rect width="14" height="14" fill="white"/>
+        </clipPath>
+      </defs>
+    </svg>
+  </div>
+  <lyte-popover
+    on-before-close='{{method("closepop")}}'
+    id="zcat-daterangepicker"
+    lt-prop-allow-multiple="true"
+    lt-prop-content-padding="0px"
+    lt-prop-show-close-button="false"
+    lt-prop-wrapper-class="calendarPopover"
+    lt-prop-origin-elem="#zcat-daterangepicker-wrapper"
+    lt-prop-type="box"
+    lt-prop-close-on-escape="false"
+  >
+    <template is="registerYield" yield-name="popover">
+      <lyte-popover-content style="padding: 0px">
+        <div
+          class="zcat-h44 zcat-dF zcat-align-center zcat-justify-between zcat-pl-20 zcat-pr-20"
+        >
+          <h1 class="zcat-text-14 zcat-color-dark1 zcat-font-semibold">
+            Select Date
+          </h1>
+          <div class="zcat-dF zcat-align-center ghost-dropdown zcat-pR zcat-dropdown-relative-wrapper">
+            <lyte-svg lt-prop-path="#zcat-icon-timezone" lt-prop-class="zcat-flex-center zcat-ghost-dropdown-icon-primary zcat-w14 zcat-h14 zcat-pA zcat-dropdown-icon-position"></lyte-svg>
+            <lyte-dropdown
+              id="dropdownTimezone"
+              lt-prop-button-class="lyteExsm"
+              lt-prop-selected="{{lbind(selectedTimezone)}}"
+              lt-prop-freeze="false"
+              style="width: 250px"
+              on-show="{{method('changeTimezone')}}"
+            >
+              <template is="registerYield" yield-name="yield">
+                <lyte-drop-box id="timezoneSearch">
+                <%if(!showAllTimezones){%>
+                  <lyte-drop-body>
+                    <lyte-drop-item
+                      lyte-for="{{preferedTimezone}} as item index"
+                      data-value="{{item.actual_value}}"
+                      >{{item.display_value}}</lyte-drop-item
+                    >
+                  </lyte-drop-body>
+                  <div
+                    class="dropdown-menu-btn lyteSm"
+                    onclick="{{action('viewAllTimezones')}}"
+                  >
+                    View all time zones
+                  </div>
+                  <%}else{%>
+                  <lyte-drop-header>
+                    <lyte-search
+                     on-search="{{method('onDropdownSearch', zcatProp.onSearch)}}"
+                      lt-prop-query-selector='{"scope":"#timezoneSearch","search":"lyte-drop-item"}'
+                      lt-prop-placeholder="Search"
+                      lt-prop='{"closeIcon" : true}'
+                    ></lyte-search>
+                  </lyte-drop-header>
+                  <lyte-drop-body>
+                    <lyte-drop-item
+                      lyte-for="{{allTimezones}} as item index"
+                      data-value="{{item.actual_value}}"
+                      >{{item.display_value}}</lyte-drop-item
+                    >
+                    <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                      {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+                    </div>
+                  </lyte-drop-body>
+                  <%}%>
+                </lyte-drop-box>
+              </template>
+            </lyte-dropdown>
+          </div>
+        </div>
+        <lyte-daterangepicker
+          id="dateRangePicker"
+          lt-prop-format="DD/MM/YYYY"
+          lt-prop-month-header-format="MMM YYYY"
+          lt-prop-start-date="{{lbind(startDate)}}"
+          lt-prop-end-date="{{lbind(endDate)}}"
+          lt-prop-header-type="dropdown"
+        ></lyte-daterangepicker>
+        <h1 class="zcat-text-14 zcat-color-dark1 zcat-pl-20 zcat-pb-10">
+          Select Time
+        </h1>
+        <div
+          class="zcat-dF zcat-align-center zcat-gap-16 zcat-pl-20 zcat-pb-20"
+        >
+          <lyte-time-picker
+            lt-prop-class=" lyteExsm"
+            lt-prop-value="{{lbind(startTime)}}"
+            lt-prop-time-format="hh:mm:ss A"
+            lt-prop-button='[{"text":"Apply","purpose":"ok"}]'
+            lt-prop-aria-attributes='{"input":"Time Picker"}'
+            lt-prop-id="dateRangePickerStartTime"
+            lt-prop-interval='{"hour":1,"minute":1}'
+          >
+          </lyte-time-picker>
+          <div class="zcat-timepicker-splitter"></div>
+          <lyte-time-picker
+            lt-prop-class=" lyteExsm"
+            lt-prop-id="dateRangePickerEndTime"
+            lt-prop-value="{{lbind(endTime)}}"
+            lt-prop-time-format="hh:mm:ss A"
+            lt-prop-button='[{"text":"Apply","purpose":"ok"}]'
+            lt-prop-aria-attributes='{"input":"Time Picker"}'
+            lt-prop-interval='{"hour":1,"minute":1}'
+          >
+          </lyte-time-picker>
+        </div>
+        <div class="zcat-calendar-footer">
+          <lyte-button
+            lt-prop-size="small"
+            lt-prop-appearance=""
+            lt-prop-class="lyteTertiaryBtn"
+            onclick="{{action('resetDateRangePicker')}}"
+          >
+            <template is="registerYield" yield-name="text">Reset</template>
+          </lyte-button>
+          <div class="zcat-dF zcat-align-center zcat-gap-10">
+            <lyte-button
+              lt-prop-size="small"
+              lt-prop-appearance="secondary"
+              onclick="{{action('closeDateRangePicker')}}"
+            >
+              <template is="registerYield" yield-name="text">Close</template>
+            </lyte-button>
+            <lyte-button
+              lt-prop-size="small"
+              lt-prop-appearance="primary"
+              onclick="{{action('applyDateRangePicker')}}"
+            >
+              <template is="registerYield" yield-name="text">Apply</template>
+            </lyte-button>
+          </div>
+        </div>
+      </lyte-popover-content>
+    </template>
+  </lyte-popover>
+ <!-- <div
+    lyte-if="{{zcatProp.type == 'dateselect'}}"
+    id="zcat-daterangepicker-wrapper"
+    class="zcat-h36 zcat-dF zcat-align-center zcat-gap-8 zcat-cP {{selectedDateValue === 'custom_range' && 'active-dropdown'}}"
+    onclick="{{action('openDateRangePicker')}}"
+  >
+    <p class="zcat-text-14 color-primary">Custom Range</p>
+    <lyte-svg
+      lt-prop-path="#zcat-icon-downArrow"
+      lt-prop-class="zcat-dF zcat-w8 zcat-h6 rotate-270"
+    ></lyte-svg> lt-prop-value="{{dateTimePickerValue}}"
+  </div>   -->
+ <!-- <lyte-input
+    id="zcat-daterangepicker-wrapper"
+    class="date-input-field"
+    lt-prop-width="300px"
+    lt-prop-appearance="box"
+    lt-prop-label="Select Date and Time"
+    lt-prop-placeholder="DD/MM/YYYY"
+    lt-prop-readonly="true"
+    lt-prop-value="{{dateTimePickerValue}}"
+    onclick="{{action('openDateRangePicker')}}"
+  ></lyte-input>  -->
+  <div data-zcqa="{{zcatProp.zcqa}}" class="zcat-dateranger-picker-wraper {{zcatProp.size}}" id="zcat-daterangepicker-wrapper" onclick="{{action('openDateRangePicker')}}">
+    <lyte-text
+    class="zcat-dateranger-picker"
+    lt-prop-value="{{lbind(dateTimePickerValue)}}"
+    >
+    </lyte-text>
+    <lyte-svg lt-prop-path="#zcat-icon-calender" lt-prop-class="zcat-w16 zcat-h16 zcat-ml-8 zcat-color-placeholder zcat-flex-center"></lyte-svg>
+  </div>
+</template>
+

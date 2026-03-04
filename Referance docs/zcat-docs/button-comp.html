@@ -1,0 +1,328 @@
+<template tag-name="button-comp">
+  <topbar-comp head-title="{{btnHead}}" head-desc="{{btnDesc}}"></topbar-comp>
+  <!-- SK step 2 -->
+  <div class="zcat-right-panel-wraper">
+      <lyte-tabs class="primary-tabs"> 
+          <template is="registerYield" yield-name="tabYield">
+            <lyte-tab-head>
+              <lyte-tab-title lyte-for="{{headTab}} as item index" lt-prop-id="zcat_comp_{{item.id}}"> {{item.name}} </lyte-tab-title>
+            </lyte-tab-head>
+            <lyte-tab-body>
+              <lyte-tab-content lyte-for="{{headTab}} as item index" id="zcat_comp_{{item.id}}">
+                  <div id="zcat-{{item.id}}-body-wraper">
+                      <div lyte-if="{{item.id === 'custom'}}" class="zcat-dF zcat-right-panel-cont">
+                          <div class="zcat-p-24 zcat-dF zcat-gap-20 zcat-direction-column zcat-prev-container {{customDetailsHide ? '' : 'zcat_nocustom_details'}}">
+                              <h2 class="zcat-text-16 zcat-color-dark1 zcat-pt-10 zcat-font-500">preview</h2>
+                              <div class="zcat-prev-wraper">    
+                                  <div class="zcat-prev-demo-img">
+                                      <zcat-button
+                                          self="{{self}}"
+                                          zcat-prop={{btnStyles}}
+                                      ></zcat-button>
+
+                                  </div>
+                                  <div class="zcat-p-20">
+                                      <lyte-tabs class="secondary-tabs zcat-prev-code-tab">
+                                          <template is="registerYield" yield-name="tabYield">
+                                            <lyte-tab-head>
+                                              <lyte-tab-title lt-prop-id="zcat_code_html"> Html </lyte-tab-title>
+                                              <lyte-tab-title lt-prop-id="zcat_code_js"> JS </lyte-tab-title>
+                                            </lyte-tab-head>
+                                            
+                                            <lyte-tab-body>
+                                                        <lyte-tab-content id="zcat_code_html">
+                                                            <zcat-code-snippet zcat-prop = "{{htmlCodeSnippet}}" self = "{{self}}">
+                                                            </zcat-code-snippet>
+                                                        </lyte-tab-content>
+                                                        <lyte-tab-content id="zcat_code_js">
+                                                            <zcat-code-snippet zcat-prop = "{{jsCodeSnippet}}" self = "{{self}}">
+                                                            </zcat-code-snippet>
+                                                        </lyte-tab-content>
+                                              </lyte-tab-body>
+                                          </template>
+                                      </lyte-tabs>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="zcat-custom-wraper {{customDetailsHide ? '' : 'zcat-dN'}}" data-name="{{customDetailsHide}}">
+                              <div class="custom-row-wrapper zcat-justify-between zcat-pb-24">
+                                <h2 class="zcat-text-16 zcat-color-dark1 zcat-font-500">Customise</h2>
+                                <zcat-button self="{{self}}" zcat-prop="{{resetButtonObj}}"></zcat-button>
+                              </div>                        
+                              <div class="zcat-dF zcat-direction-column zcat-gap-20">
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">Variant</h3>
+                                  <lyte-dropdown lt-prop-class="custom-row-options" lt-prop-selected="{{selectedBtnVariant}}" lt-prop-freeze="false"
+                                    on-option-selected="{{method('changeBtnVariant')}}" lt-prop-button-class="lyteSm"
+                                    lt-prop-disabled-list="{{disabledVariantForNavigationBtn}}"
+                                    class="custom-dropdown-width"
+                                  >
+                                 <!-- lt-prop-disabled-list="{{disabledVariantsForSplitBtn || disabledVariantForNavigationBtn}}" -->
+                                      <template is="registerYield" yield-name="yield">
+                                        <lyte-drop-box>
+                                          <lyte-drop-body>
+                                            <lyte-drop-item data-value="fill">Fill</lyte-drop-item>
+                                            <lyte-drop-item data-value="outline">Outline</lyte-drop-item>
+                                            <lyte-drop-item data-value="ghost">Ghost</lyte-drop-item>
+                                            <lyte-drop-item data-value="grey">Grey</lyte-drop-item>
+                                          </lyte-drop-body>
+                                        </lyte-drop-box>
+                                      </template>
+                                  </lyte-dropdown> 
+
+                                </div>
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">Size</h3>
+                                  <lyte-dropdown lt-prop-class="custom-row-options" lt-prop-selected="{{selectedSize}}" lt-prop-freeze="false"
+                                    on-option-selected="{{method('changeBtnSize')}}" lt-prop-button-class="lyteSm"
+                                    class="custom-dropdown-width"
+                                  >
+                                      <template is="registerYield" yield-name="yield">
+                                        <lyte-drop-box>
+                                          <lyte-drop-body>
+                                            <lyte-drop-item data-value="default">Default</lyte-drop-item>
+                                            <lyte-drop-item data-value="small">Small</lyte-drop-item>
+                                            <lyte-drop-item data-value="extra-small">Extra-small</lyte-drop-item>
+                                            <lyte-drop-item data-value="large">Large</lyte-drop-item>
+                                          </lyte-drop-body>
+                                        </lyte-drop-box>
+                                      </template>
+                                  </lyte-dropdown>
+                                </div>
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">Color</h3>
+                                  <lyte-dropdown lt-prop-class="custom-row-options" lt-prop-selected="{{selectedBtnColor}}" lt-prop-freeze="false"
+                                    on-option-selected="{{method('setBtnColor')}}" lt-prop-button-class="lyteSm"
+                                    lt-prop-disabled-list="{{disabledBtnColorsForVariant}}"
+                                    class="custom-dropdown-width"
+                                  >
+                                      <template is="registerYield" yield-name="yield">
+                                        <lyte-drop-box>
+                                          <lyte-drop-body>
+                                            <lyte-drop-item data-value="primary">Primary</lyte-drop-item>
+                                            <lyte-drop-item data-value="success">Success</lyte-drop-item>
+                                            <lyte-drop-item data-value="danger">Danger</lyte-drop-item>
+                                            <lyte-drop-item data-value="grey">Grey</lyte-drop-item>
+                                          </lyte-drop-body>
+                                        </lyte-drop-box>
+                                      </template>  
+                                  </lyte-dropdown>
+                                </div>
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">State</h3>
+                                  <lyte-dropdown lt-prop-class="custom-row-options" lt-prop-selected="{{selectBtnState}}" lt-prop-freeze="false"
+                                    on-option-selected="{{method('changeBtnState')}}" lt-prop-button-class="lyteSm"
+                                    lt-prop-disabled-list="{{disabledStateForNavigation}}"
+                                    class="custom-dropdown-width"
+                                  >
+                                      <template is="registerYield" yield-name="yield">
+                                        <lyte-drop-box>
+                                          <lyte-drop-body>
+                                            <lyte-drop-item data-value="default">Default</lyte-drop-item>
+                                            <lyte-drop-item data-value="loading">Loading</lyte-drop-item>
+                                            <lyte-drop-item data-value="disabled">Disabled</lyte-drop-item>
+                                          </lyte-drop-body>
+                                        </lyte-drop-box>
+                                      </template>
+                                  </lyte-dropdown>
+                                </div>
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">Icon Left</h3>
+                                  <lyte-checkbox
+                                      lt-prop-value="1"
+                                      lt-prop-tabindex="0"
+                                      lt-prop-type="switch"
+                                      on-checked="{{method('iconLeftChecked')}}"
+                                      on-unchecked="{{method('iconLeftUnchecked')}}"
+                                      lt-prop-checked="{{isIconLeftCheckedVar}}"
+                                      class="custom-dropdown-width"
+                                  ></lyte-checkbox>
+                                </div>
+                                <div class="custom-row-wrapper" lyte-if="{{isIconLeftEnabled}}">
+                                  <h3 class="custom-row-header">Change Icon</h3>
+                                  <lyte-dropdown lt-prop-class="custom-row-options" lt-prop-selected="" lt-prop-freeze="false"
+                                    on-option-selected="{{method('selectBtnIcon')}}" lt-prop-button-class="lyteSm"
+                                  >
+                                      <template is="registerYield" yield-name="yield">
+                                        <lyte-drop-box>
+                                          <lyte-drop-body>
+                                            <lyte-drop-item data-value="plus">Plus</lyte-drop-item>
+                                            <lyte-drop-item data-value="minus">minus</lyte-drop-item>
+                                            <lyte-drop-item data-value="edit">Edit</lyte-drop-item>
+                                            <lyte-drop-item data-value="delete">Delete</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-up">arrow-up</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-left">arrow-left</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-right">arrow-right</lyte-drop-item>
+                                            <lyte-drop-item data-value="copy">copy</lyte-drop-item>
+                                            <lyte-drop-item data-value="search">search</lyte-drop-item>
+                                          </lyte-drop-body>
+                                        </lyte-drop-box>
+                                      </template>
+                                  </lyte-dropdown>
+                                </div>
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">Icon Right</h3>
+                                  <lyte-checkbox
+                                      lt-prop-value="1"
+                                      lt-prop-tabindex="0"
+                                      lt-prop-type="switch"
+                                      on-checked="{{method('iconRightChecked')}}"
+                                      on-unchecked="{{method('iconRightUnchecked')}}"
+                                      lt-prop-checked="{{isIconRightCheckedVar}}"
+                                      class="custom-dropdown-width"
+                                  ></lyte-checkbox>
+                                </div>
+                                <div class="custom-row-wrapper" lyte-if="{{isIconRightEnabled}}">
+                                  <h3 class="custom-row-header">Change Icon</h3>
+                                  <lyte-dropdown lt-prop-class="custom-row-options" lt-prop-selected="" lt-prop-freeze="false"
+                                    on-option-selected="{{method('selectBtnIcon')}}" lt-prop-button-class="lyteSm"
+                                  >
+                                      <template is="registerYield" yield-name="yield">
+                                        <lyte-drop-box>
+                                          <lyte-drop-body>
+                                            <lyte-drop-item data-value="plus">Plus</lyte-drop-item>
+                                            <lyte-drop-item data-value="minus">minus</lyte-drop-item>
+                                            <lyte-drop-item data-value="edit">Edit</lyte-drop-item>
+                                            <lyte-drop-item data-value="delete">Delete</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-up">arrow-up</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-left">arrow-left</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-right">arrow-right</lyte-drop-item>
+                                            <lyte-drop-item data-value="copy">copy</lyte-drop-item>
+                                            <lyte-drop-item data-value="search">search</lyte-drop-item>
+                                          </lyte-drop-body>
+                                        </lyte-drop-box>
+                                      </template>
+                                  </lyte-dropdown>
+                                </div>
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">Split Button</h3>
+                                  <lyte-checkbox
+                                      lt-prop-value="1"
+                                      lt-prop-tabindex="0"
+                                      lt-prop-type="switch"
+                                      on-checked="{{method('splitBtnChecked')}}"
+                                      on-unchecked="{{method('splitBtnUnchecked')}}"
+                                      lt-prop-checked="{{isSplitBtnCheckedVar}}"
+                                      class="custom-dropdown-width"
+                                  ></lyte-checkbox>
+                                </div>
+                                <div class="custom-row-wrapper" lyte-if="{{isSplitArrowDisabledVar}}">
+                                  <h3 class="custom-row-header">Split ArrowDisable</h3>
+                                  <lyte-checkbox
+                                      lt-prop-value="1"
+                                      lt-prop-tabindex="0"
+                                      lt-prop-type="switch"
+                                      on-checked="{{method('splitArrowDisableChecked')}}"
+                                      on-unchecked="{{method('splitArrowDisableUnchecked')}}"
+                                      lt-prop-checked="{{isSplitArrowDisableVar}}"
+                                      class="custom-dropdown-width"
+                                  ></lyte-checkbox>
+                                </div>
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">Dropdown Button</h3>
+                                  <lyte-checkbox
+                                      lt-prop-value="1"
+                                      lt-prop-tabindex="0"
+                                      lt-prop-type="switch"
+                                      lt-prop-checked="{{isDropBtnCheckedVar}}"
+                                      on-checked="{{method('dropBtnChecked')}}"
+                                      on-unchecked="{{method('dropBtnUnchecked')}}"
+                                      class="custom-dropdown-width"
+                                  ></lyte-checkbox>
+                                </div>
+                                <div class="custom-row-wrapper">
+                                  <h3 class="custom-row-header">Only Icon</h3>
+                                  <lyte-checkbox
+                                      lt-prop-value="1"
+                                      lt-prop-tabindex="0"
+                                      lt-prop-type="switch"
+                                      lt-prop-checked="{{isOnlyIconCheckedVar}}"
+                                      on-checked="{{method('onlyIconChecked')}}"
+                                      on-unchecked="{{method('onlyIconUnchecked')}}"
+                                      class="custom-dropdown-width"
+                                  ></lyte-checkbox>
+                                </div>
+                                <div class="custom-row-wrapper" lyte-if="{{onlyIconEnabled}}">
+                                  <h3 class="custom-row-header">Button Type</h3>
+                                  <lyte-dropdown lt-prop-class="custom-row-options" lt-prop-selected="{{selectedType}}" lt-prop-freeze="false"
+                                    on-option-selected="{{method('changeNavigation')}}" lt-prop-button-class="lyteSm"
+                                    lt-prop-disabled-list="{{disabledOptionsForOnlyIcon}}"
+                                  >
+                                      <template is="registerYield" yield-name="yield">
+                                        <lyte-drop-box>
+                                          <lyte-drop-body>
+                                            <lyte-drop-item data-value="default">Default</lyte-drop-item>
+                                            <lyte-drop-item data-value="navigation">Navigation</lyte-drop-item>
+                                          </lyte-drop-body>
+                                        </lyte-drop-box>
+                                      </template>
+                                  </lyte-dropdown>
+                                </div>
+                                <div class="custom-row-wrapper" lyte-if="{{onlyIconEnabled}}">
+                                  <h3 class="custom-row-header">Change Icon</h3>
+                                  <lyte-dropdown lt-prop-class="custom-row-options" lt-prop-selected="" lt-prop-freeze="false"
+                                    on-option-selected="{{method('selectBtnIcon')}}" lt-prop-button-class="lyteSm"
+                                  >
+                                      <template is="registerYield" yield-name="yield">
+                                        <lyte-drop-box>
+                                          <lyte-drop-body>
+                                            <lyte-drop-item data-value="plus">Plus</lyte-drop-item>
+                                            <lyte-drop-item data-value="minus">minus</lyte-drop-item>
+                                            <lyte-drop-item data-value="edit">Edit</lyte-drop-item>
+                                            <lyte-drop-item data-value="delete">Delete</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-up">arrow-up</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-left">arrow-left</lyte-drop-item>
+                                            <lyte-drop-item data-value="arrow-right">arrow-right</lyte-drop-item>
+                                            <lyte-drop-item data-value="copy">copy</lyte-drop-item>
+                                            <lyte-drop-item data-value="search">search</lyte-drop-item>
+                                          </lyte-drop-body>
+                                        </lyte-drop-box>
+                                      </template>
+                                  </lyte-dropdown>
+                                </div>
+
+                              </div>
+                              
+                          </div>
+                      </div>
+                      <change-logs-comp lyte-if="{{item.id === 'change_logs'}}"></change-logs-comp>
+                  </div>
+              </lyte-tab-content>
+            </lyte-tab-body>
+          </template>
+      </lyte-tabs>
+  </div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</template>

@@ -1,0 +1,96 @@
+form lyte-modal-header .primary-tabs lyte-tab-title{
+    border-bottom: 1px solid var(--zcat-color-primarylight);
+}
+
+
+/* modal tab  */
+
+  .zcat-subheader-tabs {
+    width: 100%;
+    /* height: 48px; */
+    display: flex;
+    gap: 5px;
+    padding: 0 14px;
+    background: var(--zcat-tabs-primary-bg);
+    /* border-bottom: 1px solid var(--zcat-tabs-primary-border-default); */
+  }
+  .zcat-subheader-tabs a {
+    font-size: 14px;
+    font-family: var(--zcat-font-family-primary);
+    color: var(--zcat-tabs-primary-text-default);
+    text-decoration: none;
+    /* padding: 15px 10px; */
+    padding: 0 8px;
+    cursor: pointer;
+    /* height: 48px; */
+    display: inline-flex;
+    font-weight: 400;
+    padding: 4px 8px;
+  }
+  .zcat-subheader-tabs a:hover {
+    cursor: pointer;
+    color: var(---zcat-tabs-primary-text-hover) !important;
+    background: var(--zcat-tabs-primary-bg-hover);
+    border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);
+    border-radius: 4px 4px 0px 0px;
+  }
+  .zcat-subheader-tabs a.active-tab {
+    color: var(--zcat-tabs-primary-text-active) !important;
+    font-family: var(--zcat-font-family-primary);
+    border-bottom: 2px solid var(--zcat-tabs-primary-border-active);
+    font-weight: 500;
+    border-radius: 4px 4px 0px 0px;
+  }
+  
+.header-border{
+    border-bottom: 1px solid var(--zcat-tabs-primary-border-default);
+}
+.zcat-subheader-tabs.zcat-secondary-tab{
+    width:fit-content;
+    padding: 4px;
+    border-radius: 6px;
+    background: var(--zcat-tabs-secondary-bg-default);
+    display: flex;
+    gap: 4px;
+}
+
+.zcat-subheader-tabs.zcat-secondary-tab a {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    /* height: 20px; */
+  }
+  .zcat-subheader-tabs.zcat-secondary-tab a:hover {
+    cursor: pointer;
+    color: var(---zcat-tabs-secondary-text-hover) !important;
+    background: var(--zcat-tabs-secondary-bg-hover);
+    border-bottom: none;
+  }
+  .zcat-subheader-tabs.zcat-secondary-tab a.active-tab {
+    color: var(--zcat-tabs-secondary-text-active) !important;
+    font-family: var(--zcat-font-family-primary);
+    border-bottom: none;
+    font-weight: 500;
+    background-color: var(--zcat-tabs-secondary-bg-active);
+    border-radius: 4px;
+  }
+ /* .zcat-primary-tab-present{
+    height: calc(100% - 79px);
+  } */
+  .secondary-tab-height{
+    height: 48px;
+  }
+
+
+.lyteModal lyte-modal-header .zcat-subheader-tabs{
+  border-bottom: 1px solid var(--zcat-tabs-primary-border-default);
+}
+
+.delete-modal--noinput .lyteModal{
+  width: 414px !important;
+}
+.delete-modal--input .lyteModal{
+  width: 548px !important;
+}
+
+  

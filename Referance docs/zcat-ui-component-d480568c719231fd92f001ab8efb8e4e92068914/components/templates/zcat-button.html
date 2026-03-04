@@ -1,0 +1,446 @@
+<template tag-name="zcat-button">
+  <div lyte-if="{{zcatProp.type === 'split'}}" class="zcat-dF">
+      <lyte-button
+      data-zcqa="{{zcatProp.zcqa}}"
+        lt-prop-appearance="{{zcatProp.variant === 'grey' ? 'secondary' : ''}}"
+        lt-prop-size="{{zcatProp.size}}"
+        lt-prop-disabled="{{zcatProp.splitdisabled ? 'true' : 'false'}}"
+        class="{{zcatProp.loading ? 'loading' : ''}}"    
+        lt-prop-class="{{
+          zcatProp.size === 'default' || zcatProp.size === 'small' || zcatProp.size === 'large' ?
+          'split-body-br-6' : 
+          zcatProp.size === 'extra-small' ?
+          'split-body-br-4' : 
+          ''
+        }} split-border split-line
+        {{
+          zcatProp.variant === 'fill' ? 'fill ' :
+          zcatProp.variant === 'outline' ? 'outline ' :
+          zcatProp.variant === 'ghost' ? 'ghost ' :
+          zcatProp.variant === 'grey' ? 'grey ' : ''
+        }}{{
+          zcatProp.variant === 'fill' && zcatProp.color === 'primary' ? 'primary ' :
+          zcatProp.variant === 'fill' && zcatProp.color === 'success' ? 'success ' :
+          zcatProp.variant === 'fill' && zcatProp.color === 'danger' ? 'danger ' :
+          zcatProp.variant === 'outline' && zcatProp.color === 'primary' ? 'primary ' :
+          zcatProp.variant === 'outline' && zcatProp.color === 'success' ? 'success ' :
+          zcatProp.variant === 'outline' && zcatProp.color === 'danger' ? 'danger ' :
+          zcatProp.variant === 'ghost' && zcatProp.color === 'primary' ? 'primary ' :
+          zcatProp.variant === 'ghost' && zcatProp.color === 'success' ? 'success ' :
+          zcatProp.variant === 'ghost' && zcatProp.color === 'danger' ? 'danger ' :
+          zcatProp.variant === 'grey' && zcatProp.color === 'grey' ? 'primary ' : ''
+        }} 
+        {{zcatProp.label == null ? 'icon-only' : ''}}
+        "
+        
+        onclick="{{action('customLbindForButtonClick')}}"
+      >
+        <template is="registerYield" yield-name="text">
+          <div
+            class="zcat-dF zcat-align-center 
+            {{zcatProp.size === 'large' || zcatProp.size === 'default' ? 'zcat-gap-6' :
+            zcatProp.size === 'small' ? 'zcat-gap-4' :
+            zcatProp.size === 'extra-small' ? 'zcat-gap-2' : 
+            ''
+            }}
+            {{zcatProp.loading ? 'zcat-opacity-0' : ''}}"
+          >
+            <zcat-icon 
+              lyte-if="{{zcatProp.icon.position === 'left'}}"
+              class="zcat-flex-center {{
+                zcatProp.variant === 'fill' ? 'zcat-stroke-fillbtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'zcat-stroke-outline-primarybtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'zcat-stroke-outline-successbtn-icon'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'zcat-stroke-outline-dangerbtn-icon'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'zcat-stroke-ghost-primarybtn-icon'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'zcat-stroke-ghost-successbtn-icon'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'zcat-stroke-ghost-dangerbtn-icon'   :
+                zcatProp.variant === 'grey' ? 'zcat-stroke-greybtn-icon' : ''
+              }}"
+              name="{{zcatProp.icon.name}}" 
+              width="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              height="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              stroke="{{
+                zcatProp.variant === 'fill' ? 'var(--zcat-btn-fill-icon-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'var(--zcat-btn-outline-icon-primary-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'var(--zcat-btn-outline-icon-success-default)'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'var(--zcat-btn-outline-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'var(--zcat-btn-ghost-icon-primary-default)'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'var(--zcat-btn-ghost-icon-success-default)'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'var(--zcat-btn-ghost-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'grey') ? 'var(--zcat-menuList-icon-active)'   :
+                zcatProp.variant === 'grey' ? 'var(--zcat-btn-grey-icon-default)' : 'var(--zcat-menuList-icon-active)'
+              }}"
+              strokeWidth="{{zcatProp.icon.strokeWidth || 1.3}}"
+              >
+              </zcat-icon>
+            <p>{{zcatProp.label}}</p>
+            <zcat-icon 
+              lyte-if="{{zcatProp.icon.position === 'right'}}"
+              class="zcat-flex-center {{
+                zcatProp.variant === 'fill' ? 'zcat-stroke-fillbtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'zcat-stroke-outline-primarybtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'zcat-stroke-outline-successbtn-icon'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'zcat-stroke-outline-dangerbtn-icon'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'zcat-stroke-ghost-primarybtn-icon'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'zcat-stroke-ghost-successbtn-icon'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'zcat-stroke-ghost-dangerbtn-icon'   :
+                zcatProp.variant === 'grey' ? 'zcat-stroke-greybtn-icon' : ''
+              }}"
+              name="{{zcatProp.icon.name}}" 
+              width="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              height="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              stroke="{{
+                zcatProp.variant === 'fill' ? 'var(--zcat-btn-fill-icon-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'var(--zcat-btn-outline-icon-primary-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'var(--zcat-btn-outline-icon-success-default)'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'var(--zcat-btn-outline-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'var(--zcat-btn-ghost-icon-primary-default)'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'var(--zcat-btn-ghost-icon-success-default)'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'var(--zcat-btn-ghost-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'grey') ? 'var(--zcat-menuList-icon-active)'   :
+                zcatProp.variant === 'grey' ? 'var(--zcat-btn-grey-icon-default)' : 'var(--zcat-menuList-icon-active)'
+              }}"
+              strokeWidth="{{zcatProp.icon.strokeWidth || 1.3}}"
+              >
+              </zcat-icon>
+          </div>
+          <div lyte-if="{{zcatProp.loading}}" class="button-loader-container">
+            <div class="button-loader"></div>
+          </div>
+        </template>
+      </lyte-button>
+      <lyte-button
+        id="{{zcatProp.id}}"
+        data-zcqa="{{zcatProp.zcqa}}"
+        lt-prop-appearance="{{zcatProp.variant === 'grey' ? 'secondary' : ''}}"
+        lt-prop-size="{{zcatProp.size}}"
+        lt-prop-disabled="{{zcatProp.arrowdisabled ? 'true' : 'false'}}"
+        class="{{zcatProp.loading ? 'loading' : ''}}"
+        lt-prop-class="{{
+          zcatProp.size === 'default' || zcatProp.size === 'small' || zcatProp.size === 'large' ?
+          'split-btn-arrow-br-6' : 
+          zcatProp.size === 'extra-small' ?
+          'split-btn-arrow-br-4' : 
+          ''
+        }} 
+        split-btn-arrow// 
+        {{
+          zcatProp.variant === 'fill' ? 'fill ' :
+          zcatProp.variant === 'outline' ? 'outline ' :
+          zcatProp.variant === 'ghost' ? 'ghost ' :
+          zcatProp.variant === 'grey' ? 'grey ' : ''
+        }}{{
+          zcatProp.variant === 'fill' && zcatProp.color === 'primary' ? 'primary ' :
+          zcatProp.variant === 'fill' && zcatProp.color === 'success' ? 'success ' :
+          zcatProp.variant === 'fill' && zcatProp.color === 'danger' ? 'danger ' :
+          zcatProp.variant === 'outline' && zcatProp.color === 'primary' ? 'primary ' :
+          zcatProp.variant === 'outline' && zcatProp.color === 'success' ? 'success ' :
+          zcatProp.variant === 'outline' && zcatProp.color === 'danger' ? 'danger ' :
+          zcatProp.variant === 'ghost' && zcatProp.color === 'primary' ? 'primary ' :
+          zcatProp.variant === 'ghost' && zcatProp.color === 'success' ? 'success ' :
+          zcatProp.variant === 'ghost' && zcatProp.color === 'danger' ? 'danger ' :
+          zcatProp.variant === 'grey' && zcatProp.color === 'grey' ? 'primary ' : ''
+        }} 
+        {{zcatProp.label == null ? 'icon-only' : ''}}
+        "
+      >
+        <template is="registerYield" yield-name="text">
+          <div
+            class="zcat-dF zcat-align-center {{zcatProp.loading ? 'zcat-opacity-0' : ''}}"
+          >
+            <zcat-icon 
+              lyte-if="{{zcatProp.menu && zcatProp.menu.list && zcatProp.menu.list.length > 0}}"
+              class="{{zcatProp.dropdownArrow}} zcat-flex-center {{
+                zcatProp.variant === 'fill' ? 'zcat-stroke-fillbtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'zcat-stroke-outline-primarybtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'zcat-stroke-outline-successbtn-icon'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'zcat-stroke-outline-dangerbtn-icon'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'zcat-stroke-ghost-primarybtn-icon'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'zcat-stroke-ghost-successbtn-icon'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'zcat-stroke-ghost-dangerbtn-icon'   :
+                zcatProp.variant === 'grey' ? 'zcat-stroke-greybtn-icon' : ''
+              }}"
+              name="arrow-down" 
+              width="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              height="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              stroke="{{
+                zcatProp.variant === 'fill' ? 'var(--zcat-btn-fill-icon-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'var(--zcat-btn-outline-icon-primary-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'var(--zcat-btn-outline-icon-success-default)'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'var(--zcat-btn-outline-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'var(--zcat-btn-ghost-icon-primary-default)'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'var(--zcat-btn-ghost-icon-success-default)'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'var(--zcat-btn-ghost-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'grey') ? 'var(--zcat-menuList-icon-active)'   :
+                zcatProp.variant === 'grey' ? 'var(--zcat-btn-grey-icon-default)' : 'var(--zcat-menuList-icon-active)'
+              }}"
+              strokeWidth="{{zcatProp.icon.strokeWidth || 1.3}}"
+              >
+              </zcat-icon>
+
+          </div>
+          <div lyte-if="{{zcatProp.loading}}" class="button-loader-container">
+            <div class="button-loader"></div>
+          </div>
+        </template>
+      </lyte-button>
+    </div>
+
+
+    <!-- Else - all buttons except split  -->
+    <lyte-button
+      lyte-else
+      id="{{zcatProp.id}}"
+      data-zcqa="{{zcatProp.zcqa}}"
+      lt-prop-appearance="{{zcatProp.variant === 'grey' ? 'secondary' : ''}}"
+      lt-prop-size="{{zcatProp.size}}"
+      lt-prop-disabled="{{zcatProp.disabled ? 'true' : 'false'}}"
+      class="{{zcatProp.loading ? 'loading' : ''}} {{zcatProp.width ? zcatProp.width : ''}} {{zcatProp.classCss}}"
+      lt-prop-class="{{
+        zcatProp.type === 'navigation' ? 'round ' : ''
+      }}{{
+        zcatProp.variant === 'fill' ? 'fill ' :
+        zcatProp.variant === 'outline' ? 'outline ' :
+        zcatProp.variant === 'ghost' ? 'ghost ' :
+        zcatProp.variant === 'grey' ? 'grey ' : ''
+      }}{{
+        zcatProp.variant === 'fill' && zcatProp.color === 'primary' ? 'primary ' :
+        zcatProp.variant === 'fill' && zcatProp.color === 'success' ? 'success ' :
+        zcatProp.variant === 'fill' && zcatProp.color === 'danger' ? 'danger ' :
+        zcatProp.variant === 'outline' && zcatProp.color === 'primary' ? 'primary ' :
+        zcatProp.variant === 'outline' && zcatProp.color === 'success' ? 'success ' :
+        zcatProp.variant === 'outline' && zcatProp.color === 'danger' ? 'danger ' :
+        zcatProp.variant === 'ghost' && zcatProp.color === 'primary' ? 'primary ' :
+        zcatProp.variant === 'ghost' && zcatProp.color === 'success' ? 'success ' :
+        zcatProp.variant === 'ghost' && zcatProp.color === 'danger' ? 'danger ' :
+        zcatProp.variant === 'grey' && zcatProp.color === 'grey' ? 'primary ' : ''
+      }} 
+      {{zcatProp.label == null ? 'icon-only' : ''}} {{zcatProp.width ? zcatProp.width : ''}} 
+      {{zcatProp.ltPropClassCss}}
+      "
+
+      onclick="{{action('customLbindForButtonClick', a, b, c)}}"
+    >
+      <template is="registerYield" yield-name="text">
+        <div
+          class="zcat-dIF zcat-align-center 
+          {{zcatProp.size === 'large' || zcatProp.size === 'default' ? 'zcat-gap-6' :
+          zcatProp.size === 'small' ? 'zcat-gap-4' :
+          zcatProp.size === 'extra-small' ? 'zcat-gap-2' : 
+          ''
+          }}
+          {{zcatProp.loading ? 'zcat-opacity-0' : ''}}          
+          "          
+        >
+         <zcat-icon 
+              lyte-if="{{zcatProp.icon.position === 'left'}}"
+              class="zcat-flex-center {{
+                zcatProp.variant === 'fill' ? 'zcat-stroke-fillbtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'zcat-stroke-outline-primarybtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'zcat-stroke-outline-successbtn-icon'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'zcat-stroke-outline-dangerbtn-icon'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'zcat-stroke-ghost-primarybtn-icon'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'zcat-stroke-ghost-successbtn-icon'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'zcat-stroke-ghost-dangerbtn-icon'   :
+                zcatProp.variant === 'grey' ? 'zcat-stroke-greybtn-icon' : 'zcat-stroke-ghostgrey-active'
+              }}"
+              name="{{zcatProp.icon.name}}" 
+              width="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              height="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              stroke="{{
+                zcatProp.variant === 'fill' ? 'var(--zcat-btn-fill-icon-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'var(--zcat-btn-outline-icon-primary-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'var(--zcat-btn-outline-icon-success-default)'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'var(--zcat-btn-outline-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'var(--zcat-btn-ghost-icon-primary-default)'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'var(--zcat-btn-ghost-icon-success-default)'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'var(--zcat-btn-ghost-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'grey') ? 'var(--zcat-menuList-icon-active)'   :
+                zcatProp.variant === 'grey' ? 'var(--zcat-btn-grey-icon-default)' : 'var(--zcat-menuList-icon-active)'
+              }}"
+              strokeWidth="{{zcatProp.icon.strokeWidth || 1.3}}"
+              >
+          </zcat-icon>
+          <p lyte-if="{{zcatProp.label}}">{{zcatProp.label}}</p>
+           <zcat-icon 
+              lyte-if="{{zcatProp.icon.position === 'right'}}"
+              class="zcat-flex-center {{
+                zcatProp.variant === 'fill' ? 'zcat-stroke-fillbtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'zcat-stroke-outline-primarybtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'zcat-stroke-outline-successbtn-icon'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'zcat-stroke-outline-dangerbtn-icon'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'zcat-stroke-ghost-primarybtn-icon'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'zcat-stroke-ghost-successbtn-icon'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'zcat-stroke-ghost-dangerbtn-icon'   :
+                zcatProp.variant === 'grey' ? 'zcat-stroke-greybtn-icon' : 'zcat-stroke-ghostgrey-active'
+              }}"
+              name="{{zcatProp.icon.name}}" 
+              width="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              height="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              stroke="{{
+                zcatProp.variant === 'fill' ? 'var(--zcat-btn-fill-icon-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'var(--zcat-btn-outline-icon-primary-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'var(--zcat-btn-outline-icon-success-default)'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'var(--zcat-btn-outline-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'var(--zcat-btn-ghost-icon-primary-default)'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'var(--zcat-btn-ghost-icon-success-default)'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'var(--zcat-btn-ghost-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'grey') ? 'var(--zcat-menuList-icon-active)'   :
+                zcatProp.variant === 'grey' ? 'var(--zcat-btn-grey-icon-default)' : 'var(--zcat-menuList-icon-active)'
+              }}"
+              strokeWidth="{{zcatProp.icon.strokeWidth || 1.3}}"
+              >
+          </zcat-icon>
+          <zcat-icon 
+            lyte-if="{{zcatProp.menu && zcatProp.menu.list && zcatProp.menu.list.length > 0}}"
+              class="{{zcatProp.dropdownArrow}} zcat-flex-center {{
+                zcatProp.variant === 'fill' ? 'zcat-stroke-fillbtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'zcat-stroke-outline-primarybtn-icon'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'zcat-stroke-outline-successbtn-icon'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'zcat-stroke-outline-dangerbtn-icon'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'zcat-stroke-ghost-primarybtn-icon'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'zcat-stroke-ghost-successbtn-icon'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'zcat-stroke-ghost-dangerbtn-icon'   :
+                zcatProp.variant === 'grey' ? 'zcat-stroke-greybtn-icon' : 'zcat-stroke-ghostgrey-active'
+              }}"
+              name="arrow-down" 
+              width="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              height="{{zcatProp.size === 'default' ? '16' :
+              zcatProp.size === 'small' ? '14' :
+              zcatProp.size === 'extra-small' ? '12' :
+                ''
+              }}"
+              stroke="{{
+                zcatProp.variant === 'fill' ? 'var(--zcat-btn-fill-icon-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'primary') ? 'var(--zcat-btn-outline-icon-primary-default)'  :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'success') ? 'var(--zcat-btn-outline-icon-success-default)'    :
+                (zcatProp.variant === 'outline' && zcatProp.color === 'danger') ? 'var(--zcat-btn-outline-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'primary') ? 'var(--zcat-btn-ghost-icon-primary-default)'  :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'success') ? 'var(--zcat-btn-ghost-icon-success-default)'    :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'danger') ? 'var(--zcat-btn-ghost-icon-danger-default)'   :
+                (zcatProp.variant === 'ghost' && zcatProp.color === 'grey') ? 'var(--zcat-menuList-icon-active)'   :
+                zcatProp.variant === 'grey' ? 'var(--zcat-btn-grey-icon-default)' : 'var(--zcat-menuList-icon-active)'
+              }}"
+              strokeWidth="{{zcatProp.icon.strokeWidth || 1.3}}"
+              >
+          </zcat-icon>
+        </div>
+        <div lyte-if="{{zcatProp.loading}}" class="button-loader-container">
+          <div class="button-loader"></div>
+        </div>
+      </template>
+    </lyte-button>
+    
+    <%if(zcatProp.menu ){%>
+      <lyte-menu lt-prop-yield="true" 
+      lt-prop-query="{{ (zcatProp.disabled || zcatProp.arrowdisabled) ? '' : '#' + zcatProp.id }}"
+      >
+      <!-- lt-prop-query="#{{zcatProp.id}}" -->
+        <template is="registerYield" yield-name="yield">
+          <lyte-menu-body>
+            <lyte-menu-item
+              lyte-for="{{ zcatProp.menu.list }} as item index"
+              onclick="{{action('customLbindForMenuClick', item)}}"
+              data-zcqa="{{item.zcqa}}"
+            >
+            <%if(item.yield){%>
+              <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+            <%}else{%>
+              <div class="zcat-dF zcat-align-center
+              {{zcatProp.size === 'large' || zcatProp.size === 'default' ? 'zcat-gap-6' :
+              zcatProp.size === 'small' ? 'zcat-gap-4' :
+              zcatProp.size === 'extra-small' ? 'zcat-gap-2' : 
+              ''
+              }}
+              ">
+                <zcat-icon 
+                  lyte-if="{{item.icon.position === 'left'}}"
+                    class="zcat-flex-center "
+                    name="{{item.icon.name}}" 
+                    width="{{zcatProp.size === 'default' ? '16' :
+                    zcatProp.size === 'small' ? '14' :
+                    zcatProp.size === 'extra-small' ? '12' :
+                      ''
+                    }}"
+                    height="{{zcatProp.size === 'default' ? '16' :
+                    zcatProp.size === 'small' ? '14' :
+                    zcatProp.size === 'extra-small' ? '12' :
+                      ''
+                    }}"
+                    stroke="{{item.icon.stroke}}"
+                    strokeWidth="{{item.icon.strokeWidth}} ? '{{item.icon.strokeWidth}}' : 1.3"
+                    >
+                </zcat-icon>
+                <p class="zcat-text-14 zcat-color-dark1">{{item.label}}</p>
+               <zcat-icon 
+                  lyte-if="{{item.icon.position === 'right'}}"
+                    class="zcat-flex-center "
+                    name="{{item.icon.name}}" 
+                    width="{{zcatProp.size === 'default' ? '16' :
+                    zcatProp.size === 'small' ? '14' :
+                    zcatProp.size === 'extra-small' ? '12' :
+                      ''
+                    }}"
+                    height="{{zcatProp.size === 'default' ? '16' :
+                    zcatProp.size === 'small' ? '14' :
+                    zcatProp.size === 'extra-small' ? '12' :
+                      ''
+                    }}"
+                    stroke="{{item.icon.stroke}}"
+                    strokeWidth="{{item.icon.strokeWidth}} ? '{{item.icon.strokeWidth}}' : 1.3"
+                    >
+                </zcat-icon>
+              </div>
+            <%}%>
+            </lyte-menu-item>
+          </lyte-menu-body>
+        </template>
+      </lyte-menu>
+    <%}%>
+
+</template>

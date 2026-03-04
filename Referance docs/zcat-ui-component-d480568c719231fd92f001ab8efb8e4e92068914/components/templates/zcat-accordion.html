@@ -1,0 +1,135 @@
+<template tag-name="zcat-accordion">
+  <div class="zcat-dN">
+    <svg id="zcat-icon-catalystlogo" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 16 16" fill="none">
+      <g clip-path="url(#clip0_1553_18230)">
+        <path d="M9.47657 15.9968L1.97969 11.6687C1.54532 11.4187 1.27657 10.9515 1.27657 10.4515V9.00154C1.27657 8.55466 1.49219 8.12966 1.85313 7.8656L5.90625 4.90779L8.96875 6.67654L5.11407 9.4906L9.47813 12.0093L9.47657 15.9968ZM5.96563 6.02498L2.40625 8.62341C2.28594 8.71091 2.21407 8.8531 2.21407 9.00154V10.4515C2.21407 10.6187 2.30469 10.7734 2.44844 10.8578L8.53907 14.3734V12.5515L4.22969 10.0625C4.04532 9.95623 3.92969 9.76716 3.91875 9.55466C3.90782 9.34216 4.00313 9.14216 4.175 9.0156L7.25469 6.76716L5.96563 6.02498Z" fill="#226DB4"/>
+        <path d="M10.1859 11.1484L7.12344 9.37966L10.9766 6.56716L6.50313 3.98435V-0.00158691L14.0156 4.33435C14.45 4.58435 14.7188 5.05154 14.7188 5.55154V7.12498C14.7188 7.57185 14.5031 7.99685 14.1422 8.26091L10.1859 11.1484ZM8.83907 9.28747L10.1266 10.0312L13.5891 7.5031C13.7094 7.4156 13.7813 7.27341 13.7813 7.12498V5.5531C13.7813 5.38591 13.6906 5.23123 13.5469 5.14685L7.44063 1.62185V3.44373L11.8609 5.99529C12.0453 6.10154 12.1609 6.2906 12.1734 6.5031C12.1844 6.7156 12.0891 6.9156 11.9188 7.04216L8.83907 9.28747Z" fill="#E42527"/>
+      </g>
+      <defs>
+        <clipPath id="clip0_1553_18230">
+          <rect width="16" height="16" fill="white"/>
+        </clipPath>
+      </defs>
+    </svg>
+  </div>
+  <%if(zcatProp.variant === 'primary'){ %>
+  <lyte-accordion
+    class="primary-accordion"
+    data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-dynamic="{{zcatProp.dynamic ? zcatProp.dynamic ? true}}"
+    lt-prop-height="{{zcatProp.height ? zcatProp.height : ''}}"
+    lt-prop-exclusive="{{zcatProp.exclusive ? zcatProp.exclusive : false}}"
+    lt-prop-duration="{{zcatProp.duration ? zcatProp.duration : '0.5s'}}"
+    lt-prop-nested="{{zcatProp.nested ? zcatProp.nested : false}}"
+    on-changed='{{method("customLbindForAccordion", zcatProp.onChanged)}}'
+    on-open='{{method("customLbindForAccordion", zcatProp.onOpen)}}'
+    on-close='{{method("customLbindForAccordion", zcatProp.onClose)}}'
+    on-before-close='{{method("customLbindForAccordion", zcatProp.onBeforeClose)}}'
+    on-before-open='{{method("customLbindForAccordion", zcatProp.onBeforeOpen)}}'
+    after-render="{{ method('customLbindForAccordion', zcatProp.afterRender) }}"
+  >
+    <template is="registerYield" yield-name="yield">
+      <lyte-accordion-item
+        lyte-for="{{ zcatProp.list }} as item index"
+        class="{{ index == 0 && zcatProp.initialOpen ? 'lyteAccordionActive' : '' }}"
+      >
+        <lyte-accordion-header>
+          <%if(item.icon.name){%>
+          <div class="zcat-flex-center zcat-mr-4 {{item.desc.value ? 'accordian-icon-wraper' : 'accordian-icon-without-desc'}}">
+            <!-- <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.desc.value ? 'zcat-w16 zcat-h16 zcat-flex-center' : 'zcat-w14 zcat-h14 zcat-flex-center'}}"></lyte-svg> -->
+            <zcat-icon
+                class="zcat-input-label-stroke"
+                name="{{item.icon.name}}" 
+                width="{{item.desc.value ? '12' : '14'}}"
+                height="{{item.desc.value ? '12' : '14'}}"
+                stroke="var(--zcat-inputField-icon-label)"
+                strokeWidth="1.8" 
+            >
+            </zcat-icon>
+          </div>
+          <%}%>
+          <div class="zcat-w90p zcat-dF zcat-direction-column zcat-gap-2">
+            <%if(item.title.value){%>
+            <p
+              class="{{
+                item.title.class
+                  ? item.title.class
+                  : 'zcat-text-14 zcat-accordion-head zcat-font-semibold'
+              }}"
+            >
+              {{ item.title.value}}
+            </p>
+            <%}%>
+            <%if(item.desc.value){%>
+            <p
+              class="{{
+                item.desc.class
+                  ? item.desc.class
+                  : 'zcat-text-12 zcat-accordion-desc'
+              }}"
+            >
+              {{ item.desc.value}}
+            </p>
+            <%}%>
+          </div>
+          <div class="lyteAccordionArrowBlock">
+            <lyte-icon class="lyteAccordionArrow"></lyte-icon>
+          </div>
+        </lyte-accordion-header>
+        <lyte-accordion-body style="height: fit-content; padding: 0px;">
+          <div style="padding: 10px;">
+              <%if(item.body.yield){ %>
+              <lyte-yield yield-name="{{ item.body.yield }}"></lyte-yield>
+              <%}%>
+          </div>
+        </lyte-accordion-body>
+      </lyte-accordion-item>
+    </template>
+  </lyte-accordion>
+  <%}else if(zcatProp.variant === 'secondary'){%>
+  <lyte-accordion
+    style="{{zcatProp.style}}"
+    class="secondary-accordion"
+    data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-dynamic="{{zcatProp.dynamic ? zcatProp.dynamic ? true}}"
+    lt-prop-height="{{zcatProp.height}}"
+    lt-prop-exclusive="{{zcatProp.exclusive}}"
+    lt-prop-duration="{{zcatProp.duration}}"
+    lt-prop-nested="{{zcatProp.nested}}"
+    on-changed='{{method("customLbindForAccordion", zcatProp.onChanged)}}'
+    on-open='{{method("customLbindForAccordion", zcatProp.onOpen)}}'
+    on-close='{{method("customLbindForAccordion", zcatProp.onClose)}}'
+    on-before-close='{{method("customLbindForAccordion", zcatProp.onBeforeClose)}}'
+    on-before-open='{{method("customLbindForAccordion", zcatProp.onBeforeOpen)}}'
+    after-render="{{ method('customLbindForAccordion', zcatProp.afterRender) }}"
+  >
+    <template is="registerYield" yield-name="yield">
+      <lyte-accordion-item
+        lyte-for="{{ zcatProp.list }} as item index"
+        class="{{ index == 0 && zcatProp.initialOpen ? 'lyteAccordionActive' : '' }}"
+      >
+        <lyte-accordion-header class="zcat-w-fc">
+          <%if(item.title.type === 'custom'){ %>
+          <lyte-yield yield-name="{{ item.title.value }}"></lyte-yield>
+          <%}else {%>
+          <div
+            id="zcatSecondaryAccordion"
+            class="zcat-dF zcat-align-center zcat-gap-2"
+          >
+            <lyte-icon class="lyteAccordionArrow"></lyte-icon>
+            <p class="show-title">Show Advanced Options</p>
+            <p class="hide-title">Hide Advanced Options</p>
+          </div>
+          <%}%>
+        </lyte-accordion-header>
+        <lyte-accordion-body>
+          <div class="zcat-sec-accordion">
+            <lyte-yield yield-name="{{ item.body.yield }}"></lyte-yield>
+          </div>
+        </lyte-accordion-body>
+      </lyte-accordion-item>
+    </template>
+  </lyte-accordion>
+  <%}%>
+</template>
+      

@@ -1,0 +1,52 @@
+lyte-menu-box * {
+  box-sizing: border-box;
+}
+lyte-menu-box {
+  font-family: var(--zcat-font-family-primary);
+  box-shadow: 0px 4px 6px -2px var(--zcat-shadow-bg-default);
+  border-radius: 4px;
+}
+lyte-menu-body * {
+  box-sizing: border-box;
+  margin: 0;
+}
+lyte-menu-body {
+  background: var(--zcat-menuList-bg-default);
+  border: 1px solid var(--zcat-menuList-border-default);
+  border-radius: 4px;
+  padding: 5px 0;
+}
+.lyteMenuSelection {
+  background: var(--zcat-menuList-bg-hover);
+}
+lyte-menu-box .lyteArrow {
+  background: var(--zcat-menuList-bg-default);
+}
+lyte-menu-box .lyteArrow.lyteArrowTop {
+  box-shadow: none;
+  top: -5px;
+  border-top: 1px solid var(--zcat-menuList-border-default);
+  border-left: 1px solid var(--zcat-menuList-border-default);
+}
+lyte-menu-box .lyteArrow.lyteArrowBottom {
+  box-shadow: var(--zcat-shadow-light-all);
+  bottom: -4px;
+}
+lyte-menu-box .lyteArrow.lyteArrowLeft {
+  box-shadow: var(--zcat-shadow-light-all);
+  left: -4px;
+}
+lyte-menu-box .lyteArrow.lyteArrowRight {
+  box-shadow: var(--zcat-shadow-light-all);
+  right: -4px;
+  left: unset;
+}
+.lytemenufreezelayer {
+  opacity: 0;
+}
+lyte-menu-item {
+  padding: 8px 15px;
+  margin: 0 5px;
+  border-radius: 4px;
+  color: var(--zcat-menuList-text-default);
+}

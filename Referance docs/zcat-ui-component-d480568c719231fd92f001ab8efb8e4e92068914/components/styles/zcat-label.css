@@ -1,0 +1,85 @@
+/* Dots */
+.zcat-dot-blue,.zcat-dot-red,.zcat-dot-green,.zcat-dot-yellow,.zcat-dot-pink,.zcat-dot-disabled{
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--zcat-badge-primary-bg-primary);
+}
+.zcat-dot-red {
+    background-color: var(--zcat-badge-primary-bg-red);
+}
+.zcat-dot-green {
+    background-color: var(--zcat-badge-primary-bg-green);
+}
+.zcat-dot-yellow {
+    background-color: var(--zcat-badge-primary-bg-orange);
+}
+.zcat-dot-pink {
+    background-color: var(--zcat-badge-primary-bg-pink);
+}
+.zcat-dot-disabled {
+    background-color: var(--zcat-badge-primary-bg-disabled);
+}
+  /* Badge */
+.primary-badge.zcat-badge-blue,.primary-badge.zcat-badge-red,.primary-badge.zcat-badge-green,
+.primary-badge.zcat-badge-yellow,.primary-badge.zcat-badge-pink,.primary-badge.zcat-badge-disabled,
+.secondary-badge.zcat-badge-blue,.secondary-badge.zcat-badge-red,.secondary-badge.zcat-badge-green,
+.secondary-badge.zcat-badge-yellow,.secondary-badge.zcat-badge-pink,.secondary-badge.zcat-badge-disabled,.primary-badge.small{
+    height: 20px;
+    min-width: 20px;
+    padding: 0px 6px;
+    border-radius: 1000px;
+    color: var(--zcat-badge-primary-text-white);
+    background-color: var(--zcat-badge-primary-bg-primary);
+    width: -moz-fit-content;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: var(--zcat-font-semibold) var(--zcat-font-10-12) var(--zcat-font-family-primary);
+}
+.primary-badge.small,.secondary-badge.small{
+    height: 16px;
+    min-width: 16px;
+    padding: 0px 4px;
+}
+.primary-badge.zcat-badge-red {
+    background-color: var(--zcat-badge-primary-bg-red);
+}
+.primary-badge.zcat-badge-green {
+    background-color: var(--zcat-badge-primary-bg-green);
+}
+.primary-badge.zcat-badge-yellow {
+    background-color: var(--zcat-badge-primary-bg-orange);
+}
+.primary-badge.zcat-badge-pink {
+    background-color: var(--zcat-badge-primary-bg-pink);
+}
+.primary-badge.zcat-badge-disabled {
+    color: var(--zcat-badge-primary-text-disabled);
+    background-color: var(--zcat-badge-primary-bg-disabled);
+}
+.secondary-badge.zcat-badge-blue{
+    color: var(--zcat-badge-secondary-text-primary);
+    background-color: var(--zcat-badge-secondary-bg-primary);
+}
+.secondary-badge.zcat-badge-red{
+    color: var(--zcat-badge-secondary-text-red);
+    background-color: var(--zcat-badge-secondary-bg-red);
+}
+.secondary-badge.zcat-badge-green{
+    color: var(--zcat-badge-secondary-text-green);
+    background-color: var(--zcat-badge-secondary-bg-green);
+}
+.secondary-badge.zcat-badge-yellow{
+    color: var(--zcat-badge-secondary-text-orange);
+    background-color: var(--zcat-badge-secondary-bg-orange);
+}
+.secondary-badge.zcat-badge-pink{
+    color: var(--zcat-badge-secondary-text-pink);
+    background-color: var(--zcat-badge-secondary-bg-pink);
+}
+.secondary-badge.zcat-badge-disabled{
+    color: var(--zcat-badge-secondary-text-disabled);
+    background-color: var(--zcat-badge-secondary-bg-disbaled);
+}

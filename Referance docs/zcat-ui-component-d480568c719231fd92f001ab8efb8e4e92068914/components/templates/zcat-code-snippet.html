@@ -1,0 +1,8 @@
+<template tag-name="zcat-code-snippet">
+    <lyte-code-snippet lt-prop-show-line-number="true"
+     lt-prop-copy-message-preview="false" lt-prop-copy-tooltip-text="copy"  
+     lt-prop-tooltip-config='{"position" : "top", "appearance" : "box", "hideOnClick" : false, "keeptooltip" : true}'
+     on-after-copy="{{method('copyToSnippet')}}"  lt-prop-copy-button-appearance="icon" 
+     lt-prop-code="{{zcatProp.code}}" lt-prop-type="{{zcatProp.type}}">
+    </lyte-code-snippet>
+</template>

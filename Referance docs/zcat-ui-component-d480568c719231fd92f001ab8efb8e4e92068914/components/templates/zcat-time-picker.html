@@ -1,0 +1,14 @@
+<template tag-name="zcat-time-picker">
+    <lyte-time-picker
+    lt-prop-class='{{zcatProp.class}} {{zcatProp.size}}'
+    data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-label="{{zcatProp.label}}"
+    lt-prop-value="{{lbind(formData[zcatProp.key])}}"
+    lt-prop-time-format="{{zcatProp.time_format}}"
+    lt-prop-button='[{"text":"{{zcatProp.button_text}}","purpose":"ok"}]'
+    lt-prop-aria-attributes='{"input":"{{zcatProp.label}}"}'
+    lt-prop-id="simpleTimePicker"
+    lt-prop-interval='{{zcatProp.interval}}'
+    lt-prop-placeholder="{{zcatProp.format}}"
+    ></lyte-time-picker>
+</template>

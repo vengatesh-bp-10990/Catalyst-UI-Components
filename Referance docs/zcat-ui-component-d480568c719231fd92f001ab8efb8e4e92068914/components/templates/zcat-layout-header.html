@@ -1,0 +1,116 @@
+<template tag-name="zcat-layout-header"> 
+  <div
+    class="zcat-layout-header {{zcatProp.class ? zcatProp.class : ''}}"
+    style="{{zcatProp.style}}"
+  >
+    <div class="zcat-left-alignment">
+      <%if(zcatProp.left.yield){%>
+      <lyte-yield yield-name="{{zcatProp.left.yield}}"></lyte-yield>
+      <%} else if(zcatProp.left){%>
+      <lyte-search
+        lyte-if="{{zcatProp.left.search}}"
+        lt-prop-query-selector="{{zcatProp.left.search.querySelector}}"
+        lt-prop-placeholder="{{zcatProp.left.search.placeholder}}"
+        lt-prop='{"closeIcon" : true}'
+        lt-prop-width="{{zcatProp.left.search.width}}"
+        lt-prop-maxlength="{{zcatProp.left.search.maxLength ? zcatProp.left.search.maxLength : 1000}}"
+        on-search="{{method('customLbindForSearch', zcatProp.left.search.onSearch)}}"
+      >
+      </lyte-search>
+      <div
+        lyte-if="{{zcatProp.left.title}}"
+        class="zcat-w100p zcat-dF zcat-direction-column zcat-gap-2"
+      >
+        <h3
+          class="{{zcatProp.left.title.class ? zcatProp.left.title.class : 'zcat-text-16 zcat-color-dark1'}}"
+        >
+          {{zcatProp.left.title.name}}
+        </h3>
+        <p
+          class="{{zcatProp.left.title.class ? zcatProp.left.desc.class : 'zcat-text-14 zcat-color-dark2'}}"
+        >
+          {{zcatProp.left.desc.name}}
+        </p>
+      </div>
+      <%}%>
+    </div>
+    <%if(zcatProp.center){%>
+    <div class="zcat-center-alignment">
+      <div class="zcat-tabs">
+        <% zcatProp.center.tabs.list.forEach((item, index) => { %>
+          <%if(!zcatProp.center.tabs.level){%>
+            <div
+              class="{{zcatProp.center.tabs.selectedTab == item.value ? 'tab active-tab' : 'tab'}}"
+              data-zcqa="{{item.zcqa}}"
+              onclick="{{action('setActiveTab', item)}}"
+            >
+              {{item.label}}
+            </div>
+          <%}else{%>
+            <go-to
+              lt-prop-route="{{item.route}}"
+              lt-prop-dp="{{item.dynamicParams}}"
+              lt-prop-qp="{{item.queryParams}}"
+              lt-prop-custom
+              onclick="{{action('tabClick', item, zcatProp.center.tabs.callback.name)}}"
+            >
+              <a class="tab" data-zcqa="{{item.zcqa}}" data-name="{{item.value}}" data-group="lv_{{zcatProp.center.tabs.level}}" data-zcqa="{{item.value}}"
+                  >{{item.label}}</a
+              >
+            </go-to>
+          <%}%>
+        <%}) %>
+      </div>
+    </div>
+    <%}%> 
+    <%if(zcatProp.right){%>
+    <div class="zcat-right-alignment"> 
+      <%zcatProp.right.list.forEach(function(item,index){%>
+      <%if(item.field_type==='button'){%>
+      <zcat-button self="{{self}}" zcat-prop="{{item}}"></zcat-button>
+      <%}%> <%if(item.field_type==='dropdown'){%>
+      <zcat-dropdown self="{{self}}" zcat-prop="{{item}}"></zcat-dropdown>
+      <%}%> <%if(item.field_type==='three-dots-button'){%>
+      <div id="zcat_layoutheader_{{item.id}}" class="three-dots-btn">
+        <lyte-svg
+          lt-prop-path="#zcat-icon-three-dots"
+          lt-prop-class="zcat-w14 zcat-h16"
+        ></lyte-svg>
+      </div>
+      <lyte-menu
+        lt-prop-yield="true"
+        lt-prop-position="downAlignLeft"
+        lt-prop-query="#zcat_layoutheader_{{item.id}}"
+      >
+        <template is="registerYield" yield-name="yield">
+          <lyte-menu-body>
+            <lyte-menu-item
+              lyte-for="{{item.menu}} as list index"
+              onclick="{{action('customLbindForSubHeader', list)}}"
+            >
+              <div class="zcat-dF zcat-align-center zcat-gap-6">
+                <lyte-svg
+                  lyte-if="{{list.icon.position === 'left'}}"
+                  lt-prop-path="#{{list.icon.name}}"
+                  lt-prop-class="{{list.icon.class}} zcat-flex-center"
+                ></lyte-svg>
+                <p class="zcat-text-14 zcat-color-dark1">{{list.label}}</p>
+                <lyte-svg
+                  lyte-if="{{list.icon.position === 'right'}}"
+                  lt-prop-path="#{{list.icon.name}}"
+                  lt-prop-class="{{list.icon.class}} zcat-flex-center"
+                ></lyte-svg>
+              </div>
+            </lyte-menu-item>
+          </lyte-menu-body>
+        </template>
+      </lyte-menu>
+      <%}%> <%if(item.field_type == 'link'){%>
+      <zcat-link-box self="{{self}}" zcat-prop="{{item}}"></zcat-link-box>
+      <%}%> <%if(item.yield){%>
+      <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+      <%}%> <%})%>
+    </div>
+    <%}%>
+  </div>
+</template>

@@ -1,0 +1,30 @@
+{
+ "name": "@zcatalyst/zcat-ui-component",
+ "version": "3.0.0",
+ "description": "Description for zcat-ui-component goes here",
+ "scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "bundle-css": "node build/bundle-css.js",
+  "link": "npm run bundle-css &&  npm link",
+  "deploy": "slyte build && npm run bundle-css &&  npm publish --registry http://cm-npmregistry",
+  "undeploy": "npm unpublish --registry http://cm-npmregistry --force"
+ },
+ "author": "Catalyst",
+ "license": "ISC",
+ "dependencies": {
+  "@slyte/core": "1.3.0-BETA7",
+  "@zoho/jsp-lyte-convertor": "4.0.3",
+  "@zoho/lyte-dom": "2.0.25",
+  "@zoho/lyte-ui-component": "^4.6.4",
+  "inquirer": "7.3.3",
+  "semver": "7.3.4"
+ },
+ "isV4": true,
+ "lyte-addon": true,
+ "devDependencies": {
+  "baseline-browser-mapping": "^2.8.28"
+ },
+ "addons": [
+  "@zcatalyst/zcat-ui-component"
+ ]
+}
