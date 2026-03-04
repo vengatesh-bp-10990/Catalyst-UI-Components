@@ -2,7 +2,7 @@
   "slate": [
     {
       "name": "UIComponents",
-      "source": "."
+      "source": "dist"
     }
   ]
 }

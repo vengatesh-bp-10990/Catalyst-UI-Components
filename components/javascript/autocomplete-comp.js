@@ -275,74 +275,72 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
     }
   }
 
-  _syncSelection() {
-    let zcatProp = this.getData('zcatProp');
-    if (!zcatProp) return;
-    if (zcatProp.selected) {
-      let options = zcatProp.options || [];
-      for (let i = 0; i < options.length; i++) {
-        if (options[i].value === zcatProp.selected) {
-          this.setData('selectedValue', options[i].value);
-          this.setData('selectedLabel', options[i].name);
-          this.setData('searchQuery', options[i].name);
-          return;
-        }
-      }
-    }
-    this.setData('selectedValue', '');
-    this.setData('selectedLabel', '');
-  }
-
-  _syncFilteredOptions() {
-    let zcatProp = this.getData('zcatProp');
-    let options = (zcatProp && zcatProp.options) ? zcatProp.options : [];
-    let query = this.getData('searchQuery') || '';
-    let filtered;
-
-    if (query) {
-      let q = query.toLowerCase();
-      filtered = [];
-      for (let i = 0; i < options.length; i++) {
-        if (options[i].name && options[i].name.toLowerCase().indexOf(q) !== -1) {
-          // clone with highlight info
-          let clone = {};
-          for (let key in options[i]) {
-            if (options[i].hasOwnProperty(key)) {
-              clone[key] = options[i][key];
+  static methods(arg1) {
+    return Object.assign(super.methods({
+      _syncSelection() {
+        let zcatProp = this.getData('zcatProp');
+        if (!zcatProp) return;
+        if (zcatProp.selected) {
+          let options = zcatProp.options || [];
+          for (let i = 0; i < options.length; i++) {
+            if (options[i].value === zcatProp.selected) {
+              this.setData('selectedValue', options[i].value);
+              this.setData('selectedLabel', options[i].name);
+              this.setData('searchQuery', options[i].name);
+              return;
             }
           }
-          // Build highlighted name
-          let name = options[i].name;
-          let lowerName = name.toLowerCase();
-          let idx = lowerName.indexOf(q);
-          if (idx !== -1) {
-            clone._highlightBefore = name.substring(0, idx);
-            clone._highlightMatch = name.substring(idx, idx + q.length);
-            clone._highlightAfter = name.substring(idx + q.length);
-          } else {
-            clone._highlightBefore = name;
-            clone._highlightMatch = '';
-            clone._highlightAfter = '';
-          }
-          filtered.push(clone);
         }
-      }
-    } else {
-      filtered = options.slice ? options.slice() : [];
-      for (let i = 0; i < filtered.length; i++) {
-        filtered[i] = Object.assign({}, filtered[i]);
-        filtered[i]._highlightBefore = filtered[i].name;
-        filtered[i]._highlightMatch = '';
-        filtered[i]._highlightAfter = '';
-      }
-    }
+        this.setData('selectedValue', '');
+        this.setData('selectedLabel', '');
+      },
 
-    this.setData('filteredOptions', filtered);
-    this.setData('highlightIndex', -1);
-  }
+      _syncFilteredOptions() {
+        let zcatProp = this.getData('zcatProp');
+        let options = (zcatProp && zcatProp.options) ? zcatProp.options : [];
+        let query = this.getData('searchQuery') || '';
+        let filtered;
 
-  static methods(arg1) {
-    return Object.assign(super.methods({}), arg1);
+        if (query) {
+          let q = query.toLowerCase();
+          filtered = [];
+          for (let i = 0; i < options.length; i++) {
+            if (options[i].name && options[i].name.toLowerCase().indexOf(q) !== -1) {
+              let clone = {};
+              for (let key in options[i]) {
+                if (options[i].hasOwnProperty(key)) {
+                  clone[key] = options[i][key];
+                }
+              }
+              let name = options[i].name;
+              let lowerName = name.toLowerCase();
+              let idx = lowerName.indexOf(q);
+              if (idx !== -1) {
+                clone._highlightBefore = name.substring(0, idx);
+                clone._highlightMatch = name.substring(idx, idx + q.length);
+                clone._highlightAfter = name.substring(idx + q.length);
+              } else {
+                clone._highlightBefore = name;
+                clone._highlightMatch = '';
+                clone._highlightAfter = '';
+              }
+              filtered.push(clone);
+            }
+          }
+        } else {
+          filtered = options.slice ? options.slice() : [];
+          for (let i = 0; i < filtered.length; i++) {
+            filtered[i] = Object.assign({}, filtered[i]);
+            filtered[i]._highlightBefore = filtered[i].name;
+            filtered[i]._highlightMatch = '';
+            filtered[i]._highlightAfter = '';
+          }
+        }
+
+        this.setData('filteredOptions', filtered);
+        this.setData('highlightIndex', -1);
+      }
+    }), arg1);
   }
 
   static actions(arg1) {
