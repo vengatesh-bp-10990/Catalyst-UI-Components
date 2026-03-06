@@ -254,7 +254,8 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
   }
 
   init() {
-    // intentionally empty — sync happens in didConnect after static methods are wired up
+    this._syncSelection();
+    this._syncFilteredOptions('');
   }
 
   didConnect() {
@@ -266,9 +267,6 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
       }
     };
     document.addEventListener('click', this._outsideClickHandler, true);
-    // Now static methods are available — run initial sync
-    this._syncSelection();
-    this._syncFilteredOptions();
   }
 
   didDestroy() {
@@ -277,72 +275,75 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
     }
   }
 
-  static methods(arg1) {
-    return Object.assign(super.methods({
-      _syncSelection() {
-        let zcatProp = this.getData('zcatProp');
-        if (!zcatProp) return;
-        if (zcatProp.selected) {
-          let options = zcatProp.options || [];
-          for (let i = 0; i < options.length; i++) {
-            if (options[i].value === zcatProp.selected) {
-              this.setData('selectedValue', options[i].value);
-              this.setData('selectedLabel', options[i].name);
-              this.setData('searchQuery', options[i].name);
-              return;
-            }
-          }
+  _syncSelection() {
+    let zcatProp = this.getData('zcatProp');
+    if (!zcatProp) return;
+    if (zcatProp.selected) {
+      let options = zcatProp.options || [];
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].value === zcatProp.selected) {
+          this.setData('selectedValue', options[i].value);
+          this.setData('selectedLabel', options[i].name);
+          this.setData('searchQuery', options[i].name);
+          return;
         }
-        this.setData('selectedValue', '');
-        this.setData('selectedLabel', '');
-      },
-
-      _syncFilteredOptions() {
-        let zcatProp = this.getData('zcatProp');
-        let options = (zcatProp && zcatProp.options) ? zcatProp.options : [];
-        let query = this.getData('searchQuery') || '';
-        let filtered;
-
-        if (query) {
-          let q = query.toLowerCase();
-          filtered = [];
-          for (let i = 0; i < options.length; i++) {
-            if (options[i].name && options[i].name.toLowerCase().indexOf(q) !== -1) {
-              let clone = {};
-              for (let key in options[i]) {
-                if (options[i].hasOwnProperty(key)) {
-                  clone[key] = options[i][key];
-                }
-              }
-              let name = options[i].name;
-              let lowerName = name.toLowerCase();
-              let idx = lowerName.indexOf(q);
-              if (idx !== -1) {
-                clone._highlightBefore = name.substring(0, idx);
-                clone._highlightMatch = name.substring(idx, idx + q.length);
-                clone._highlightAfter = name.substring(idx + q.length);
-              } else {
-                clone._highlightBefore = name;
-                clone._highlightMatch = '';
-                clone._highlightAfter = '';
-              }
-              filtered.push(clone);
-            }
-          }
-        } else {
-          filtered = options.slice ? options.slice() : [];
-          for (let i = 0; i < filtered.length; i++) {
-            filtered[i] = Object.assign({}, filtered[i]);
-            filtered[i]._highlightBefore = filtered[i].name;
-            filtered[i]._highlightMatch = '';
-            filtered[i]._highlightAfter = '';
-          }
-        }
-
-        this.setData('filteredOptions', filtered);
-        this.setData('highlightIndex', -1);
       }
-    }), arg1);
+    }
+    this.setData('selectedValue', '');
+    this.setData('selectedLabel', '');
+  }
+
+  // query is passed explicitly to avoid relying on async setData flush
+  _syncFilteredOptions(query) {
+    let zcatProp = this.getData('zcatProp');
+    let options = (zcatProp && zcatProp.options) ? zcatProp.options : [];
+    if (query === undefined || query === null) {
+      query = this.getData('searchQuery') || '';
+    }
+    let filtered;
+
+    if (query) {
+      let q = query.toLowerCase();
+      filtered = [];
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].name && options[i].name.toLowerCase().indexOf(q) !== -1) {
+          let clone = {};
+          for (let key in options[i]) {
+            if (options[i].hasOwnProperty(key)) {
+              clone[key] = options[i][key];
+            }
+          }
+          let name = options[i].name;
+          let lowerName = name.toLowerCase();
+          let idx = lowerName.indexOf(q);
+          if (idx !== -1) {
+            clone._highlightBefore = name.substring(0, idx);
+            clone._highlightMatch = name.substring(idx, idx + q.length);
+            clone._highlightAfter = name.substring(idx + q.length);
+          } else {
+            clone._highlightBefore = name;
+            clone._highlightMatch = '';
+            clone._highlightAfter = '';
+          }
+          filtered.push(clone);
+        }
+      }
+    } else {
+      filtered = options.slice ? options.slice() : [];
+      for (let i = 0; i < filtered.length; i++) {
+        filtered[i] = Object.assign({}, filtered[i]);
+        filtered[i]._highlightBefore = filtered[i].name;
+        filtered[i]._highlightMatch = '';
+        filtered[i]._highlightAfter = '';
+      }
+    }
+
+    this.setData('filteredOptions', filtered);
+    this.setData('highlightIndex', -1);
+  }
+
+  static methods(arg1) {
+    return Object.assign(super.methods({}), arg1);
   }
 
   static actions(arg1) {
@@ -351,8 +352,8 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
         let val = event.target.value;
         this.setData('searchQuery', val);
         this.setData('isOpen', true);
-        this._syncFilteredOptions();
-        // Clear selection if user is typing
+        // Pass val directly so filtering doesn't depend on async setData flush
+        this._syncFilteredOptions(val);
         if (val !== this.getData('selectedLabel')) {
           this.setData('selectedValue', '');
           this.setData('selectedLabel', '');
@@ -363,7 +364,8 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
         let zcatProp = this.getData('zcatProp');
         if (zcatProp && zcatProp.disabled) return;
         this.setData('isOpen', true);
-        this._syncFilteredOptions();
+        let query = this.getData('searchQuery') || '';
+        this._syncFilteredOptions(query);
       },
 
       onSearchKeydown(event) {
@@ -411,7 +413,7 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
         this.setData('selectedValue', '');
         this.setData('selectedLabel', '');
         this.setData('isOpen', true);
-        this._syncFilteredOptions();
+        this._syncFilteredOptions('');
 
         let self = this.getData('self');
         let zcatProp = this.getData('zcatProp');
@@ -437,7 +439,8 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
         watch: ['zcatProp'],
         handler() {
           this._syncSelection();
-          this._syncFilteredOptions();
+          let query = this.getData('searchQuery') || '';
+          this._syncFilteredOptions(query);
         }
       }
     }), arg1);
