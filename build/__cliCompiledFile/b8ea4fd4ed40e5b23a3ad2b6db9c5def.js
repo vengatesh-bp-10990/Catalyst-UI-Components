@@ -1217,7 +1217,7 @@ let LyteTableUtilsMixin = createCustomClass(function(arg1, overrides, LyteTableU
 });
 
 LyteTableUtilsMixin.register({
-    hash: "LyteTableUtilsMixin_4",
+    hash: "LyteTableUtilsMixin_5",
     refHash: "@zoho/lyte-ui-component_3"
 });
 

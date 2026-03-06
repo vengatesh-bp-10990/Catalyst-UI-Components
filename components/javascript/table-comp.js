@@ -4245,7 +4245,7 @@ let LyteTableSortableMixin = (0,_slyte_core_src_lyte_utils__WEBPACK_IMPORTED_MOD
 });
 
 LyteTableSortableMixin.register({
-    hash: "LyteTableSortableMixin_5",
+    hash: "LyteTableSortableMixin_4",
     refHash: "@zoho/lyte-ui-component_3"
 });
 
@@ -5489,7 +5489,7 @@ let LyteTableUtilsMixin = (0,_slyte_core_src_lyte_utils__WEBPACK_IMPORTED_MODULE
 });
 
 LyteTableUtilsMixin.register({
-    hash: "LyteTableUtilsMixin_4",
+    hash: "LyteTableUtilsMixin_5",
     refHash: "@zoho/lyte-ui-component_3"
 });
 
