@@ -115,6 +115,8 @@
   "/components/javascript/pagination-comp.js": [
    "/components/javascript/pagination-comp.js",
    "/components_javascript_zcat-button_js.js",
+   "/components_javascript_zcat-checkbox_js.js",
+   "/components_javascript_zcat-dropdown_js.js",
    "/components_javascript_zcat-icon_js.js"
   ],
   "/components/javascript/popover-comp.js": [
@@ -184,6 +186,7 @@
    "/components/javascript/checkbox-comp.js",
    "/components/javascript/doublefield-comp.js",
    "/components/javascript/dropdown-comp.js",
+   "/components/javascript/pagination-comp.js",
    "/components_javascript_zcat-button_js.js",
    "/components_javascript_zcat-dropdown_js.js",
    "/components_javascript_zcat-icon_js.js",
@@ -194,6 +197,7 @@
    "/components_javascript_zcat-dropdown_js.js",
    "/components/javascript/doublefield-comp.js",
    "/components/javascript/dropdown-comp.js",
+   "/components/javascript/pagination-comp.js",
    "/components_javascript_zcat-button_js.js",
    "/components_javascript_zcat-checkbox_js.js",
    "/components_javascript_zcat-icon_js.js",

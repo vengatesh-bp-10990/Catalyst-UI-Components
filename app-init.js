@@ -1217,7 +1217,7 @@ class Pagination extends _node_modules_slyte_router_index_js__WEBPACK_IMPORTED_M
     }
 
     getRequirements() {
-        arguments[1].push(Promise.all(/*! import() | components/javascript/pagination-comp */[__webpack_require__.e("components_javascript_zcat-icon_js"), __webpack_require__.e("components_javascript_zcat-button_js"), __webpack_require__.e("components/javascript/pagination-comp")]).then(__webpack_require__.bind(__webpack_require__, /*! ./components/javascript/pagination-comp.js */ 93282883)).then(function(res) {
+        arguments[1].push(Promise.all(/*! import() | components/javascript/pagination-comp */[__webpack_require__.e("components_javascript_zcat-icon_js"), __webpack_require__.e("components_javascript_zcat-button_js"), __webpack_require__.e("components_javascript_zcat-checkbox_js"), __webpack_require__.e("components_javascript_zcat-dropdown_js"), __webpack_require__.e("components/javascript/pagination-comp")]).then(__webpack_require__.bind(__webpack_require__, /*! ./components/javascript/pagination-comp.js */ 93282883)).then(function(res) {
             PaginationComp = res.PaginationComp;
         }));
 

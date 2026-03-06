@@ -238,25 +238,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatPagination": () => (/* binding */ ZcatPagination)
 /* harmony export */ });
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
-/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
+/* harmony import */ var _zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-dropdown.js */ 71154528);
+/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
+/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
+/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
 
 
 
 
 
-class ZcatPagination extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__.Component {
+
+class ZcatPagination extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_2__.Component {
   constructor() {
     super();
   }
 
   data(arg1) {
     return Object.assign(super.data({
-      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('object'),
-      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('object', { default: {} }),
-      currentPage: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('number', { default: 1 }),
-      rowsPerPage: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('number', { default: 10 })
+      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('object'),
+      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('object', { default: {} }),
+      currentPage: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('number', { default: 1 }),
+      rowsPerPage: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('number', { default: 10 }),
+      rowsDropdownProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('object', { default: {} })
     }), arg1);
   }
 
@@ -269,6 +272,20 @@ class ZcatPagination extends _node_modules_slyte_component_index_js__WEBPACK_IMP
     if (!zcatProp) return;
     if (zcatProp.currentPage) this.setData('currentPage', zcatProp.currentPage);
     if (zcatProp.rowsPerPage) this.setData('rowsPerPage', zcatProp.rowsPerPage);
+    this._buildRowsDropdown();
+  }
+
+  _buildRowsDropdown() {
+    let rpp = this.getData('rowsPerPage');
+    let options = [5, 10, 25, 50, 100].map(n => ({
+      name: String(n), value: String(n), selected: n === rpp
+    }));
+    this.setData('rowsDropdownProp', {
+      options: options,
+      selected: String(rpp),
+      size: 'small',
+      callback: { name: 'onRowsPerPageChange' }
+    });
   }
 
   _getTotalPages() {
@@ -313,10 +330,20 @@ class ZcatPagination extends _node_modules_slyte_component_index_js__WEBPACK_IMP
         this._fireCallback(total);
       },
       changeRowsPerPage(event) {
-        let val = parseInt(event.target.value, 10);
+        let val = parseInt(event && event.target ? event.target.value : '10', 10);
         this.setData('rowsPerPage', val);
         this.setData('currentPage', 1);
+        this._buildRowsDropdown();
         this._fireCallback(1);
+      },
+      onRowsPerPageChange(val) {
+        let numVal = parseInt(val, 10);
+        if (!isNaN(numVal)) {
+          this.setData('rowsPerPage', numVal);
+          this.setData('currentPage', 1);
+          this._buildRowsDropdown();
+          this._fireCallback(1);
+        }
       }
     }), arg1);
   }
@@ -337,9 +364,9 @@ class ZcatPagination extends _node_modules_slyte_component_index_js__WEBPACK_IMP
   }
 }
 
-ZcatPagination._template = "<template tag-name=\"zcat-pagination\"> <div class=\"zcat-pagination {{expHandlers(expHandlers(zcatProp.variant,'===','secondary'),'?:','zcat-pagination-secondary','zcat-pagination-primary')}} {{expHandlers(zcatProp.classCss,'||','')}}\"> <!-- Left: Rows per page (primary variant) --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'!==','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-pagination-left\"> <span class=\"zcat-pagination-label\">Rows per page:</span> <select class=\"zcat-pagination-select\" onchange=\"{{action('changeRowsPerPage',event)}}\"> <option value=\"5\">5</option> <option value=\"10\" selected=\"{{expHandlers(rowsPerPage,'===',10)}}\">10</option> <option value=\"25\">25</option> <option value=\"50\">50</option> <option value=\"100\">100</option> </select> </div> </template></template> <!-- Center/Right: Page info + Navigation --> <div class=\"zcat-pagination-right\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <span class=\"zcat-pagination-info\">{{expHandlers(zcatProp.totalRecords,'||',0)}} total records</span> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'!==','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <span class=\"zcat-pagination-info\"> {{expHandlers(expHandlers(expHandlers(currentPage,'-',1),'*',rowsPerPage),'+',1)}} – {{expHandlers(expHandlers(expHandlers(currentPage,'*',rowsPerPage),'&gt;',expHandlers(zcatProp.totalRecords,'||',0)),'?:',expHandlers(zcatProp.totalRecords,'||',0),expHandlers(currentPage,'*',rowsPerPage))}} of {{expHandlers(zcatProp.totalRecords,'||',0)}} </span> </template></template> <div class=\"zcat-pagination-nav\"> <button class=\"zcat-pagination-btn\" onclick=\"{{action('goToFirst')}}\" disabled=\"{{expHandlers(currentPage,'<=',1)}}\"> <zcat-icon name=\"chevrons-left\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </button> <button class=\"zcat-pagination-btn\" onclick=\"{{action('goToPrev')}}\" disabled=\"{{expHandlers(currentPage,'<=',1)}}\"> <zcat-icon name=\"chevron-left\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </button> <button class=\"zcat-pagination-btn\" onclick=\"{{action('goToNext')}}\" disabled=\"{{expHandlers(expHandlers(currentPage,'*',rowsPerPage),'>=',expHandlers(zcatProp.totalRecords,'||',0))}}\"> <zcat-icon name=\"chevron-right\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </button> <button class=\"zcat-pagination-btn\" onclick=\"{{action('goToLast')}}\" disabled=\"{{expHandlers(expHandlers(currentPage,'*',rowsPerPage),'>=',expHandlers(zcatProp.totalRecords,'||',0))}}\"> <zcat-icon name=\"chevrons-right\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </button> </div> </div> </div> </template><style>/* ==============================\n   ZCAT Pagination Component\n   ============================== */\n\nzcat-pagination * {\n  box-sizing: border-box;\n}\n\n/* --- Container --- */\n.zcat-pagination {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px 14px;\n  font-family: var(--zcat-font-family-primary);\n  background: var(--zcat-pagination-bg);\n  border: 1px solid var(--zcat-pagination-divider);\n  border-radius: 8px;\n  gap: 16px;\n}\n\n/* --- Left section --- */\n.zcat-pagination-left {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n.zcat-pagination-label {\n  font: 400 13px/18px var(--zcat-font-family-primary);\n  color: var(--zcat-pagination-text-secondary);\n  white-space: nowrap;\n}\n.zcat-pagination-select {\n  padding: 4px 8px;\n  border: 1px solid var(--zcat-pagination-divider);\n  border-radius: 4px;\n  background: var(--zcat-pagination-bg);\n  font: 400 13px/18px var(--zcat-font-family-primary);\n  color: var(--zcat-pagination-text-primary);\n  cursor: pointer;\n  outline: none;\n}\n.zcat-pagination-select:focus {\n  border-color: var(--zcat-pagination-theme);\n}\n\n/* --- Right section --- */\n.zcat-pagination-right {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.zcat-pagination-info {\n  font: 400 13px/18px var(--zcat-font-family-primary);\n  color: var(--zcat-pagination-text-secondary);\n  white-space: nowrap;\n}\n\n/* --- Navigation buttons --- */\n.zcat-pagination-nav {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n.zcat-pagination-btn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: 1px solid var(--zcat-pagination-divider);\n  background: var(--zcat-pagination-bg);\n  border-radius: 4px;\n  cursor: pointer;\n  color: var(--zcat-pagination-text-primary);\n  transition: background 0.12s, border-color 0.12s;\n}\n.zcat-pagination-btn:hover:not(:disabled) {\n  background: var(--zcat-btn-grey-bg-hover);\n  border-color: var(--zcat-pagination-theme);\n}\n.zcat-pagination-btn:disabled {\n  opacity: 0.35;\n  cursor: default;\n}\n\n/* --- Secondary variant (simple) --- */\n.zcat-pagination-secondary {\n  justify-content: flex-end;\n  border: none;\n  padding: 10px 0;\n  background: transparent;\n}\n</style>";;
-ZcatPagination._dynamicNodes = [{"t":"a","p":[1]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,3],"cn":"lc_id_0"},{"t":"a","p":[1,3,3],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":6,"sibl":[5]},{"t":"s","p":[1,7,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":5,"sibl":[4]},{"t":"s","p":[1,7,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,1],"cn":"lc_id_0"},{"t":"tX","p":[1,3],"cn":"lc_id_0"},{"t":"tX","p":[1,5],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":4,"sibl":[3]},{"t":"a","p":[1,7,5,1]},{"t":"cD","p":[1,7,5,1,1],"in":3,"sibl":[2]},{"t":"a","p":[1,7,5,3]},{"t":"cD","p":[1,7,5,3,1],"in":2,"sibl":[1]},{"t":"a","p":[1,7,5,5]},{"t":"cD","p":[1,7,5,5,1],"in":1,"sibl":[0]},{"t":"a","p":[1,7,5,7]},{"t":"cD","p":[1,7,5,7,1],"in":0},{"type":"dc","trans":true,"hc":true,"p":[3,2,1,0]}];;
-ZcatPagination._observedAttributes = ["self", "zcatProp", "currentPage", "rowsPerPage"];
+ZcatPagination._template = "<template tag-name=\"zcat-pagination\"> <div class=\"zcat-pagination {{expHandlers(expHandlers(zcatProp.variant,'===','secondary'),'?:','zcat-pagination-secondary','zcat-pagination-primary')}} {{expHandlers(zcatProp.classCss,'||','')}}\"> <!-- Left: Rows per page (primary variant) --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'!==','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-pagination-left\"> <span class=\"zcat-pagination-label\">Rows per page:</span> <zcat-dropdown self=\"{{self}}\" zcat-prop=\"{{rowsDropdownProp}}\"></zcat-dropdown> </div> </template></template> <!-- Center/Right: Page info + Navigation --> <div class=\"zcat-pagination-right\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <span class=\"zcat-pagination-info\">{{expHandlers(zcatProp.totalRecords,'||',0)}} total records</span> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'!==','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <span class=\"zcat-pagination-info\"> {{expHandlers(expHandlers(expHandlers(currentPage,'-',1),'*',rowsPerPage),'+',1)}} – {{expHandlers(expHandlers(expHandlers(currentPage,'*',rowsPerPage),'&gt;',expHandlers(zcatProp.totalRecords,'||',0)),'?:',expHandlers(zcatProp.totalRecords,'||',0),expHandlers(currentPage,'*',rowsPerPage))}} of {{expHandlers(zcatProp.totalRecords,'||',0)}} </span> </template></template> <div class=\"zcat-pagination-nav\"> <lyte-button class=\"zcat-pagination-btn\" onclick=\"{{action('goToFirst')}}\" lt-prop-disabled=\"{{expHandlers(expHandlers(currentPage,'<=',1),'?:','true','false')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <zcat-icon name=\"chevrons-left\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </template> </lyte-button> <lyte-button class=\"zcat-pagination-btn\" onclick=\"{{action('goToPrev')}}\" lt-prop-disabled=\"{{expHandlers(expHandlers(currentPage,'<=',1),'?:','true','false')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <zcat-icon name=\"chevron-left\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </template> </lyte-button> <lyte-button class=\"zcat-pagination-btn\" onclick=\"{{action('goToNext')}}\" lt-prop-disabled=\"{{expHandlers(expHandlers(expHandlers(currentPage,'*',rowsPerPage),'>=',expHandlers(zcatProp.totalRecords,'||',0)),'?:','true','false')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <zcat-icon name=\"chevron-right\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </template> </lyte-button> <lyte-button class=\"zcat-pagination-btn\" onclick=\"{{action('goToLast')}}\" lt-prop-disabled=\"{{expHandlers(expHandlers(expHandlers(currentPage,'*',rowsPerPage),'>=',expHandlers(zcatProp.totalRecords,'||',0)),'?:','true','false')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <zcat-icon name=\"chevrons-right\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </template> </lyte-button> </div> </div> </div> </template><style>/* ==============================\n   ZCAT Pagination Component\n   ============================== */\n\nzcat-pagination * {\n  box-sizing: border-box;\n}\n\n/* --- Container --- */\n.zcat-pagination {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px 14px;\n  font-family: var(--zcat-font-family-primary);\n  background: var(--zcat-pagination-bg);\n  border: 1px solid var(--zcat-pagination-divider);\n  border-radius: 8px;\n  gap: 16px;\n}\n\n/* --- Left section --- */\n.zcat-pagination-left {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n.zcat-pagination-label {\n  font: 400 13px/18px var(--zcat-font-family-primary);\n  color: var(--zcat-pagination-text-secondary);\n  white-space: nowrap;\n}\n.zcat-pagination-select {\n  padding: 4px 8px;\n  border: 1px solid var(--zcat-pagination-divider);\n  border-radius: 4px;\n  background: var(--zcat-pagination-bg);\n  font: 400 13px/18px var(--zcat-font-family-primary);\n  color: var(--zcat-pagination-text-primary);\n  cursor: pointer;\n  outline: none;\n}\n.zcat-pagination-select:focus {\n  border-color: var(--zcat-pagination-theme);\n}\n\n/* --- Right section --- */\n.zcat-pagination-right {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.zcat-pagination-info {\n  font: 400 13px/18px var(--zcat-font-family-primary);\n  color: var(--zcat-pagination-text-secondary);\n  white-space: nowrap;\n}\n\n/* --- Navigation buttons --- */\n.zcat-pagination-nav {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n.zcat-pagination-btn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: 1px solid var(--zcat-pagination-divider);\n  background: var(--zcat-pagination-bg);\n  border-radius: 4px;\n  cursor: pointer;\n  color: var(--zcat-pagination-text-primary);\n  transition: background 0.12s, border-color 0.12s;\n}\n.zcat-pagination-btn:hover:not(:disabled) {\n  background: var(--zcat-btn-grey-bg-hover);\n  border-color: var(--zcat-pagination-theme);\n}\n.zcat-pagination-btn:disabled {\n  opacity: 0.35;\n  cursor: default;\n}\n\n/* --- Secondary variant (simple) --- */\n.zcat-pagination-secondary {\n  justify-content: flex-end;\n  border: none;\n  padding: 10px 0;\n  background: transparent;\n}\n</style>";;
+ZcatPagination._dynamicNodes = [{"t":"a","p":[1]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,3],"cn":"lc_id_0"},{"t":"cD","p":[1,3],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":10,"sibl":[9]},{"t":"s","p":[1,7,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":9,"sibl":[8]},{"t":"s","p":[1,7,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,1],"cn":"lc_id_0"},{"t":"tX","p":[1,3],"cn":"lc_id_0"},{"t":"tX","p":[1,5],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":8,"sibl":[7]},{"t":"a","p":[1,7,5,1]},{"t":"r","p":[1,7,5,1,1],"dN":[{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":7,"sibl":[6]},{"t":"cD","p":[1,7,5,1],"in":6,"sibl":[5]},{"t":"a","p":[1,7,5,3]},{"t":"r","p":[1,7,5,3,1],"dN":[{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":5,"sibl":[4]},{"t":"cD","p":[1,7,5,3],"in":4,"sibl":[3]},{"t":"a","p":[1,7,5,5]},{"t":"r","p":[1,7,5,5,1],"dN":[{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":3,"sibl":[2]},{"t":"cD","p":[1,7,5,5],"in":2,"sibl":[1]},{"t":"a","p":[1,7,5,7]},{"t":"r","p":[1,7,5,7,1],"dN":[{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[1,7,5,7],"in":0},{"type":"dc","trans":true,"hc":true,"p":[10,7,6,5,4,3,2,1,0]}];;
+ZcatPagination._observedAttributes = ["self", "zcatProp", "currentPage", "rowsPerPage", "rowsDropdownProp"];
 
 ZcatPagination.register("zcat-pagination", {
   hash: "ZcatPagination_2",
