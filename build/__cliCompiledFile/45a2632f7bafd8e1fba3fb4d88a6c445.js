@@ -254,6 +254,6 @@ ToggleComp._observedAttributes = [
 export { ToggleComp };
 
 ToggleComp.register("toggle-comp", {
-  hash: "ToggleComp_2",
+  hash: "ToggleComp_4",
   refHash: "C_zcat-app_app_0"
 });

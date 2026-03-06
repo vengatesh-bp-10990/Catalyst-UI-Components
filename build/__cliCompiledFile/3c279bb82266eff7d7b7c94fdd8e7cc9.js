@@ -295,6 +295,6 @@ CheckboxComp._observedAttributes = [
 export { CheckboxComp };
 
 CheckboxComp.register("checkbox-comp", {
-  hash: "CheckboxComp_2",
+  hash: "CheckboxComp_4",
   refHash: "C_zcat-app_app_0"
 });

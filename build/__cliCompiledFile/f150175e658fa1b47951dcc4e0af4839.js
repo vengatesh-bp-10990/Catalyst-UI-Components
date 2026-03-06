@@ -1,7 +1,12 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
 import './zcat-icon.js';
+import './zcat-input.js';
+import './zcat-dropdown.js';
+import './zcat-autocomplete.js';
+import './zcat-button.js';
 import { Component } from "../../node_modules/@slyte/component/index.js";
 import { prop } from "../../node_modules/@slyte/core/index.js";
+import "../../node_modules/@zoho/lyte-ui-component/plugins/lyte-sortable.js";
 
 class ZcatKeyvaluePair extends Component {
   constructor() {
@@ -10,107 +15,647 @@ class ZcatKeyvaluePair extends Component {
 
   data(arg1) {
     return Object.assign(super.data({
-      self: prop('object'),
-      zcatProp: prop('object', { default: {} }, { watch: true }),
-      rows: prop('array', { default: [] })
+      self: prop('object', { default: this }), 
+      // zcatProp: prop('object', { default: {} }), 
+      zcatProp: prop("object", { watch: true }),
+      userObjKeys: prop('object', { default: {} }),
+      userObjValues: prop('object', { default: {} }),
+      fieldList: prop('array', { default: [] }), 
+      featureObj: prop('array', { default: [] }), 
+			userObj: prop('object', { default: {} })	,
+      rowList: prop('array', { default: [] }),
+      rowCounter: prop('number', {default: 0 }), 
+      reconstructedErrorObject: prop('array')
     }), arg1);
   }
 
-  init() {
-    this._syncRows();
+  didConnect(){
+    if(this.getData('zcatProp').variant === 'auto'){
+      const self = this.getData('self');    
+      $L('#kvPairId').sortable({
+        cancel: "input",                     
+        onDrop: function(droppedElement, destination, belowElement, fromIndex, toIndex, source){
+          self.updateOrder();
+        }
+      });
+    }
   }
 
-  _syncRows() {
-    let zcatProp = this.getData('zcatProp');
-    if (!zcatProp) return;
-    let initial = zcatProp.rows || [];
-    if (initial.length === 0) {
-      initial = [this._createEmptyRow()];
-    }
-    // Clone rows with _id for tracking
-    let rows = [];
-    for (let i = 0; i < initial.length; i++) {
-      let row = Object.assign({}, initial[i]);
-      if (!row._id) row._id = Date.now() + '_' + i;
-      rows.push(row);
-    }
-    this.setData('rows', rows);
+  init(){
+    const zcatProp = this.getData('zcatProp') || {};
+    const devFieldList = zcatProp.fieldList || [];
+    const clonedFieldList = devFieldList.map((field, fIndex) => ({
+      ...field,
+      fieldObj: {
+        ...field.fieldObj,
+        id: `${field.fieldObj.id}_${fIndex}`, 
+        key: `${field.fieldObj.key}_${0}_${fIndex}`
+      }
+    }));
+
+    const firstRow = {
+      id: 0,
+      fieldList: clonedFieldList
+    };
+
+    this.setData('rowList', [firstRow]);
+    this.setData('rowCounter', 1);
   }
 
-  _createEmptyRow() {
-    let zcatProp = this.getData('zcatProp');
-    let fieldDefs = (zcatProp && zcatProp.fieldDefs) || [
-      { key: 'key', label: 'Key', type: 'input' },
-      { key: 'value', label: 'Value', type: 'input' }
-    ];
-    let row = { _id: Date.now() + '_' + Math.random().toString(36).slice(2, 6) };
-    for (let i = 0; i < fieldDefs.length; i++) {
-      row[fieldDefs[i].key] = '';
+  addRowLogic(index) {
+    const zcatProp = this.getData('zcatProp') || {};
+    const baseFieldList = zcatProp.fieldList || [];
+    const rowList = this.getData('rowList') || [];
+    const rowCounter = this.getData('rowCounter') || 1;
+
+    // Normalize index
+    if (Array.isArray(index)) {
+      index = index[0];
+    } else if (typeof index === 'object' && index !== null) {
+      const clickedRowId = index.id;
+      index = rowList.findIndex(row => row.id === clickedRowId);
     }
-    return row;
+    index = Number(index);
+
+    // Create unique cloned field list
+    const clonedFieldList = baseFieldList.map((field, fIndex) => ({
+      ...field,
+      fieldObj: {
+        ...field.fieldObj,
+        id: `${field.fieldObj.id}_${rowCounter}_${fIndex}`,
+        key: `${field.fieldObj.key}_${rowCounter}_${fIndex}`
+      }
+    }));
+
+    const newRow = {
+      id: rowCounter,
+      fieldList: clonedFieldList
+    };
+
+    // Insert after the clicked row index
+    // const insertAt =
+    //   !isNaN(index) && index >= 0 && index < rowList.length
+    //     ? index + 1
+    //     : rowList.length;
+    // rowList.splice(insertAt, 0, newRow);
+
+    rowList.push(newRow);
+
+    this.setData('rowList', [...rowList]);
+    this.setData('rowCounter', rowCounter + 1);
+
+    // --- featureObj logic for client ---
+    const keyName = zcatProp.fieldList[0].fieldObj.key || 'keyHolder';
+    const valueName = zcatProp.fieldList[1].fieldObj.key || 'valueHolder';
+
+    // Flatten rowList to featureObj style   --kamali
+    const featureObj = [];
+    const userObjKeys = {};
+    const userObjValues = {};
+    
+    rowList.forEach((row, rIndex) => {
+      row.fieldList.forEach((field, fIndex) => {
+        const key = field.fieldObj.key ?? '';
+        const value = field.fieldObj.value ?? '';
+
+        featureObj.push({
+          keyHolder: key,
+          valueHolder: value
+        });
+
+        userObjKeys[`keyHolder-${rIndex}-${fIndex}`] = key;
+        userObjValues[`valueHolder-${rIndex}-${fIndex}`] = value;
+      });
+    });
+
+    this.setData('featureObj', [...featureObj]);
+    this.setData('userObjKeys', { ...userObjKeys });
+    this.setData('userObjValues', { ...userObjValues });
+
+    // Optional: handle auto variant sortable class
+    if (zcatProp.variant === 'auto') {
+      setTimeout(() => {
+        const classNameLi = $L('#kvPairId')[0].getSortableClass();
+        $L('#kvPairId li').each(function (_, li) {
+          $L(li).addClass('sortable-element ' + classNameLi);
+        });
+      }, 0);
+    }
+
+    this.buildFeatureObjFromUserObj();
   }
 
-  _fireCallback() {
-    let self = this.getData('self');
-    let zcatProp = this.getData('zcatProp');
-    let rows = this.getData('rows') || [];
-    if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {
-      self.executeMethod(zcatProp.callback.name, rows);
+  updateOrder() {
+    const zcatProp = this.getData("zcatProp") || {};
+    const rowList = this.getData("rowList") || [];
+
+    // --- 1. Detect new order of <li> rows from DOM ---
+    const newOrderIds = [];
+    $L("#kvPairId li").each(function () {
+      const firstInput = $L(this).find("input")[0];
+      if (firstInput) {
+        const idAttr = $L(firstInput).attr("id"); // e.g. input1_2_0
+        if (idAttr) {
+          const parts = idAttr.split("_");
+          const rowIndex = parseInt(parts[1]);
+          if (!isNaN(rowIndex)) newOrderIds.push(rowIndex);
+        }
+      }
+    });
+
+    // --- 2. Build reordered rowList based on DOM order ---
+    const reorderedRowList = [];
+    newOrderIds.forEach((id) => {
+      const row = rowList.find((r) => r.id === id);
+      if (row) reorderedRowList.push(row);
+    });
+
+    // Fallback: if reorder fails, don't lose data
+    if (reorderedRowList.length === 0) return;
+
+    // --- 3. Preserve current input values from DOM ---
+    reorderedRowList.forEach((row) => {
+      row.fieldList.forEach((field) => {
+        const key = field.fieldObj.key;
+        const inputEl = $L(`#${field.fieldObj.id}`).find("input");
+        if (inputEl.length > 0) {
+          field.fieldObj.value = inputEl.val() || "";
+        }
+      });
+    });
+    
+    console.log("REORDERED LIST :: ", reorderedRowList);
+    
+    
+    // --- 4. Commit the new row order ---
+    this.setData("rowList", [...reorderedRowList]);
+    
+    this.buildFeatureObjFromUserObj();
+
+    // --- 6. Restore sortable visuals if variant=auto ---
+    if (zcatProp.variant === "auto") {
+      setTimeout(() => {
+        const classNameLi = $L("#kvPairId")[0].getSortableClass();
+        $L("#kvPairId li").each(function (_, li) {
+          $L(li).addClass("sortable-element " + classNameLi);
+        });
+      }, 0);
     }
+
+  }
+
+  buildFeatureObjFromUserObj() {
+    const userObj = this.getData("userObj") || {};
+    const userObjKeys = this.getData("userObjKeys") || {};
+    const zcatProp = this.getData("zcatProp") || {};
+    const baseFieldList = zcatProp.fieldList || [];
+    const rowList = this.getData("rowList") || [];
+
+    const featureObj = [];
+    console.log("USEROBJ[zpkey] PRE :: ", userObj);
+    console.log("FEATURE OBJ PRE :: ", this.getData('featureObj'));
+    
+    rowList.forEach((row) => {
+      const rowObj = {};
+
+      row.fieldList.forEach((field, fIndex) => {
+        const fieldKeyName = baseFieldList[fIndex]?.fieldObj?.key || field.fieldObj.key;
+        const userKey = field.fieldObj.key;
+        const userValue = userObj[userKey];
+        rowObj[fieldKeyName] = (userValue !== undefined ? userValue : field.fieldObj.value) || "";
+      });
+
+      featureObj.push(rowObj);
+    });
+
+    this.setData("featureObj", [...featureObj]);
+    console.log("USEROBJ[zpkey] POST :: ", userObj);
+    console.log("FEATURE OBJ POST :: ", this.getData('featureObj'));
+  }
+
+  checkMandatoryAndAddRow(index) {
+    const rowList = this.getData('rowList') || [];
+    const userObj = this.getData('userObj') || {};
+
+    const currentRow = rowList[index];
+    if (!currentRow) return;
+
+    const mandatoryFields = currentRow.fieldList.filter(
+      (field) => field.fieldObj && field.fieldObj.mandatory
+    );
+
+    if (mandatoryFields.length === 0) {
+      const lastRow = rowList[rowList.length - 1];
+      const isLastRowEmpty = lastRow.fieldList.every((field) => {
+        const key = field.fieldObj.key;
+        const val = userObj[key] || field.fieldObj.value || "";
+        return val.trim() === "";
+      });
+
+      if (!isLastRowEmpty) {
+        this.addRowLogic(index);
+      }
+      return;
+    }
+
+    const allMandatoryFilled = mandatoryFields.every((field) => {
+      const key = field.fieldObj.key;
+      const val = userObj[key] || field.fieldObj.value || "";
+      return val.trim() !== "";
+    });
+
+    const lastRow = rowList[rowList.length - 1];
+    const isLastRowEmpty = lastRow.fieldList.every((field) => {
+      const key = field.fieldObj.key;
+      const val = userObj[key] || field.fieldObj.value || "";
+      return val.trim() === "";
+    });
+
+    if (allMandatoryFilled && !isLastRowEmpty) {
+      const lastIndex = rowList.length - 1;
+      this.addRowLogic(lastIndex);
+    }
+  }
+
+  errorObjToField(){
+    const reconstructedErrors = this.getData("reconstructedErrorObject") || [];
+    const rowList = this.getData("rowList") || [];
+
+    if (!Array.isArray(reconstructedErrors) || reconstructedErrors.length === 0) {
+      console.warn("No reconstructed error data found — skipping.");
+      return;
+    }
+
+    reconstructedErrors.forEach(err => {
+      const { key, index, message } = err;
+      if (index === null || index === undefined) return;
+
+      const targetRow = rowList[index];
+      if (!targetRow || !Array.isArray(targetRow.fieldList)) return;
+
+      const targetField = targetRow.fieldList.find(field => {
+        const fieldKey = field.fieldObj?.key || "";
+        return fieldKey.startsWith(key + "_"); 
+      });
+
+      if (targetField && targetField.fieldObj) {
+        targetField.fieldObj.errorMessage = message;
+      }
+    });
+
+    this.setData("rowList", [...rowList]);
+
+  }
+
+  addRow(index){
+    this.addRowLogic(index);
   }
 
   static methods(arg1) {
-    return Object.assign(super.methods({}), arg1);
+    function addRow(index, second) {
+      this.addRowLogic(index)
+    }
+
+    function removeRow(index) {
+      const rowList = this.getData('rowList') || [];
+
+      // --- Normalize index ---
+      if (Array.isArray(index)) {
+        index = index[0];
+      } else if (typeof index === 'object' && index !== null) {
+        const clickedRowId = index.id;
+        index = rowList.findIndex(row => row.id === clickedRowId);
+      }
+
+      // --- Remove the row ---
+      if (typeof index === 'number' && index > -1 && index < rowList.length) {
+        rowList.splice(index, 1);
+      }
+
+      // --- If no rows left → create one blank row ---
+      if (rowList.length === 0) {
+        const zcatProp = this.getData('zcatProp') || {};
+        const baseFieldList = zcatProp.fieldList || [];
+        let rowCounter = this.getData('rowCounter') || 1;
+
+        const clonedFieldList = baseFieldList.map((field, fIndex) => ({
+          ...field,
+          fieldObj: {
+            ...field.fieldObj,
+            id: `${field.fieldObj.id}_${rowCounter}_${fIndex}`,
+            key: `${field.fieldObj.key}_${rowCounter}_${fIndex}`,
+            value: '',
+          },
+        }));
+
+        const newRow = { id: rowCounter, fieldList: clonedFieldList };
+        rowList.push(newRow);
+        this.setData('rowCounter', rowCounter + 1);
+      }
+
+      // --- Commit updated rowList ---
+      this.setData('rowList', [...rowList]);
+
+      // --- Same featureObj + userObjKeys/Values logic as addRowLogic ---
+      const zcatProp = this.getData('zcatProp') || {};
+      const keyName = zcatProp.fieldList?.[0]?.fieldObj?.key || 'keyHolder';
+      const valueName = zcatProp.fieldList?.[1]?.fieldObj?.key || 'valueHolder';
+
+      const featureObj = [];
+      const userObjKeys = {};
+      const userObjValues = {};
+
+      rowList.forEach((row, rIndex) => {
+        row.fieldList.forEach((field, fIndex) => {
+          const key = field.fieldObj?.key ?? '';
+          const value = field.fieldObj?.value ?? '';
+
+          featureObj.push({
+            keyHolder: key,
+            valueHolder: value,
+          });
+
+          userObjKeys[`keyHolder-${rIndex}-${fIndex}`] = key;
+          userObjValues[`valueHolder-${rIndex}-${fIndex}`] = value;
+        });
+      });
+
+      // --- Update component state ---
+      this.setData('featureObj', [...featureObj]);
+      this.setData('userObjKeys', { ...userObjKeys });
+      this.setData('userObjValues', { ...userObjValues });
+
+      // --- Optional: Keep same variant-based behavior as addRow ---
+      if (zcatProp.variant === 'auto') {
+        setTimeout(() => {
+          const classNameLi = $L('#kvPairId')[0].getSortableClass();
+          $L('#kvPairId li').each(function (_, li) {
+            $L(li).addClass('sortable-element ' + classNameLi);
+          });
+        }, 0);
+      }
+
+      // --- Optional rebuild consistency ---
+      this.buildFeatureObjFromUserObj();
+    }
+
+    function inputOnValueChange(index, elem) {
+      const zcatProp = this.getData('zcatProp') || {};
+      const rowList = this.getData('rowList') || [];
+      const variant = zcatProp.variant || 'manual';
+
+      // Update rowList based on input value
+      if (typeof index === 'number' && rowList[index]) {
+        rowList[index].fieldList.forEach((field, fIndex) => {
+          if (elem.key && field.fieldObj.key === elem.key) {
+            field.fieldObj.key = elem.value ?? '';
+          }
+          if (elem.value && field.fieldObj.value === elem.value) {
+            field.fieldObj.value = elem.value ?? '';
+          }
+        });
+      }
+
+      this.setData('rowList', [...rowList]);
+
+      // if (variant === 'auto') {
+      //   const lastRow = rowList[rowList.length - 1];
+
+      //   const userObj = this.getData('userObj') || {};
+      //   const anyFieldHasValue = lastRow.fieldList.some(f => {
+      //     const key = f.fieldObj.key;
+      //     const valueInUserObj = (userObj[key] || '').trim();
+      //     return valueInUserObj !== '';
+      //   });
+
+      //   if (anyFieldHasValue) {
+      //     this.addRowLogic(rowList.length - 1);
+      //   }
+      // }
+
+      // --- Update userObj as well ---
+      const userObj = this.getData('userObj') || {};
+      userObj[elem.key] = elem.value ?? '';
+      this.setData('userObj', { ...userObj });
+
+      // --- Auto behavior ---
+      if (variant === 'auto') {
+        this.checkMandatoryAndAddRow(index);
+      }
+      
+      this.buildFeatureObjFromUserObj();
+
+      if (zcatProp.variant === "auto") {
+        setTimeout(() => {
+          const classNameLi = $L("#kvPairId")[0].getSortableClass();
+          $L("#kvPairId li").each(function (index, li) {
+            $L(li).addClass("sortable-element " + classNameLi);
+          });
+        }, 0);
+      }
+
+    }
+    function autocompleteOnSelect(index, elem){
+      const zcatProp = this.getData('zcatProp') || {};
+      const rowList = this.getData('rowList') || [];
+      const variant = zcatProp.variant || 'manual';
+
+      const userObj = this.getData('userObj') || {};
+      userObj[elem.key] = elem.value ?? '';
+      this.setData('userObj', { ...userObj });
+
+      // --- Auto behavior ---
+      if (variant === 'auto') {
+        this.checkMandatoryAndAddRow(index);
+      }
+      this.buildFeatureObjFromUserObj();
+
+      if (zcatProp.variant === "auto") {
+        setTimeout(() => {
+          const classNameLi = $L("#kvPairId")[0].getSortableClass();
+          $L("#kvPairId li").each(function (index, li) {
+            $L(li).addClass("sortable-element " + classNameLi);
+          });
+        }, 0);
+      }
+
+    }
+
+    function dropdownOnValueSelect(index, elem) {
+      const zcatProp = this.getData('zcatProp') || {};
+      const rowList = this.getData('rowList') || [];
+      const variant = zcatProp.variant || 'manual';
+
+      // elem = { key: "dropdownKey1_1_0", value: "india" }
+      if (typeof index === 'number' && rowList[index]) {
+        rowList[index].fieldList.forEach((field) => {
+          if (field.fieldObj.key === elem.key) {
+            field.fieldObj.value = elem.value ?? '';
+          }
+        });
+      }
+
+      this.setData('rowList', [...rowList]);
+
+      // --- Update userObj (like in textbox case) ---
+      const userObj = this.getData('userObj') || {};
+      if (elem.key) {
+        userObj[elem.key] = elem.value ?? '';
+      }
+      this.setData('userObj', { ...userObj });
+
+      // --- Auto add new row if variant = 'auto' ---
+      // if (variant === 'auto') {
+      //   const lastRow = rowList[rowList.length - 1];
+
+      //   const anyFieldHasValue = lastRow.fieldList.some(f => {
+      //     const key = f.fieldObj.key;
+      //     const valueInUserObj = (userObj[key] || '').trim();
+      //     return valueInUserObj !== '';
+      //   });
+
+      //   if (anyFieldHasValue) {
+      //     this.addRowLogic(rowList.length - 1);
+      //   }
+      // }
+
+      if (variant === 'auto') {
+        this.checkMandatoryAndAddRow(index);
+      }
+
+      // --- Rebuild featureObj for consistency ---
+      this.buildFeatureObjFromUserObj();
+      if (zcatProp.variant === "auto") {
+        setTimeout(() => {
+          const classNameLi = $L("#kvPairId")[0].getSortableClass();
+          $L("#kvPairId li").each(function (index, li) {
+            $L(li).addClass("sortable-element " + classNameLi);
+          });
+        }, 0);
+      }
+    }
+
+    return Object.assign(super.methods({
+      removeRow, 
+      addRow, 
+      inputOnValueChange,
+      dropdownOnValueSelect,  
+      autocompleteOnSelect 
+    
+    }), arg1);
   }
 
   static actions(arg1) {
     return Object.assign(super.actions({
-      addRow() {
-        let zcatProp = this.getData('zcatProp');
-        if (zcatProp && zcatProp.disabled) return;
-        let maxRows = (zcatProp && zcatProp.maxRows) || 0;
-        let rows = (this.getData('rows') || []).slice();
-        if (maxRows && rows.length >= maxRows) return;
-        rows.push(this._createEmptyRow());
-        this.setData('rows', rows);
-        this._fireCallback();
-      },
-
-      removeRow(row, event) {
-        if (event) { event.stopPropagation(); }
-        let zcatProp = this.getData('zcatProp');
-        if (zcatProp && zcatProp.disabled) return;
-        let rows = (this.getData('rows') || []).filter(function(r) { return r._id !== row._id; });
-        if (rows.length === 0) {
-          rows = [this._createEmptyRow()];
-        }
-        this.setData('rows', rows);
-        this._fireCallback();
-      },
-
-      onFieldInput(row, fieldKey, event) {
-        let val = event.target.value;
-        let rows = (this.getData('rows') || []).slice();
-        for (let i = 0; i < rows.length; i++) {
-          if (rows[i]._id === row._id) {
-            rows[i] = Object.assign({}, rows[i]);
-            rows[i][fieldKey] = val;
-            break;
-          }
-        }
-        this.setData('rows', rows);
-      }
+      
     }), arg1);
   }
 
   static observers(arg1) {
-    return Object.assign(super.observers({
-      zcatPropChanged: {
-        watch: ['zcatProp'],
-        handler() {
-          this._syncRows();
+
+    const errorObject = {
+      message: "overall error for comp", 
+      details: [
+        {
+          keyK: {
+            message: "column specific error", 
+            keyDetails: [ 
+              {
+                index: 0,
+                message: "row*column(field) specific error"
+              }, 
+              {
+                index: 1,
+                message: "row*column(field) specific error"
+              }
+            ]
+          }, 
+          valueV: {
+            message: "column specific error", 
+            keyDetails: [ 
+              {
+                index: 0,
+                message: "row*column(field) specific error"
+              }, 
+              {
+                index: 1
+                // ,message: "row*column(field) specific error" 
+              }
+            ]
+          },
+          dropdownKey1: {
+            // message: "column specific error", 
+            keyDetails: [ 
+              {
+                index: 0
+                // ,message: "row*column(field) specific error"
+              }
+            ]
+          }
+
         }
+      ]
+    }
+
+    async function errorObjObserver() {
+      // Grab the error object from zcatProp
+      const errorObject = this.getData('zcatProp.errorObject') || {};
+      const fallbackMsg = "should not the field empty";
+
+      // This will hold our parsed, flattened error list
+      const finalList = [];
+
+      // Validate structure
+      if (!errorObject || !errorObject.details) {
+        this.setData('reconstructedErrorObject', []);
+        return;
       }
+
+      // Extract overall + first-level detail
+      const overallMsg = errorObject.message || fallbackMsg;
+      const detailsObj = Array.isArray(errorObject.details)
+        ? errorObject.details[0]
+        : {};
+
+      // Iterate through all field keys in details
+      Object.entries(detailsObj || {}).forEach(([fieldKey, fieldData = {}]) => {
+        const columnMsg = fieldData.message || overallMsg;
+
+        // If keyDetails exists → row-specific messages
+        if (Array.isArray(fieldData.keyDetails) && fieldData.keyDetails.length > 0) {
+          fieldData.keyDetails.forEach(({ index, message }) => {
+            finalList.push({
+              key: fieldKey,
+              index,
+              message: message || columnMsg || overallMsg || fallbackMsg,
+            });
+          });
+        } else {
+          // Column-level or general message fallback
+          finalList.push({
+            key: fieldKey,
+            index: null,
+            message: columnMsg || overallMsg || fallbackMsg,
+          });
+        }
+      });
+
+      // ✅ Store it globally for other methods to use
+      this.setData('reconstructedErrorObject', finalList);
+
+      console.log("🔍 Final reconstructed error list:", finalList);
+      console.log("🔍 Final reconstructed error list- this.getData('reconstructedErrorObject'):", this.getData('reconstructedErrorObject'));
+
+      // after the new errObj
+      this.errorObjToField();
+
+    }
+
+
+
+
+    return Object.assign(super.observers({
+      errorObjObserver: errorObjObserver.observes("zcatProp.errorObject")
     }), arg1);
   }
 
@@ -119,11 +664,25 @@ class ZcatKeyvaluePair extends Component {
   }
 }
 
-ZcatKeyvaluePair._template = "<template tag-name=\"zcat-keyvalue-pair\"> <div class=\"zcat-kvp-wrapper {{expHandlers(zcatProp.disabled,'?:','zcat-kvp-disabled','')}}\"> <!-- Label Row --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.label}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-kvp-label-row\"> <label class=\"zcat-kvp-label\">{{zcatProp.label}}</label> </div> </template></template> <!-- Column Headers --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.fieldDefs,'&amp;&amp;',zcatProp.fieldDefs.length)}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-kvp-header\"> <template items=\"{{zcatProp.fieldDefs}}\" item=\"fieldDef\" index=\"fIdx\" is=\"for\" _new=\"true\"> <span class=\"zcat-kvp-header-cell\" style=\"{{expHandlers(fieldDef.width,'?:',expHandlers('width:','+',fieldDef.width),'flex:1')}}\">{{fieldDef.label}}</span> </template> <span class=\"zcat-kvp-header-action\"></span> </div> </template></template> <!-- Rows --> <div class=\"zcat-kvp-body\"> <template items=\"{{rows}}\" item=\"row\" index=\"rowIdx\" is=\"for\" _new=\"true\"> <div class=\"zcat-kvp-row\"> <template items=\"{{zcatProp.fieldDefs}}\" item=\"fieldDef\" index=\"fIdx\" is=\"for\" _new=\"true\"> <div class=\"zcat-kvp-cell\" style=\"{{expHandlers(fieldDef.width,'?:',expHandlers('width:','+',fieldDef.width),'flex:1')}}\" oninput=\"{{action('onFieldInput',row,fieldDef.key)}}\"> <lyte-input class=\"zcat-kvp-input\" lt-prop-placeholder=\"{{expHandlers(expHandlers(fieldDef.placeholder,'||',fieldDef.label),'||','')}}\" lt-prop-value=\"{{row[fieldDef.key]}}\" lt-prop-disabled=\"{{expHandlers(zcatProp.disabled,'?:','true','false')}}\" lt-prop-appearance=\"box\" lt-prop-auto-update=\"true\"></lyte-input> </div> </template> <div class=\"zcat-kvp-row-actions\"> <span class=\"zcat-kvp-remove-btn\" onclick=\"{{action('removeRow',row)}}\" title=\"Remove row\"> <zcat-icon name=\"close\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </span> </div> </div> </template> </div> <!-- Add Row Button --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.disabled,'!')}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-kvp-add-wrap\"> <lyte-button class=\"zcat-kvp-add-btn\" onclick=\"{{action('addRow')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <zcat-icon name=\"plus\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> <span>{{expHandlers(zcatProp.addLabel,'||','Add Row')}}</span> </template> </lyte-button> </div> </template></template> </div> </template><style>/* ==============================\n   ZCAT Key-Value Pair Component\n   ============================== */\n\nzcat-keyvalue-pair * { box-sizing: border-box; }\n\n.zcat-kvp-wrapper {\n  display: flex;\n  flex-direction: column;\n  font-family: var(--zcat-font-family-primary);\n  width: 100%;\n}\n\n/* Label */\n.zcat-kvp-label-row {\n  margin-bottom: 8px;\n}\n.zcat-kvp-label {\n  font-size: 13px;\n  font-weight: 500;\n  color: var(--zcat-inputField-text-label);\n}\n\n/* Header */\n.zcat-kvp-header {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 0 0 6px;\n}\n.zcat-kvp-header-cell {\n  font-size: 12px;\n  font-weight: 600;\n  color: var(--zcat-inputField-text-label);\n  text-transform: uppercase;\n  letter-spacing: 0.4px;\n}\n.zcat-kvp-header-action {\n  width: 32px;\n  flex-shrink: 0;\n}\n\n/* Body */\n.zcat-kvp-body {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n\n/* Row */\n.zcat-kvp-row {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 4px 0;\n  border-radius: 6px;\n  transition: background 0.12s;\n}\n.zcat-kvp-row:hover {\n  background: var(--zcat-btn-grey-bg-hover);\n}\n\n/* Cell */\n.zcat-kvp-cell {\n  min-width: 0;\n}\n\n/* Input */\n.zcat-kvp-input {\n  width: 100%;\n  height: 36px;\n  padding: 0 10px;\n  font-size: 13px;\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-body-text-primary);\n  background: var(--zcat-inputField-bg-default);\n  border: 1px solid var(--zcat-inputField-border-default);\n  border-radius: 6px;\n  outline: none;\n  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;\n}\n.zcat-kvp-input::placeholder {\n  color: var(--zcat-inputField-text-placeholder);\n}\n.zcat-kvp-input:hover {\n  border-color: var(--zcat-inputField-border-hover);\n}\n.zcat-kvp-input:focus {\n  border-color: var(--zcat-inputField-border-active);\n}\n\n/* Row actions */\n.zcat-kvp-row-actions {\n  display: flex;\n  align-items: center;\n  width: 32px;\n  flex-shrink: 0;\n}\n.zcat-kvp-remove-btn {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 26px;\n  height: 26px;\n  border-radius: 50%;\n  cursor: pointer;\n  color: var(--zcat-inputField-icon-placeholder);\n  transition: background 0.12s, color 0.12s;\n  opacity: 0;\n}\n.zcat-kvp-row:hover .zcat-kvp-remove-btn {\n  opacity: 1;\n}\n.zcat-kvp-remove-btn:hover {\n  background: var(--zcat-inputField-bg-error, rgba(255, 0, 0, 0.06));\n  color: var(--zcat-inputField-text-error);\n}\n\n/* Add button */\n.zcat-kvp-add-wrap {\n  margin-top: 8px;\n}\n.zcat-kvp-add-btn {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  padding: 6px 12px;\n  font-size: 13px;\n  font-weight: 500;\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-btn-fill-bg-primary-default);\n  background: transparent;\n  border: 1px dashed var(--zcat-body-border);\n  border-radius: 6px;\n  cursor: pointer;\n  transition: background 0.12s, border-color 0.12s;\n}\n.zcat-kvp-add-btn:hover {\n  background: var(--zcat-btn-outline-bg-primaryHover);\n  border-color: var(--zcat-btn-fill-bg-primary-default);\n}\n\n/* Disabled */\n.zcat-kvp-disabled .zcat-kvp-input {\n  background: var(--zcat-inputField-bg-disabled);\n  border-color: var(--zcat-inputField-border-disabled);\n  color: var(--zcat-inputField-text-disabled);\n  cursor: not-allowed;\n}\n.zcat-kvp-disabled .zcat-kvp-remove-btn { display: none; }\n.zcat-kvp-disabled .zcat-kvp-label { color: var(--zcat-inputField-text-disabled); }\n</style>";;
-ZcatKeyvaluePair._dynamicNodes = [{"t":"a","p":[1]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":3,"sibl":[2]},{"t":"s","p":[1,7],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":["fieldDef.width","'?:'",null,"'flex:1'"]}}}},{"t":"tX","p":[1,0]}],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1]},{"t":"a","p":[1,11,1]},{"t":"f","p":[1,11,1],"dN":[{"t":"a","p":[1,1]},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":["fieldDef.width","'?:'",null,"'flex:1'"]}}}},{"t":"a","p":[1,1]},{"t":"cD","p":[1,1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"a","p":[1,3,1]},{"t":"cD","p":[1,3,1,1],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[1,15],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"r","p":[1,1,1],"dN":[{"t":"cD","p":[1],"in":0},{"t":"tX","p":[3,0]}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
-ZcatKeyvaluePair._observedAttributes = ["self", "zcatProp", "rows"];
+ZcatKeyvaluePair._template = "<template tag-name=\"zcat-keyvalue-pair\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.infoIcon.yield,'||',zcatProp.infoIcon.value)}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-hovercard zcat-prop=\"{{zcatProp.infoIcon}}\"> <template is=\"yield\" yield-name=\"{{zcatProp.infoIcon.yield}}\"> <lyte-yield yield-name=\"{{zcatProp.infoIcon.yield}}\"></lyte-yield> </template> </zcat-hovercard></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.label}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{expHandlers(zcatProp.disabled,'?:','input-field-disabled','')}}\"> <p class=\"{{expHandlers(zcatProp.label_class,'?:',zcatProp.label_class,'zcat-input-label')}} zcat-input-label-default\"> {{zcatProp.label}} <span class=\"optional-label\">{{expHandlers(expHandlers(zcatProp.isOptional,'&amp;&amp;',zcatProp.label),'?:',' (Optional)','')}}</span> </p> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.infoIcon.id}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-w12 zcat-h12 zcat-cP\" id=\"tooltipInfoMsg{{zcatProp.infoIcon.id}}\" lyte-hovercard=\"true\"> <zcat-icon class=\"zcat-mb-2 zcat-input-label-stroke\" name=\"info\" width=\"12\" height=\"12\" stroke=\"var(--zcat-inputField-icon-label)\" strokewidth=\"1.3\"> </zcat-icon> </div></template></template> </div></template></template> <ul class=\"zcat-key-value-pair-list-block\" id=\"kvPairId\"> <template items=\"{{rowList}}\" item=\"row\" index=\"index\" is=\"for\" _new=\"true\"><li class=\"zcat-key-value-pair-box\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','auto')}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-icon class=\"zcat-flex-center\" name=\"six-dot-drag\" width=\"7\" height=\"24\"> </zcat-icon></template></template> <div class=\"zcat-dF zcat-gap-16 zcat-align-center {{expHandlers(expHandlers(zcatProp.keyErrorMessage,'||',zcatProp.valueErrorMessage),'?:','zcat-mb-10','')}}\" data-index=\"{{index}}\"> <template items=\"{{row.fieldList}}\" item=\"item\" index=\"fIndex\" is=\"for\" _new=\"true\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(item.type,'===','textbox')}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-input self=\"{{self}}\" zcat-prop=\"{{item.fieldObj}}\" feature-obj=\"{{lbind(userObj)}}\" on-value-change=\"{{method('inputOnValueChange',index,this)}}\" error-message=\"{{item.fieldObj.errorMessage}}\"> </zcat-input></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(item.type,'===','dropdown')}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-dropdown self=\"{{self}}\" zcat-prop=\"{{item.fieldObj}}\" feature-obj=\"{{lbind(userObj)}}\" on-option-selected=\"{{method('dropdownOnValueSelect',index,this)}}\" error-message=\"{{item.fieldObj.errorMessage}}\"> </zcat-dropdown></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(item.type,'===','autocomplete')}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-autocomplete zcat-prop=\"{{item.fieldObj}}\" feature-obj=\"{{lbind(userObj)}}\" on-select=\"{{method('autocompleteOnSelect',index,this)}}\" error-message=\"{{item.fieldObj.errorMessage}}\"> </zcat-autocomplete></template></template> </template> </div> <div class=\"zcat-dF zcat-gap-10 zcat-align-center\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(index,'!==',0)}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-button self=\"{{self}}\" zcat-prop=\"{ &quot;variant&quot;: &quot;grey&quot;, &quot;size&quot;: &quot;extra-small&quot;, &quot;color&quot;: &quot;grey&quot;, &quot;type&quot;: &quot;navigation&quot;, &quot;icon&quot;: { &quot;position&quot;: &quot;right&quot;, &quot;name&quot;: &quot;minus&quot;, &quot;stroke&quot;: &quot;zcat-stroke-greybtn-icon&quot; }, &quot;callback&quot;: { &quot;name&quot;: &quot;removeRow&quot;, &quot;arguments&quot;: [{{index}}] } }\"> </zcat-button></template></template> <!-- <zcat-button lyte-if=\"{{zcatProp.variant === 'manual'}}\" self = \"{{self}}\" zcat-prop = ' { \"variant\": \"grey\", \"size\": \"extra-small\", \"color\": \"grey\", \"type\": \"navigation\", \"icon\": { \"position\": \"right\", \"name\": \"plus\", \"stroke\": \"zcat-stroke-greybtn-icon\" } } ' click-action=\"{{method('addRow', index)}}\"> </zcat-button> --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','manual')}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-button self=\"{{self}}\" zcat-prop=\"{ &quot;variant&quot;: &quot;grey&quot;, &quot;size&quot;: &quot;extra-small&quot;, &quot;color&quot;: &quot;grey&quot;, &quot;type&quot;: &quot;navigation&quot;, &quot;icon&quot;: { &quot;position&quot;: &quot;right&quot;, &quot;name&quot;: &quot;plus&quot;, &quot;stroke&quot;: &quot;zcat-stroke-greybtn-icon&quot; }, &quot;callback&quot;: { &quot;name&quot;: &quot;addRow&quot;, &quot;arguments&quot;: [{{index}}] } }\"> </zcat-button></template></template> </div> </li></template> </ul> </template><style>.lyteSortableParent .lyteSortablePlaceholder:hover, .lyteSortableParent .lyteSortablePlaceholder{\n    border: 1px solid var(--zcat-keyvalue-drag-border);\n    background: var(--zcat-keyvalue-drag-bg);\n}</style>";;
+ZcatKeyvaluePair._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"r","p":[0,1],"dN":[{"t":"a","p":[1]},{"t":"i","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"tX","p":[0,1,1],"cn":"lc_id_0"},{"t":"tX","p":[0,1,3,0],"cn":"lc_id_0"},{"t":"s","p":[0,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"a","p":[5,1]},{"t":"f","p":[5,1],"dN":[{"t":"s","p":[0,1],"c":{"lc_id_0":{"dN":[{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":3,"sibl":[2]},{"t":"a","p":[0,3]},{"t":"a","p":[0,3,1]},{"t":"f","p":[0,3,1],"dN":[{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[2,1,0],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"s","p":[0,5,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[0,5,5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[3,2,1,0],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[2,1,0]}];;
+
+ZcatKeyvaluePair._observedAttributes = [
+  "self",
+  "zcatProp",
+  "userObjKeys",
+  "userObjValues",
+  "fieldList",
+  "featureObj",
+  "userObj",
+  "rowList",
+  "rowCounter",
+  "reconstructedErrorObject"
+];
+
 export { ZcatKeyvaluePair };
+
 ZcatKeyvaluePair.register("zcat-keyvalue-pair", {
-  hash: "ZcatKeyvaluePair_2",
+  hash: "ZcatKeyvaluePair_4",
   refHash: "C_zcat-app_app_0"
 });

@@ -205,6 +205,6 @@ AutocompleteComp._observedAttributes = [
 export { AutocompleteComp };
 
 AutocompleteComp.register("autocomplete-comp", {
-  hash: "AutocompleteComp_2",
+  hash: "AutocompleteComp_4",
   refHash: "C_zcat-app_app_0"
 });

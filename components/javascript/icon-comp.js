@@ -217,7 +217,7 @@ IconComp._observedAttributes = [
 
 
 IconComp.register("icon-comp", {
-    hash: "IconComp_2",
+    hash: "IconComp_4",
     refHash: "C_zcat-app_app_0"
 });
 

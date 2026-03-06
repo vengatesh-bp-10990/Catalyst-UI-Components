@@ -169,6 +169,6 @@ FileuploadComp._observedAttributes = [
 export { FileuploadComp };
 
 FileuploadComp.register("fileupload-comp", {
-  hash: "FileuploadComp_2",
+  hash: "FileuploadComp_4",
   refHash: "C_zcat-app_app_0"
 });

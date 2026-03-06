@@ -1,52 +1,53 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
 import './zcat-icon.js';
-import { Component } from "../../node_modules/@slyte/component/index.js";
+import './zcat-button.js';
+import "../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-messagebox.js";
+import {Component} from "../../node_modules/@slyte/component/index.js";
 import { prop } from "../../node_modules/@slyte/core/index.js";
 
 class ZcatAlert extends Component {
-  constructor() {
-    super();
-  }
+    constructor() {
+		super();
+	}
 
-  data(arg1) {
-    return Object.assign(super.data({
-      self: prop('object'),
-      zcatProp: prop('object', { default: {} }),
-      showAlert: prop('boolean', { default: true })
-    }), arg1);
-  }
+    data(arg1) {
+		return Object.assign(super.data({
+     		self: prop('object'),
+			alertThis: prop('object', {default: this }),
+			showAlert: prop('boolean', {default: true })
 
-  static methods(arg1) {
-    return Object.assign(super.methods({}), arg1);
-  }
+		}), arg1);	
+	}
 
-  static actions(arg1) {
-    return Object.assign(super.actions({
-      closeAlert() {
-        this.setData('showAlert', false);
-        let self = this.getData('self');
-        let zcatProp = this.getData('zcatProp');
-        if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {
-          self.executeMethod(zcatProp.callback.name, 'close', zcatProp);
-        }
-      }
-    }), arg1);
-  }
+    static methods(arg1) {
+		return Object.assign(super.methods({
 
-  static observers(arg1) {
-    return Object.assign(super.observers({}), arg1);
-  }
+			closeToaster(){
+				this.setData('showAlert', false);
+			}
+		}), arg1);
+	}
 
-  _() {
-    _;
-  }
+    static actions(arg1) {
+		return Object.assign(super.actions({			
+		}), arg1);
+	}
+
+    static observers(arg1) {
+		return Object.assign(super.observers({
+		}), arg1);
+	}
+
+    _() {
+        _;
+    }
 }
 
-ZcatAlert._template = "<template tag-name=\"zcat-alert\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{showAlert}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-alert-banner {{expHandlers(zcatProp.type,'||','info')}} {{expHandlers(zcatProp.header,'?:','zcat-alert-has-header','')}} {{expHandlers(expHandlers(zcatProp.closable,'===',false),'?:','','zcat-alert-closable')}}\"> <div class=\"zcat-alert-left\"> <div class=\"zcat-alert-icon-wrap\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.type,'===','success')}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-icon name=\"alert-success\" width=\"{{expHandlers(zcatProp.header,'?:','20','16')}}\" height=\"{{expHandlers(zcatProp.header,'?:','20','16')}}\" stroke=\"var(--zcat-toast-icon-line-success)\" stroke-width=\"2\"></zcat-icon></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.type,'===','error')}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-icon name=\"alert-danger\" width=\"{{expHandlers(zcatProp.header,'?:','20','16')}}\" height=\"{{expHandlers(zcatProp.header,'?:','20','16')}}\" stroke=\"var(--zcat-toast-icon-line-danger)\" stroke-width=\"2\"></zcat-icon></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.type,'===','warning')}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-icon name=\"alert-warning\" width=\"{{expHandlers(zcatProp.header,'?:','20','16')}}\" height=\"{{expHandlers(zcatProp.header,'?:','20','16')}}\" stroke=\"var(--zcat-toast-icon-line-warning)\" stroke-width=\"2\"></zcat-icon></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(expHandlers(expHandlers(zcatProp.type,'!==','success'),'&amp;&amp;',expHandlers(zcatProp.type,'!==','error')),'&amp;&amp;',expHandlers(zcatProp.type,'!==','warning'))}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-icon name=\"alert-info\" width=\"{{expHandlers(zcatProp.header,'?:','20','16')}}\" height=\"{{expHandlers(zcatProp.header,'?:','20','16')}}\" stroke=\"var(--zcat-toast-icon-line-info)\" stroke-width=\"2\"></zcat-icon></template></template> </div> <div class=\"zcat-alert-text\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.header}}\" is=\"case\" lc-id=\"lc_id_0\"><p class=\"zcat-alert-header\">{{zcatProp.header}}</p></template></template> <p class=\"zcat-alert-desc {{expHandlers(zcatProp.header,'?:','','zcat-alert-desc-only')}}\">{{zcatProp.desc}}</p> </div> </div> <div class=\"zcat-alert-right\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.closable,'!==',false)}}\" is=\"case\" lc-id=\"lc_id_0\"><lyte-button class=\"zcat-alert-close\" onclick=\"{{action('closeAlert')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <zcat-icon name=\"close\" width=\"12\" height=\"12\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </template> </lyte-button></template></template> </div> </div></template></template> </template><style>/* ==============================\n   ZCAT Alert Banner Component\n   Toast / Inline alert notification\n   ============================== */\n\nzcat-alert * {\n  box-sizing: border-box;\n}\nzcat-alert p {\n  margin: 0;\n}\n\n/* --- Alert banner wrapper --- */\n.zcat-alert-banner {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  width: 100%;\n  padding: 10px 14px;\n  border-radius: 8px;\n  border: 1px solid transparent;\n  font-family: var(--zcat-font-family-primary);\n  transition: opacity 0.2s, transform 0.2s;\n}\n\n/* --- Left section: icon + text --- */\n.zcat-alert-left {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex: 1;\n  min-width: 0;\n}\n.zcat-alert-has-header .zcat-alert-left {\n  align-items: flex-start;\n  gap: 10px;\n}\n\n/* --- Icon wrapper --- */\n.zcat-alert-icon-wrap {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.zcat-alert-has-header .zcat-alert-icon-wrap {\n  margin-top: 1px;\n}\n.zcat-alert-icon-wrap zcat-icon {\n  display: flex;\n}\n\n/* --- Text content --- */\n.zcat-alert-text {\n  flex: 1;\n  min-width: 0;\n}\n.zcat-alert-header {\n  font: 600 14px/20px var(--zcat-font-family-primary);\n  margin-bottom: 2px;\n}\n.zcat-alert-desc {\n  font: 400 13px/18px var(--zcat-font-family-primary);\n  word-break: break-word;\n}\n.zcat-alert-desc-only {\n  font: 400 14px/20px var(--zcat-font-family-primary);\n}\n\n/* --- Right section: close button --- */\n.zcat-alert-right {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex-shrink: 0;\n}\n.zcat-alert-close {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 24px;\n  height: 24px;\n  padding: 0;\n  border: none;\n  background: transparent;\n  cursor: pointer;\n  border-radius: 4px;\n  color: inherit;\n  opacity: 0.6;\n  transition: opacity 0.15s, background 0.15s;\n}\n.zcat-alert-close:hover {\n  opacity: 1;\n  background: rgba(0,0,0,0.06);\n}\n\n/* ============================\n   TYPE VARIANTS — Backgrounds & Borders\n   ============================ */\n\n/* Info (default) */\n.zcat-alert-banner.info {\n  background: var(--zcat-alerts-info-bg);\n  border-color: var(--zcat-alerts-info-border);\n}\n.zcat-alert-banner.info .zcat-alert-header {\n  color: var(--zcat-alerts-info-text-primary);\n}\n.zcat-alert-banner.info .zcat-alert-desc {\n  color: var(--zcat-alerts-info-text-secondary);\n}\n.zcat-alert-banner.info .zcat-alert-desc-only {\n  color: var(--zcat-alerts-info-text-primary);\n}\n.zcat-alert-banner.info .zcat-alert-close {\n  color: var(--zcat-alerts-info-icon);\n}\n\n/* Success */\n.zcat-alert-banner.success {\n  background: var(--zcat-alerts-success-bg);\n  border-color: var(--zcat-alerts-success-border);\n}\n.zcat-alert-banner.success .zcat-alert-header {\n  color: var(--zcat-alerts-success-text-primary);\n}\n.zcat-alert-banner.success .zcat-alert-desc {\n  color: var(--zcat-alerts-success-text-secondary);\n}\n.zcat-alert-banner.success .zcat-alert-desc-only {\n  color: var(--zcat-alerts-success-text-primary);\n}\n.zcat-alert-banner.success .zcat-alert-close {\n  color: var(--zcat-alerts-success-icon);\n}\n\n/* Warning */\n.zcat-alert-banner.warning {\n  background: var(--zcat-alerts-warning-bg);\n  border-color: var(--zcat-alerts-warning-border);\n}\n.zcat-alert-banner.warning .zcat-alert-header {\n  color: var(--zcat-alerts-warning-text-primary);\n}\n.zcat-alert-banner.warning .zcat-alert-desc {\n  color: var(--zcat-alerts-warning-text-secondary);\n}\n.zcat-alert-banner.warning .zcat-alert-desc-only {\n  color: var(--zcat-alerts-warning-text-primary);\n}\n.zcat-alert-banner.warning .zcat-alert-close {\n  color: var(--zcat-alerts-warning-icon);\n}\n\n/* Error / Danger */\n.zcat-alert-banner.error {\n  background: var(--zcat-alerts-danger-bg);\n  border-color: var(--zcat-alerts-danger-border);\n}\n.zcat-alert-banner.error .zcat-alert-header {\n  color: var(--zcat-alerts-danger-text-primary);\n}\n.zcat-alert-banner.error .zcat-alert-desc {\n  color: var(--zcat-alerts-danger-text-secondary);\n}\n.zcat-alert-banner.error .zcat-alert-desc-only {\n  color: var(--zcat-alerts-danger-text-primary);\n}\n.zcat-alert-banner.error .zcat-alert-close {\n  color: var(--zcat-alerts-danger-icon);\n}\n\n/* ============================\n   TOAST VARIANT (white bg, icon-only color)\n   ============================ */\n.zcat-alert-banner.toast {\n  background: var(--zcat-toast-bg-default);\n  border-color: var(--zcat-toast-border-default);\n  box-shadow: var(--zcat-shadow-dark-all);\n}\n.zcat-alert-banner.toast .zcat-alert-header {\n  color: var(--zcat-toast-text-primary);\n}\n.zcat-alert-banner.toast .zcat-alert-desc {\n  color: var(--zcat-toast-text-secondary);\n}\n.zcat-alert-banner.toast .zcat-alert-desc-only {\n  color: var(--zcat-toast-text-primary);\n}\n.zcat-alert-banner.toast .zcat-alert-close {\n  color: var(--zcat-toast-text-secondary);\n}\n</style>";;
-ZcatAlert._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"s","p":[0,1,1,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"s","p":[0,1,1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"s","p":[0,1,1,5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"s","p":[0,1,1,7],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"s","p":[0,1,3,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1,3,3],"cn":"lc_id_0"},{"t":"tX","p":[0,1,3,3,0],"cn":"lc_id_0"},{"t":"s","p":[0,3,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"r","p":[0,1],"dN":[{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[5,4,3,2,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[0]}];;
-ZcatAlert._observedAttributes = ["self", "zcatProp", "showAlert"];
-export { ZcatAlert };
+ZcatAlert._template = "<template tag-name=\"zcat-alert\"> <lyte-messagebox id=\"showToast\" lt-prop-yield=\"true\" lt-prop-show=\"{{showAlert}}\" lt-prop-type=\"{{status}}\" lt-prop-offset=\"{&quot;top&quot;:&quot;0&quot;}\" lt-prop-duration=\"3000\" lt-prop-transition=\"{&quot;animation&quot;:&quot;fadeIn&quot;,&quot;duration&quot;:&quot;0.2s&quot;}\"> <template is=\"registerYield\" yield-name=\"messageboxYield\"> <div class=\"alert-content-outer {{status}}\"> <div class=\"zcat-dF zcat-align-center {{expHandlers(header,'?:','zcat-gap-6','zcat-gap-4')}} left-alert-content\"> <div class=\"{{expHandlers(header,'?:','zcat-h20 zcat-w20 ','zcat-h16 zcat-w16 ')}}\"> <zcat-icon class=\"zcat-flex-center alert-icon-color\" name=\"{{expHandlers(expHandlers(status,'===','success'),'?:','alert-success',expHandlers(expHandlers(status,'===','info'),'?:','alert-info',expHandlers(expHandlers(status,'===','warning'),'?:','alert-warning',expHandlers(expHandlers(status,'===','error'),'?:','alert-danger',''))))}}\" width=\"{{expHandlers(header,'?:','20','16')}}\" height=\"{{expHandlers(header,'?:','20','16')}}\" stroke=\"{{expHandlers(expHandlers(status,'===','success'),'?:','var(--zcat-toast-icon-line-success)',expHandlers(expHandlers(status,'===','info'),'?:','var(--zcat-toast-icon-line-info)',expHandlers(expHandlers(status,'===','warning'),'?:','var(--zcat-toast-icon-line-warning)',expHandlers(expHandlers(status,'===','error'),'?:','var(--zcat-toast-icon-line-danger)',''))))}}\" strokewidth=\"{{expHandlers(zcatProp.header.left.logo.strokeWidth,'||',1.3)}}\"> </zcat-icon> </div> <div class=\"zcat-w100p\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{header}}\" is=\"case\" lc-id=\"lc_id_0\"><p class=\"zcat-subtitle1 zcat-mb-2 alert-primary-text\">{{header}}</p></template></template> <p class=\"{{expHandlers(header,'?:','zcat-body3','zcat-body1')}} zcat-body33 alert-secondary-text {{expHandlers(header,'?:','','no-header')}}\" style=\"white-space: pre-wrap; word-break: break-all; text-indent: -4px;\"> {{desc}} </p> </div> </div> <div class=\"zcat-dF zcat-align-center right-alert-content {{expHandlers(button,'?:','min-w25p','')}}\"> <!-- yet to give yield here - if needed --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{button}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-button zcat-prop=\"{{button}}\" self=\"{{self}}\"> </zcat-button></template></template> <zcat-button self=\"{{alertThis}}\" zcat-prop=\"{ &quot;variant&quot;: &quot;ghost&quot;, &quot;size&quot;: &quot;small&quot;, &quot;color&quot;: &quot;grey&quot;, &quot;type&quot;: &quot;navigation&quot;, &quot;icon&quot;: {&quot;position&quot;: &quot;right&quot;, &quot;name&quot;: &quot;close&quot;, &quot;class&quot;: &quot;zcat-w16 zcat-h16 zcat-stroke-greybtn-icon&quot; }, &quot;callback&quot;: { &quot;name&quot;: &quot;closeToaster&quot; } }\"> </zcat-button> </div> </div> </template> </lyte-messagebox> </template>";;
+ZcatAlert._dynamicNodes = [{"t":"a","p":[1]},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"a","p":[1,1,1]},{"t":"a","p":[1,1,1,1]},{"t":"cD","p":[1,1,1,1],"in":3,"sibl":[2]},{"t":"s","p":[1,1,3,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1]},{"t":"a","p":[1,1,3,3]},{"t":"tX","p":[1,1,3,3,1]},{"t":"a","p":[1,3]},{"t":"s","p":[1,3,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"a","p":[1,3,5]},{"t":"cD","p":[1,3,5],"in":0}],"dc":[3,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[1],"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
+ZcatAlert._observedAttributes = ["self", "alertThis", "showAlert"];
+export {ZcatAlert};
 ZcatAlert.register("zcat-alert", {
-  hash: "ZcatAlert_2",
-  refHash: "C_zcat-app_app_0"
-});
+    hash: "ZcatAlert_4",
+    refHash: "C_zcat-app_app_0"
+}); 

@@ -24,6 +24,6 @@ OverviewComp._dynamicNodes = [];;
 OverviewComp._observedAttributes = [];
 export { OverviewComp };
 OverviewComp.register("overview-comp", {
-  hash: "OverviewComp_2",
+  hash: "OverviewComp_4",
   refHash: "C_zcat-app_app_0"
 });

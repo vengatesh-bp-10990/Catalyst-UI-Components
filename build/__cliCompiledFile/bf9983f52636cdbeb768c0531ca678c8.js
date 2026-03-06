@@ -246,6 +246,6 @@ DoublefieldComp._observedAttributes = [
 export { DoublefieldComp };
 
 DoublefieldComp.register("doublefield-comp", {
-  hash: "DoublefieldComp_2",
+  hash: "DoublefieldComp_4",
   refHash: "C_zcat-app_app_0"
 });

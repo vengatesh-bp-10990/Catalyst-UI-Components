@@ -174,6 +174,6 @@ LoaderComp._observedAttributes = [
 export { LoaderComp };
 
 LoaderComp.register("loader-comp", {
-  hash: "LoaderComp_2",
+  hash: "LoaderComp_4",
   refHash: "C_zcat-app_app_0"
 });

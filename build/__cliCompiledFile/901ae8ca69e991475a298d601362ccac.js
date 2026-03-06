@@ -1,73 +1,302 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
-import './zcat-icon.js';
+import './zcat-avatar.js';
 import './zcat-button.js';
-import { Component } from "../../node_modules/@slyte/component/index.js";
+import "../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-modal.js";
+import {Component} from "../../node_modules/@slyte/component/index.js";
 import { prop } from "../../node_modules/@slyte/core/index.js";
 
 class ZcatModal extends Component {
   constructor() {
-    super();
+      super();
   }
 
+  // init(){
+  //   if(!this.getData("featureObj")) {
+  //       this.setData("featureObj", this.getData("featureObj"));
+  //   }
+  // }
+  // init() {
+  //   const data = this.getData('zcatProp.footer.right');
+  //   const submitData = data.filter((item) => item.callback.type === 'submit');
+  //   this.setData('submit', submitData[0]);
+  // }
+
   data(arg1) {
+    const defaultProp = {
+      id: '',
+      width: '',
+      transition: '',
+      isFormLoading: false,
+      currentPage: 0,
+      header: {
+        left: {
+          yield: '',
+          title: {
+            name: '',
+            class: ''
+          },
+          desc: {
+            name: '',
+            class: ''
+          }
+        },
+        right: {
+          yield: '',
+          list: []
+        },
+        tabs: {
+          selectedTab: '',
+          list: [
+            {
+              label: '',
+              value: ''
+            }
+          ]
+        }
+      },
+      body: [
+        [
+          {
+            class: '',
+            yield: '',
+            title: {
+              name: '',
+              class: ''
+            },
+            desc: {
+              name: '',
+              class: ''
+            },
+            list: [
+              {
+                key_name: 'bucket_name',
+                type: 'input',
+                value: 'bucket_name',
+                label: 'Bucket Name',
+                placeholder: 'Enter Bucket Name',
+                onValueChange: 'convertToLowerCase'
+              }
+            ]
+          },
+          {
+            yield: 'bucket_configuration_details'
+          }
+        ]
+      ],
+      footer: {
+        left: [
+          {
+            variant: 'secondary',
+            label: 'CLI Deploy',
+            callback: {
+              name: 'openCliDeployModal'
+            }
+          }
+        ],
+        right: [
+          {
+            variant: 'secondary',
+            label: 'Cancel',
+            callback: {
+              name: 'closeCliDeployModal'
+            }
+          },
+          {
+            variant: 'secondary',
+            label: 'CLI Deploy',
+            icon: {
+              position: 'left',
+              name: 'zcat-icon-clideploy',
+              class: 'zcat-w14 zcat-h16'
+            },
+            callback: {
+              type: 'submit',
+              name: 'submitCliDeployModal'
+            }
+          }
+        ]
+      }
+    };
     return Object.assign(super.data({
       self: prop('object'),
-      zcatProp: prop('object', { default: {} }),
-      isOpen: prop('boolean', { default: false })
+      // zcatProp: prop('object'),
+      submit: prop('object'),
+      hasPagination: prop('boolean'),
+      zcatProp: prop("object", { watch: true }),
+      isPopUpOpen: prop("boolean", false)
+      // featureObj: prop("object", { watch: true }),
     }), arg1);
   }
 
+  resetBoxShadow() {
+    const zcatProp = this.getData('zcatProp');
+    let modalBody = document.querySelector(
+      `lyte-modal-content[data-name='${zcatProp.id}']`
+    );
+
+    if (modalBody) {
+      const applyBoxShadow = () => {
+        modalBody.previousElementSibling.style = '';
+        modalBody.nextElementSibling.style = '';
+        if (modalBody.scrollHeight > modalBody.clientHeight) {
+          modalBody.nextElementSibling.style =
+            'box-shadow: var(--zcat-shadow-dark-top)';
+        }
+
+        const id = this.getData('zcatProp.id');
+        document.querySelector(`lyte-modal#${id}`).alignModal();
+      };
+
+      // Initial apply
+      applyBoxShadow();
+
+      // Scroll logic
+      modalBody.onscroll = function () {
+        if (modalBody.scrollHeight > modalBody.clientHeight) {
+          modalBody.previousElementSibling.style =
+            modalBody.scrollTop == 0
+              ? ''
+              : 'box-shadow: var(--zcat-shadow-dark-bottom)';
+          modalBody.nextElementSibling.style =
+            modalBody.scrollTop + modalBody.clientHeight ==
+            modalBody.scrollHeight
+              ? ''
+              : 'box-shadow: var(--zcat-shadow-dark-top)';
+        }
+      };
+
+      // Watch for height changes (accordion open/close, dynamic content)
+      const resizeObserver = new ResizeObserver(() => {
+        applyBoxShadow();
+      });
+      resizeObserver.observe(modalBody);
+    }
+  }
+
   static methods(arg1) {
-    return Object.assign(super.methods({}), arg1);
+    return Object.assign(super.methods({
+      onAfterModalOpen() {
+        this.setData('isPopUpOpen', true);
+        this.resetBoxShadow();
+        const self = this.getData('self');
+        const zcatProp = this.getData('zcatProp');
+
+        const outletEl = document.getElementById('outlet');
+        if (outletEl) {
+          // outletEl.style.filter = 'blur(1px)';
+        }
+
+        const methodName = zcatProp?.callback?.onOpen;
+        if (methodName) {
+          self.executeMethod(
+            methodName,
+            ...Array.prototype.slice.call(arguments, 0)
+          );
+        }
+
+      },
+      onModalClose() {
+        const self = this.getData('self');
+        const zcatProp = this.getData('zcatProp');
+
+        const outletEl = document.getElementById('outlet');
+        if (outletEl) {
+          outletEl.style.filter = 'none';
+        }
+
+        const methodName = zcatProp?.callback?.onClose;
+        if (methodName) {
+          self.executeMethod(
+            methodName,
+            ...Array.prototype.slice.call(arguments, 0)
+          );
+        }
+
+        this.setData('isPopUpOpen', false);
+                
+      },
+      onBeforeModalClose(){
+        const self = this.getData('self');
+        const zcatProp = this.getData('zcatProp');
+        
+        const outletEl = document.getElementById('outlet');
+        if(outletEl){
+          outletEl.style.filter = '';
+        }
+
+        const methodName = zcatProp?.callback?.onBeforeClose;
+        if (methodName) {
+          self.executeMethod(
+            methodName,
+            ...Array.prototype.slice.call(arguments, 0)
+          );
+        }
+      }
+    }), arg1);
   }
 
   static actions(arg1) {
     return Object.assign(super.actions({
-      openModal() {
-        this.setData('isOpen', true);
-        document.body.style.overflow = 'hidden';
-      },
-      closeModal() {
-        this.setData('isOpen', false);
-        document.body.style.overflow = '';
-        let self = this.getData('self');
-        let zcatProp = this.getData('zcatProp');
-        if (self && zcatProp && zcatProp.onClose) {
-          self.executeMethod(zcatProp.onClose, zcatProp);
+      routeChange(route) {
+
+        const outletEl = document.getElementById('outlet');
+          if (outletEl && outletEl.style.filter == 'blur(1px)') {
+            outletEl.style.filter = 'none';
+        }
+
+
+        // this.setData('zcatProp.header.tabs.selectedTab', route);
+        if(this.getData('zcatProp.header.tabsPrimary')){
+          this.setData('zcatProp.header.tabsPrimary.selectedTab', route);
+        }
+        else if(this.getData('zcatProp.header.tabsSecondary')){
+          this.setData('zcatProp.header.tabsSecondary.selectedTab', route);
         }
       },
-      onOverlayClick(event) {
-        if (event.target.classList.contains('zcat-modal-overlay')) {
-          let zcatProp = this.getData('zcatProp');
-          if (zcatProp.closeOnOverlay !== false) {
-            this.exec('closeModal');
-          }
+      async submitForm(event) {
+        console.log('async submitForm');
+        event.preventDefault();
+        event.stopPropagation();
+        const self = this.getData('self');
+        const prop = this.getData('zcatProp');
+        if (this.getData('submit').callback.name) {
+          await self.executeMethod(
+            this.getData('submit').callback.name,
+            prop.callback?.arguments
+          );
         }
       },
-      onFooterBtnClick(btn) {
-        let self = this.getData('self');
-        if (self && btn && btn.callback && btn.callback.name) {
-          self.executeMethod(btn.callback.name, btn, this.getData('zcatProp'));
+      async customLbindForFormHeaderTab(item, index) {
+        const self = this.getData('self');
+        // this.tabSwitching(item, index);         
+
+
+        if (item.callback.name) {
+          await self.executeMethod(item.callback.name, item, index);
         }
-        if (btn.closeOnClick !== false) {
-          this.exec('closeModal');
+      },
+      async customLbindForSubHeaderMenu(methodName, item) {
+        const self = this.getData('self');
+
+        if (methodName) {
+          await self.executeMethod(
+            methodName,
+            ...Array.prototype.slice.call(arguments, 1)
+          );
         }
       }
     }), arg1);
   }
 
   static observers(arg1) {
+    async function resetBoxShadow() {
+      this.resetBoxShadow();
+      const id = this.getData('zcatProp.id');
+      document.querySelector(`lyte-modal#${id}`).alignModal();
+    }
+
     return Object.assign(super.observers({
-      zcatPropChanged: {
-        watch: ['zcatProp'],
-        handler() {
-          let zcatProp = this.getData('zcatProp');
-          if (zcatProp && zcatProp.open) {
-            this.setData('isOpen', true);
-            document.body.style.overflow = 'hidden';
-          }
-        }
-      }
+      // resetBoxShadow: resetBoxShadow.observes('zcatProp.currentPage') // No I18N
     }), arg1);
   }
 
@@ -76,12 +305,12 @@ class ZcatModal extends Component {
   }
 }
 
-ZcatModal._template = "<template tag-name=\"zcat-modal\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{isOpen}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-modal-overlay {{expHandlers(expHandlers(zcatProp.size,'===','small'),'?:','zcat-modal-sm',expHandlers(expHandlers(zcatProp.size,'===','large'),'?:','zcat-modal-lg',expHandlers(expHandlers(zcatProp.size,'===','full'),'?:','zcat-modal-full','')))}} {{expHandlers(zcatProp.classCss,'||','')}}\" onclick=\"{{action('onOverlayClick',event)}}\"> <div class=\"zcat-modal-container\" style=\"{{expHandlers(zcatProp.width,'?:',expHandlers('width:','+',zcatProp.width),'')}}\"> <!-- Header --> <div class=\"zcat-modal-header\"> <div class=\"zcat-modal-header-left\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.header,'&amp;&amp;',zcatProp.header.backArrow)}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-button class=\"zcat-modal-back\" onclick=\"{{action('closeModal')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <zcat-icon name=\"arrow-left\" width=\"16\" height=\"16\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </template> </lyte-button> </template></template> <div class=\"zcat-modal-header-text\"> <h2 class=\"zcat-modal-title\">{{expHandlers(zcatProp.header,'?:',zcatProp.header.title,'Modal')}}</h2> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.header,'&amp;&amp;',zcatProp.header.desc)}}\" is=\"case\" lc-id=\"lc_id_0\"> <p class=\"zcat-modal-desc\">{{zcatProp.header.desc}}</p> </template></template> </div> </div> <lyte-button class=\"zcat-modal-close\" onclick=\"{{action('closeModal')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <zcat-icon name=\"close\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </template> </lyte-button> </div> <!-- Body --> <div class=\"zcat-modal-body\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.body,'&amp;&amp;',zcatProp.body.content)}}\" is=\"case\" lc-id=\"lc_id_0\"> {{zcatProp.body.content}} </template></template> </div> <!-- Footer --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.footer}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-modal-footer\"> <div class=\"zcat-modal-footer-left\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.footer.left}}\" is=\"case\" lc-id=\"lc_id_0\"> <template items=\"{{zcatProp.footer.left}}\" item=\"btn\" index=\"index\" is=\"for\" _new=\"true\"><zcat-button self=\"{{self}}\" zcat-prop=\"{{btn}}\"></zcat-button></template> </template></template> </div> <div class=\"zcat-modal-footer-right\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.footer.right}}\" is=\"case\" lc-id=\"lc_id_0\"> <template items=\"{{zcatProp.footer.right}}\" item=\"btn\" index=\"index\" is=\"for\" _new=\"true\"><zcat-button self=\"{{self}}\" zcat-prop=\"{{btn}}\"></zcat-button></template> </template></template> </div> </div> </template></template> </div> </div> </template></template> </template><style>/* ==============================\n   ZCAT Modal Component\n   ============================== */\n\nzcat-modal * {\n  box-sizing: border-box;\n}\nzcat-modal p {\n  margin: 0;\n}\n\n/* --- Overlay --- */\n.zcat-modal-overlay {\n  position: fixed;\n  inset: 0;\n  z-index: 1000;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: var(--zcat-popup-bg-blur);\n  animation: zcatModalFadeIn 0.2s ease;\n}\n\n@keyframes zcatModalFadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n/* --- Container --- */\n.zcat-modal-container {\n  display: flex;\n  flex-direction: column;\n  width: 520px;\n  max-width: calc(100vw - 48px);\n  max-height: calc(100vh - 48px);\n  background: var(--zcat-popup-bg);\n  border: 1px solid var(--zcat-popup-border);\n  border-radius: 12px;\n  box-shadow: var(--zcat-shadow-dark-all);\n  animation: zcatModalSlideIn 0.2s ease;\n  overflow: hidden;\n}\n\n@keyframes zcatModalSlideIn {\n  from { opacity: 0; transform: translateY(16px) scale(0.98); }\n  to { opacity: 1; transform: translateY(0) scale(1); }\n}\n\n/* Size variants */\n.zcat-modal-sm .zcat-modal-container { width: 400px; }\n.zcat-modal-lg .zcat-modal-container { width: 720px; }\n.zcat-modal-full .zcat-modal-container {\n  width: calc(100vw - 48px);\n  height: calc(100vh - 48px);\n  max-width: none;\n  max-height: none;\n}\n\n/* --- Header --- */\n.zcat-modal-header {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  padding: 20px 24px 12px;\n  gap: 16px;\n  flex-shrink: 0;\n}\n.zcat-modal-header-left {\n  display: flex;\n  align-items: flex-start;\n  gap: 10px;\n  flex: 1;\n  min-width: 0;\n}\n.zcat-modal-header-text {\n  flex: 1;\n  min-width: 0;\n}\n.zcat-modal-title {\n  font: 600 var(--zcat-font-18-22) var(--zcat-font-family-primary);\n  color: var(--zcat-body-text-primary);\n  margin: 0;\n}\n.zcat-modal-desc {\n  font: 400 var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-body-text-grey);\n  margin-top: 4px;\n}\n.zcat-modal-back {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: none;\n  background: transparent;\n  cursor: pointer;\n  border-radius: 6px;\n  color: var(--zcat-body-text-primary);\n  transition: background 0.15s;\n  flex-shrink: 0;\n  margin-top: 1px;\n}\n.zcat-modal-back:hover {\n  background: var(--zcat-btn-grey-bg-hover);\n}\n\n/* --- Close button --- */\n.zcat-modal-close {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  padding: 0;\n  border: none;\n  background: transparent;\n  cursor: pointer;\n  border-radius: 6px;\n  color: var(--zcat-body-text-grey);\n  transition: background 0.15s, color 0.15s;\n  flex-shrink: 0;\n}\n.zcat-modal-close:hover {\n  background: var(--zcat-btn-grey-bg-hover);\n  color: var(--zcat-body-text-primary);\n}\n\n/* --- Body --- */\n.zcat-modal-body {\n  flex: 1;\n  overflow-y: auto;\n  padding: 12px 24px 20px;\n  font: 400 var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-body-text-primary);\n}\n\n/* --- Footer --- */\n.zcat-modal-footer {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 12px 24px 20px;\n  gap: 12px;\n  flex-shrink: 0;\n  border-top: 1px solid var(--zcat-popup-border);\n}\n.zcat-modal-footer-left,\n.zcat-modal-footer-right {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n</style>";;
-ZcatModal._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"a","p":[1,1],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":["zcatProp.width","'?:'",null,"''"]}}},"cn":"lc_id_0"},{"t":"s","p":[1,1,3,1,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"r","p":[1,1],"dN":[{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"tX","p":[1,1,3,1,3,1,0],"cn":"lc_id_0"},{"t":"s","p":[1,1,3,1,3,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"a","p":[1,1,3,3],"cn":"lc_id_0"},{"t":"r","p":[1,1,3,3,1],"dN":[{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"cD","p":[1,1,3,3],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"s","p":[1,1,7,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"s","p":[1,1,11],"c":{"lc_id_0":{"dN":[{"t":"s","p":[1,1,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"f","p":[1],"dN":[{"t":"a","p":[0]},{"t":"cD","p":[0],"in":0}],"dc":[0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"s","p":[1,3,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"f","p":[1],"dN":[{"t":"a","p":[0]},{"t":"cD","p":[0],"in":0}],"dc":[0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[5,3,2,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[0]}];;
-ZcatModal._observedAttributes = ["self", "zcatProp", "isOpen"];
-export { ZcatModal };
+ZcatModal._template = "<template tag-name=\"zcat-modal\"> <div class=\"zcat-dN\"> <svg id=\"zcat-icon-three-dots\" viewBox=\"0 0 14 4\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <circle cx=\"2\" cy=\"2\" r=\"1\" fill=\"#101F3E\" stroke=\"#101F3E\"></circle> <circle cx=\"7\" cy=\"2\" r=\"1\" fill=\"#101F3E\" stroke=\"#101F3E\"></circle> <circle cx=\"12\" cy=\"2\" r=\"1\" fill=\"#101F3E\" stroke=\"#101F3E\"></circle> </svg> <svg id=\"zcat-icon-avatar\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"> <path d=\"M13.3333 14C13.3333 13.0696 13.3333 12.6044 13.2185 12.2259C12.9599 11.3736 12.293 10.7067 11.4407 10.4482C11.0622 10.3333 10.597 10.3333 9.66662 10.3333H6.3333C5.40292 10.3333 4.93773 10.3333 4.5592 10.4482C3.70693 10.7067 3.03999 11.3736 2.78145 12.2259C2.66663 12.6044 2.66663 13.0696 2.66663 14M11 5C11 6.65685 9.65681 8 7.99996 8C6.3431 8 4.99996 6.65685 4.99996 5C4.99996 3.34315 6.3431 2 7.99996 2C9.65681 2 11 3.34315 11 5Z\" stroke=\"#4D618A\" stroke-width=\"1.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> </svg> </div> <lyte-modal id=\"{{zcatProp.id}}\" lt-prop-show=\"false\" lt-prop-show-close-button=\"false\" lt-prop-width=\"{{expHandlers(zcatProp.width,'?:',zcatProp.width,'600px')}}\" lt-prop-close-on-escape=\"true\" lt-prop-transition=\"{&quot;animation&quot;:&quot;fadeIn&quot;,&quot;duration&quot;:&quot;0.5&quot;}\" lt-prop-allow-multiple=\"true\" on-show=\"{{method('onAfterModalOpen')}}\" on-close=\"{{method('onModalClose')}}\" on-before-close=\"{{method('onBeforeModalClose')}}\" lt-prop-wrapper-class=\"{{expHandlers(zcatProp.deleteModalInput,'?:','delete-modal--input','')}} {{expHandlers(zcatProp.deleteModalNoInput,'?:','delete-modal--noinput','')}}\"> <template is=\"registerYield\" yield-name=\"modal\"> <form if=\"{{lbind(isPopUpOpen)}}\" class=\"{{expHandlers(zcatProp.isFormLoading,'?:','modal-loader','')}}\" onsubmit=\"{{action('submitForm',event)}}\"> <lyte-modal-header data-name=\"{{zcatProp.id}}\"> <div class=\"zcat-form-header\"> <div class=\"zcat-left-alignment\"> <div class=\"zcat-dF zcat-align-center zcat-gap-6\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{zcatProp.header.left.frontYield}}\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"{{zcatProp.left.frontYield}}\"></lyte-yield> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.header.left.avatar}}\" is=\"case\" lc-id=\"lc_id_0\"><div> <zcat-avatar zcat-prop=\"{{zcatProp.header.left.avatar}}\" self=\"{{self}}\"> </zcat-avatar> </div></template></template> <h5> {{zcatProp.header.left.title.name}} </h5> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{zcatProp.header.left.badge}}\" lc-id=\"lc_id_0\"> <zcat-label self=\"{{self}}\" zcat-prop=\"{{zcatProp.header.left.badge}}\"> </zcat-label> </template></template> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{zcatProp.header.left.yield}}\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"{{zcatProp.left.yield}}\"></lyte-yield> </template></template> </div> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.header.left.desc.name}}\" is=\"case\" lc-id=\"lc_id_0\"><p class=\"zcat-text-12 zcat-color-dark2 zcat-mt-4\">{{zcatProp.header.left.desc.name}}</p></template></template> </div> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{zcatProp.header.tabsSecondary}}\" lc-id=\"lc_id_0\"> <div class=\"zcat-subheader-tabs zcat-secondary-tab\"> <template is=\"for\" _jsp=\"true\" items=\"{{zcatProp.header.tabsSecondary.list}}\" item=\"item\" index=\"index\"> <go-to lt-prop-route=\"{{item.route}}\" lt-prop-dp=\"{{item.dynamicParams}}\" lt-prop-qp=\"{{item.queryParams}}\" lt-prop-class=\"zcat-link zcat-text-12\" lt-prop-custom=\"\" onclick=\"{{action('routeChange',item.route)}}\"> <a class=\"{{expHandlers(expHandlers(zcatProp.header.tabsSecondary.selectedTab,'==',item.route),'?:','active-tab','')}}\" data-zcqa=\"{{item.zcqa}}-{{index}}\">{{item.label}}</a> </go-to> </template> </div> </template></template> <div class=\"zcat-right-alignment\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.yield}}\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"{{item.yield}}\"></lyte-yield> </template></template> </div> </div> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{zcatProp.header.tabsPrimary}}\" lc-id=\"lc_id_0\"> <div class=\"zcat-subheader-tabs\"> <template is=\"for\" _jsp=\"true\" items=\"{{zcatProp.header.tabsPrimary.list}}\" item=\"item\" index=\"index\"> <go-to lt-prop-route=\"{{item.route}}\" lt-prop-dp=\"{{item.dynamicParams}}\" lt-prop-qp=\"{{item.queryParams}}\" lt-prop-class=\"zcat-link zcat-text-12\" lt-prop-custom=\"\" onclick=\"{{action('routeChange',item.route)}}\"> <a class=\"{{expHandlers(expHandlers(zcatProp.header.tabsPrimary.selectedTab,'==',item.route),'?:','active-tab','')}}\" data-zcqa=\"{{item.zcqa}}-{{index}}\">{{item.label}}</a> </go-to> </template> </div> </template></template> </lyte-modal-header> <lyte-modal-content data-name=\"{{zcatProp.id}}\"> <lyte-yield yield-name=\"modal_body\" error-prop=\"{{zcatProp.error}}\" self=\"{{self}}\" data=\"{{zcatProp.body}}\"> </lyte-yield> </lyte-modal-content> <lyte-modal-footer data-name=\"{{zcatProp.id}}\" class=\"zcat-form-footer\"> <div class=\"zcat-left-alignment\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{zcatProp.footer.left}}\" lc-id=\"lc_id_0\"> <template is=\"for\" _jsp=\"true\" items=\"{{zcatProp.footer.left}}\" item=\"item\" index=\"index\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(item.yield,'!')}}\" lc-id=\"lc_id_0\"> <zcat-button self=\"{{self}}\" zcat-prop=\"{{item}}\"></zcat-button> </template></template> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.yield}}\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"{{item.yield}}\"></lyte-yield> </template></template> </template> </template></template> </div> <div class=\"zcat-right-alignment\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{zcatProp.footer.right}}\" lc-id=\"lc_id_0\"> <template is=\"for\" _jsp=\"true\" items=\"{{zcatProp.footer.right}}\" item=\"item\" index=\"index\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(item.yield,'!')}}\" lc-id=\"lc_id_0\"> <zcat-button self=\"{{self}}\" zcat-prop=\"{{item}}\"></zcat-button> </template></template> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.yield}}\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"{{item.yield}}\"></lyte-yield> </template></template> </template> </template></template> </div> </lyte-modal-footer> </form> </template> </lyte-modal> </template><style>form lyte-modal-header .primary-tabs lyte-tab-title{\n    border-bottom: 1px solid var(--zcat-color-primarylight);\n}\n\n\n/* modal tab  */\n\n  .zcat-subheader-tabs {\n    width: 100%;\n    /* height: 48px; */\n    display: flex;\n    gap: 5px;\n    padding: 0 14px;\n    background: var(--zcat-tabs-primary-bg);\n    /* border-bottom: 1px solid var(--zcat-tabs-primary-border-default); */\n  }\n  .zcat-subheader-tabs a {\n    font-size: 14px;\n    font-family: var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-primary-text-default);\n    text-decoration: none;\n    /* padding: 15px 10px; */\n    padding: 0 8px;\n    cursor: pointer;\n    /* height: 48px; */\n    display: inline-flex;\n    font-weight: 400;\n    padding: 4px 8px;\n  }\n  .zcat-subheader-tabs a:hover {\n    cursor: pointer;\n    color: var(---zcat-tabs-primary-text-hover) !important;\n    background: var(--zcat-tabs-primary-bg-hover);\n    border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);\n    border-radius: 4px 4px 0px 0px;\n  }\n  .zcat-subheader-tabs a.active-tab {\n    color: var(--zcat-tabs-primary-text-active) !important;\n    font-family: var(--zcat-font-family-primary);\n    border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n    font-weight: 500;\n    border-radius: 4px 4px 0px 0px;\n  }\n  \n.header-border{\n    border-bottom: 1px solid var(--zcat-tabs-primary-border-default);\n}\n.zcat-subheader-tabs.zcat-secondary-tab{\n    width:fit-content;\n    padding: 4px;\n    border-radius: 6px;\n    background: var(--zcat-tabs-secondary-bg-default);\n    display: flex;\n    gap: 4px;\n}\n\n.zcat-subheader-tabs.zcat-secondary-tab a {\n    cursor: pointer;\n    padding: 4px;\n    border-radius: 6px;\n    /* height: 20px; */\n  }\n  .zcat-subheader-tabs.zcat-secondary-tab a:hover {\n    cursor: pointer;\n    color: var(---zcat-tabs-secondary-text-hover) !important;\n    background: var(--zcat-tabs-secondary-bg-hover);\n    border-bottom: none;\n  }\n  .zcat-subheader-tabs.zcat-secondary-tab a.active-tab {\n    color: var(--zcat-tabs-secondary-text-active) !important;\n    font-family: var(--zcat-font-family-primary);\n    border-bottom: none;\n    font-weight: 500;\n    background-color: var(--zcat-tabs-secondary-bg-active);\n    border-radius: 4px;\n  }\n /* .zcat-primary-tab-present{\n    height: calc(100% - 79px);\n  } */\n  .secondary-tab-height{\n    height: 48px;\n  }\n\n\n.lyteModal lyte-modal-header .zcat-subheader-tabs{\n  border-bottom: 1px solid var(--zcat-tabs-primary-border-default);\n}\n\n.delete-modal--noinput .lyteModal{\n  width: 414px !important;\n}\n.delete-modal--input .lyteModal{\n  width: 548px !important;\n}\n\n  </style>";;
+ZcatModal._dynamicNodes = [{"t":"a","p":[3]},{"t":"r","p":[3,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"s","p":[1,1,1,1,1,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":13,"sibl":[12]},{"t":"s","p":[1,1,1,1,1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"cD","p":[0,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":12,"sibl":[11]},{"t":"tX","p":[1,1,1,1,1,5,1]},{"t":"s","p":[1,1,1,1,1,7],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":11,"sibl":[10]},{"t":"s","p":[1,1,1,1,1,9],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":10,"sibl":[9]},{"t":"s","p":[1,1,1,1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":9,"sibl":[8]},{"t":"s","p":[1,1,1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"tX","p":[1,1,0]},{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":8,"sibl":[7]},{"t":"s","p":[1,1,1,5,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":7,"sibl":[6]},{"t":"s","p":[1,1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"tX","p":[1,1,0]},{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":6,"sibl":[5]},{"t":"cD","p":[1,1],"in":5,"sibl":[4]},{"t":"a","p":[1,3]},{"t":"a","p":[1,3,1]},{"t":"i","p":[1,3,1],"in":4,"sibl":[3]},{"t":"cD","p":[1,3],"in":3,"sibl":[2]},{"t":"a","p":[1,5]},{"t":"s","p":[1,5,1,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"f","p":[1],"dN":[{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"s","p":[1,5,3,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"f","p":[1],"dN":[{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[1,5],"in":0}],"dc":[13,12,11,10,8,7,6,5,4,3,2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[3],"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
+ZcatModal._observedAttributes = ["self", "submit", "hasPagination", "zcatProp", "isPopUpOpen"];
+export {ZcatModal};
 
 ZcatModal.register("zcat-modal", {
-  hash: "ZcatModal_2",
+  hash: "ZcatModal_4",
   refHash: "C_zcat-app_app_0"
-});
+}); 

@@ -300,6 +300,6 @@ TableComp._observedAttributes = [
 export { TableComp };
 
 TableComp.register("table-comp", {
-  hash: "TableComp_2",
+  hash: "TableComp_4",
   refHash: "C_zcat-app_app_0"
 });

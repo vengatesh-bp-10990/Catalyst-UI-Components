@@ -260,6 +260,6 @@ PopoverComp._observedAttributes = [
 export { PopoverComp };
 
 PopoverComp.register("popover-comp", {
-  hash: "PopoverComp_2",
+  hash: "PopoverComp_4",
   refHash: "C_zcat-app_app_0"
 });

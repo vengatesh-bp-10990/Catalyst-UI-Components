@@ -236,6 +236,6 @@ AttentionComp._observedAttributes = [
 export { AttentionComp };
 
 AttentionComp.register("attention-comp", {
-  hash: "AttentionComp_2",
+  hash: "AttentionComp_4",
   refHash: "C_zcat-app_app_0"
 });

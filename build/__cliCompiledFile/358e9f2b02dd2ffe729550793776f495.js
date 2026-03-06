@@ -203,6 +203,6 @@ PaginationComp._observedAttributes = [
 export { PaginationComp };
 
 PaginationComp.register("pagination-comp", {
-  hash: "PaginationComp_2",
+  hash: "PaginationComp_4",
   refHash: "C_zcat-app_app_0"
 });

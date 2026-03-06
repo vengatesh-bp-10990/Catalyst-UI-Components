@@ -1,4 +1,6 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
+import "../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-text.js";
+import "../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-checkbox.js";
 import { Component } from "../../node_modules/@slyte/component/index.js";
 import { prop } from "../../node_modules/@slyte/core/index.js";
 
@@ -10,49 +12,57 @@ class ZcatCheckbox extends Component {
   data(arg1) {
     return Object.assign(super.data({
       self: prop('object'),
-      zcatProp: prop('object', { default: {} }, { watch: true }),
-      isChecked: prop('boolean', { default: false }),
-      isPartial: prop('boolean', { default: false })
+      zcatProp: prop('object'),
+      key: prop('string'),
+      formData: prop('object', { watch: true })
     }), arg1);
-  }
-
-  init() {
-    this._syncState();
-  }
-
-  _syncState() {
-    let zcatProp = this.getData('zcatProp');
-    if (!zcatProp) return;
-    if (zcatProp.partial) {
-      this.setData('isPartial', true);
-      this.setData('isChecked', true);
-    } else {
-      this.setData('isPartial', false);
-      this.setData('isChecked', !!zcatProp.checked);
-    }
   }
 
   static methods(arg1) {
     return Object.assign(super.methods({
-      onCheckboxChange(event, lyteElement) {
-        let zcatProp = this.getData('zcatProp');
-        if (zcatProp && zcatProp.disabled) { return; }
+      // async customLbindForCheckbox(methodName, value, ...args) {
+      //   debugger
+      //   const zcatProp = this.getData('zcatProp');
+      //   const formData = this.getData('formData');
+      //   const key = this.getData('key');
 
-        // Clear partial state on user interaction
-        this.setData('isPartial', false);
-        let newChecked = lyteElement
-          ? !!lyteElement.getData('ltPropChecked')
-          : !this.getData('isChecked');
-        this.setData('isChecked', newChecked);
+      //   if (zcatProp && value) {
+      //     // Update the zcatProp object when a value is selected
+      //     this.$addon.objectUtils(zcatProp, 'add', 'selected', value);
+      //   }
 
-        // Callback
-        let self = this.getData('self');
-        if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {
-          if (zcatProp.callback.arguments && zcatProp.callback.arguments.length) {
-            self.executeMethod(zcatProp.callback.name, newChecked, zcatProp.callback.arguments);
-          } else {
-            self.executeMethod(zcatProp.callback.name, newChecked, zcatProp);
+      //   if (zcatProp && key) {
+      //     // Sync zcatProp.selected → formData.key
+      //     this.setData(`formData.${key}`, zcatProp.selected);
+      //   }
+
+      //    // If a method name is passed, execute it asynchronously
+      //   if (methodName && typeof this.executeMethod === 'function') {
+      //     await this.executeMethod(methodName, ...args);
+      //   }
+      // }
+      async customLbindForCheckbox(methodName, value, ...args) {
+        try {
+          const zcatProp = this.getData("zcatProp");
+          const formData = this.getData("formData");
+          const key = this.getData("key");
+
+          // 1. Update zcatProp.selected when checkbox changes
+          if (zcatProp) {
+            this.$addon.objectUtils(zcatProp, "add", "selected", !!value);
           }
+
+          // 2. Sync zcatProp.selected → formData.key (if key exists)
+          if (formData && key && zcatProp?.selected !== undefined) {
+            this.setData(`formData.${key}`, zcatProp.selected);
+          }
+
+          // 3. Execute optional callback method asynchronously
+          if (methodName && typeof this.executeMethod === "function") {
+            await this.executeMethod(methodName, ...args);
+          }
+        } catch (err) {
+          console.error("Error in customLbindForCheckbox:", err);
         }
       }
     }), arg1);
@@ -64,12 +74,6 @@ class ZcatCheckbox extends Component {
 
   static observers(arg1) {
     return Object.assign(super.observers({
-      zcatPropChanged: {
-        watch: ['zcatProp'],
-        handler() {
-          this._syncState();
-        }
-      }
     }), arg1);
   }
 
@@ -78,11 +82,11 @@ class ZcatCheckbox extends Component {
   }
 }
 
-ZcatCheckbox._template = "<template tag-name=\"zcat-checkbox\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-checkbox-secondary-card {{expHandlers(isChecked,'?:','zcat-checkbox-card-selected','')}} {{expHandlers(zcatProp.disabled,'?:','zcat-checkbox-disabled','')}} {{expHandlers(zcatProp.classCss,'||','')}}\"> <lyte-checkbox class=\"zcat-checkbox-wrap {{expHandlers(expHandlers(zcatProp.size,'===','small'),'?:','zcat-checkbox-sm',expHandlers(expHandlers(zcatProp.size,'===','extra-small'),'?:','zcat-checkbox-exsm',''))}}\" lt-prop-checked=\"{{isChecked}}\" lt-prop-disabled=\"{{expHandlers(zcatProp.disabled,'?:','true','false')}}\" lt-prop-label=\"{{expHandlers(zcatProp.label,'||','')}}\" lt-prop-type=\"default\" on-changed=\"{{method('onCheckboxChange')}}\"></lyte-checkbox> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.desc}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-checkbox-content\"> <span class=\"zcat-checkbox-desc\">{{zcatProp.desc}}</span> </div> </template></template> </div> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'!==','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-checkbox class=\"zcat-checkbox-wrap {{expHandlers(expHandlers(zcatProp.size,'===','small'),'?:','zcat-checkbox-sm',expHandlers(expHandlers(zcatProp.size,'===','extra-small'),'?:','zcat-checkbox-exsm',''))}} {{expHandlers(zcatProp.disabled,'?:','zcat-checkbox-disabled','')}} {{expHandlers(zcatProp.classCss,'||','')}}\" lt-prop-checked=\"{{isChecked}}\" lt-prop-disabled=\"{{expHandlers(zcatProp.disabled,'?:','true','false')}}\" lt-prop-label=\"{{expHandlers(zcatProp.label,'||','')}}\" lt-prop-type=\"{{expHandlers(isPartial,'?:','indeterminate','default')}}\" on-changed=\"{{method('onCheckboxChange')}}\"></lyte-checkbox> </template></template> </template><style>/* ==============================\n   ZCAT Checkbox Component\n   Supports both legacy .zcat-checkbox-* classes and lyte-checkbox internals\n   ============================== */\n\nzcat-checkbox {\n  display: flex;\n}\nzcat-checkbox * {\n  box-sizing: border-box;\n}\nlyte-checkbox * {\n  box-sizing: border-box;\n}\n\n/* ─── lyte-checkbox outer wrapper ─── */\nlyte-checkbox.zcat-checkbox-wrap {\n  display: inline-flex;\n  align-items: center;\n  width: 100%;\n}\n\n/* ─── lyte-checkbox label container ─── */\nlyte-checkbox label,\nlyte-checkbox .lyteCheckbox {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  cursor: pointer;\n  user-select: none;\n  font: 400 14px/20px var(--zcat-font-family-primary);\n  color: var(--zcat-body-text-primary);\n  white-space: nowrap;\n  width: 100%;\n}\n\n/* ─── lyte-checkbox hidden native input ─── */\nlyte-checkbox > input[type='checkbox'],\nlyte-checkbox .lyteCheckbox > input[type='checkbox'] {\n  opacity: 0;\n  position: absolute;\n  height: 0;\n  width: 0;\n  pointer-events: none;\n}\n\n/* ─── lyte-checkbox visual box (before pseudo on default span) ─── */\nlyte-checkbox .lyteCheckBoxDefault::before {\n  content: '';\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 14px;\n  height: 14px;\n  border-radius: 4px;\n  background: var(--zcat-checkbox-bg-default);\n  border: 1px solid var(--zcat-checkbox-border-default);\n  flex-shrink: 0;\n  vertical-align: middle;\n  margin-right: 4px;\n  box-sizing: border-box;\n  transition: background 0.15s, border-color 0.15s;\n}\n\n/* ─── lyte-checkbox hover ─── */\nlyte-checkbox:hover .lyteCheckBoxDefault::before {\n  background: var(--zcat-checkbox-bg-hover);\n  border-color: var(--zcat-checkbox-border-hover);\n}\n\n/* ─── lyte-checkbox checked state ─── */\nlyte-checkbox .lyteCheckbox > input[type='checkbox']:checked + .lyteCheckBoxDefault::before {\n  background: var(--zcat-checkbox-bg-clicked);\n  border-color: transparent;\n}\n/* ─── checkmark SVG via ::after ─── */\nlyte-checkbox .lyteCheckbox > input[type='checkbox']:checked + .lyteCheckBoxDefault::after {\n  content: '';\n  display: block;\n  width: 8px;\n  height: 8px;\n  position: absolute;\n  top: 1px; bottom: 0; left: 3.2px;\n  margin: auto;\n  background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\" viewBox=\"0 0 8 8\" fill=\"none\"><path d=\"M6.66667 2.15002L3 5.81669L1.33334 4.15002\" stroke=\"white\" stroke-width=\"1.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>');\n}\n/* ─── checked hover ─── */\nlyte-checkbox:hover .lyteCheckbox > input[type='checkbox']:checked + .lyteCheckBoxDefault::before {\n  background: var(--zcat-checkbox-bg-clicked-hover);\n}\n\n/* ─── lyte-checkbox label text ─── */\nlyte-checkbox .lyteCheckBoxDefault span,\nlyte-checkbox .lyteCheckbox span:not(.lyteCheckBoxDefault) {\n  font-size: 14px;\n  font-weight: 400;\n  color: var(--zcat-body-text-primary);\n  line-height: 20px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n/* ─── SIZES ─── */\nlyte-checkbox.zcat-checkbox-sm .lyteCheckBoxDefault::before {\n  width: 12px;\n  height: 12px;\n  border-radius: 3px;\n}\nlyte-checkbox.zcat-checkbox-sm .lyteCheckbox span {\n  font-size: 13px;\n  line-height: 18px;\n}\nlyte-checkbox.zcat-checkbox-exsm .lyteCheckBoxDefault::before {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n}\nlyte-checkbox.zcat-checkbox-exsm .lyteCheckbox span {\n  font-size: 12px;\n  line-height: 16px;\n}\n\n/* ─── DISABLED ─── */\nlyte-checkbox.zcat-checkbox-disabled,\nlyte-checkbox.zcat-checkbox-disabled label {\n  cursor: not-allowed;\n  pointer-events: none;\n}\nlyte-checkbox.zcat-checkbox-disabled .lyteCheckBoxDefault::before {\n  background: var(--zcat-checkbox-bg-disabled);\n  border-color: var(--zcat-checkbox-border-disabled);\n}\nlyte-checkbox.zcat-checkbox-disabled .lyteCheckbox > input[type='checkbox']:checked + .lyteCheckBoxDefault::before {\n  background: var(--zcat-checkbox-bg-clicked-disabled);\n  border-color: transparent;\n}\n\n/* ─── Secondary card variant ─── */\n.zcat-checkbox-secondary-card {\n  padding: 10px;\n  border-radius: 6px;\n  border: 1px solid var(--zcat-radio-outer-border-default);\n  background: var(--zcat-radio-outer-bg-default);\n  cursor: pointer;\n  transition: border-color 0.15s, background 0.15s, box-shadow 0.2s;\n}\n.zcat-checkbox-secondary-card:hover {\n  box-shadow: 0px 0px 6px 1px var(--zcat-shadow-bg-default);\n}\n.zcat-checkbox-secondary-card.zcat-checkbox-card-selected {\n  border: 1px solid var(--zcat-color-primary);\n  background: var(--zcat-checkbox-bg-default);\n}\n.zcat-checkbox-content {\n  display: flex;\n  flex-direction: column;\n  gap: 2px;\n  margin-left: 4px;\n}\n.zcat-checkbox-desc {\n  font-size: 12px;\n  font-weight: 400;\n  color: var(--zcat-body-text-grey);\n  line-height: 16px;\n}\n\n/* ─── Legacy selectors (kept for backward compatibility) ─── */\n.zcat-checkbox-wrap {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  cursor: pointer;\n  user-select: none;\n  font: 400 14px/20px var(--zcat-font-family-primary);\n  color: var(--zcat-body-text-primary);\n  white-space: nowrap;\n  width: 100%;\n}\n.zcat-checkbox-input {\n  position: absolute;\n  opacity: 0;\n  width: 0;\n  height: 0;\n  pointer-events: none;\n}\n.zcat-checkbox-box {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 14px;\n  height: 14px;\n  border: 1px solid var(--zcat-checkbox-border-default);\n  border-radius: 4px;\n  background: var(--zcat-checkbox-bg-default);\n  flex-shrink: 0;\n  vertical-align: middle;\n  transition: background 0.15s, border-color 0.15s;\n}\n.zcat-checkbox-label {\n  margin-left: 4px;\n  font-size: 14px;\n  font-weight: 400;\n  color: var(--zcat-body-text-primary);\n  line-height: 20px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  width: calc(100% - 16px);\n}\n</style>";;
-ZcatCheckbox._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"cD","p":[1,1],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
-ZcatCheckbox._observedAttributes = ["self", "zcatProp", "isChecked", "isPartial"];
+ZcatCheckbox._template = "<template tag-name=\"zcat-checkbox\"> <div class=\"zcat-dF zcat-direction-column zcat-gap-10 zcat-w100p\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(zcatProp.variant,'===','primary')}}\" lc-id=\"lc_id_0\"> <template items=\"{{zcatProp.options}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-checkbox lt-prop-type=\"{{expHandlers(zcatProp.type,'?:',zcatProp.type,'default')}}\" data-zcqa=\"{{item.zcqa}}\" lt-prop-id=\"{{item.id}}\" lt-prop-disabled=\"{{expHandlers(item.disabled,'?:',item.disabled,'false')}}\" lt-prop-checked=\"{{expHandlers(expHandlers(formData[zcatProp.key],'===',item.value),'?:',true,false)}}\" lt-prop-tabindex=\"{{expHandlers(zcatProp.tabindex,'?:',zcatProp.tabindex,'0')}}\" lt-prop-label=\"{{item.label}}\" lt-prop-name=\"{{item.name}}\" lt-prop-value=\"{{item.value}}\" lt-prop-read-only=\"{{expHandlers(zcatProp.readOnly,'?:',zcatProp.readOnly,'false')}}\" lt-prop-fire-on-init=\"{{expHandlers(zcatProp.fireOnInit,'?:',zcatProp.fireOnInit,'false')}}\" class=\"{{expHandlers(zcatProp.class,'?:',zcatProp.class,'')}} {{expHandlers(item.label,'?:','','checkboxWutLabel')}}\" lt-prop-label-class=\"{{expHandlers(zcatProp.labelClass,'?:',zcatProp.labelClass,'')}}\" lt-prop-prevent-callback-observers=\"{{expHandlers(zcatProp.callbackObservers,'?:',zcatProp.callbackObservers,'false')}}\" lt-prop-focus=\"{{expHandlers(zcatProp.focus,'?:',zcatProp.focus,'false')}}\" lt-prop-aria-checkbox=\"{&quot;aria-checked&quot;: &quot;true&quot;}\" lt-prop-data-tabindex=\"group0-1\" lt-prop-show-tooltip=\"{{expHandlers(zcatProp.tooltip,'?:',zcatProp.tooltip,'false')}}\" lt-prop-tooltip-config=\"{&quot;position&quot;: &quot;bottom&quot;, &quot;appearance&quot;: &quot;box&quot;, &quot;margin&quot;: 15, &quot;keeptooltip&quot;: true}\" lt-prop-tooltip-class=\"{{expHandlers(zcatProp.tooltipClass,'?:',zcatProp.tooltipClass,'false')}}\" on-changed=\"{{method('customLbindForCheckbox',zcatProp.onChange,item.value)}}\" on-before-checked=\"{{method('customLbindForCheckbox',zcatProp.onBeforeChecked)}}\" on-checked=\"{{method('customLbindForCheckbox',zcatProp.onChecked,item.value)}}\" on-before-unchecked=\"{{method('customLbindForCheckbox',zcatProp.onBeforeUnChecked)}}\" on-unchecked=\"{{method('customLbindForCheckbox',zcatProp.onUnChecked)}}\"></lyte-checkbox></template> </template><template is=\"case\" case=\"{{expHandlers(zcatProp.variant,'===','secondary')}}\" lc-id=\"lc_id_1\"> <template items=\"{{zcatProp.options}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-checkbox lt-prop-yield=\"true\" lt-prop-type=\"{{expHandlers(zcatProp.type,'?:',zcatProp.type,'default')}}\" data-zcqa=\"{{item.zcqa}}\" lt-prop-id=\"{{item.id}}\" lt-prop-disabled=\"{{expHandlers(item.disabled,'?:',item.disabled,'false')}}\" lt-prop-checked=\"{{expHandlers(expHandlers(formData[zcatProp.key],'===',item.value),'?:',true,false)}}\" lt-prop-tabindex=\"{{expHandlers(zcatProp.tabindex,'?:',zcatProp.tabindex,'0')}}\" lt-prop-name=\"{{expHandlers(zcatProp.name,'?:',zcatProp.name,'')}}\" lt-prop-value=\"{{item.value}}\" lt-prop-read-only=\"{{expHandlers(zcatProp.readOnly,'?:',zcatProp.readOnly,'false')}}\" lt-prop-fire-on-init=\"{{expHandlers(zcatProp.fireOnInit,'?:',zcatProp.fireOnInit,'false')}}\" class=\"zcat-secondary-checkbox-button zcat-w100p primaryCheckBoxBtn {{expHandlers(item.desc,'?:','','checkboxWutSubtxt')}}\" lt-prop-label-class=\"{{expHandlers(zcatProp.labelClass,'?:',zcatProp.labelClass,'')}}\" lt-prop-prevent-callback-observers=\"{{expHandlers(zcatProp.callbackObservers,'?:',zcatProp.callbackObservers,'false')}}\" lt-prop-focus=\"{{expHandlers(zcatProp.focus,'?:',zcatProp.focus,'false')}}\" lt-prop-aria-checkbox=\"{&quot;aria-checked&quot;: &quot;true&quot;}\" lt-prop-data-tabindex=\"group0-1\" lt-prop-show-tooltip=\"{{expHandlers(zcatProp.tooltip,'?:',zcatProp.tooltip,'false')}}\" lt-prop-tooltip-config=\"{&quot;position&quot;: &quot;bottom&quot;, &quot;appearance&quot;: &quot;box&quot;, &quot;margin&quot;: 15, &quot;keeptooltip&quot;: true}\" lt-prop-tooltip-class=\"{{expHandlers(zcatProp.tooltipClass,'?:',zcatProp.tooltipClass,'false')}}\" on-changed=\"{{method('customLbindForCheckbox',zcatProp.onChange)}}\" on-before-checked=\"{{method('customLbindForCheckbox',zcatProp.onBeforeChecked)}}\" on-checked=\"{{method('customLbindForCheckbox',zcatProp.onChecked)}}\" on-before-unchecked=\"{{method('customLbindForCheckbox',zcatProp.onBeforeUnChecked)}}\" on-unchecked=\"{{method('customLbindForCheckbox',zcatProp.onUnChecked)}}\"> <template is=\"registerYield\" yield-name=\"yield\"> <div class=\"{{expHandlers(expHandlers(zcatProp.type,'===','switch'),'?:','','zcat-ml-4')}} zcat-dF zcat-direction-column zcat-gap-2\"> <lyte-text class=\"zcat-text-14 {{expHandlers(item.desc,'?:','zcat-font-semibold','zcat-font-regular')}} zcat-color-dark1 zcat-w100p\" lt-prop-value=\"{{item.label}}\"> </lyte-text> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{item.desc}}\" is=\"case\" lc-id=\"lc_id_0\"><lyte-text class=\"zcat-text-12 zcat-color-dark2 zcat-w100p\" lt-prop-value=\"{{item.desc}}\"> </lyte-text></template></template> </div> </template> </lyte-checkbox></template> </template></template> </div> </template>";;
+ZcatCheckbox._dynamicNodes = [{"t":"s","p":[1,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"f","p":[1],"dN":[{"t":"a","p":[0]},{"t":"cD","p":[0],"in":0}],"dc":[0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true},"lc_id_1":{"dN":[{"t":"a","p":[1],"cn":"lc_id_1"},{"t":"f","p":[1],"dN":[{"t":"a","p":[0]},{"t":"r","p":[0,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"cD","p":[1,1],"in":1,"sibl":[0]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":0,"cn":"lc_id_1"}],"cdp":{"t":"a","p":[1]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true},"lc_id_1":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0","lc_id_1"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[0]}];;
+ZcatCheckbox._observedAttributes = ["self", "zcatProp", "key", "formData"];
 export { ZcatCheckbox };
 ZcatCheckbox.register("zcat-checkbox", {
-  hash: "ZcatCheckbox_2",
+  hash: "ZcatCheckbox_4",
   refHash: "C_zcat-app_app_0"
 });

@@ -196,7 +196,7 @@ DatepickerComp._observedAttributes = [
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DatepickerComp);
 
 DatepickerComp.register("datepicker-comp", {
-  hash: "DatepickerComp_2",
+  hash: "DatepickerComp_4",
   refHash: "C_zcat-app_app_0"
 });
 
@@ -213,314 +213,1633 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatDatepicker": () => (/* binding */ ZcatDatepicker)
 /* harmony export */ });
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
-/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_calendar_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-calendar.js */ 18949561);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_time_picker_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-time-picker.js */ 70631464);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_button_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-button.js */ 31055274);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_popover_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-popover.js */ 17517222);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_input_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-input.js */ 20794005);
+/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
 
 
 
 
 
-class ZcatDatepicker extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__.Component {
-  constructor() {
-    super();
-  }
 
-  data(arg1) {
-    return Object.assign(super.data({
-      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('object'),
-      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('object', { default: {} }, { watch: true }),
-      isOpen: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('boolean', { default: false }),
-      selectedDate: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('string', { default: '' }),
-      displayValue: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('string', { default: '' }),
-      // Calendar state
-      viewYear: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('number', { default: new Date().getFullYear() }),
-      viewMonth: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('number', { default: new Date().getMonth() }),
-      calendarDays: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('array', { default: [] }),
-      monthLabel: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('string', { default: '' }),
-      // Time state
-      hours: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('string', { default: '12' }),
-      minutes: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('string', { default: '00' }),
-      seconds: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('string', { default: '00' }),
-      ampm: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('string', { default: 'AM' }),
-      // Temp selection (applied on Apply click)
-      tempDate: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('string', { default: '' })
-    }), arg1);
-  }
 
-  init() {
-    this._syncFromProp();
-    this._buildCalendar();
-  }
 
-  didConnect() {
-    let comp = this;
-    this._outsideClickHandler = function(e) {
-      let wrapper = comp.$node ? comp.$node.querySelector('.zcat-datepicker-wrapper') : null;
-      if (wrapper && !wrapper.contains(e.target)) {
-        comp.setData('isOpen', false);
-      }
-    };
-    document.addEventListener('click', this._outsideClickHandler, true);
-  }
+class ZcatDatepicker extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_5__.Component {
+    constructor() {
+		super();
+	}
 
-  didDestroy() {
-    if (this._outsideClickHandler) {
-      document.removeEventListener('click', this._outsideClickHandler, true);
+    data(arg1) {
+		return Object.assign(super.data({
+		}), arg1);	
+	}
+
+    static methods(arg1) {
+		return Object.assign(super.methods({
+		}), arg1);
+	}
+
+    static actions(arg1) {
+		return Object.assign(super.actions({
+			
+		}), arg1);
+	}
+
+    static observers(arg1) {
+		return Object.assign(super.observers({
+		}), arg1);
+	}
+
+    _() {
+        _;
     }
-  }
-
-  _syncFromProp() {
-    let zcatProp = this.getData('zcatProp');
-    if (zcatProp && zcatProp.value) {
-      this.setData('selectedDate', zcatProp.value);
-      this.setData('tempDate', zcatProp.value);
-      this._updateDisplayValue(zcatProp.value);
-      // Parse date to set view
-      let d = new Date(zcatProp.value);
-      if (!isNaN(d.getTime())) {
-        this.setData('viewYear', d.getFullYear());
-        this.setData('viewMonth', d.getMonth());
-      }
-    }
-  }
-
-  _updateDisplayValue(dateStr) {
-    if (!dateStr) {
-      this.setData('displayValue', '');
-      return;
-    }
-    let zcatProp = this.getData('zcatProp');
-    let format = (zcatProp && zcatProp.format) || 'MM/DD/YYYY';
-    let d = new Date(dateStr);
-    if (isNaN(d.getTime())) {
-      this.setData('displayValue', dateStr);
-      return;
-    }
-    let mm = String(d.getMonth() + 1).padStart(2, '0');
-    let dd = String(d.getDate()).padStart(2, '0');
-    let yyyy = d.getFullYear();
-    let result = format
-      .replace('YYYY', yyyy)
-      .replace('MM', mm)
-      .replace('DD', dd);
-    if (zcatProp && zcatProp.showTime) {
-      result += ' ' + this.getData('hours') + ':' + this.getData('minutes') + ':' + this.getData('seconds') + ' ' + this.getData('ampm');
-    }
-    this.setData('displayValue', result);
-  }
-
-  _buildCalendar() {
-    let year = this.getData('viewYear');
-    let month = this.getData('viewMonth');
-    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    this.setData('monthLabel', months[month] + ' ' + year);
-
-    let firstDay = new Date(year, month, 1).getDay();
-    let daysInMonth = new Date(year, month + 1, 0).getDate();
-    let daysInPrevMonth = new Date(year, month, 0).getDate();
-
-    let days = [];
-    let zcatProp = this.getData('zcatProp');
-    let minDate = zcatProp && zcatProp.minDate ? new Date(zcatProp.minDate) : null;
-    let maxDate = zcatProp && zcatProp.maxDate ? new Date(zcatProp.maxDate) : null;
-    let tempDate = this.getData('tempDate');
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Previous month fill
-    for (let i = firstDay - 1; i >= 0; i--) {
-      let dayNum = daysInPrevMonth - i;
-      days.push({ day: dayNum, current: false, disabled: true, selected: false, today: false, _dateStr: '' });
-    }
-
-    // Current month
-    for (let d = 1; d <= daysInMonth; d++) {
-      let date = new Date(year, month, d);
-      date.setHours(0, 0, 0, 0);
-      let dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-      let disabled = false;
-      if (minDate && date < minDate) disabled = true;
-      if (maxDate && date > maxDate) disabled = true;
-      days.push({
-        day: d,
-        current: true,
-        disabled: disabled,
-        selected: tempDate === dateStr,
-        today: date.getTime() === today.getTime(),
-        _dateStr: dateStr
-      });
-    }
-
-    // Next month fill (to complete 6 rows)
-    let remaining = 42 - days.length;
-    for (let i = 1; i <= remaining; i++) {
-      days.push({ day: i, current: false, disabled: true, selected: false, today: false, _dateStr: '' });
-    }
-
-    this.setData('calendarDays', days);
-  }
-
-  static methods(arg1) {
-    return Object.assign(super.methods({}), arg1);
-  }
-
-  static actions(arg1) {
-    return Object.assign(super.actions({
-      togglePicker(event) {
-        if (event) event.stopPropagation();
-        let zcatProp = this.getData('zcatProp');
-        if (zcatProp && zcatProp.disabled) return;
-        let isOpen = this.getData('isOpen');
-        if (!isOpen) {
-          // Opening — sync temp from selected
-          let sel = this.getData('selectedDate');
-          this.setData('tempDate', sel);
-          if (sel) {
-            let d = new Date(sel);
-            if (!isNaN(d.getTime())) {
-              this.setData('viewYear', d.getFullYear());
-              this.setData('viewMonth', d.getMonth());
-            }
-          }
-          this._buildCalendar();
-        }
-        this.setData('isOpen', !isOpen);
-      },
-
-      prevMonth() {
-        let m = this.getData('viewMonth');
-        let y = this.getData('viewYear');
-        if (m === 0) { m = 11; y--; } else { m--; }
-        this.setData('viewMonth', m);
-        this.setData('viewYear', y);
-        this._buildCalendar();
-      },
-
-      nextMonth() {
-        let m = this.getData('viewMonth');
-        let y = this.getData('viewYear');
-        if (m === 11) { m = 0; y++; } else { m++; }
-        this.setData('viewMonth', m);
-        this.setData('viewYear', y);
-        this._buildCalendar();
-      },
-
-      selectDay(dayObj) {
-        if (dayObj.disabled || !dayObj.current) return;
-        this.setData('tempDate', dayObj._dateStr);
-        this._buildCalendar();
-      },
-
-      onHoursChange(event, lyteElement) {
-        let rawVal = lyteElement ? lyteElement.getData('ltPropValue') : (event && event.target ? event.target.value : '');
-        let v = (rawVal || '').replace(/[^0-9]/g, '').slice(0, 2);
-        let num = parseInt(v, 10);
-        if (num > 12) v = '12';
-        if (num < 1 && v.length === 2) v = '01';
-        this.setData('hours', v || '');
-      },
-
-      onMinutesChange(event, lyteElement) {
-        let rawVal = lyteElement ? lyteElement.getData('ltPropValue') : (event && event.target ? event.target.value : '');
-        let v = (rawVal || '').replace(/[^0-9]/g, '').slice(0, 2);
-        let num = parseInt(v, 10);
-        if (num > 59) v = '59';
-        this.setData('minutes', v || '');
-      },
-
-      onSecondsChange(event, lyteElement) {
-        let rawVal = lyteElement ? lyteElement.getData('ltPropValue') : (event && event.target ? event.target.value : '');
-        let v = (rawVal || '').replace(/[^0-9]/g, '').slice(0, 2);
-        let num = parseInt(v, 10);
-        if (num > 59) v = '59';
-        this.setData('seconds', v || '');
-      },
-
-      toggleAmPm() {
-        this.setData('ampm', this.getData('ampm') === 'AM' ? 'PM' : 'AM');
-      },
-
-      applyDate() {
-        let tempDate = this.getData('tempDate');
-        this.setData('selectedDate', tempDate);
-        this._updateDisplayValue(tempDate);
-        this.setData('isOpen', false);
-
-        let self = this.getData('self');
-        let zcatProp = this.getData('zcatProp');
-        if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {
-          let result = { date: tempDate };
-          if (zcatProp.showTime) {
-            result.time = this.getData('hours') + ':' + this.getData('minutes') + ':' + this.getData('seconds') + ' ' + this.getData('ampm');
-          }
-          self.executeMethod(zcatProp.callback.name, result);
-        }
-      },
-
-      resetDate() {
-        this.setData('tempDate', '');
-        this.setData('selectedDate', '');
-        this.setData('displayValue', '');
-        this.setData('hours', '12');
-        this.setData('minutes', '00');
-        this.setData('seconds', '00');
-        this.setData('ampm', 'AM');
-        let now = new Date();
-        this.setData('viewYear', now.getFullYear());
-        this.setData('viewMonth', now.getMonth());
-        this._buildCalendar();
-      },
-
-      closePicker() {
-        this.setData('isOpen', false);
-      }
-    }), arg1);
-  }
-
-  static observers(arg1) {
-    return Object.assign(super.observers({
-      zcatPropChanged: {
-        watch: ['zcatProp'],
-        handler() {
-          this._syncFromProp();
-          this._buildCalendar();
-        }
-      }
-    }), arg1);
-  }
-
-  _() {
-    _;
-  }
 }
 
-ZcatDatepicker._template = "<template tag-name=\"zcat-datepicker\"> <div class=\"zcat-datepicker-wrapper {{expHandlers(expHandlers(zcatProp.size,'===','small'),'?:','zcat-datepicker-sm',expHandlers(expHandlers(zcatProp.size,'===','extra-small'),'?:','zcat-datepicker-exsm',''))}} {{expHandlers(zcatProp.disabled,'?:','zcat-datepicker-disabled','')}} {{expHandlers(zcatProp.errorMessage,'?:','zcat-datepicker-error','')}}\"> <!-- Label Row --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.label}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-datepicker-label-row\"> <label class=\"zcat-datepicker-label\">{{zcatProp.label}}</label> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.isOptional}}\" is=\"case\" lc-id=\"lc_id_0\"> <span class=\"zcat-datepicker-optional\">(Optional)</span> </template></template> </div> </template></template> <!-- Input trigger using lyte-input --> <div class=\"zcat-datepicker-input-wrap\" onclick=\"{{action('togglePicker')}}\"> <zcat-icon class=\"zcat-datepicker-cal-icon\" name=\"calendar\" width=\"{{expHandlers(expHandlers(zcatProp.size,'===','extra-small'),'?:','12','14')}}\" height=\"{{expHandlers(expHandlers(zcatProp.size,'===','extra-small'),'?:','12','14')}}\" stroke=\"var(--zcat-inputField-icon-placeholder)\" stroke-width=\"1.3\"></zcat-icon> <lyte-input class=\"zcat-datepicker-input\" lt-prop-placeholder=\"{{expHandlers(zcatProp.placeholder,'||','Select date')}}\" lt-prop-value=\"{{displayValue}}\" lt-prop-readonly=\"true\" lt-prop-disabled=\"{{expHandlers(zcatProp.disabled,'?:','true','false')}}\" lt-prop-appearance=\"box\" lt-prop-auto-update=\"true\" style=\"{{expHandlers(zcatProp.width,'?:',expHandlers('width:','+',zcatProp.width),'')}}\"></lyte-input> <span class=\"zcat-datepicker-arrow\"></span> </div> <!-- Popover / Calendar Panel --> <div class=\"zcat-datepicker-popover {{expHandlers(isOpen,'?:','open','')}}\"> <!-- Calendar Header --> <div class=\"zcat-datepicker-cal-header\"> <span class=\"zcat-datepicker-nav-btn\" onclick=\"{{action('prevMonth')}}\"> <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"15 18 9 12 15 6\"></polyline></svg> </span> <span class=\"zcat-datepicker-month-label\">{{monthLabel}}</span> <span class=\"zcat-datepicker-nav-btn\" onclick=\"{{action('nextMonth')}}\"> <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </span> </div> <!-- Day Names --> <div class=\"zcat-datepicker-weekdays\"> <span class=\"zcat-datepicker-weekday\">Su</span> <span class=\"zcat-datepicker-weekday\">Mo</span> <span class=\"zcat-datepicker-weekday\">Tu</span> <span class=\"zcat-datepicker-weekday\">We</span> <span class=\"zcat-datepicker-weekday\">Th</span> <span class=\"zcat-datepicker-weekday\">Fr</span> <span class=\"zcat-datepicker-weekday\">Sa</span> </div> <!-- Calendar Grid --> <div class=\"zcat-datepicker-grid\"> <template items=\"{{calendarDays}}\" item=\"dayObj\" index=\"dayIdx\" is=\"for\" _new=\"true\"> <span class=\"zcat-datepicker-day {{expHandlers(dayObj.current,'?:','','other-month')}} {{expHandlers(dayObj.disabled,'?:','disabled','')}} {{expHandlers(dayObj.selected,'?:','selected','')}} {{expHandlers(dayObj.today,'?:','today','')}}\" onclick=\"{{action('selectDay',dayObj)}}\"> {{dayObj.day}} </span> </template> </div> <!-- Time Picker --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.showTime}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-datepicker-time\"> <span class=\"zcat-datepicker-time-label\">Time</span> <div class=\"zcat-datepicker-time-inputs\"> <lyte-input class=\"zcat-datepicker-time-input\" lt-prop-value=\"{{hours}}\" lt-prop-maxlength=\"2\" lt-prop-appearance=\"box\" lt-prop-auto-update=\"true\" on-value-change=\"{{method('onHoursChange')}}\"></lyte-input> <span class=\"zcat-datepicker-time-sep\">:</span> <lyte-input class=\"zcat-datepicker-time-input\" lt-prop-value=\"{{minutes}}\" lt-prop-maxlength=\"2\" lt-prop-appearance=\"box\" lt-prop-auto-update=\"true\" on-value-change=\"{{method('onMinutesChange')}}\"></lyte-input> <span class=\"zcat-datepicker-time-sep\">:</span> <lyte-input class=\"zcat-datepicker-time-input\" lt-prop-value=\"{{seconds}}\" lt-prop-maxlength=\"2\" lt-prop-appearance=\"box\" lt-prop-auto-update=\"true\" on-value-change=\"{{method('onSecondsChange')}}\"></lyte-input> <span class=\"zcat-datepicker-ampm\" onclick=\"{{action('toggleAmPm')}}\">{{ampm}}</span> </div> </div> </template></template> <!-- Footer --> <div class=\"zcat-datepicker-footer\"> <span class=\"zcat-datepicker-footer-link\" onclick=\"{{action('resetDate')}}\">Reset</span> <div class=\"zcat-datepicker-footer-right\"> <lyte-button class=\"zcat-datepicker-btn-cancel\" onclick=\"{{action('closePicker')}}\"> <template is=\"registerYield\" yield-name=\"text\">Close</template> </lyte-button> <lyte-button class=\"zcat-datepicker-btn-apply\" onclick=\"{{action('applyDate')}}\"> <template is=\"registerYield\" yield-name=\"text\">Apply</template> </lyte-button> </div> </div> </div> <!-- Error Message --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.errorMessage}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-datepicker-error-msg\">{{zcatProp.errorMessage}}</div> </template></template> </div> </template><style>/* ==============================\n   ZCAT Datepicker Component\n   ============================== */\n\nzcat-datepicker * { box-sizing: border-box; }\n\n.zcat-datepicker-wrapper {\n  position: relative;\n  display: inline-block;\n  width: 260px;\n  font-family: var(--zcat-font-family-primary);\n}\n\n/* Label */\n.zcat-datepicker-label-row {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  margin-bottom: 6px;\n}\n.zcat-datepicker-label {\n  font-size: 13px;\n  font-weight: 500;\n  color: var(--zcat-inputField-text-label);\n}\n.zcat-datepicker-optional {\n  font-size: 12px;\n  color: var(--zcat-inputField-text-optional);\n}\n\n/* Input trigger */\n.zcat-datepicker-input-wrap {\n  position: relative;\n  display: flex;\n  align-items: center;\n  cursor: pointer;\n}\n.zcat-datepicker-cal-icon {\n  position: absolute;\n  left: 8px;\n  top: 50%;\n  transform: translateY(-50%);\n  pointer-events: none;\n  z-index: 1;\n  color: var(--zcat-inputField-icon-placeholder);\n}\n.zcat-datepicker-input {\n  width: 100%;\n  height: 36px;\n  padding: 0 28px 0 30px;\n  font-size: 14px;\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-inputField-text-active);\n  background: var(--zcat-inputField-bg-default);\n  border: 1px solid var(--zcat-inputField-border-default);\n  border-radius: 6px;\n  outline: none;\n  cursor: pointer;\n  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;\n  line-height: 20px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.zcat-datepicker-input::placeholder { color: var(--zcat-inputField-text-placeholder); }\n.zcat-datepicker-input:hover,\n.zcat-datepicker-input-wrap:hover .zcat-datepicker-input {\n  border-color: var(--zcat-inputField-border-hover);\n}\n.zcat-datepicker-arrow {\n  position: absolute;\n  right: 8px;\n  top: 50%;\n  transform: translateY(-50%);\n  pointer-events: none;\n  width: 16px;\n  height: 16px;\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\");\n  background-size: 16px;\n  background-repeat: no-repeat;\n  background-position: center;\n  transition: transform 0.15s ease;\n}\n\n/* Sizes */\n.zcat-datepicker-sm .zcat-datepicker-input {\n  height: 28px;\n  font-size: 13px;\n  padding: 2px 22px 2px 26px;\n  line-height: 18px;\n}\n.zcat-datepicker-sm .zcat-datepicker-arrow { width: 14px; height: 14px; background-size: 14px; }\n.zcat-datepicker-exsm .zcat-datepicker-input {\n  height: 24px;\n  font-size: 12px;\n  padding: 2px 22px 2px 22px;\n  border-radius: 6px;\n  line-height: 16px;\n}\n.zcat-datepicker-exsm .zcat-datepicker-arrow { width: 12px; height: 12px; background-size: 12px; right: 6px; }\n\n/* === Popover / Calendar Panel === */\n.zcat-datepicker-popover {\n  position: absolute;\n  top: calc(100% + 2px);\n  left: 0;\n  width: 280px;\n  background: var(--zcat-body-bg);\n  border: 1px solid var(--zcat-body-border);\n  border-radius: 6px;\n  box-shadow: 0px 4px 14px -4px rgba(0, 0, 0, 0.12);\n  z-index: 1000;\n  display: none;\n  overflow: hidden;\n  animation: zcatDatepickerFadeIn 0.12s ease-out;\n}\n.zcat-datepicker-popover.open {\n  display: block;\n}\n@keyframes zcatDatepickerFadeIn {\n  from { opacity: 0; transform: translateY(-4px); }\n  to { opacity: 1; transform: translateY(0); }\n}\n\n/* Calendar header */\n.zcat-datepicker-cal-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 12px 12px 8px;\n}\n.zcat-datepicker-nav-btn {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 6px;\n  cursor: pointer;\n  color: var(--zcat-body-text-secondary);\n  transition: background 0.12s;\n}\n.zcat-datepicker-nav-btn:hover {\n  background: var(--zcat-inputField-bg-hover);\n}\n.zcat-datepicker-month-label {\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--zcat-body-text-primary);\n}\n\n/* Weekday names */\n.zcat-datepicker-weekdays {\n  display: grid;\n  grid-template-columns: repeat(7, 1fr);\n  padding: 4px 12px;\n}\n.zcat-datepicker-weekday {\n  text-align: center;\n  font-size: 11px;\n  font-weight: 600;\n  color: var(--zcat-body-text-tertiary, var(--zcat-inputField-text-placeholder));\n  padding: 4px 0;\n}\n\n/* Calendar grid */\n.zcat-datepicker-grid {\n  display: grid;\n  grid-template-columns: repeat(7, 1fr);\n  padding: 0 12px 8px;\n  gap: 2px;\n}\n.zcat-datepicker-day {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  aspect-ratio: 1;\n  font-size: 13px;\n  border-radius: 50%;\n  cursor: pointer;\n  color: var(--zcat-body-text-primary);\n  transition: background 0.12s, color 0.12s;\n}\n.zcat-datepicker-day:hover {\n  background: var(--zcat-inputField-bg-hover);\n}\n.zcat-datepicker-day.other-month {\n  color: var(--zcat-inputField-text-placeholder);\n  cursor: default;\n}\n.zcat-datepicker-day.disabled {\n  opacity: 0.35;\n  cursor: not-allowed;\n}\n.zcat-datepicker-day.today {\n  font-weight: 700;\n  color: var(--zcat-primary-1);\n}\n.zcat-datepicker-day.selected {\n  background: var(--zcat-primary-1) !important;\n  color: #fff !important;\n  font-weight: 600;\n}\n\n/* === Time picker === */\n.zcat-datepicker-time {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 8px 12px;\n  border-top: 1px solid var(--zcat-body-border);\n}\n.zcat-datepicker-time-label {\n  font-size: 12px;\n  font-weight: 500;\n  color: var(--zcat-inputField-text-label);\n  white-space: nowrap;\n}\n.zcat-datepicker-time-inputs {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n.zcat-datepicker-time-input {\n  width: 30px;\n  height: 28px;\n  text-align: center;\n  font-size: 13px;\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-body-text-primary);\n  background: var(--zcat-inputField-bg-default);\n  border: 1px solid var(--zcat-inputField-border-default);\n  border-radius: 4px;\n  outline: none;\n}\n.zcat-datepicker-time-input:focus {\n  border-color: var(--zcat-inputField-border-active);\n}\n.zcat-datepicker-time-sep {\n  font-size: 13px;\n  color: var(--zcat-body-text-secondary);\n  padding: 0 1px;\n}\n.zcat-datepicker-ampm {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: 28px;\n  padding: 0 8px;\n  font-size: 12px;\n  font-weight: 600;\n  color: var(--zcat-primary-1);\n  background: var(--zcat-inputField-bg-hover);\n  border-radius: 4px;\n  cursor: pointer;\n  user-select: none;\n  margin-left: 4px;\n}\n.zcat-datepicker-ampm:hover {\n  background: var(--zcat-primary-5, rgba(0, 100, 255, 0.08));\n}\n\n/* === Footer === */\n.zcat-datepicker-footer {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 8px 12px;\n  border-top: 1px solid var(--zcat-body-border);\n}\n.zcat-datepicker-footer-link {\n  font-size: 13px;\n  color: var(--zcat-btn-fill-bg-primary-default);\n  cursor: pointer;\n  font-weight: 500;\n}\n.zcat-datepicker-footer-link:hover {\n  text-decoration: underline;\n}\n.zcat-datepicker-footer-right {\n  display: flex;\n  gap: 6px;\n}\n.zcat-datepicker-btn-cancel {\n  padding: 4px 12px;\n  font-size: 13px;\n  font-weight: 500;\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-body-text-secondary);\n  background: transparent;\n  border: 1px solid var(--zcat-inputField-border-default);\n  border-radius: 6px;\n  cursor: pointer;\n  transition: background 0.12s;\n}\n.zcat-datepicker-btn-cancel:hover {\n  background: var(--zcat-inputField-bg-hover);\n}\n.zcat-datepicker-btn-apply {\n  padding: 4px 12px;\n  font-size: 13px;\n  font-weight: 500;\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-btn-fill-text-default);\n  background: var(--zcat-btn-fill-bg-primary-default);\n  border: none;\n  border-radius: 6px;\n  cursor: pointer;\n  transition: background 0.12s;\n}\n.zcat-datepicker-btn-apply:hover {\n  background: var(--zcat-btn-fill-bg-primary-hover);\n}\n\n/* === Disabled === */\n.zcat-datepicker-disabled .zcat-datepicker-input {\n  background: var(--zcat-inputField-bg-disabled) !important;\n  border-color: var(--zcat-inputField-border-disabled) !important;\n  color: var(--zcat-inputField-text-disabled) !important;\n  cursor: not-allowed;\n  box-shadow: none;\n}\n.zcat-datepicker-disabled .zcat-datepicker-input-wrap { cursor: not-allowed; }\n.zcat-datepicker-disabled .zcat-datepicker-label { color: var(--zcat-inputField-text-disabled); }\n.zcat-datepicker-disabled .zcat-datepicker-arrow { opacity: 0.4; }\n\n/* === Error === */\n.zcat-datepicker-error .zcat-datepicker-input {\n  background: var(--zcat-inputField-bg-error) !important;\n  border-color: var(--zcat-inputField-border-error) !important;\n}\n.zcat-datepicker-error-msg {\n  position: relative;\n  margin-top: 2px;\n  font-size: 12px;\n  color: var(--zcat-inputField-text-error);\n  line-height: 16px;\n  font-family: var(--zcat-font-family-primary);\n}\n</style>";;
-ZcatDatepicker._dynamicNodes = [{"t":"a","p":[1]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,1,0],"cn":"lc_id_0"},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":9,"sibl":[8]},{"t":"a","p":[1,7]},{"t":"a","p":[1,7,1]},{"t":"cD","p":[1,7,1],"in":8,"sibl":[7]},{"t":"a","p":[1,7,3],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":["zcatProp.width","'?:'",null,"''"]}}}},{"t":"cD","p":[1,7,3],"in":7,"sibl":[6]},{"t":"a","p":[1,11]},{"t":"a","p":[1,11,3,1]},{"t":"tX","p":[1,11,3,3,0]},{"t":"a","p":[1,11,3,5]},{"t":"a","p":[1,11,11,1]},{"t":"f","p":[1,11,11,1],"dN":[{"t":"a","p":[1]},{"t":"tX","p":[1,1]}],"in":6,"sibl":[5]},{"t":"s","p":[1,11,15],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[1,3,1],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[1,3,5],"cn":"lc_id_0"},{"t":"cD","p":[1,3,5],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[1,3,9],"cn":"lc_id_0"},{"t":"cD","p":[1,3,9],"in":0,"cn":"lc_id_0"},{"t":"a","p":[1,3,11],"cn":"lc_id_0"},{"t":"tX","p":[1,3,11,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[2,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":5,"sibl":[4]},{"t":"a","p":[1,11,19,1]},{"t":"a","p":[1,11,19,3,1]},{"t":"r","p":[1,11,19,3,1,1],"dN":[],"in":4,"sibl":[3]},{"t":"cD","p":[1,11,19,3,1],"in":3,"sibl":[2]},{"t":"a","p":[1,11,19,3,3]},{"t":"r","p":[1,11,19,3,3,1],"dN":[],"in":2,"sibl":[1]},{"t":"cD","p":[1,11,19,3,3],"in":1,"sibl":[0]},{"t":"s","p":[1,15],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":0},{"type":"dc","trans":true,"hc":true,"p":[8,7,5,3,1]}];;
-
-ZcatDatepicker._observedAttributes = [
-  "self",
-  "zcatProp",
-  "isOpen",
-  "selectedDate",
-  "displayValue",
-  "viewYear",
-  "viewMonth",
-  "calendarDays",
-  "monthLabel",
-  "hours",
-  "minutes",
-  "seconds",
-  "ampm",
-  "tempDate"
-];
-
+ZcatDatepicker._template = "<template tag-name=\"zcat-datepicker\"> <lyte-popover id=\"simpleDateTimePickerPopover\" lt-prop-content-padding=\"0px\" lt-prop-show-close-button=\"false\" lt-prop-wrapper-class=\"calendarPopover\" lt-prop-origin-elem=\"#calendarPopoverInput\" lt-prop-type=\"box\" lt-prop-close-on-escape=\"false\"> <template is=\"registerYield\" yield-name=\"popover\"> <lyte-popover-content style=\"padding: 0px\"> <h1 class=\"zcat-text-14 zcat-color-dark1 zcat-pt-10 zcat-pl-20\"> Select Date </h1> <lyte-calendar id=\"simpleDatePicker\" lt-prop-header-type=\"dropdown\" lt-prop-current-date=\"{{lbind(selectedDate)}}\" lt-prop-format=\"DD/MM/YYYY\" lt-prop-month-header-format=\"MMM YYYY\" lt-prop-fill-rows=\"false\"></lyte-calendar> <h1 class=\"zcat-text-14 zcat-color-dark1 zcat-pl-20 zcat-pb-10\"> Select Time </h1> <lyte-time-picker style=\"padding: 0 0 20px 20px\" lt-prop-value=\"{{lbind(selectedTime)}}\" lt-prop-time-format=\"hh:mm:ss A\" lt-prop-button=\"[{&quot;text&quot;:&quot;Apply&quot;,&quot;purpose&quot;:&quot;ok&quot;}]\" lt-prop-aria-attributes=\"{&quot;input&quot;:&quot;Time Picker&quot;}\" lt-prop-id=\"simpleTimePicker\" lt-prop-interval=\"{&quot;hour&quot;:1,&quot;minute&quot;:1}\"></lyte-time-picker> <div class=\"zcat-calendar-footer\"> <lyte-button lt-prop-size=\"extra-small\" lt-prop-appearance=\"\" lt-prop-class=\"lyteTertiaryBtn\" onclick=\"{{action('resetCalendarData')}}\"> <template is=\"registerYield\" yield-name=\"text\">Reset</template> </lyte-button> <div class=\"zcat-dF zcat-align-center zcat-gap-10\"> <lyte-button lt-prop-size=\"extra-small\" lt-prop-appearance=\"secondary\" onclick=\"{{action('closeCalendar')}}\"> <template is=\"registerYield\" yield-name=\"text\">Close</template> </lyte-button> <lyte-button lt-prop-size=\"extra-small\" lt-prop-appearance=\"primary\" onclick=\"{{action('applyCalendarData')}}\"> <template is=\"registerYield\" yield-name=\"text\">Apply</template> </lyte-button> </div> </div> </lyte-popover-content> </template> </lyte-popover> <lyte-input id=\"calendarPopoverInput\" class=\"date-input-field\" lt-prop-width=\"300px\" lt-prop-appearance=\"box\" lt-prop-label=\"Select Date and Time\" lt-prop-placeholder=\"DD/MM/YYYY\" lt-prop-readonly=\"true\" lt-prop-value=\"{{dateTimePickerValue}}\" onclick=\"{{action('openCalendar')}}\"></lyte-input> </template>";;
+ZcatDatepicker._dynamicNodes = [{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1,3]},{"t":"cD","p":[1,3],"in":8,"sibl":[7]},{"t":"a","p":[1,7]},{"t":"cD","p":[1,7],"in":7,"sibl":[6]},{"t":"a","p":[1,9,1]},{"t":"r","p":[1,9,1,1],"dN":[],"in":6,"sibl":[5]},{"t":"cD","p":[1,9,1],"in":5,"sibl":[4]},{"t":"a","p":[1,9,3,1]},{"t":"r","p":[1,9,3,1,1],"dN":[],"in":4,"sibl":[3]},{"t":"cD","p":[1,9,3,1],"in":3,"sibl":[2]},{"t":"a","p":[1,9,3,3]},{"t":"r","p":[1,9,3,3,1],"dN":[],"in":2,"sibl":[1]},{"t":"cD","p":[1,9,3,3],"in":1,"sibl":[0]},{"t":"cD","p":[1],"in":0}],"dc":[8,7,5,3,1,0],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"cD","p":[1],"in":1,"sibl":[0]},{"t":"a","p":[3]},{"t":"cD","p":[3],"in":0},{"type":"dc","trans":true,"hc":true,"p":[2,1,0]}];;
+ZcatDatepicker._observedAttributes = [];
 
 ZcatDatepicker.register("zcat-datepicker", {
-  hash: "ZcatDatepicker_2",
-  refHash: "C_zcat-app_app_0"
-});
+    hash: "ZcatDatepicker_4",
+    refHash: "C_zcat-app_app_0"
+}); 
 
+
+/***/ }),
+
+/***/ 70631464:
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@zoho/lyte-ui-component/components/javascript/lyte-time-picker.js ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "LyteTimePickerComponent": () => (/* binding */ LyteTimePickerComponent)
+/* harmony export */ });
+/* harmony import */ var _lyte_button_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lyte-button.js */ 31055274);
+/* harmony import */ var _slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../@slyte/core/index.js */ 60469700);
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../component.js */ 98708570);
+/* harmony import */ var _slyte_component_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../@slyte/component/index.js */ 93132498);
+/* harmony import */ var _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../lyte-dom/modules/lyte-dom-utils.js */ 52000102);
+/* harmony import */ var _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _plugins_lyte_moment_basic_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../plugins/lyte-moment-basic.js */ 5588936);
+/* harmony import */ var _plugins_lyte_moment_basic_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_plugins_lyte_moment_basic_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _plugins_lyte_moment_additional_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../plugins/lyte-moment-additional.js */ 32915219);
+/* harmony import */ var _plugins_lyte_moment_additional_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_plugins_lyte_moment_additional_js__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+
+
+/* @Slicer.otherframeworkStart */
+
+
+
+
+/*  @Slicer.otherframeworkEnd */
+
+
+
+class LyteTimePickerComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Component {
+    constructor() {
+        super();
+    }
+
+    init() {
+		var data = this.data,
+			value = data.ltPropValue,
+			timeFormat = data.ltPropTimeFormat,
+			id = "time_picker" + Date.now() + parseInt(Math.random() * 1000),
+			moment,
+			time_to;
+		switch (value) {
+			case "now": {
+				moment = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment();
+			}
+				break;
+			case "startOfDay": {
+				moment = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment().startOf('day');
+			}
+				break;
+			default: {
+				time_to = value;
+			}
+		}
+
+		if (moment) {
+			time_to = this.toOtherLang(moment, timeFormat);
+		} else if (time_to) {
+			time_to = this.toOtherLang(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(this.toEng(time_to, timeFormat), timeFormat), timeFormat);
+		}
+		this.setData("randId", id);
+		this.setData("ltPropValue", time_to);
+		data.ltPropValidateOn.init && this.validateRefresh();
+	}
+
+    data(arg1) {
+		return Object.assign(super.data({
+			ltPropValue: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "" }),
+			ltPropTimeFormat: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "hh:mm A" }),
+			ltPropStartTime: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: undefined }),
+			ltPropEndTime: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: undefined }),
+			ltPropButton: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("array", { default: [{ text: "Ok", purpose: "ok", properties: { appearance: "primary", ariaButton: {} } }] }),
+			ltPropInterval: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: {} }),
+			ltPropId: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "" }),
+			ltPropClass: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "" }),
+			ltPropName: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "" }),
+			ltPropPlaceholder: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "" }),
+			ltPropDisabled: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropReadonly: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropAllowDropdown: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropInline: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: true }),
+			ltPropBindToBody: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: true }),
+			ltPropBoundary: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: {} }),
+			ltPropI18n: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropConvertNumbers: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropConvertedValue: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "" }),
+			ltPropFreeze: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropAriaAttributes: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: { input: "Time Picker", icon: "Choose Time", hour: "Select Hour", minute: "Select Minute", second: "Select Second", meridiem: "Select Meridiem", message: "Selected Time" } }),
+			ltPropValidate: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropValidateType: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: { minmax: true, mandatory: true } }),
+			ltPropValidateOn: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: { blur: true, init: false } }),
+			ltPropValid: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: true }),
+			ltPropDropdownMinHeight: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("number"),
+			ltPropDropdown: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: true }),
+			ltPropCounter: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropAllowCounter: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropInputInterval: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: {} }),
+			ltPropInputIntervalSync: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: false }),
+			ltPropDropdownClass: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "" }),
+			ltPropDropdownAlignPosition: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", { default: "left" }),
+			ltPropPreventInvalid: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: true }),
+
+			hours: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("array", { default: [] }),
+			minutes: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("array", { default: [] }),
+			seconds: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("array", { default: [] }),
+			meridiems: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("array", { default: [] }),
+			minutesHide: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object"),
+			hoursHide: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object"),
+			secondsHide: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object"),
+			curFormat: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("number"),
+			randId: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string"),
+			inBoundary: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: true }),
+			dropdownRefresh: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("boolean", { default: true })
+		}), arg1);
+	}
+
+    static actions(arg1) {
+        return Object.assign(super.actions({
+
+			dropDownKeyDown: function (evt, _this) {
+				this.dropDownKeys(evt, _this)
+			},
+
+			inputKeyDown: function (evt, _this) {
+
+				if (this.getMethods("onBeforeInputKeydown") && this.executeMethod("onBeforeInputKeydown", evt, _this, this.$node) == false) {
+					evt.preventDefault();
+					return;
+				}
+
+				this.isValid() && this.inputKeys(evt);
+
+			},
+
+			inputFocus: function (focusIn) {
+				var $node = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node);
+				if (focusIn) {
+					this.inputClick();
+					$node.addClass('lyteTimePickerInputFocused');
+				} else {
+					if (this.data.ltPropValidateOn.blur) {
+						this.validateRefresh();
+					}
+					$node.removeClass('lyteTimePickerInputFocused');
+				}
+			},
+
+			dropDownValueFocus: function (evt, focusIn) {
+				var item = evt.target,
+					itemObj = this.data[item.getAttribute("data-unit")][item.getAttribute("data-index")],
+					setVal;
+				if (focusIn && itemObj.disabled == "false") {
+					setVal = itemObj.class + " lyteTimePickerItemFocused";
+				} else if (!focusIn) {
+					setVal = itemObj.class.replace(" lyteTimePickerItemFocused", "");
+				}
+				setVal && this.alterObjUtils(itemObj, ["class"], [setVal]);
+			},
+
+			inputVal: function (evt) {
+				this.setData("ltPropValue", evt.target.value);
+			},
+
+			customButtonFocus: function (evt, _this) {
+				this.getMethods("onCustomButtonFocus") && this.executeMethod("onCustomButtonFocus", evt, _this, this.$node);
+			},
+
+			counterKeys: function (type, manual) {
+				this.counterVal(type, manual);
+			}
+
+		}), arg1);
+	}
+
+    didConnect() {
+
+		var $node = this.$node,
+			data = this.data;
+
+		this.dropDown = $node.getElementsByTagName("lyte-time-picker-dropdown")[0];
+		this.inputField = $node.querySelector(".lyteTimePickerField");
+		this.input = $node.querySelector(".lyteTimePickerInput");
+
+		$node.open = function () {
+			if (!data.ltPropDropdown || (data.ltPropReadonly && !data.ltPropAllowDropdown) || data.ltPropDisabled) {
+				return;
+			}
+			if (_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.dropDown).hasClass("lyteTimePickerDropdownNone")) {
+				Array.from(document.getElementsByTagName('lyte-time-picker')).forEach(item => {
+					item.close();
+				});
+				this.dropDownButtonClick();
+			}
+		}.bind(this);
+
+		$node.close = function () {
+			var inBound = data.inBoundary;
+			if (data.ltPropDropdown && !_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.dropDown).hasClass("lyteTimePickerDropdownNone") || !inBound) {
+				this.hideDropDownVal(true);
+				if (!inBound) {
+					this.setData("inBoundary", true);
+				}
+			}
+		}.bind(this);
+
+		$node.validate = this.validateRefresh.bind(this);
+
+	}
+
+    didDestroy() {
+		var data = this.data;
+		if (!data.ltPropInline) {
+			if (data.ltPropBindToBody && this.dropDown) {
+				this.dropDown.remove();
+				delete this.dropDown.parent;
+				delete this.dropDown;
+			}
+		}
+	}
+
+    disableElem(data, _class) {
+		if (this.data[data]) {
+			_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node).addClass(_class);
+		} else {
+			_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node).removeClass(_class);
+		}
+	}
+
+    toOtherLang(moment, format) {
+		var i18n = this.data.ltPropI18n,
+			convertNumbers = this.data.ltPropConvertNumbers,
+			ns = i18n ? 'i18N' : "format";
+		return moment[ns](format, convertNumbers);
+	}
+
+    toEng(time, format) {
+		if (time) {
+			var data = this.data;
+			return _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(time, format, { i18n: data.ltPropI18n, number_conversion: data.ltPropConvertNumbers }).format(format);
+		}
+	}
+
+    alterObjUtils(obj, key, value) {
+		key.forEach((item, index) => {
+			(0,_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_6__.objectUtils)(obj, "add", item, value[index]);
+		});
+	}
+
+    setAriaTime(time) {
+		(this.data.ltPropButton || []).forEach(item => {
+			if (item.purpose == "ok") {
+				if (item.properties == undefined) {
+					this.alterObjUtils(item, ["properties"], [{}])
+				}
+				time = time ? (" " + time) : time;
+				this.alterObjUtils(item.properties, ["ariaButton"], [{ "aria-label": (this.data.ltPropAriaAttributes.message || "") + time }]);
+			}
+		})
+	}
+
+    refreshDropdown() {
+		["hours", "minutes", "seconds", "meridiems", "minutesHide", "hoursHide", "secondsHide", "curFormat"].forEach((unit, index) => {
+			this.setData(unit, index < 4 ? [] : undefined);
+		});
+		this.setData("dropdownRefresh", true);
+	}
+
+    hideDropDownVal(close, evt, buttonType, boundary) {
+		var button, beforeClass, onClass, noneClass, openClass, ariaExpand, freeze;
+		if (close) {
+			beforeClass = "onBeforeClose";
+			onClass = "onClose";
+			noneClass = "addClass";
+			openClass = "removeClass";
+			ariaExpand = false;
+			freeze == false;
+			_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.dropDown).removeClass("lyteDropdownSizeChange", "lyteDropdownTopSide");
+			this.data.ltPropValidateOn.blur && this.validateRefresh();
+		} else {
+			beforeClass = "onBeforeOpen";
+			onClass = "onOpen";
+			noneClass = "removeClass";
+			openClass = "addClass";
+			ariaExpand = true;
+			freeze = true;
+		}
+		if (this.getMethods(beforeClass) && this.executeMethod(beforeClass, evt, this.$node) == false) {
+			return;
+		}
+		_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.dropDown)[noneClass]("lyteTimePickerDropdownNone");
+		_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node)[openClass]("lyteTimePickerDropdownOpened");
+		button = this.$node.querySelector(".lytetimePickerButton");
+		if (buttonType == "ok" || document.activeElement == document.body) {
+			button.focus({ preventScroll: true });
+		};
+		button.setAttribute("aria-expanded", ariaExpand);
+		!boundary && this.setAriaTime("");
+		this.freezeLayer(freeze);
+		this.getMethods(onClass) && this.executeMethod(onClass, evt, this.$node);
+	}
+
+    getItemWithClass(dataUnit, _class) {
+		var data = this.data,
+			retVal;
+		data[dataUnit].every(item => {
+			if (item.class.includes(_class)) {
+				retVal = item;
+				return false;
+			}
+			return true;
+		})
+		return retVal;
+	}
+
+    blurItems(hideArr, _class) {
+		if (hideArr) {
+			var listElem = this.data[_class];
+			for (var i = 0; i < listElem.length && hideArr.length; i++) {
+				var curObj = listElem[i],
+					curInd = hideArr.indexOf(curObj.engVal);
+				if (curInd != -1) {
+					this.alterObjUtils(curObj, ["class", "disabled"], [curObj.class + " lyteTimePickerBlur", "true"]);
+					hideArr.splice(curInd, 1);
+				}
+			}
+		}
+	}
+
+    setDropVal(onlyInfo, evt) {//set drop val to input || ltPropValue
+		var data = this.data,
+			curSetVal = data.ltPropValue,
+			timeForm = data.ltPropTimeFormat,
+			moment = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment();
+		["hours", "minutes", "seconds", "meridiems"].forEach(item => {
+			var comp = this.getItemWithClass(item, "lyteTimePickerItemSelected"),
+				compVal;
+			if (comp) {
+				compVal = comp.engVal;
+				if (item == "meridiems") {
+					curSetVal = (compVal.toLowerCase() != moment.format("A").toLowerCase()) ? moment.add(12, "hours").format(timeForm) : curSetVal;
+				} else {
+					curSetVal = moment.set(item, parseInt(compVal)).format(timeForm);
+				}
+			}
+		});
+		curSetVal = this.toOtherLang(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(curSetVal, timeForm), timeForm);
+		if (onlyInfo) {
+			return curSetVal;
+		}
+		this.setData("ltPropValue", curSetVal);
+		_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().fastdom.mutate(function () {
+			this.hideDropDownVal(true, evt, "ok");
+		}.bind(this));
+	}
+
+    updDropVal(selected, unit, updUnit) {//updates values on refresh others in dropDown
+		if (this.dropDownChanges(selected, unit, undefined, "scroll")) {
+			return updUnit.length && this.setValuesManually(updUnit, false, "scroll") && false;
+		} else {
+			return false;
+		}
+	}
+
+    isValid(custFormat) {
+
+		var data = this.data,
+			invalid = true,
+			value = data.ltPropValue,
+			format = custFormat || data.ltPropTimeFormat,
+			moment = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(value, format, { i18n: data.ltPropI18n, number_conversion: data.ltPropConvertNumbers });
+		if (value && moment.validate() && (this.toOtherLang(moment, format) == value)) {
+			invalid = false;
+		}
+		return !invalid;
+
+	}
+
+    validateRefresh() {
+
+		var data = this.data,
+			errorMsg = data.ltPropValidateType,
+			val = data.ltPropValue,
+			validate = false;
+
+		if (!data.ltPropValidate) {
+			return;
+		}
+
+		validate = !!((errorMsg.mandatory || val) && ((errorMsg.minmax && val && !this.validateTimeInterval(val)) || !this.isValid()));
+		_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node)[validate ? 'addClass' : 'removeClass']("lyteTimePickerInvalidTime");
+		this.setData('ltPropValid', !validate);
+
+	}
+
+    validateTimeInterval(curTime, getInfo) {
+		var data = this.data,
+			curFormat = data.ltPropTimeFormat,
+			curTimeMoment = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(this.toEng(curTime, curFormat), curFormat),
+			startMoment = data.ltPropStartTime && _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(this.toEng(data.ltPropStartTime, curFormat), curFormat),
+			endMoment = data.ltPropEndTime && _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(this.toEng(data.ltPropEndTime, curFormat), curFormat),
+			startTime = startMoment && startMoment.fromNow(curTimeMoment),
+			endTime = endMoment && endMoment.fromNow(curTimeMoment),
+			ret;
+		if (startMoment && endMoment && startMoment.fromNow(endMoment).past) {
+			if ((!startTime.past || startTime.value == 0) || (endTime.past || endTime.value == 0)) {
+				ret = true;
+			} else if (getInfo) {
+				ret = data.ltPropStartTime;
+			}
+		} else {
+			if ((startTime ? !startTime.past : true) && (endTime ? (endTime.past || endTime.value == 0) : true)) {
+				ret = true;
+			} else if (getInfo) {
+				var retVal;
+				if (startTime && startTime.past) {
+					retVal = data.ltPropStartTime;
+				} else if (endTime && !endTime.past) {
+					retVal = data.ltPropEndTime;
+				}
+				ret = retVal;
+			}
+		}
+		return ret;
+	}
+
+    inputKeys(evt, fromCounter) {
+		var activeElement = document.activeElement,
+			__this = this,
+			data = __this.data,
+			inputElem = this.input,
+			curFormat = data.ltPropTimeFormat,
+			interval = data.ltPropInputInterval,
+			curTime = this.toEng(data.ltPropValue, curFormat),
+			moment = curTime && curFormat && _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(curTime, curFormat),
+			split = moment && moment.parseFormat(curFormat),
+			selectionStart = inputElem.selectionStart,
+			selectionEnd = inputElem.selectionEnd,
+			isButton = activeElement.closest(".lytetimePickerButton"),
+			isCounterButton = activeElement.closest(".lytetimePickerCounterButtons"),
+			keycode = evt.keyCode, key = evt.key, meta = (evt.ctrlKey || evt.metaKey),
+			nextSelectionStart, nextNotAvail, prevSelectionStart, prevNotAvil, selectedFormat,
+			selectedVal, meriAvail, updatedTime, curFormatType, preventAdj, hh, formatLimit, prvEvt = false,
+			getCustomTime = function (value, invalid) {
+				var time = invalid ? data.ltPropValue : curTime;
+				return time.slice(0, selectionStart) + value + time.slice(selectionEnd, time.length);
+			},
+			getUpdVal = function (func, val, nearest) {
+				var tempUpdatedTime, chng = 1, intervalRet;
+				if (func == "set") {
+					tempUpdatedTime = getCustomTime(val, false);
+					if (!_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(tempUpdatedTime, curFormat).validate()) {
+						return false;
+					}
+					tempUpdatedTime = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(tempUpdatedTime, curFormat).format(curFormat);
+				} else if (func == "fullset") {
+					tempUpdatedTime = val;
+				} else {
+					if (interval) {
+						var curInterval = interval[selectedFormat.slice(0, -1)];
+						nearest = true;
+						if (curInterval) {
+							if (data.ltPropInputIntervalSync) {
+								var limitControl = function () {
+									if (chng > formatLimit) {
+										chng = formatLimit;
+										return true;
+									}
+								},
+									inc = func == "add";
+								//finds diff for nearest multiple
+								chng = Math.abs(((Math[inc ? 'floor' : 'ceil'](selectedVal / curInterval) + (inc ? 1 : -1)) * curInterval) - selectedVal);
+								if (inc) {//after limit goes to start
+									if (parseInt(selectedVal) + chng >= (hh ? 13 : formatLimit)) {
+										chng = (hh && parseInt(selectedVal) == 12) ? curInterval : formatLimit - selectedVal;
+									}
+								} else {//before limit goes to end
+									if (!limitControl() && (selectedVal - chng < 0)) {
+										chng = parseInt(selectedVal) + Math.abs(((Math.ceil(formatLimit / curInterval) - 1) * curInterval) - formatLimit);
+									}
+								}
+								limitControl();
+							} else {
+								chng = curInterval;
+							}
+						}
+					}
+					tempUpdatedTime = selectedFormat && moment[func](meriAvail ? 12 : chng, meriAvail ? "hours" : selectedFormat).format(curFormat)
+				}
+				intervalRet = __this.validateTimeInterval(tempUpdatedTime, nearest);
+				if (intervalRet == true) {
+					updatedTime = tempUpdatedTime;
+					return true;
+				} else {
+					if (nearest) {
+						intervalRet = __this.toEng(intervalRet, curFormat);
+						if (!getUpdVal("set", intervalRet[selectionStart] + intervalRet[selectionEnd - 1])) {
+							getUpdVal("fullset", intervalRet);
+						}
+					}
+					return false;
+				}
+			};
+
+		if ((data.ltPropReadonly && (!(fromCounter && data.ltPropAllowCounter) && [38, 40, 65, 80].includes(keycode))) || (isCounterButton && ![' ', 'Enter'].includes(key))) {
+			return;
+		}
+
+		if (!isButton && (selectionStart == undefined || selectionStart == selectionEnd)) {
+			selectionEnd = (selectionStart = this.fixSelection(selectionEnd, true).index) + 2;
+			if ([37, 39, 9].includes(keycode)) {
+				preventAdj = true;
+				evt.preventDefault();
+			}
+		}
+
+		for (var i = 0; split && (i < split.length); i++) {
+			if (selectionStart == split[i].index && selectionEnd == (split[i].index + 2)) {
+				curFormatType = split[i].format.val;
+				selectedVal = moment.format(curFormatType);
+				selectedFormat = split[i].format.type + "s";
+				meriAvail = selectedFormat == "meridians";
+				if (split[i + 1]) {
+					nextSelectionStart = split[i + 1].index;
+				} else {
+					nextSelectionStart = split[0].index;
+					nextNotAvail = true;
+				}
+				if (split[i - 1]) {
+					prevSelectionStart = split[i - 1].index;
+				} else {
+					prevNotAvil = true;
+					prevSelectionStart = split[split.length - 1].index;
+				}
+				break;
+			}
+		}
+
+		hh = curFormatType == 'hh';
+		formatLimit = ((curFormatType == 'mm' || curFormatType == 'ss') && 60) || (hh && 12) || (curFormatType == 'HH' && 24);
+
+		if (!preventAdj) {
+			switch (key) {
+				case 'ArrowUp': {
+					prvEvt = true;
+					getUpdVal("add");
+					break
+				}
+				case 'ArrowDown': {
+					prvEvt = true;
+					getUpdVal("subtract");
+					break
+				}
+				case 'ArrowRight': {
+					prvEvt = true;
+					selectionStart = nextSelectionStart;
+					selectionEnd = nextSelectionStart + 2;
+					break;
+				}
+				case 'ArrowLeft': {
+					prvEvt = true;
+					selectionStart = prevSelectionStart;
+					selectionEnd = prevSelectionStart + 2;
+					break;
+				}
+				// case 8: {
+				// 	prvEvt = true;
+				// 	this.setData("subValueAdded", true);
+				// 	this.setData("ltPropValue", getCustomTime(curFormatType == "A" ? "aa" : curFormatType, true));
+				// 	break;
+				// }
+				case 'Tab': {
+					if (evt.shiftKey) {
+						if (isButton) {
+							var cur = split[split.length - 1];
+							prvEvt = true;
+							inputElem.focus();
+							selectionStart = cur.index;
+							selectionEnd = cur.index + 2;
+						} else if (prevNotAvil) {
+							return;
+						} else {
+							prvEvt = true;
+							selectionStart = prevSelectionStart;
+							selectionEnd = prevSelectionStart + 2;
+						}
+					} else {
+						if (isButton || nextNotAvail) {//isbutton //input to button
+							return;
+						} else {//on input, has next input
+							prvEvt = true;
+							selectionStart = nextSelectionStart;
+							selectionEnd = nextSelectionStart + 2;
+						}
+					}
+					break;
+				}
+				case ' ':
+				case 'Enter': {
+					if (isButton) {
+						return;
+					} else if (isCounterButton) {
+						var unitInd = {}, selInd;
+						split.forEach(function (item) {
+							unitInd[item.format.val] = item.index;
+						});
+						selInd = unitInd.ss ? unitInd.ss : unitInd.mm ? unitInd.mm : unitInd.hh ? unitInd.hh : unitInd.A ? unitInd.A : unitInd.a;
+						if (selInd) {
+							inputElem.setSelectionRange(selInd, selInd + 2);
+							inputElem.focus();
+							this.inputKeys({ key: activeElement.closest(".lytetimePickerIncButton") ? 'ArrowUp' : 'ArrowDown', preventDefault: function () { } }, true);
+							activeElement.focus();
+						}
+						prvEvt = true;
+					}
+					break;
+				}
+				case 'a':
+				case 'p': {
+					if (!meta && meriAvail) {
+						var proc = keycode == 65 ? selectedVal != "AM" : selectedVal != "PM";
+						proc && getUpdVal("add");
+						prvEvt = true;
+					}
+					break;
+				}
+				case 'Home':
+				case 'End': {
+					prvEvt = true;
+					if (curFormatType == 'A' || curFormatType == 'a') {
+						getUpdVal("add");
+					} else {
+						getUpdVal("set", key == 'Home' ? (hh ? '12' : '00') : formatLimit - 1, true);
+					}
+				}
+			}
+		}
+		if (!data.ltPropReadonly && ((keycode >= 48 && keycode <= 57) || (keycode >= 96 && keycode <= 105))) {
+			if (!getUpdVal("set", selectedVal[1] + key)) {
+				if (!getUpdVal("set", selectedVal[0] + key)) {
+					getUpdVal("set", 0 + key)
+				}
+			}
+			prvEvt = true;
+		}
+
+		if (data.ltPropPreventInvalid && !prvEvt && this.isValid() && (/^[0-9]$/.test(key) || !(meta || [8, 9, 13, 27, 37, 39, 46, 36, 35].includes(keycode)))) {
+			prvEvt = true;
+		}
+
+		prvEvt && evt.preventDefault();
+
+		updatedTime && this.setData("ltPropValue", this.toOtherLang(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(updatedTime, curFormat), curFormat));
+
+		inputElem.setSelectionRange(selectionStart, selectionEnd);
+	}
+
+    dropDownKeys(evt, dropDown) {
+		if (!_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(dropDown).hasClass("lyteTimePickerDropdownNone")) {
+			var selectedItem = evt.target,
+				button = selectedItem.closest(".lyteTimePickerDropdownButton"),
+				availableUnits = ["lyteTimePickerMeridiem", "lyteTimePickerHour", "lyteTimePickerMinute", "lyteTimePickerSecond"],
+				setManArr = ["meridiems", "hours", "minutes", "seconds"],
+				key = evt.key,
+				data = this.data,
+				selectedItemClass,
+				curClassInd,
+				setVertCorresValue = function (corres, atmost, onlyInfo) {
+					var sib = selectedItem[corres];
+					while (sib != selectedItem && !button) {
+						if (!sib || sib && !_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(sib).hasClass(selectedItemClass)) {
+							if (onlyInfo) {
+								return true;
+							}
+							sib = selectedItem.parentNode[atmost];
+						}
+						if (_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(sib).hasClass("lyteTimePickerBlur")) {
+							sib = sib[corres];
+						} else {
+							evt.preventDefault();
+							sib.focus();
+							break;
+						}
+					}
+				},
+				setHoriCorresValue = function (key, onlyInfo) {
+					var corresClassInd,
+						checkValid = function (value) {
+							corresClassInd = (key == 'ArrowRight') ? ((value + 1) < 4 ? (value + 1) : 0) : ((value - 1) >= 0 ? (value - 1) : 3);
+							if (onlyInfo && (key == 'ArrowRight' ? corresClassInd == 1 : corresClassInd == 0)) {// see availableUnits array // in here 1 is start and 0 is end 
+								return true;
+							}
+						};
+					if (checkValid(curClassInd)) {
+						return true;
+					}
+					while (availableUnits[corresClassInd] || corresClassInd != curClassInd) {//available || end the loop
+						var corres = dropDown.querySelector(".lyteTimePickerItemSelected." + availableUnits[corresClassInd]);
+						if (corres) {
+							evt.preventDefault();
+							this.moveTop(dropDown.querySelector(".lyteTimePickerItemSelected." + availableUnits[curClassInd]));
+							this.moveTop(corres);
+							corres.focus();
+							break;
+						} else {
+							if (checkValid(corresClassInd)) {
+								return true;
+							}
+						}
+					}
+				}.bind(this),
+				setTabCorresVal = function (corres, atmost, key) {
+					// if (button || setVertCorresValue(corres, atmost, true)) {
+					if (button || setHoriCorresValue(key, true)) {
+						var focusButton;
+						if (!button) {
+							focusButton = dropDown.querySelector(".lyteTimePickerDropdownButton")[atmost];
+						} else {
+							focusButton = selectedItem.closest(".lyteTimePickerDropdownButtonItem")[corres];
+							if (!focusButton) {
+								curClassInd = (key == 'ArrowLeft') ? 1 : 0;
+								setHoriCorresValue(key);
+							}
+						}
+						if (focusButton) {
+							focusButton.focus();
+						}
+					}
+					// }
+				}.bind(this),
+				nearestAvail = function (parent, toStart) {
+					var ret;
+					if ((toStart && data.ltPropStartTime) || (!toStart && data.ltPropEndTime)) {
+						var arr = this.data[parent.getAttribute('data-unit')],
+							start = 0,
+							end = arr.length,
+							chng = 1;
+						(!toStart) && (start = end - 1, end = 0, chng = -1);
+						while (toStart ? start < end : end <= start) {
+							if (arr[start].disabled == 'false') {
+								ret = start;
+								break;
+							}
+							start += chng;
+						}
+					}
+					return parent.children[ret];
+				};
+
+			availableUnits.forEach((item, index) => {
+				if (_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(selectedItem).hasClass(item)) {
+					selectedItemClass = item;
+					curClassInd = index;
+				}
+			});
+
+			if (this.getMethods("onBeforeDropdownKeydown") && this.executeMethod("onBeforeDropdownKeydown", evt, dropDown, this.$node) == false) {
+				evt.preventDefault();
+				return;
+			}
+
+			switch (key) {
+				case 'ArrowDown': {
+					setVertCorresValue("nextElementSibling", "firstElementChild");
+					break;
+				}
+				case 'ArrowUp': {
+					setVertCorresValue("previousElementSibling", "lastElementChild");
+					break;
+				}
+				case 'ArrowRight': {
+					setHoriCorresValue('ArrowRight');
+					break;
+				}
+				case 'ArrowLeft': {
+					setHoriCorresValue('ArrowLeft');
+					break;
+				}
+				case 'Enter':
+				case ' ': {
+					if (!button) {
+						var selectedUnit = setManArr[curClassInd];
+						this.updDropVal(this.data[selectedUnit][selectedItem.getAttribute("data-index")], selectedUnit, setManArr.slice(curClassInd + 1, setManArr.length));
+						if (setHoriCorresValue('ArrowRight', true)) {//close drop on last
+							evt.preventDefault();
+							this.setDropVal(false, evt);
+						};
+					}
+					break;
+				}
+				case 'Tab': {
+					evt.preventDefault();
+					if (evt.shiftKey) {
+						setTabCorresVal("previousElementSibling", "lastElementChild", 'ArrowLeft');
+					} else {
+						setTabCorresVal("nextElementSibling", "firstElementChild", 'ArrowRight');
+					}
+					break;
+				}
+				case 'Escape': {
+					this.hideDropDownVal(true, evt, "ok");
+					break;
+				}
+				case 'End':
+				case 'Home': {
+					evt.preventDefault();
+					var parent = selectedItem.parentElement,
+						start = key == 'Home';
+					this.moveTop(nearestAvail.call(this, parent, start) || (start ? parent.firstElementChild : parent.lastElementChild), "scroll", !start)
+					break;
+				}
+				case 'PageDown':
+				case 'PageUp': {
+					evt.preventDefault();
+					var parent = selectedItem.parentElement,
+						chng = parent.clientHeight - 10;
+					_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(parent).addClass('lyteTimePickerScrollBehavior');
+					parent.scrollTop += key == 'PageDown' ? chng : -chng;
+					setTimeout(function () {
+						_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(parent).removeClass('lyteTimePickerScrollBehavior')
+					}, 1000);
+					break;
+				}
+			}
+		}
+	}
+
+    moveTop(selectElem, from, down) {
+		var parent = selectElem.parentElement,
+			itemOffsetTop = selectElem.offsetTop,
+			containerOffsetTop = parent.offsetTop,
+			paddingTop = this.data.paddingTop,
+			scrollPosition = itemOffsetTop - containerOffsetTop - paddingTop - (down ? parent.offsetHeight - selectElem.offsetHeight - (paddingTop * 2) : 0);
+		if (Math.abs(parent.scrollTop - scrollPosition) >= 1) {
+			if (from && from != "start") {
+				_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(selectElem.parentElement).addClass('lyteTimePickerScrollBehavior');
+			}
+			parent.scrollTop = scrollPosition;
+			setTimeout(function () {
+				_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(selectElem.parentElement).removeClass('lyteTimePickerScrollBehavior')
+			}, 1000);
+		}
+	}
+
+    remSetSelected(curUnitObj, _class) {
+		var prevUnitObj = this.getItemWithClass(_class, "lyteTimePickerItemSelected");
+		if (curUnitObj == prevUnitObj || curUnitObj.disabled == "true") {
+			return false
+		}
+		if (prevUnitObj) {
+			this.alterObjUtils(prevUnitObj, ["class", "selected"], [prevUnitObj.class.replace(" lyteTimePickerItemSelected", ""), "false"]);
+		}
+		this.alterObjUtils(curUnitObj, ["class", "selected"], [curUnitObj.class + " lyteTimePickerItemSelected", "true"]);
+		return true;
+	}
+
+    dropDownChanges(listComp, _class, overRide, from) {
+		var retVal,
+			_this = this;
+		if ((listComp && !listComp.class.includes("lyteTimePickerBlur")) || overRide) {
+			if (listComp) {
+				retVal = _this.remSetSelected(listComp, _class);
+				(from != "start") && this.setAriaTime(this.setDropVal(true));
+				this.moveTop(_this.dropDown.getElementsByClassName(listComp.class)[0], from);
+			}
+			if (_class == "meridiems" || _class == "hours" || _class == "minutes") {//it is also used to hide min and sec (based on hour)
+				var selectedMeridiem = _this.getItemWithClass("meridiems", "lyteTimePickerItemSelected"),
+					selectedMeridiemVal = selectedMeridiem ? selectedMeridiem.engVal : undefined,
+					selectedHour = _this.getItemWithClass("hours", "lyteTimePickerItemSelected"),
+					selectedHourVal = selectedHour ? parseInt(selectedHour.engVal) : undefined,
+					selectedMinute = _this.getItemWithClass("minutes", "lyteTimePickerItemSelected"),
+					selectedMinuteVal = selectedMinute ? parseInt(selectedMinute.engVal) : undefined,
+					value = listComp && parseInt(listComp.engVal),
+					secVal = (_class == "minutes" && selectedHour) ? parseInt(selectedHour.engVal) : undefined,//only for setting seconds
+					data = _this.data,
+					minutesHide = data.minutesHide,
+					secondsHide = data.secondsHide,
+					hoursHide = data.hoursHide,
+					timeFormat = data.ltPropTimeFormat,
+					nextDay = data.ltPropStartTime && data.ltPropEndTime && _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(this.toEng(data.ltPropStartTime, timeFormat), timeFormat).fromNow(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(this.toEng(data.ltPropEndTime, timeFormat), timeFormat)).past,
+					hideDropdownValues = function (start, end, minClass, limit) {
+						var hideArr = [],
+							startTime = start.value,
+							endTime = end.value,
+							meriStart = start.meridiem,
+							meriEnd = end.meridiem,
+							isValid = function (value) {
+								return (value != undefined && (typeof value == 'number' ? !isNaN(value) : true));
+							},
+							isNextDay = function (value, start, end) {
+								return isValid(value) ? start == end && start == value : true;
+							},
+							checkOrder = function (index) {
+								var value = [[selectedMeridiemVal, meriStart, meriEnd], [selectedHourVal, start.hour, end.hour], [selectedMinuteVal, start.min, end.min]];
+								for (var i = 0; i <= index; i++) {
+									var item = value[i];
+									if (isValid(item[0])) {
+										if (!isNextDay(item[0], item[1], item[2])) {
+											return false;
+										}
+									}
+								};
+								return true;
+							};
+
+						if (data.ltPropStartTime && data.ltPropEndTime && nextDay && (_class == "meridiems" && checkOrder(0) || (_class == "hours" && checkOrder(1)) || (_class == "minutes" && checkOrder(2)))) {
+							hideArr = _this.modifyVal(endTime, startTime);
+						} else {
+							if ((isValid(start.hour) ? start.hour == (isValid(secVal) ? secVal : value) : true) && (isValid(start.min) ? start.min == value : true) && (selectedMeridiemVal ? selectedMeridiemVal == meriStart : true)) {
+								hideArr = _this.modifyVal(0, startTime);
+								if (minClass == "hours" && hideArr.length) {
+									hideArr.push("12");
+								}
+							}
+							if ((isValid(end.hour) ? end.hour == (isValid(secVal) ? secVal : value) : true) && (isValid(end.min) ? end.min == value : true) && (selectedMeridiemVal ? selectedMeridiemVal == meriEnd : true)) {
+								hideArr = hideArr.concat(_this.modifyVal(endTime, limit));
+							}
+						}
+						data[minClass].forEach(item => {
+							_this.alterObjUtils(item, ["class", "disabled"], [item.class.replace(" lyteTimePickerBlur", ""), "false"]);
+						})
+						_this.blurItems(hideArr, minClass);
+					};
+				hoursHide && _class == "meridiems" && hideDropdownValues(hoursHide.start, hoursHide.end, "hours", 11);
+				minutesHide && _class == "hours" && hideDropdownValues(minutesHide.start, minutesHide.end, "minutes", 59);
+				secondsHide && _class == "minutes" && hideDropdownValues(secondsHide.start, secondsHide.end, "seconds", 59);
+			}
+		}
+		return retVal;
+	}
+
+    setValuesManually(activateUnits, overRide, from, manualValue) {
+		var _this = this,
+			data = _this.data,
+			format = data.ltPropTimeFormat,
+			time = manualValue || this.toEng(data.ltPropValue, format),
+			moment = time ? _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(time, format)/*$L.moment(time, format, { i18n: data.ltPropI18n, number_conversion: data.ltPropConvertNumbers })*/ : _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment().startOf('day'),
+			split = moment.parseFormat(format),
+			curFormat = data.curFormat,
+			dispHour, dispMin, dispSec, dispMeri, focusElem, change, hh,
+			getAvailComp = function (__class, cmpVal) {//input or first available li in ul
+				var curData = data[__class].filter(item => { return (item.disabled == "false") }),
+					prevSelected = curData.filter(item => { return (item.selected == "true") }),
+					retVal;
+				if (curData.length == 0) {
+					return false
+				}
+				if (!manualValue && prevSelected.length) {
+					retVal = prevSelected[0];
+				} else {
+					var curObj,
+						retDiff = function (a, s) {
+							return Math.abs(parseInt(a) - parseInt(s));
+						};
+					curData.every(item => {
+						var curval = item.engVal;
+						if (curval == cmpVal) {
+							curObj = item;
+							return
+						} else if (data.ltPropInterval[__class.replace('s', '')] && __class != "meridiems" && (!curObj || retDiff(curval, cmpVal) < retDiff(cmpVal, curObj.engVal))) {
+							curObj = item;
+						}
+						return true;
+					});
+					if (!curObj) {
+						var start = curData[0].engVal;
+						if (((hh && start == '12') ? 0 : start) > ((hh && cmpVal == '12') ? 0 : cmpVal)) {
+							curObj = curData[0];
+						} else {
+							curObj = curData[curData.length - 1];
+						}
+					}
+					retVal = curObj;
+				}
+				return retVal;
+			};
+		split.forEach(item => {
+			var curForm = item.format.val,
+				val = moment.format(curForm);
+			switch (curForm) {
+				case "HH":
+				case "hh": {
+					dispHour = val;
+					hh = curForm == 'hh';
+					break;
+				}
+				case "mm": {
+					dispMin = val;
+					break
+				}
+				case "ss": {
+					dispSec = val;
+					break;
+				}
+				case "A":
+				case "a": {
+					dispMeri = val;
+					break
+				}
+			}
+		});
+		var hideCall = {
+			meridiems: { curComp: dispMeri, overRide: (curFormat == 12 && !dispMeri) },
+			hours: { curComp: dispHour, overRide: (!curFormat && dispMin) },
+			minutes: { curComp: dispMin, overRide: (!curFormat && !dispMin && dispSec) },
+			seconds: { curComp: dispSec, overRide: undefined }
+		}
+		activateUnits.forEach(item => {
+			var getVal = hideCall[item],
+				avail = getAvailComp(item, getVal.curComp),
+				curOverRide = overRide && getVal.overRide;
+			if (avail || curOverRide) { // This is used when only minutes and seconds are available
+				if (!this.dropDownChanges(avail, item, curOverRide, from)) {
+					change = true;
+				}
+			}
+		})
+		focusElem = this.dropDown.querySelector(".lyteTimePickerItemSelected");
+		(from == "start") && focusElem && focusElem.focus({ preventScroll: true });
+		this.setAriaTime(this.setDropVal(true));
+		return change;
+	}
+
+    dropDownValClick(button, curUnit, evt) {
+		if (button) {
+			this.getMethods("onCustomButtonClick") && this.executeMethod("onCustomButtonClick", evt, curUnit, this.$node);
+			var purpose = curUnit.getAttribute("purpose");
+			if (purpose == "ok") {
+				this.setDropVal(false, evt);
+			} else if (purpose == "cancel") {
+				this.hideDropDownVal(true, evt, "ok");
+			}
+		} else {
+			var setArr = ["meridiems", "hours", "minutes", "seconds"],
+				_class = curUnit.getAttribute("data-unit"),
+				selected = this.data[_class][curUnit.getAttribute("data-index")];
+			setArr.splice(0, setArr.indexOf(_class) + 1);
+			this.updDropVal(selected, _class, setArr);
+			// this.dropDownChanges(selected, _class) && setArr.splice(0, setArr.indexOf(_class) + 1);
+			// setArr.length != 4 && setArr.length != 0 && this.setValuesManually(setArr);
+		}
+	}
+
+    fixSelection(start, return_field) {
+		var _this = this,
+			data = _this.data,
+			format = data.ltPropTimeFormat,
+			moment = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(this.toEng(data.ltPropValue, format), format),
+			input = this.input,
+			fn = function (moment, split) {
+				var len = split.length,
+					finished = 0,
+					prev = 0;
+
+				for (var i = 0; i < len; i++) {
+					var cur = split[i],
+						format = cur.format.val,
+						// converted = moment[ns](format),
+						__start = finished + cur.index - prev,
+						__end = __start + /*converted.length*/2;
+
+					if (__start <= start && start <= __end) {
+						if (return_field) {
+							return cur;
+						}
+						return {
+							start: __start,
+							end: __end
+						}
+					}
+
+					finished = __end;
+					prev = cur.index + format.length;
+				}
+
+			};
+
+		// this.__start = this.__end = start;
+
+		var split = moment.parseFormat(format),
+			first_match = fn(moment, split);
+
+		if (return_field) {
+			return first_match;
+		}
+
+		if (first_match) {
+			input.selectionStart = first_match.start;
+			input.selectionEnd = first_match.end;
+			return true;
+		}
+
+		return false;
+
+	}
+
+    freezeLayer(open) {
+		if (this.data.ltPropFreeze) {
+			var freezeElem = document.getElementById("lyteTimePickerFreezeLayer");
+			if (!freezeElem) {
+				freezeElem = document.createElement('div');
+				freezeElem.setAttribute('id', 'lyteTimePickerFreezeLayer');
+				window._lyteUiUtils.appendChild(document.body, freezeElem);
+			}
+			document.body.classList[open ? "add" : "remove"]("lyteTimePickerOpenFreeze");
+		}
+	}
+
+    setBoundary(inputDim, windowHeight, windowWidth) {
+		var boundary = this.data.ltPropBoundary,
+			inBoundary = this.data.inBoundary,
+			top = boundary.top || 0,
+			bottom = boundary.bottom || windowHeight,
+			left = boundary.left || 0,
+			right = boundary.right || windowWidth;
+		if (inputDim.bottom < top || inputDim.top > bottom || inputDim.right < left || inputDim.left > right) {
+			if (inBoundary) {
+				this.hideDropDownVal(true, undefined, "ok", true);
+				this.setData("inBoundary", false);
+			}
+		} else if (!inBoundary) {
+			this.hideDropDownVal(false, undefined, undefined, true);
+			this.setData("inBoundary", true);
+		}
+	}
+
+    setDropdownDim(evt, start) {
+		var dropDown = this.dropDown,
+			dropDownField = dropDown.querySelector(".lyteTimePickerDropdownValues"),
+			fastdom = (_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().fastdom);
+		if (evt && _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(evt.target).closest(".lyteTimePickerUl").length) {
+			return;
+		}
+		dropDown.style.bottom = "";
+		dropDownField.style.height = "";
+		fastdom.measure(function () {
+			var scrolledY = window.pageYOffset || document.documentElement.scrollTop,
+				scrolledX = window.pageXOffset || document.documentElement.scrollLeft,
+				elementBCR = this.$node.getBoundingClientRect(),
+				dropDownTransf = getComputedStyle(dropDown).transform.match(/matrix\((.+)\)/),
+				dropDownBCR = dropDown.getBoundingClientRect(),
+				dropDownHeight = dropDownBCR.height + (Array.isArray(dropDownTransf) ? Math.abs(dropDownTransf[1].split(', ')[5]) : 0),
+				dropDownFeildsBcr = getComputedStyle(dropDownField),
+				dropDownFeildsHeight = dropDownField.offsetHeight - parseInt(dropDownFeildsBcr.paddingTop) - parseInt(dropDownFeildsBcr.paddingBottom),
+				windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
+				windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+				inputDim = this.inputField.getBoundingClientRect(),
+				bottomAvailHeight = windowHeight - inputDim.bottom,
+				data = this.data,
+				minFeildHeight = (data.ltPropDropdownMinHeight ? data.ltPropDropdownMinHeight : _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(dropDown).find('li')[0].offsetHeight) + data.paddingTop,
+				inline = data.ltPropInline,
+				bToBody = !inline && data.ltPropBindToBody,
+				dropdownPositionLeft = data.ltPropDropdownAlignPosition == 'left',
+				$dropDown = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(dropDown);
+			!start && this.setBoundary(inputDim, windowHeight, windowWidth)
+			fastdom.mutate(function () {
+				if (data.inBoundary) {
+					var setToTop = function () {
+						dropDown.style.top = "";
+						if (bToBody) {
+							dropDown.style.bottom = windowHeight - (scrolledY + inputDim.top) + "px";
+						} else {
+							dropDown.style.bottom = inputDim.height + "px";
+						}
+						topSide = true;
+					},
+						valChange,
+						topSide;
+
+					if (inline && !dropdownPositionLeft) {
+						dropDown.style.left = elementBCR.width - dropDownBCR.width + "px";
+					}
+
+					if (bToBody) {
+						dropDown.style.top = scrolledY + elementBCR.top + elementBCR.height + "px";
+						dropDown.style.left = scrolledX + elementBCR.left + (dropdownPositionLeft ? 0 : elementBCR.width - dropDownBCR.width) + "px";
+						valChange = true;
+					}
+
+					if (bottomAvailHeight < dropDownHeight) {
+						if (inputDim.top > dropDownHeight) {
+							$dropDown.removeClass("lyteDropdownSizeChange");
+							setToTop();
+						} else {//>=
+							$dropDown.addClass("lyteDropdownSizeChange");
+							if (bottomAvailHeight > inputDim.top) {
+								var val = dropDownFeildsHeight - (dropDownHeight - bottomAvailHeight);
+							} else {
+								setToTop();
+								var val = dropDownFeildsHeight - (dropDownHeight - inputDim.top);
+							}
+							dropDownField.style.height = (val > minFeildHeight ? val : minFeildHeight) + "px";
+						}
+						valChange = true;
+					} else {
+						$dropDown.removeClass("lyteDropdownSizeChange");
+					}
+					topSide ? $dropDown.addClass("lyteDropdownTopSide") : $dropDown.removeClass("lyteDropdownTopSide");
+				}
+			}.bind(this));
+		}.bind(this));
+
+	}
+
+    inputClick() {
+		if (this.isValid()) {
+			_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().fastdom.mutate(function () {
+				this.fixSelection(this.input.selectionStart);
+			}.bind(this))
+		}
+	}
+
+    counterVal(type, manual) {
+		var data = this.data;
+		if (this.isValid() && (manual ? event.touches.length == 1 : true) && (data.ltPropReadonly ? data.ltPropAllowCounter : true)) {
+			var fn = function () {
+				this.inputKeys({ key: type ? 'ArrowUp' : 'ArrowDown', preventDefault: function () { } }, true);
+			}.bind(this);
+			event.preventDefault();
+			this.input.focus();
+			this.inputClick();
+			if (type == "stop") {
+				clearInterval(this.counterTime);
+				document.removeEventListener("mouseup", this.counterRef);
+				delete this.counterRef;
+				delete this.counterTime;
+			} else {
+				fn();
+				if (!manual) {
+					clearInterval(this.counterTime);
+					document.removeEventListener("mouseup", this.counterRef);
+					this.counterRef = this.counterVal.bind(this, "stop", false);
+					document.addEventListener("mouseup", this.counterRef);
+					this.counterTime = setInterval(fn, 500);
+				}
+			}
+		}
+	}
+
+    modifyVal(start, end, range, type, __class, form, addUnit, ind) {
+		var getConv = function (val) {
+			var strVal = JSON.stringify(val);
+			return (strVal.length == 1 ? "0" + strVal : strVal);
+		},
+			moment = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(getConv(start), form),
+			retArr = [],
+			inc = range ? range : 1;
+		for (var i = start; i <= end; i += inc) {
+			var cur_val = (type == "obj") ? this.toOtherLang(moment, form) : getConv(i),
+				alt_val = (type == "obj") ? { index: ind++, value: cur_val, selected: "false", disabled: "false", class: __class, format: form, engVal: moment.format(form) } : cur_val;
+			retArr.push(alt_val);
+			moment.add(inc, addUnit);
+		}
+		return retArr;
+	}
+
+    setUnitValues() {
+		var data = this.data,
+			format = data.ltPropTimeFormat,
+			curTime = this.toEng(data.ltPropValue, format),
+			startTime = data.ltPropStartTime,
+			endTime = data.ltPropEndTime,
+			interval = data.ltPropInterval,
+			i18n = data.ltPropI18n,
+			refresh = data.dropdownRefresh,
+			split = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(curTime, format).parseFormat(format),
+			am = 'AM',
+			pm = 'PM',
+			startMoment,
+			availTimeUnits = {},
+			endMoment,
+			hide = {},
+			setHourData = function (curFormat, start, end, timeFormat, type) {
+				startMoment = this.toEng(startTime, format) || _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(start, curFormat);
+				endMoment = this.toEng(endTime, format) || _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(end, curFormat);
+				startMoment = (typeof (startMoment) == "string") ? _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(startMoment, format) : startMoment;
+				endMoment = (typeof (endMoment) == "string") ? _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(endMoment, format) : endMoment;
+				availTimeUnits.hour = type;
+				this.setData("curFormat", timeFormat);
+			}.bind(this);
+		if (refresh) {
+			split.forEach(item => {
+				var cur_form = item.format.val;
+				switch (cur_form) {
+					case "hh": {
+						setHourData("hh:mm:ss A", "12:00:00 AM", "11:59:59 PM", 12, "hh");
+						var tempArr = /*interval.hour ? (11 % interval.hour == 0) : true) ?*/ this.modifyVal(12, 12, interval.hour, "obj", "lyteTimePickerHour", "hh", "hours", 0) /*: []*/;
+						this.setData("hours", tempArr.concat(this.modifyVal(interval.hour || 1, 11, interval.hour, "obj", "lyteTimePickerHour", "hh", "hours", tempArr.length ? 1 : 0)));
+						break;
+					}
+					case "HH": {
+						setHourData("HH:mm:ss", "00:00:00", "23:59:59", 24, "HH");
+						this.setData("hours", this.modifyVal(0, 23, interval.hour, "obj", "lyteTimePickerHour", "HH", "hours", 0));
+						break;
+					}
+					case "mm": {
+						availTimeUnits.min = "mm";
+						this.setData("minutes", this.modifyVal(0, 59, interval.minute, "obj", "lyteTimePickerMinute", "mm", "minutes", 0));
+						break;
+					}
+					case "ss": {
+						availTimeUnits.sec = "ss";
+						this.setData("seconds", this.modifyVal(0, 59, interval.second, "obj", "lyteTimePickerSecond", "ss", "seconds", 0));
+						break;
+					}
+					case "A": {
+						availTimeUnits.meri = "A";
+						break;
+					}
+					case "a": {
+						availTimeUnits.meri = "a";
+						am = 'am';
+						pm = 'pm';
+						break;
+					}
+				}
+			});
+			if (!availTimeUnits.hour) {
+				availTimeUnits.meri ? setHourData("hh:mm:ss A", "12:00:00 AM", "11:59:59 PM", 12, "hh") : setHourData("HH:mm:ss", "00:00:00", "23:59:59", 24, "HH");
+				availTimeUnits.special = availTimeUnits.hour;
+				this.setData("curFormat", undefined);
+				delete availTimeUnits.hour;
+			}
+			availTimeUnits.meri && (availTimeUnits.hour == "hh") && this.setData("meridiems", [{ index: 0, value: i18n ? window._lyteUiUtils.i18n(am) : am, selected: "false", disabled: "false", class: "lyteTimePickerMeridiem", format: availTimeUnits.meri, engVal: am }, { index: 1, value: i18n ? window._lyteUiUtils.i18n(pm) : pm, selected: "false", disabled: "false", class: "lyteTimePickerMeridiem", format: availTimeUnits.meri, engVal: pm }]);
+			if (data.ltPropStartTime || data.ltPropEndTime) {
+				var hourStart = availTimeUnits.hour && startMoment && parseInt(startMoment.format(availTimeUnits.hour)),
+					minStart = availTimeUnits.min && startMoment && parseInt(startMoment.format("mm")),
+					secStart = availTimeUnits.sec && startMoment && parseInt(startMoment.format("ss")),
+					hourEnd = availTimeUnits.hour && endMoment && parseInt(endMoment.format(availTimeUnits.hour)),
+					minEnd = availTimeUnits.min && endMoment && parseInt(endMoment.format("mm")),
+					secEnd = availTimeUnits.sec && endMoment && parseInt(endMoment.format("ss")),
+					minHideObj = { start: { hour: hourStart, value: minStart - 1 }, end: { hour: hourEnd, value: minEnd + 1 } },
+					secHideObj = { start: { hour: hourStart, min: minStart, value: secStart - 1 }, end: { hour: hourEnd, min: minEnd, value: secEnd + 1 } },
+					normRange = endMoment.fromNow(startMoment),
+					hourHideObj;
+				if (availTimeUnits.hour == "HH") {
+					if (normRange.past || normRange.value == 0) {
+						hide.arr = this.modifyVal(0, hourStart - 1).concat(this.modifyVal(hourEnd + 1, 23));
+					} else if ((startMoment.fromNow(endMoment)).past) {
+						hide.arr = this.modifyVal(hourEnd + 1, hourStart - 1);
+					}
+					hide.unit = "hours";
+				} else if (availTimeUnits.hour == "hh") {
+					var meriStart = startMoment.format(availTimeUnits.meri) || am,
+						meriEnd = endMoment.format(availTimeUnits.meri) || am;
+					secHideObj.start.meridiem = minHideObj.start.meridiem = meriStart;
+					secHideObj.end.meridiem = minHideObj.end.meridiem = meriEnd;
+					hourHideObj = { start: { meridiem: meriStart, value: (hourStart == 12) ? -1 : hourStart - 1 }, end: { meridiem: meriEnd, value: (hourEnd == 12) ? 1 : hourEnd + 1 } };
+					if (meriStart == meriEnd && (normRange.past || normRange.value == 0)) {
+						hide.arr = [(meriStart == am) ? pm : am];
+					}
+					hide.unit = "meridiems";
+					availTimeUnits.hour && this.setData("hoursHide", hourHideObj);
+				}
+				availTimeUnits.min && this.setData("minutesHide", minHideObj)
+				availTimeUnits.sec && this.setData("secondsHide", secHideObj)
+				this.blurItems(hide.arr, hide.unit);//these are done here because these are not going to change until dropDown button is pressed// these are the start
+			}
+			this.setData("dropdownRefresh", false);
+		} else {//unselect all item
+			var unselect = function (obj) {
+				obj.forEach(item => {
+					item.selected = "false";
+				});
+			};
+			["hours", "minutes", "seconds", "meridiems"].forEach(unit => {
+				var unitData = this.data[unit];
+				unitData.length && unselect(unitData);
+			});
+		}
+		_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.dropDown).removeClass("lyteTimePickerDropdownNone");
+		_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node).addClass("lyteTimePickerDropdownOpened");
+		this.setDropdownDim(undefined, true);
+		if (!data.paddingTop) {
+			this.setData("paddingTop", parseFloat(getComputedStyle(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.dropDown).find('.lyteTimePickerUl')[0]).paddingTop));
+		}
+	}
+
+    dropDownButtonClick(evt) {
+		if (this.getMethods("onBeforeOpen") && this.executeMethod("onBeforeOpen", evt, this.$node) == false) {
+			return;
+		}
+		this.setUnitValues();
+		_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().fastdom.measure(function () {//fastdom is because updtDropDownDim called after setValuesManually, so that if the values are 59 and the dropdown is short, it is not in view
+			_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().fastdom.mutate(function () {
+				this.setValuesManually(["meridiems", "hours", "minutes", "seconds"], true, "start");
+				this.$node.querySelector(".lytetimePickerButton").setAttribute("aria-expanded", true);
+				this.freezeLayer(true);
+				this.getMethods("onOpen") && this.executeMethod("onOpen", evt, this.$node);
+			}.bind(this));
+		}.bind(this));
+	}
+
+    static observers(arg1) {
+        return Object.assign(super.observers({
+			valueChange: function (arg) {
+				this.setData("ltPropConvertedValue", this.toEng(this.data.ltPropValue, this.data.ltPropTimeFormat));
+				arg && this.getMethods("onValueChange") && this.executeMethod("onValueChange", arg, this.$node);
+			}.observes('ltPropValue').on('didConnect'),
+
+			formatChange: function (arg) {
+				var oldFormat = arg.oldValue,
+					newFormat = arg.newValue,
+					changeFormat = function (data) {
+						var value = this.data[data];
+						value && ((data != 'ltPropValue') || this.isValid(oldFormat)) && this.setData(data, this.toOtherLang(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().moment(this.toEng(value, oldFormat), oldFormat).format(newFormat), newFormat), newFormat));
+					}.bind(this);
+				changeFormat('ltPropValue');
+				changeFormat('ltPropStartTime');
+				changeFormat('ltPropEndTime');
+				this.refreshDropdown();
+			}.observes('ltPropTimeFormat'),
+
+			rangeChange: function () {
+				this.refreshDropdown();
+				this.validateRefresh();
+			}.observes('ltPropStartTime', 'ltPropEndTime'),
+
+			disabled: function () {
+				this.disableElem("ltPropDisabled", " lyteTimePickerDisabled")
+			}.observes('ltPropDisabled').on('init'),
+
+			readOnly: function () {
+				this.disableElem("ltPropReadonly", " lyteTimePickerReadonly");
+			}.observes('ltPropReadonly').on('init'),
+
+			bindToBody: function () {
+				var data = this.data;
+				if (!data.ltPropInline) {//after setting inline to true it can't be set to false
+					if (data.ltPropBindToBody) {
+						var dropDown = this.dropDown;
+						dropDown.parent = this.$node;
+						this.dropDown = dropDown;
+						window._lyteUiUtils.appendChild(document.body, dropDown);
+					} else if (!data.ltPropBindToBody && this.dropDown) {
+						document.body.removeChild(this.dropDown);
+						delete this.dropDown.parent;
+						delete this.dropDown;
+					}
+				}
+
+			}.observes('ltPropInline', 'ltPropBindToBody').on('didConnect')
+		}), arg1);
+	}
+
+    _() {
+        _;
+    }
+}
+
+LyteTimePickerComponent._template = "<template tag-name=\"lyte-time-picker\"> <div class=\"lyteTimePickerField\" onkeydown=\"{{action('inputKeyDown',event,this)}}\"> <input value=\"{{lbind(ltPropValue)}}\" placeholder=\"{{ltPropPlaceholder}}\" id=\"{{ltPropId}}\" class=\"lyteTimePickerInput {{ltPropClass}}\" name=\"{{ltPropName}}\" readonly=\"{{ltPropReadonly}}\" disabled=\"{{ltPropDisabled}}\" aria-label=\"{{ltPropAriaAttributes.input}}\" aria-invalid=\"{{invalidValue}}\" onfocus=\"{{action('inputFocus',event,this,true)}}\" onblur=\"{{action('inputFocus',false)}}\" oninput=\"{{action('inputVal',event)}}\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropDropdown}}\" is=\"case\" lc-id=\"lc_id_0\"> <button class=\"lytetimePickerButton\" aria-label=\"{{ltPropAriaAttributes.icon}}\" disabled=\"{{ltPropDisabled}}\" aria-expanded=\"false\" aria-haspopup=\"true\" aria-controls=\"{{randId}}\" tabindex=\"0\"> <span class=\"lyteTimePickerBtnIcon\"></span> </button> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropCounter}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"lytetimePickerCounterButtons\"> <button class=\"lytetimePickerIncButton\" aria-label=\"{{ltPropAriaAttributes.inc}}\" disabled=\"{{ltPropDisabled}}\" onmousedown=\"{{action('counterKeys',true)}}\" ontouchstart=\"{{action('counterKeys',true,true)}}\" tabindex=\"0\" role=\"spinbutton\"> <span class=\"lyteTimePickerIncIcon\"></span> </button> <button class=\"lytetimePickerDecButton\" aria-label=\"{{ltPropAriaAttributes.dec}}\" disabled=\"{{ltPropDisabled}}\" onmousedown=\"{{action('counterKeys')}}\" ontouchstart=\"{{action('counterKeys',false,true)}}\" tabindex=\"0\" role=\"spinbutton\"> <span class=\"lyteTimePickerDecIcon\"></span> </button> </div> </template></template> </div> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropDropdown}}\" is=\"case\" lc-id=\"lc_id_0\"><lyte-time-picker-dropdown id=\"{{randId}}\" class=\"lyteTimePickerDropdownNone {{ltPropDropdownClass}}\" onkeydown=\"{{action('dropDownKeyDown',event,this)}}\"> <div class=\"lyteTimePickerDropdownValues\" onfocusin=\"{{action('dropDownValueFocus',event,true)}}\" onfocusout=\"{{action('dropDownValueFocus',event,false)}}\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{hours.length}}\" is=\"case\" lc-id=\"lc_id_0\"> <ul class=\"lyteTimePickerUl\" data-unit=\"hours\" aria-label=\"{{ltPropAriaAttributes.hour}}\"> <template items=\"{{hours}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"> <li class=\"{{item.class}}\" tabindex=\"0\" data-index=\"{{item.index}}\" data-unit=\"hours\" role=\"options\" aria-selected=\"{{item.selected}}\" aria-disabled=\"{{item.disabled}}\" aria-label=\"{{item.value}}\" data-value=\"{{item.value}}\">{{item.value}}</li> </template> </ul> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{minutes.length}}\" is=\"case\" lc-id=\"lc_id_0\"> <ul class=\"lyteTimePickerUl\" data-unit=\"minutes\" aria-label=\"{{ltPropAriaAttributes.minute}}\"> <template items=\"{{minutes}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"> <li class=\"{{item.class}}\" tabindex=\"0\" data-index=\"{{item.index}}\" data-unit=\"minutes\" role=\"options\" aria-selected=\"{{item.selected}}\" aria-disabled=\"{{item.disabled}}\" aria-label=\"{{item.value}}\" data-value=\"{{item.value}}\">{{item.value}}</li> </template> </ul> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{seconds.length}}\" is=\"case\" lc-id=\"lc_id_0\"> <ul class=\"lyteTimePickerUl\" data-unit=\"seconds\" aria-label=\"{{ltPropAriaAttributes.second}}\"> <template items=\"{{seconds}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"> <li class=\"{{item.class}}\" tabindex=\"0\" data-index=\"{{item.index}}\" data-unit=\"seconds\" role=\"options\" aria-selected=\"{{item.selected}}\" aria-disabled=\"{{item.disabled}}\" aria-label=\"{{item.value}}\" data-value=\"{{item.value}}\">{{item.value}}</li> </template> </ul> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{meridiems.length}}\" is=\"case\" lc-id=\"lc_id_0\"> <ul class=\"lyteTimePickerUl\" data-unit=\"meridiems\" aria-label=\"{{ltPropAriaAttributes.meridiem}}\"> <template items=\"{{meridiems}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"> <li class=\"{{item.class}}\" tabindex=\"0\" data-index=\"{{item.index}}\" data-unit=\"meridiems\" role=\"options\" aria-selected=\"{{item.selected}}\" aria-disabled=\"{{item.disabled}}\" aria-label=\"{{item.value}}\" data-value=\"{{item.value}}\">{{item.value}}</li> </template> </ul> </template></template> </div> <div class=\"lyteTimePickerDropdownButton\"> <template items=\"{{ltPropButton}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"> <lyte-button class=\"lyteTimePickerDropdownButtonItem\" purpose=\"{{item.purpose}}\" lt-prop=\"{{stringify(item.properties)}}\" lt-prop-aria-button=\"{{item.properties.ariaButton}}\" onfocus=\"{{action('customButtonFocus',event,this)}}\"> <template is=\"registerYield\" yield-name=\"text\"> {{item.text}} </template> </lyte-button> </template> </div> </lyte-time-picker-dropdown></template></template> </template>";;
+LyteTimePickerComponent._dynamicNodes = [{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1]},{"t":"s","p":[1,5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"a","p":[1,3],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"s","p":[0,1,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"tX","p":[1,0]}],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"s","p":[0,1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"tX","p":[1,0]}],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"s","p":[0,1,5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"tX","p":[1,0]}],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"s","p":[0,1,7],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"tX","p":[1,0]}],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,3,1],"cn":"lc_id_0"},{"t":"f","p":[0,3,1],"dN":[{"t":"a","p":[1]},{"t":"r","p":[1,1],"dN":[{"t":"tX","p":[1]}],"in":1,"sibl":[0]},{"t":"cD","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[0]}];;
+
+LyteTimePickerComponent._observedAttributes = [
+    "ltPropValue",
+    "ltPropTimeFormat",
+    "ltPropStartTime",
+    "ltPropEndTime",
+    "ltPropButton",
+    "ltPropInterval",
+    "ltPropId",
+    "ltPropClass",
+    "ltPropName",
+    "ltPropPlaceholder",
+    "ltPropDisabled",
+    "ltPropReadonly",
+    "ltPropAllowDropdown",
+    "ltPropInline",
+    "ltPropBindToBody",
+    "ltPropBoundary",
+    "ltPropI18n",
+    "ltPropConvertNumbers",
+    "ltPropConvertedValue",
+    "ltPropFreeze",
+    "ltPropAriaAttributes",
+    "ltPropValidate",
+    "ltPropValidateType",
+    "ltPropValidateOn",
+    "ltPropValid",
+    "ltPropDropdownMinHeight",
+    "ltPropDropdown",
+    "ltPropCounter",
+    "ltPropAllowCounter",
+    "ltPropInputInterval",
+    "ltPropInputIntervalSync",
+    "ltPropDropdownClass",
+    "ltPropDropdownAlignPosition",
+    "ltPropPreventInvalid",
+    "hours",
+    "minutes",
+    "seconds",
+    "meridiems",
+    "minutesHide",
+    "hoursHide",
+    "secondsHide",
+    "curFormat",
+    "randId",
+    "inBoundary",
+    "dropdownRefresh"
+];
+
+(function () {
+	var updtDropDownDim = function (evt) {
+		Array.from(document.getElementsByTagName("lyte-time-picker-dropdown")).forEach(dropItem => {
+			var dropDown = (dropItem.closest("lyte-time-picker") || dropItem.parent).component;
+			if ((!_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(dropItem).hasClass("lyteTimePickerDropdownNone")) || !dropDown.data.inBoundary) {
+				dropDown.setDropdownDim(evt);
+			}
+		})
+	};
+
+	['scroll', 'resize', 'orientationchange'].forEach(item => {
+		window._lyteUiUtils.addEvent(window, item, function (evt) {
+			item == "orientationchange" ? setTimeout(updtDropDownDim(evt), 500) : updtDropDownDim(evt);
+		})
+	})
+
+	window._lyteUiUtils.addEvent(document, 'click', function (evt) {
+		var target = evt.target,
+			retClosest = function (ref) {
+				return target.closest(ref);
+			},
+			dropDown = retClosest("lyte-time-picker-dropdown"),
+			mainComp = ((dropDown && dropDown.parent) || retClosest("lyte-time-picker") || {}).component,
+			hideDropDown = function (type) {
+				Array.from(document.getElementsByTagName('lyte-time-picker')).forEach(item => {
+					item.close();
+				});
+			};
+		if (retClosest(".lyteTimePickerInput")) {
+			hideDropDown();
+			mainComp.inputClick();
+		} else if (retClosest(".lytetimePickerButton")) {//if hide DropDown is given out it makes first cond always true
+			var data = mainComp.data;
+			if ((data.ltPropReadonly && !data.ltPropAllowDropdown) || data.ltPropDisabled) {
+				return;
+			}
+			if (_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(mainComp.dropDown).hasClass("lyteTimePickerDropdownNone")) {
+				hideDropDown();
+				mainComp.dropDownButtonClick(evt);
+			} else {
+				hideDropDown();
+			}
+		} else if (dropDown) {
+			[".lyteTimePickerDropdownButtonItem", ".lyteTimePickerMeridiem", ".lyteTimePickerHour", ".lyteTimePickerMinute", ".lyteTimePickerSecond"].every((item, index) => {
+				var closest = retClosest(item);
+				if (closest) {
+					mainComp.dropDownValClick((index == 0) && true, closest, evt);
+					return;
+				}
+				return true;
+			});
+		} else {
+			hideDropDown();
+		}
+	})
+})();
+
+
+
+LyteTimePickerComponent.register("lyte-time-picker", {
+    hash: "LyteTimePickerComponent_4",
+    refHash: "C_lyte-ui-component_@zoho/lyte-ui-component_2"
+});
 
 /***/ })
 

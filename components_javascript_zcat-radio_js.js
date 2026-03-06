@@ -1,0 +1,138 @@
+"use strict";
+(self["webpackChunkzcat_app"] = self["webpackChunkzcat_app"] || []).push([["components_javascript_zcat-radio_js"],{
+
+/***/ 39999136:
+/*!*********************************************!*\
+  !*** ./components/javascript/zcat-radio.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ZcatRadio": () => (/* binding */ ZcatRadio)
+/* harmony export */ });
+/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_text_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-text.js */ 53043315);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_radiobutton_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-radiobutton.js */ 43318909);
+/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
+/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
+
+
+
+
+
+
+
+class ZcatRadio extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_3__.Component {
+  constructor() {
+    super();
+  }
+
+  data(arg1) {
+    const defaultProp = {
+      variant: '',
+      options: [
+        {
+          label: '',
+          value: '',
+          desc: '', // for secondary variant && icon class only for variant card
+          disabled: '',
+        }
+      ],
+      selected: '',
+      name: '',
+    };
+    return Object.assign(super.data({
+      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object'),
+      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object'),
+      key: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('string'),
+      formData: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object', { watch: true })
+    }), arg1);
+  }
+
+  static methods(arg1) {
+    return Object.assign(super.methods({
+      defaultOnChanged(param1, param2, param3, param4) {
+        if (this.getMethods('onChanged')) {
+          this.executeMethod('onChanged', param1, param2, param3, param4);
+        }
+      },
+      async customLbindForRadioButton(methodName, value, ...args) {
+        const zcatProp = this.getData('zcatProp');
+        const formData = this.getData('formData');
+        const key = this.getData('key');
+        const self = this.getData('self');
+
+        if (zcatProp && value) {
+          // Update the zcatProp object when a value is selected
+          this.$addon.objectUtils(zcatProp, 'add', 'selected', value);
+        }
+
+        if (zcatProp && key) {
+          // Sync zcatProp.selected → formData.key
+          this.setData(`formData.${key}`, zcatProp.selected);
+        }
+
+        // If a method name is passed, execute it asynchronously
+        if (methodName && typeof this.executeMethod === 'function') {
+          await self.executeMethod(methodName, ...args);
+        }
+      }
+    }), arg1);
+  }
+
+  static actions(arg1) {
+    return Object.assign(super.actions({}), arg1);
+  }
+
+  // static observers() {
+  //   //  async function userObjToZcatProp() {
+  //   //   debugger
+  //   //   const zcatProp = this.getData('zcatProp');
+  //   //   const formData = this.getData('formData');
+  //   //   const key = this.getData('key');
+
+  //   //   if (formData && key) {
+  //   //     // Update zcatProp when user changes formData[key]
+  //   //     this.$addon.objectUtils(zcatProp, 'add', 'selected', formData[key]);
+  //   //   }
+  //   // }
+
+  //   async function zcatPropToUserObj() {
+  //     debugger
+  //     const zcatProp = this.getData('zcatProp');
+  //     const formData = this.getData('formData');
+  //     const key = this.getData('key');
+
+  //     if (zcatProp && key) {
+  //       // Update user formData when zcatProp.selected changes
+  //       this.setData(`formData.${key}`, zcatProp.selected);
+  //     }
+  //   }
+
+  //   return {
+  //     // userObjToZcatProp: userObjToZcatProp.observes('formData.*'),        // user → zcatProp
+  //     zcatPropToUserObj: zcatPropToUserObj.observes('zcatProp.selected') // zcatProp → user
+  //   };
+  // }
+
+  _() {
+    _;
+  }
+}
+
+ZcatRadio._template = "<template tag-name=\"zcat-radio\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.infoIcon.yield,'||',zcatProp.infoIcon.value)}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-hovercard zcat-prop=\"{{zcatProp.infoIcon}}\"> <template is=\"yield\" yield-name=\"{{zcatProp.infoIcon.yield}}\"> <lyte-yield yield-name=\"{{zcatProp.infoIcon.yield}}\"></lyte-yield> </template> </zcat-hovercard></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.label}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{expHandlers(zcatProp.disabled,'?:','input-field-disabled','')}}\"> <p class=\"{{expHandlers(zcatProp.label_class,'?:',zcatProp.label_class,'zcat-input-label')}} zcat-input-label-default\"> {{zcatProp.label}} <span class=\"optional-label\">{{expHandlers(expHandlers(zcatProp.isOptional,'&amp;&amp;',zcatProp.label),'?:',' (Optional)','')}}</span> </p> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.infoIcon.id}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-w12 zcat-h12 zcat-cP\" id=\"tooltipInfoMsg{{zcatProp.infoIcon.id}}\" lyte-hovercard=\"true\"> <zcat-icon class=\"zcat-mb-2 zcat-input-label-stroke\" name=\"info\" width=\"12\" height=\"12\" stroke=\"var(--zcat-inputField-icon-label)\" strokewidth=\"1.3\"> </zcat-icon> </div></template></template> </div></template></template> <div class=\"zcat-dF zcat-direction-column zcat-gap-10 zcat-w100p\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(zcatProp.variant,'===','primary')}}\" lc-id=\"lc_id_0\"> <div class=\"{{zcatProp.class}} zcat-dF zcat-align-center zcat-gap-24\"> <template items=\"{{zcatProp.options}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-radiobutton id=\"{{item.value}}\" data-zcqa=\"{{item.zcqa}}\" lt-prop-label=\"{{item.label}}\" class=\"{{expHandlers(item.label,'?:','','checkboxWutLabel')}}\" lt-prop-value=\"{{item.value}}\" lt-prop-name=\"{{zcatProp.name}}\" lt-prop-type=\"default\" lt-prop-disabled=\"{{item.disabled}}\" lt-prop-checked=\"{{expHandlers(expHandlers(formData[zcatProp.key],'===',item.value),'?:',true,false)}}\" on-before-checked=\"{{method('customLbindForRadioButton',zcatProp.onBeforeChecked,item.value)}}\" on-before-unchecked=\"{{method('customLbindForRadioButton',zcatProp.onBeforeUnchecked,item.value)}}\" on-checked=\"{{method('customLbindForRadioButton',zcatProp.onChecked,item.value)}}\" on-unchecked=\"{{method('customLbindForRadioButton',zcatProp.onUnchecked,item.value)}}\" on-changed=\"{{method('defaultOnChanged',item.value)}}\"></lyte-radiobutton></template> </div> </template><template is=\"case\" case=\"{{expHandlers(zcatProp.variant,'===','secondary')}}\" lc-id=\"lc_id_1\"> <template items=\"{{zcatProp.options}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-radiobutton lt-prop-yield=\"true\" id=\"{{item.value}}\" data-zcqa=\"{{item.zcqa}}\" lt-prop-name=\"{{zcatProp.name}}\" lt-prop-value=\"{{item.value}}\" lt-prop-disabled=\"{{item.disabled}}\" class=\"zcat-secondary-radio-button zcat-w100p primaryRadioBtn {{expHandlers(item.desc,'?:','','checkboxWutSubtxt')}} {{item.class}} {{expHandlers(expHandlers(formData[zcatProp.key],'===',item.value),'?:','selected','')}}\" lt-prop-checked=\"{{expHandlers(expHandlers(formData[zcatProp.key],'===',item.value),'?:',true,false)}}\" on-before-checked=\"{{method('customLbindForRadioButton',zcatProp.onBeforeChecked,item.value)}}\" on-before-unchecked=\"{{method('customLbindForRadioButton',zcatProp.onBeforeUnchecked,item.value)}}\" on-checked=\"{{method('customLbindForRadioButton',zcatProp.onChecked,item.value)}}\" on-unchecked=\"{{method('customLbindForRadioButton',zcatProp.onUnchecked,item.value)}}\" on-changed=\"{{method('defaultOnChanged',item.value)}}\"> <template is=\"registerYield\" yield-name=\"yield\"> <div class=\"zcat-ml-4 zcat-dF zcat-direction-column zcat-gap-2\"> <lyte-text class=\"zcat-text-14 {{expHandlers(item.desc,'?:','zcat-font-semibold','zcat-font-regular')}} zcat-color-dark1 zcat-w100p\" lt-prop-value=\"{{item.label}}\"> </lyte-text> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{item.desc}}\" is=\"case\" lc-id=\"lc_id_0\"><lyte-text class=\"zcat-text-12 zcat-color-dark2 zcat-w100p\" lt-prop-value=\"{{item.desc}}\"> </lyte-text></template></template> </div> </template> </lyte-radiobutton></template> </template></template> </div> </template>";;
+ZcatRadio._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"r","p":[0,1],"dN":[{"t":"a","p":[1]},{"t":"i","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"tX","p":[0,1,1],"cn":"lc_id_0"},{"t":"tX","p":[0,1,3,0],"cn":"lc_id_0"},{"t":"s","p":[0,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[5,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[0]},{"t":"cD","p":[0],"in":0}],"dc":[0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true},"lc_id_1":{"dN":[{"t":"a","p":[1],"cn":"lc_id_1"},{"t":"f","p":[1],"dN":[{"t":"a","p":[0]},{"t":"r","p":[0,1],"dN":[{"t":"a","p":[1,1]},{"t":"cD","p":[1,1],"in":1,"sibl":[0]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":0,"cn":"lc_id_1"}],"cdp":{"t":"a","p":[1]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true},"lc_id_1":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0","lc_id_1"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[2,1,0]}];;
+ZcatRadio._observedAttributes = ["self", "zcatProp", "key", "formData"];
+
+
+ZcatRadio.register("zcat-radio", {
+  hash: "ZcatRadio_4",
+  refHash: "C_zcat-app_app_0"
+});
+
+
+/***/ })
+
+}]);
+//# sourceMappingURL=components_javascript_zcat-radio_js.js.map

@@ -313,7 +313,7 @@ InputComp._observedAttributes = [
 
 
 InputComp.register("input-comp", {
-  hash: "InputComp_2",
+  hash: "InputComp_4",
   refHash: "C_zcat-app_app_0"
 });
 

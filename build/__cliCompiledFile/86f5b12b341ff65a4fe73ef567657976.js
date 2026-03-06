@@ -1,5 +1,6 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
 import './zcat-icon.js';
+import "../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-fileupload.js";
 import { Component } from "../../node_modules/@slyte/component/index.js";
 import { prop } from "../../node_modules/@slyte/core/index.js";
 
@@ -9,205 +10,266 @@ class ZcatFileupload extends Component {
   }
 
   data(arg1) {
+    const defaultProp = {
+      name: 'file',
+      multiple: true,
+      accept: '',
+      id: '',
+      class: '',
+      uploadMultiple: true,
+      uploadMultipleCount: Infinity,
+      fileLimit: 20000000,
+      minimumFileSize: 0,
+      totalFilesSize: '',
+      parallel: 2,
+      autoUpload: true,
+      triggerUpload: false,
+      paramName: 'files',
+      thumb: false,
+      tabindex: 1,
+      retry: 2,
+      files: [],
+      folder: false,
+      fileUnit: '',
+      digits: 0,
+      message: 'Drag file here or browse to upload',
+      chunk: false,
+      chunkSize: 2000000,
+      parallelChunkUpload: false,
+      parallelChunkCount: Infinity,
+      chunkRetry: 2,
+      ajax: '',
+      appearance: 'box',
+      disabled: false,
+      failureMessage: 'failed',
+      retryText: 'retry',
+      allowReplace: false,
+      filesCount: Infinity
+    };
     return Object.assign(super.data({
-      self: prop('object'),
-      zcatProp: prop('object', { default: {} }, { watch: true }),
-      files: prop('array', { default: [] }),
-      isDragging: prop('boolean', { default: false }),
-      errorMessage: prop('string', { default: '' })
+      zcatProp: prop('object', { watch: true }),
+      featureObj: prop('object', { watch: true }),
+      errorMessage: prop('string'),
+      uploadedIcon: prop('string', { default: 'folder' }),
+      errorObj: prop('object', { watch: true })
     }), arg1);
   }
 
-  _getAcceptTypes() {
-    let zcatProp = this.getData('zcatProp');
-    if (zcatProp && zcatProp.accept) return zcatProp.accept;
-    return '';
-  }
+  getFileIcon(file) {
+    if (!file) return 'file';
 
-  _getMaxSize() {
-    let zcatProp = this.getData('zcatProp');
-    if (zcatProp && zcatProp.maxFileSize) return zcatProp.maxFileSize;
-    return 0; // 0 = no limit
-  }
-
-  _isMultiple() {
-    let zcatProp = this.getData('zcatProp');
-    return zcatProp && zcatProp.multiple === true;
-  }
-
-  _getMaxFiles() {
-    let zcatProp = this.getData('zcatProp');
-    if (zcatProp && zcatProp.maxFiles) return zcatProp.maxFiles;
-    return 0; // 0 = no limit
-  }
-
-  _validateFile(file) {
-    let accept = this._getAcceptTypes();
-    if (accept) {
-      let types = accept.split(',').map(function(t) { return t.trim().toLowerCase(); });
-      let ext = '.' + file.name.split('.').pop().toLowerCase();
-      let mime = file.type.toLowerCase();
-      let valid = false;
-      for (let i = 0; i < types.length; i++) {
-        if (types[i] === ext || types[i] === mime || (types[i].endsWith('/*') && mime.startsWith(types[i].replace('/*', '/')))) {
-          valid = true;
-          break;
-        }
-      }
-      if (!valid) return 'File type not allowed: ' + file.name;
-    }
-    let maxSize = this._getMaxSize();
-    if (maxSize && file.size > maxSize) {
-      return 'File too large: ' + file.name + ' (max ' + this._formatSize(maxSize) + ')';
-    }
-    return null;
-  }
-
-  _formatSize(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / 1048576).toFixed(1) + ' MB';
-  }
-
-  _getFileIcon(file) {
-    let ext = file.name.split('.').pop().toLowerCase();
-    let iconMap = {
-      pdf: 'file-text', doc: 'file-text', docx: 'file-text', txt: 'file-text',
-      xls: 'file-text', xlsx: 'file-text', csv: 'file-text',
-      png: 'image', jpg: 'image', jpeg: 'image', gif: 'image', svg: 'image', webp: 'image',
-      zip: 'archive', rar: 'archive', '7z': 'archive',
-      mp4: 'video', mov: 'video', avi: 'video',
-      mp3: 'music', wav: 'music'
-    };
-    return iconMap[ext] || 'file';
-  }
-
-  _addFiles(fileList) {
-    let files = (this.getData('files') || []).slice();
-    let isMulti = this._isMultiple();
-    let maxFiles = this._getMaxFiles();
-    let errors = [];
-
-    for (let i = 0; i < fileList.length; i++) {
-      let file = fileList[i];
-      let err = this._validateFile(file);
-      if (err) {
-        errors.push(err);
-        continue;
-      }
-      if (!isMulti) {
-        files = [];
-      }
-      if (maxFiles && files.length >= maxFiles) {
-        errors.push('Maximum ' + maxFiles + ' files allowed');
-        break;
-      }
-      files.push({
-        id: Date.now() + '_' + i,
-        name: file.name,
-        size: file.size,
-        _sizeLabel: this._formatSize(file.size),
-        type: file.type,
-        icon: this._getFileIcon(file),
-        status: 'complete',
-        _raw: file
-      });
+    // Detect folder upload
+    if (file.length > 1 && file[0].webkitRelativePath !== '') {
+      return 'folder';
     }
 
-    this.setData('files', files);
-    this.setData('errorMessage', errors.length ? errors.join('; ') : '');
-
-    let self = this.getData('self');
-    let zcatProp = this.getData('zcatProp');
-    if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {
-      self.executeMethod(zcatProp.callback.name, files);
+    if (file[0].webkitRelativePath !== '') {
+      return 'folder';
     }
+
+    const mime = file[0].type?.toLowerCase() || '';
+    const name = file[0].name?.toLowerCase() || '';
+
+    // ZIP (application/zip etc.)
+    if (mime.includes('zip') || /\.(zip|rar|7z|tar|gz)$/i.test(name)) {
+      return 'file'; //zip
+    }
+
+    // Images
+    if (
+      mime.startsWith('image/') ||
+      /\.(png|jpg|jpeg|gif|bmp|webp|svg)$/i.test(name)
+    ) {
+      return 'image';
+    }
+
+    // PDF
+    if (mime === 'application/pdf' || name.endsWith('.pdf')) {
+      return 'file';
+    }
+
+    // Word
+    if (/\.docx?$/.test(name)) return 'file';
+
+    // Excel
+    if (/\.xlsx?$/.test(name)) return 'file';
+
+    // PPT
+    if (/\.pptx?$/.test(name)) return 'file';
+
+    // Default
+    return 'file';
   }
 
   static methods(arg1) {
     return Object.assign(super.methods({
-      onFileInputChange(event, lyteElement) {
-        // lyte-fileupload on-file-add fires with the FileList on the lyte element
-        let fileBucket = lyteElement ? lyteElement.getData('fileBucket') : null;
-        if (!fileBucket || !fileBucket.length) return;
-        // Build a plain FileList-like array from the newly added file(s)
-        let newFiles = [];
-        for (let i = 0; i < fileBucket.length; i++) {
-          if (fileBucket[i]._raw) {
-            newFiles.push(fileBucket[i]._raw);
-          }
+      defaultOnReject(param1, param2, param3) {
+        const zcatProp = this.getData('zcatProp');
+        let defaultErrMsg = '';
+        if (type.totalSize === 'Exceeds') {
+          defaultErrMsg = 'Accepted file size is ' + zcatProp.totalFilesSize;
+        } else if (type.type === 'Invalid_Type') {
+          defaultErrMsg = type.type;
         }
-        if (newFiles.length) {
-          this._addFiles(newFiles);
+
+        this.$addon.objectUtils(zcatProp, 'add', 'errorMessage', defaultErrMsg);
+
+        if (this.getMethods('onReject')) {
+          this.executeMethod('onReject', param1, param2, param3);
+        }
+      },
+      defaultOnSelect(fileObj, param1, param2, param3) {
+        const zcatProp = this.getData('zcatProp');
+        // if (zcatProp.errorMessage) {
+        //   // this.$addon.objectUtils(zcatProp, 'delete', 'errorMessage');
+        //   // this.setData('errorMessage', '');          
+        // }
+        const errorObject = this.getData('errorObj');
+        if(errorObject){
+            this.$addon.objectUtils(errorObject, "delete", zcatProp.key);
+        }
+        else if(this.getData('errorMessage')){
+            this.setData('errorMessage', '');
+        }
+
+        const iconName = this.getFileIcon(fileObj);
+        this.setData('uploadedIcon', iconName);
+
+        if (this.getMethods('onSelect')) {
+          this.executeMethod('onSelect', fileObj, param1, param2, param3);
+        }
+      },
+      defaultOnAdd(file, element, fileInfo) {
+        if (this.getMethods('onAdd')) {
+          this.executeMethod('onAdd', file, element, fileInfo);
+        }
+      },
+      defaultOnDrop(param1, param2, param3) {
+        if (this.getMethods('onDrop')) {
+          this.executeMethod('onDrop', param1, param2, param3);
+        }
+      }, 
+      defaultOnRemove(param1, param2, param3) {
+        if (this.getMethods('onRemove')) {
+          this.executeMethod('onRemove', param1, param2, param3);
+        }
+      },
+      defaultBeforeRender(param1, param2, param3) {        
+        if (this.getMethods('beforeRender')) {
+          this.executeMethod('beforeRender', param1, param2, param3);
+        }
+      },
+      defaultAfterRender(param1, param2, param3) {        
+        if (this.getMethods('afterRender')) {
+          this.executeMethod('afterRender', param1, param2, param3);
+        }
+      },
+      defaultOnBeforeRemove(param1, param2, param3) {        
+        if (this.getMethods('onBeforeRemove')) {
+          this.executeMethod('onBeforeRemove', param1, param2, param3);
+        }
+      },
+      defaultOnSuccess(param1, param2, param3) {        
+        if (this.getMethods('onSuccess')) {
+          this.executeMethod('onSuccess', param1, param2, param3);
+        }
+      },
+      defaultOnFailure(param1, param2, param3) {        
+        if (this.getMethods('onFailure')) {
+          this.executeMethod('onFailure', param1, param2, param3);
+        }
+      },
+      defaultOnRequestSuccess(param1, param2, param3) {        
+        if (this.getMethods('onRequestSuccess')) {
+          this.executeMethod('onRequestSuccess', param1, param2, param3);
+        }
+      },
+      defaultOnRequestFailure(param1, param2, param3) {        
+        if (this.getMethods('onRequestFailure')) {
+          this.executeMethod('onRequestFailure', param1, param2, param3);
+        }
+      },
+      defaultOnFileSuccess(param1, param2, param3) {        
+        if (this.getMethods('onFileSuccess')) {
+          this.executeMethod('onFileSuccess', param1, param2, param3);
+        }
+      },
+      defaultOnFileFailure(param1, param2, param3) {        
+        if (this.getMethods('onFileFailure')) {
+          this.executeMethod('onFileFailure', param1, param2, param3);
+        }
+      },
+      defaultOnProgress(param1, param2, param3) {        
+        if (this.getMethods('onProgress')) {
+          this.executeMethod('onProgress', param1, param2, param3);
+        }
+      },
+      defaultOnRetry(param1, param2, param3) {        
+        if (this.getMethods('onRetry')) {
+          this.executeMethod('onRetry', param1, param2, param3);
+        }
+      },
+      defaultOnChunkSuccess(param1, param2, param3) {        
+        if (this.getMethods('onChunkSuccess')) {
+          this.executeMethod('onChunkSuccess', param1, param2, param3);
+        }
+      },
+      defaultOnChunkError(param1, param2, param3) {        
+        if (this.getMethods('onChunkError')) {
+          this.executeMethod('onChunkError', param1, param2, param3);
+        }
+      },
+      defaultOnBeforeSend(param1, param2, param3) {        
+        if (this.getMethods('onBeforeSend')) {
+          this.executeMethod('onBeforeSend', param1, param2, param3);
+        }
+      },
+      defaultOnSend(param1, param2, param3) {        
+        if (this.getMethods('onSend')) {
+          this.executeMethod('onSend', param1, param2, param3);
+        }
+      },
+      defaultOnDragEnter(param1, param2, param3) {        
+        if (this.getMethods('onDragEnter')) {
+          this.executeMethod('onDragEnter', param1, param2, param3);
+        }
+      },
+      defaultOnDragOver(param1, param2, param3) {        
+        if (this.getMethods('onDragOver')) {
+          this.executeMethod('onDragOver', param1, param2, param3);
+        }
+      },
+      defaultOnDragLeave(param1, param2, param3) {        
+        if (this.getMethods('onDragLeave')) {
+          this.executeMethod('onDragLeave', param1, param2, param3);
+        }
+      }, 
+      defaultOnBeforeDrop(param1, param2, param3) {        
+        if (this.getMethods('onBeforeDrop')) {
+          this.executeMethod('onBeforeDrop', param1, param2, param3);
+        }
+      },
+      defaultOnBeforePaste(param1, param2, param3) {        
+        if (this.getMethods('onBeforePaste')) {
+          this.executeMethod('onBeforePaste', param1, param2, param3);
+        }
+      },
+      defaultOnPaste(param1, param2, param3) {        
+        if (this.getMethods('onPaste')) {
+          this.executeMethod('onPaste', param1, param2, param3);
+        }
+      },
+      defaultOnBeforeOpen(param1, param2, param3) {        
+        if (this.getMethods('onBeforeOpen')) {
+          this.executeMethod('onBeforeOpen', param1, param2, param3);
         }
       }
+
     }), arg1);
   }
 
   static actions(arg1) {
-    return Object.assign(super.actions({
-
-      triggerFileInput(event) {
-        if (event) event.stopPropagation();
-        let zcatProp = this.getData('zcatProp');
-        if (zcatProp && zcatProp.disabled) return;
-        let lyteUpload = this.$node ? this.$node.querySelector('.zcat-fileupload-hidden-input') : null;
-        if (lyteUpload) lyteUpload.click();
-      },
-
-      onDragEnter(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.setData('isDragging', true);
-      },
-
-      onDragOver(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.setData('isDragging', true);
-      },
-
-      onDragLeave(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.setData('isDragging', false);
-      },
-
-      onDrop(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.setData('isDragging', false);
-        let zcatProp = this.getData('zcatProp');
-        if (zcatProp && zcatProp.disabled) return;
-        if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length) {
-          this._addFiles(event.dataTransfer.files);
-        }
-      },
-
-      removeFile(file, event) {
-        if (event) { event.stopPropagation(); event.preventDefault(); }
-        let files = (this.getData('files') || []).filter(function(f) { return f.id !== file.id; });
-        this.setData('files', files);
-        this.setData('errorMessage', '');
-
-        let self = this.getData('self');
-        let zcatProp = this.getData('zcatProp');
-        if (self && zcatProp && zcatProp.onRemove && zcatProp.onRemove.name) {
-          self.executeMethod(zcatProp.onRemove.name, file, files);
-        }
-      }
-    }), arg1);
-  }
-
-  static observers(arg1) {
-    return Object.assign(super.observers({
-      zcatPropChanged: {
-        watch: ['zcatProp'],
-        handler() {
-          // reset if prop changes entirely
-        }
-      }
-    }), arg1);
+    return Object.assign(super.actions({}), arg1);
   }
 
   _() {
@@ -215,11 +277,12 @@ class ZcatFileupload extends Component {
   }
 }
 
-ZcatFileupload._template = "<template tag-name=\"zcat-fileupload\"> <div class=\"zcat-fileupload-wrapper {{expHandlers(expHandlers(zcatProp.variant,'===','secondary'),'?:','zcat-fileupload-secondary','zcat-fileupload-primary')}} {{expHandlers(zcatProp.disabled,'?:','zcat-fileupload-disabled','')}}\"> <!-- Label Row --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.label}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-fileupload-label-row\"> <label class=\"zcat-fileupload-label\">{{zcatProp.label}}</label> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.isOptional}}\" is=\"case\" lc-id=\"lc_id_0\"> <span class=\"zcat-fileupload-optional\">(Optional)</span> </template></template> </div> </template></template> <!-- Hidden File Picker via lyte-fileupload --> <lyte-fileupload class=\"zcat-fileupload-hidden-input\" style=\"display:none\" lt-prop-multiple=\"{{expHandlers(zcatProp.multiple,'?:','true','false')}}\" lt-prop-accept=\"{{expHandlers(zcatProp.accept,'||','')}}\" lt-prop-ajax=\"{&quot;url&quot;:&quot;&quot;}\" on-file-add=\"{{method('onFileInputChange')}}\"></lyte-fileupload> <!-- === PRIMARY: Drop Zone === --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'!==','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-fileupload-dropzone {{expHandlers(isDragging,'?:','dragging','')}}\" ondragenter=\"{{action('onDragEnter')}}\" ondragover=\"{{action('onDragOver')}}\" ondragleave=\"{{action('onDragLeave')}}\" ondrop=\"{{action('onDrop')}}\" onclick=\"{{action('triggerFileInput')}}\"> <div class=\"zcat-fileupload-dropzone-content\"> <svg class=\"zcat-fileupload-upload-icon\" width=\"32\" height=\"32\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <path d=\"M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4\"></path> <polyline points=\"17 8 12 3 7 8\"></polyline> <line x1=\"12\" y1=\"3\" x2=\"12\" y2=\"15\"></line> </svg> <p class=\"zcat-fileupload-dropzone-text\"> <span class=\"zcat-fileupload-browse-link\">Click to upload</span> or drag and drop </p> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.hint}}\" is=\"case\" lc-id=\"lc_id_0\"> <p class=\"zcat-fileupload-dropzone-hint\">{{zcatProp.hint}}</p> </template></template> </div> </div> </template></template> <!-- === SECONDARY: Button trigger === --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','secondary')}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-fileupload-btn-wrap\"> <lyte-button class=\"zcat-fileupload-btn\" onclick=\"{{action('triggerFileInput')}}\" lt-prop-disabled=\"{{expHandlers(zcatProp.disabled,'?:','true','false')}}\"> <template is=\"registerYield\" yield-name=\"text\"> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <path d=\"M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4\"></path> <polyline points=\"17 8 12 3 7 8\"></polyline> <line x1=\"12\" y1=\"3\" x2=\"12\" y2=\"15\"></line> </svg> <span>{{expHandlers(zcatProp.buttonLabel,'||','Choose File')}}</span> </template> </lyte-button> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.hint}}\" is=\"case\" lc-id=\"lc_id_0\"> <span class=\"zcat-fileupload-btn-hint\">{{zcatProp.hint}}</span> </template></template> </div> </template></template> <!-- File List --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{files.length}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-fileupload-list\"> <template items=\"{{files}}\" item=\"file\" index=\"fileIdx\" is=\"for\" _new=\"true\"> <div class=\"zcat-fileupload-file\"> <div class=\"zcat-fileupload-file-icon\"> <zcat-icon name=\"{{expHandlers(file.icon,'||','file')}}\" width=\"18\" height=\"18\" stroke=\"currentColor\" stroke-width=\"1.5\"></zcat-icon> </div> <div class=\"zcat-fileupload-file-info\"> <span class=\"zcat-fileupload-file-name\">{{file.name}}</span> <span class=\"zcat-fileupload-file-size\">{{file._sizeLabel}}</span> </div> <span class=\"zcat-fileupload-file-remove\" onclick=\"{{action('removeFile',file)}}\"> <zcat-icon name=\"close\" width=\"14\" height=\"14\" stroke=\"currentColor\" stroke-width=\"2\"></zcat-icon> </span> </div> </template> </div> </template></template> <!-- Error Message --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{errorMessage}}\" is=\"case\" lc-id=\"lc_id_0\"> <div class=\"zcat-fileupload-error-msg\">{{errorMessage}}</div> </template></template> </div> </template><style>/* ==============================\n   ZCAT File Upload Component\n   ============================== */\n\nzcat-fileupload * { box-sizing: border-box; }\n\n.zcat-fileupload-wrapper {\n  display: flex;\n  flex-direction: column;\n  font-family: var(--zcat-font-family-primary);\n  width: 100%;\n}\n\n/* Label */\n.zcat-fileupload-label-row {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  margin-bottom: 6px;\n}\n.zcat-fileupload-label {\n  font-size: 13px;\n  font-weight: 500;\n  color: var(--zcat-inputField-text-label);\n}\n.zcat-fileupload-optional {\n  font-size: 12px;\n  color: var(--zcat-inputField-text-optional);\n}\n\n/* === PRIMARY: Drop Zone === */\n.zcat-fileupload-dropzone {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 140px;\n  padding: 24px;\n  border: 2px dashed var(--zcat-body-border);\n  border-radius: 6px;\n  background: var(--zcat-inputField-bg-default);\n  cursor: pointer;\n  transition: border-color 0.2s, background 0.2s;\n}\n.zcat-fileupload-dropzone:hover {\n  border-color: var(--zcat-inputField-border-hover);\n  background: var(--zcat-inputField-bg-hover);\n}\n.zcat-fileupload-dropzone.dragging {\n  border-color: var(--zcat-btn-fill-bg-primary-default);\n  background: var(--zcat-btn-outline-bg-primaryHover);\n}\n.zcat-fileupload-dropzone-content {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 8px;\n  text-align: center;\n}\n.zcat-fileupload-upload-icon {\n  color: var(--zcat-inputField-icon-placeholder);\n}\n.zcat-fileupload-dropzone.dragging .zcat-fileupload-upload-icon {\n  color: var(--zcat-btn-fill-bg-primary-default);\n}\n.zcat-fileupload-dropzone-text {\n  margin: 0;\n  font-size: 14px;\n  color: var(--zcat-body-text-secondary);\n}\n.zcat-fileupload-browse-link {\n  color: var(--zcat-btn-fill-bg-primary-default);\n  font-weight: 500;\n  cursor: pointer;\n}\n.zcat-fileupload-browse-link:hover {\n  text-decoration: underline;\n}\n.zcat-fileupload-dropzone-hint {\n  margin: 0;\n  font-size: 12px;\n  color: var(--zcat-inputField-text-placeholder);\n}\n\n/* === SECONDARY: Button Mode === */\n.zcat-fileupload-btn-wrap {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n.zcat-fileupload-btn {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  padding: 0 14px;\n  height: 36px;\n  font-size: 14px;\n  font-weight: 500;\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-btn-outline-text-primary-default);\n  background: transparent;\n  border: 1px solid var(--zcat-btn-outline-border-primary-default);\n  border-radius: 6px;\n  cursor: pointer;\n  transition: background 0.15s, color 0.15s, border-color 0.15s;\n}\n.zcat-fileupload-btn:hover {\n  color: var(--zcat-btn-outline-text-primary-hover);\n  border-color: var(--zcat-btn-outline-border-primary-hover);\n  background: var(--zcat-btn-outline-bg-primaryHover);\n}\n.zcat-fileupload-btn:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n.zcat-fileupload-btn svg { stroke: currentColor; }\n.zcat-fileupload-btn-hint {\n  font-size: 12px;\n  color: var(--zcat-inputField-text-placeholder);\n}\n\n/* === File List === */\n.zcat-fileupload-list {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  margin-top: 10px;\n}\n.zcat-fileupload-file {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 8px 12px;\n  background: var(--zcat-inputField-bg-default);\n  border: 1px solid var(--zcat-body-border);\n  border-radius: 6px;\n  transition: background 0.12s;\n}\n.zcat-fileupload-file:hover {\n  background: var(--zcat-btn-grey-bg-hover);\n}\n.zcat-fileupload-file-icon {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 32px;\n  height: 32px;\n  border-radius: 6px;\n  background: var(--zcat-btn-grey-bg-hover);\n  color: var(--zcat-inputField-icon-active);\n  flex-shrink: 0;\n}\n.zcat-fileupload-file-info {\n  flex: 1;\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n}\n.zcat-fileupload-file-name {\n  font-size: 13px;\n  font-weight: 500;\n  color: var(--zcat-body-text-primary);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.zcat-fileupload-file-size {\n  font-size: 11px;\n  color: var(--zcat-inputField-text-placeholder);\n}\n.zcat-fileupload-file-remove {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  cursor: pointer;\n  color: var(--zcat-inputField-icon-placeholder);\n  transition: background 0.12s, color 0.12s;\n  flex-shrink: 0;\n}\n.zcat-fileupload-file-remove:hover {\n  background: var(--zcat-inputField-bg-error, rgba(255, 0, 0, 0.06));\n  color: var(--zcat-inputField-text-error);\n}\n\n/* === Disabled === */\n.zcat-fileupload-disabled .zcat-fileupload-dropzone {\n  opacity: 0.5;\n  cursor: not-allowed;\n  pointer-events: none;\n}\n.zcat-fileupload-disabled .zcat-fileupload-label {\n  color: var(--zcat-inputField-text-disabled);\n}\n\n/* Error */\n.zcat-fileupload-error-msg {\n  position: relative;\n  margin-top: 4px;\n  font-size: 12px;\n  color: var(--zcat-inputField-text-error);\n  line-height: 16px;\n  font-family: var(--zcat-font-family-primary);\n}\n</style>";;
-ZcatFileupload._dynamicNodes = [{"t":"a","p":[1]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,1,0],"cn":"lc_id_0"},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":5,"sibl":[4]},{"t":"a","p":[1,7]},{"t":"cD","p":[1,7],"in":4,"sibl":[3]},{"t":"s","p":[1,11],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"s","p":[1,1,5],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":3,"sibl":[2]},{"t":"s","p":[1,15],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"r","p":[1,1,1],"dN":[{"t":"tX","p":[3,0]}],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"cD","p":[1,1],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"s","p":[1,19],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[1,1,1]},{"t":"cD","p":[1,1,1],"in":1,"sibl":[0]},{"t":"tX","p":[1,3,1,0]},{"t":"tX","p":[1,3,3,0]},{"t":"a","p":[1,5]},{"t":"cD","p":[1,5,1],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[1,23],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":0},{"type":"dc","trans":true,"hc":true,"p":[4,2,1]}];;
-ZcatFileupload._observedAttributes = ["self", "zcatProp", "files", "isDragging", "errorMessage"];
+ZcatFileupload._template = "<template tag-name=\"zcat-fileupload\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.infoIcon.yield,'||',zcatProp.infoIcon.value)}}\" is=\"case\" lc-id=\"lc_id_0\"><zcat-hovercard zcat-prop=\"{{zcatProp.infoIcon}}\"> <template is=\"yield\" yield-name=\"{{zcatProp.infoIcon.yield}}\"> <lyte-yield yield-name=\"{{zcatProp.infoIcon.yield}}\"></lyte-yield> </template> </zcat-hovercard></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.label}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{expHandlers(zcatProp.disabled,'?:','input-field-disabled','')}}\"> <p class=\"{{expHandlers(zcatProp.label_class,'?:',zcatProp.label_class,'zcat-input-label')}} zcat-input-label-default\"> {{zcatProp.label}} <span class=\"optional-label\">{{expHandlers(expHandlers(zcatProp.isOptional,'&amp;&amp;',zcatProp.label),'?:',' (Optional)','')}}</span> </p> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{zcatProp.infoIcon.id}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-w12 zcat-h12 zcat-cP\" id=\"tooltipInfoMsg{{zcatProp.infoIcon.id}}\" lyte-hovercard=\"true\"> <zcat-icon class=\"zcat-mb-2 zcat-input-label-stroke\" name=\"info\" width=\"12\" height=\"12\" stroke=\"var(--zcat-inputField-icon-label)\" strokewidth=\"1.3\"> </zcat-icon> </div></template></template> </div></template></template> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(expHandlers(zcatProp.variant,'===','primary'),'&amp;&amp;',expHandlers(zcatProp.type,'===','single'))}}\" lc-id=\"lc_id_0\"> <lyte-fileupload data-zcqa=\"{{zcatProp.zcqa}}\" lt-prop-yield=\"true\" lt-prop-name=\"{{zcatProp.name}}\" lt-prop-multiple=\"{{zcatProp.multiple}}\" lt-prop-accept=\"{{expHandlers(zcatProp.accept,'?:',zcatProp.accept,'application/zip')}}\" id=\"{{zcatProp.id}}\" lt-prop-id=\"{{zcatProp.id}}\" lt-prop-class=\"{{zcatProp.class}}\" error-message=\"{{expHandlers(errorObj[zcatProp.key],'||',errorMessage)}}\" class=\"{{zcatProp.class}} {{expHandlers(expHandlers(errorObj[zcatProp.key],'||',errorMessage),'?:','zcat-invalid','vertical')}} {{expHandlers(zcatProp.loading,'?:','fileupload-loading','')}}\" lt-prop-upload-multiple=\"{{zcatProp.uploadMultiple}}\" lt-prop-upload-multiple-count=\"{{zcatProp.uploadMultipleCount}}\" lt-prop-file-limit=\"{{zcatProp.fileLimit}}\" lt-prop-minimum-file-size=\"{{zcatProp.minimumFileSize}}\" lt-prop-total-files-size=\"{{zcatProp.totalFilesSize}}\" lt-prop-parallel=\"{{zcatProp.parallel}}\" lt-prop-auto-upload=\"{{zcatProp.autoUpload}}\" lt-prop-trigger-upload=\"{{zcatProp.triggerUpload}}\" lt-prop-param-name=\"{{zcatProp.paramName}}\" lt-prop-thumb=\"{{zcatProp.thumb}}\" lt-prop-tabindex=\"{{zcatProp.tabindex}}\" lt-prop-retry=\"{{zcatProp.retry}}\" lt-prop-files=\"{{lbind(zcatProp.files)}}\" lt-prop-folder=\"{{zcatProp.folder}}\" lt-prop-file-unit=\"{{zcatProp.fileUnit}}\" lt-prop-digits=\"{{zcatProp.digits}}\" lt-prop-message=\"{{zcatProp.message}}\" lt-prop-chunk=\"{{zcatProp.chunk}}\" lt-prop-chunk-size=\"{{zcatProp.chunkSize}}\" lt-prop-parallel-chunk-upload=\"{{zcatProp.parallelChunkUpload}}\" lt-prop-parallel-chunk-count=\"{{zcatProp.parallelChunkCount}}\" lt-prop-chunk-retry=\"{{zcatProp.chunkRetry}}\" lt-prop-ajax=\"{{zcatProp.ajax}}\" lt-prop-appearance=\"{{zcatProp.appearance}}\" lt-prop-disabled=\"{{zcatProp.disabled}}\" lt-prop-failure-message=\"{{zcatProp.failureMessage}}\" lt-prop-retry-text=\"{{zcatProp.retryText}}\" lt-prop-allow-replace=\"{{zcatProp.allowReplace}}\" lt-prop-files-count=\"{{expHandlers(zcatProp.filesCount,'?:',zcatProp.filesCount,100000)}}\" before-render=\"{{method('defaultBeforeRender')}}\" after-render=\"{{method('defaultAfterRender')}}\" on-reject=\"{{method(&quot;defaultOnReject&quot;)}}\" on-add=\"{{method(&quot;defaultOnAdd&quot;)}}\" on-before-remove=\"{{method('defaultOnBeforeRemove')}}\" on-remove=\"{{method('defaultOnRemove')}}\" on-success=\"{{method('defaultOnSuccess')}}\" on-failure=\"{{method('defaultOnFailure')}}\" on-request-success=\"{{method('defaultOnRequestSuccess')}}\" on-request-failure=\"{{method('defaultOnRequestFailure')}}\" on-file-success=\"{{method('defaultOnFileSuccess')}}\" on-file-failure=\"{{method('defaultOnFileFailure')}}\" on-progress=\"{{method('defaultOnProgress')}}\" on-retry=\"{{method('defaultOnRetry')}}\" on-chunk-success=\"{{method('defaultOnChunkSuccess')}}\" on-chunk-error=\"{{method('defaultOnChunkError')}}\" on-before-send=\"{{method('defaultOnBeforeSend')}}\" on-send=\"{{method('defaultOnSend')}}\" on-drag-enter=\"{{method('defaultOnDragEnter')}}\" on-drag-over=\"{{method('defaultOnDragOver')}}\" on-drag-leave=\"{{method('defaultOnDragLeave')}}\" on-before-drop=\"{{method('defaultOnBeforeDrop')}}\" on-drop=\"{{method('defaultOnDrop')}}\" on-before-paste=\"{{method('defaultOnBeforePaste')}}\" on-paste=\"{{method('defaultOnPaste')}}\" on-before-open=\"{{method('defaultOnBeforeOpen')}}\" on-select=\"{{method('defaultOnSelect')}}\"> <template is=\"registerYield\" yield-name=\"file\"> <lyte-file-select-area> <lyte-file-message class=\"lyteInputFileUpd {{if(queueList.length,'lyteHide','')}}\"> <zcat-icon width=\"16\" height=\"16\" stroke=\"var(--zcat-inputField-icon-placeholder)\" name=\"{{expHandlers(zcatProp.loading,'?:','loading-sun','upload-cloud')}}\"> </zcat-icon> <span class=\"placeholder\"> {{expHandlers(zcatProp.loading,'?:',expHandlers(zcatProp.loadingPlaceholder,'?:',zcatProp.loadingPlaceholder,\"Hold on your file has been uploading\"),expHandlers(zcatProp.placeholder,'?:',expHandlers(zcatProp.placeholder,'+',expHandlers(expHandlers(zcatProp.isOptional,'&amp;&amp;',expHandlers(zcatProp.label,'!')),'?:',\" (Optional)\",\"\")),\"Drag and drop, or browse to upload your file\"))}} </span> </lyte-file-message> <div class=\"lyteFileUpdList\"> <template is=\"for\" _jsp=\"true\" items=\"{{queueList}}\" item=\"item\" index=\"index\"> <div class=\"lyteInputFileUpd {{item.status}}\"> <div class=\"zcat-dF zcat-gap-4 zcat-align-center\"> <zcat-icon width=\"16\" height=\"16\" stroke=\"var(--zcat-inputField-icon-active)\" name=\"{{uploadedIcon}}\"> </zcat-icon> <p class=\"lyteuploadedfilename\">{{item.name}}</p> </div> <div class=\"zcat-p-4 zcat-dF zcat-align-center\"> <lyte-file-close data-value=\"{{item.id}}\" class=\"{{item.status}}\" data-zcqa=\"{{item.zcqa}}\"> </lyte-file-close> </div> </div> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(item.status,'==',&quot;error&quot;)}}\" lc-id=\"lc_id_0\"> <lyte-file-retry data-value=\"{{item.id}}\"> <span class=\"lyteFileUpdFailMsg\"> {{zcatProp.failureMessage}} </span> <span class=\"lyteFileUpdRetryMsg\"> {{zcatProp.retryText}} </span> </lyte-file-retry> </template></template> </template> </div> </lyte-file-select-area> </template> </lyte-fileupload> </template><template is=\"case\" case=\"{{expHandlers(expHandlers(zcatProp.variant,'===','primary'),'&amp;&amp;',expHandlers(zcatProp.type,'===','multiple'))}}\" lc-id=\"lc_id_1\"> <lyte-fileupload data-zcqa=\"{{zcatProp.zcqa}}\" lt-prop-yield=\"true\" lt-prop-name=\"{{zcatProp.name}}\" lt-prop-multiple=\"{{zcatProp.multiple}}\" lt-prop-accept=\"{{expHandlers(zcatProp.accept,'?:',zcatProp.accept,'application/zip')}}\" id=\"{{zcatProp.id}}\" lt-prop-id=\"{{zcatProp.id}}\" lt-prop-class=\"{{zcatProp.class}}\" error-message=\"{{expHandlers(errorObj[zcatProp.key],'||',errorMessage)}}\" class=\"{{expHandlers(expHandlers(zcatProp.type,'===','multiple'),'?:','multi-file-upload','')}} {{zcatProp.class}} {{expHandlers(expHandlers(errorObj[zcatProp.key],'||',errorMessage),'?:','zcat-invalid','vertical')}} {{expHandlers(zcatProp.loading,'?:','fileupload-loading','')}}\" lt-prop-upload-multiple=\"{{zcatProp.uploadMultiple}}\" lt-prop-upload-multiple-count=\"{{zcatProp.uploadMultipleCount}}\" lt-prop-file-limit=\"{{zcatProp.fileLimit}}\" lt-prop-minimum-file-size=\"{{zcatProp.minimumFileSize}}\" lt-prop-total-files-size=\"{{zcatProp.totalFilesSize}}\" lt-prop-parallel=\"{{zcatProp.parallel}}\" lt-prop-auto-upload=\"{{zcatProp.autoUpload}}\" lt-prop-trigger-upload=\"{{zcatProp.triggerUpload}}\" lt-prop-param-name=\"{{zcatProp.paramName}}\" lt-prop-thumb=\"{{zcatProp.thumb}}\" lt-prop-tabindex=\"{{zcatProp.tabindex}}\" lt-prop-retry=\"{{zcatProp.retry}}\" lt-prop-files=\"{{lbind(zcatProp.files)}}\" lt-prop-folder=\"{{zcatProp.folder}}\" lt-prop-file-unit=\"{{zcatProp.fileUnit}}\" lt-prop-digits=\"{{zcatProp.digits}}\" lt-prop-message=\"{{zcatProp.message}}\" lt-prop-chunk=\"{{zcatProp.chunk}}\" lt-prop-chunk-size=\"{{zcatProp.chunkSize}}\" lt-prop-parallel-chunk-upload=\"{{zcatProp.parallelChunkUpload}}\" lt-prop-parallel-chunk-count=\"{{zcatProp.parallelChunkCount}}\" lt-prop-chunk-retry=\"{{zcatProp.chunkRetry}}\" lt-prop-ajax=\"{{zcatProp.ajax}}\" lt-prop-appearance=\"{{zcatProp.appearance}}\" lt-prop-disabled=\"{{zcatProp.disabled}}\" lt-prop-failure-message=\"{{zcatProp.failureMessage}}\" lt-prop-retry-text=\"{{zcatProp.retryText}}\" lt-prop-allow-replace=\"{{zcatProp.allowReplace}}\" lt-prop-files-count=\"{{expHandlers(zcatProp.filesCount,'?:',zcatProp.filesCount,100000)}}\" before-render=\"{{method('defaultBeforeRender')}}\" after-render=\"{{method('defaultAfterRender')}}\" on-reject=\"{{method(&quot;defaultOnReject&quot;)}}\" on-add=\"{{method(&quot;defaultOnAdd&quot;)}}\" on-before-remove=\"{{method('defaultOnBeforeRemove')}}\" on-remove=\"{{method('defaultOnRemove')}}\" on-success=\"{{method('defaultOnSuccess')}}\" on-failure=\"{{method('defaultOnFailure')}}\" on-request-success=\"{{method('defaultOnRequestSuccess')}}\" on-request-failure=\"{{method('defaultOnRequestFailure')}}\" on-file-success=\"{{method('defaultOnFileSuccess')}}\" on-file-failure=\"{{method('defaultOnFileFailure')}}\" on-progress=\"{{method('defaultOnProgress')}}\" on-retry=\"{{method('defaultOnRetry')}}\" on-chunk-success=\"{{method('defaultOnChunkSuccess')}}\" on-chunk-error=\"{{method('defaultOnChunkError')}}\" on-before-send=\"{{method('defaultOnBeforeSend')}}\" on-send=\"{{method('defaultOnSend')}}\" on-drag-enter=\"{{method('defaultOnDragEnter')}}\" on-drag-over=\"{{method('defaultOnDragOver')}}\" on-drag-leave=\"{{method('defaultOnDragLeave')}}\" on-before-drop=\"{{method('defaultOnBeforeDrop')}}\" on-drop=\"{{method('defaultOnDrop')}}\" on-before-paste=\"{{method('defaultOnBeforePaste')}}\" on-paste=\"{{method('defaultOnPaste')}}\" on-before-open=\"{{method('defaultOnBeforeOpen')}}\" on-select=\"{{method('defaultOnSelect')}}\"> <template is=\"registerYield\" yield-name=\"file\"> <lyte-file-select-area class=\"{{if(queueList.length,'fileUploaded','')}}\"> <lyte-file-message class=\"lyteInputFileUpd {{if(queueList.length,'fileUploaded','')}}\"> <zcat-icon width=\"16\" height=\"16\" stroke=\"var(--zcat-inputField-icon-placeholder)\" name=\"{{expHandlers(zcatProp.loading,'?:','loading-sun','upload-cloud')}}\"> </zcat-icon> <span class=\"placeholder\"> {{expHandlers(zcatProp.loading,'?:',expHandlers(zcatProp.loadingPlaceholder,'?:',zcatProp.loadingPlaceholder,\"Hold on your file has been uploading\"),expHandlers(zcatProp.placeholder,'+',expHandlers(expHandlers(zcatProp.isOptional,'&amp;&amp;',expHandlers(zcatProp.label,'!')),'?:',\" (Optional)\",\"\")))}} </span> </lyte-file-message> <div class=\"lyteFileUpdList\"> <template is=\"for\" _jsp=\"true\" items=\"{{queueList}}\" item=\"item\" index=\"index\"> <div class=\"lyteInputFileUpd {{item.status}}\"> <div class=\"zcat-dF zcat-gap-4 zcat-align-center\"> <zcat-icon width=\"16\" height=\"16\" stroke=\"var(--zcat-inputField-icon-active)\" name=\"{{uploadedIcon}}\"> </zcat-icon> <p class=\"lyteuploadedfilename\">{{item.name}}</p> </div> <div class=\"zcat-p-4 zcat-dF zcat-align-center\"> <lyte-file-close data-value=\"{{item.id}}\" class=\"{{item.status}}\" data-zcqa=\"{{item.zcqa}}\"> </lyte-file-close> </div> </div> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(item.status,'==',&quot;error&quot;)}}\" lc-id=\"lc_id_0\"> <lyte-file-retry data-value=\"{{item.id}}\"> <span class=\"lyteFileUpdFailMsg\"> {{zcatProp.failureMessage}} </span> <span class=\"lyteFileUpdRetryMsg\"> {{zcatProp.retryText}} </span> </lyte-file-retry> </template></template> </template> </div> </lyte-file-select-area> </template> </lyte-fileupload> </template><template is=\"case\" case=\"{{expHandlers(expHandlers(zcatProp.variant,'===','secondary'),'&amp;&amp;',expHandlers(zcatProp.type,'===','single'))}}\" lc-id=\"lc_id_2\"> <lyte-fileupload data-zcqa=\"{{zcatProp.zcqa}}\" lt-prop-yield=\"true\" lt-prop-name=\"{{zcatProp.name}}\" lt-prop-multiple=\"{{zcatProp.multiple}}\" lt-prop-accept=\"{{expHandlers(zcatProp.accept,'?:',zcatProp.accept,'application/zip')}}\" id=\"{{zcatProp.id}}\" lt-prop-id=\"{{zcatProp.id}}\" lt-prop-class=\"{{zcatProp.class}}\" error-message=\"{{expHandlers(errorObj[zcatProp.key],'||',errorMessage)}}\" class=\"{{zcatProp.class}} {{expHandlers(expHandlers(errorObj[zcatProp.key],'||',errorMessage),'?:','zcat-invalid','vertical')}} {{expHandlers(zcatProp.loading,'?:','fileupload-loading','')}}\" lt-prop-upload-multiple=\"{{zcatProp.uploadMultiple}}\" lt-prop-upload-multiple-count=\"{{zcatProp.uploadMultipleCount}}\" lt-prop-file-limit=\"{{zcatProp.fileLimit}}\" lt-prop-minimum-file-size=\"{{zcatProp.minimumFileSize}}\" lt-prop-total-files-size=\"{{zcatProp.totalFilesSize}}\" lt-prop-parallel=\"{{zcatProp.parallel}}\" lt-prop-auto-upload=\"{{zcatProp.autoUpload}}\" lt-prop-trigger-upload=\"{{zcatProp.triggerUpload}}\" lt-prop-param-name=\"{{zcatProp.paramName}}\" lt-prop-thumb=\"{{zcatProp.thumb}}\" lt-prop-tabindex=\"{{zcatProp.tabindex}}\" lt-prop-retry=\"{{zcatProp.retry}}\" lt-prop-files=\"{{lbind(zcatProp.files)}}\" lt-prop-folder=\"{{zcatProp.folder}}\" lt-prop-file-unit=\"{{zcatProp.fileUnit}}\" lt-prop-digits=\"{{zcatProp.digits}}\" lt-prop-message=\"{{zcatProp.message}}\" lt-prop-chunk=\"{{zcatProp.chunk}}\" lt-prop-chunk-size=\"{{zcatProp.chunkSize}}\" lt-prop-parallel-chunk-upload=\"{{zcatProp.parallelChunkUpload}}\" lt-prop-parallel-chunk-count=\"{{zcatProp.parallelChunkCount}}\" lt-prop-chunk-retry=\"{{zcatProp.chunkRetry}}\" lt-prop-ajax=\"{{zcatProp.ajax}}\" lt-prop-appearance=\"{{zcatProp.appearance}}\" lt-prop-disabled=\"{{zcatProp.disabled}}\" lt-prop-failure-message=\"{{zcatProp.failureMessage}}\" lt-prop-retry-text=\"{{zcatProp.retryText}}\" lt-prop-allow-replace=\"{{zcatProp.allowReplace}}\" lt-prop-files-count=\"{{expHandlers(zcatProp.filesCount,'?:',zcatProp.filesCount,100000)}}\" before-render=\"{{method('defaultBeforeRender')}}\" after-render=\"{{method('defaultAfterRender')}}\" on-reject=\"{{method(&quot;defaultOnReject&quot;)}}\" on-add=\"{{method(&quot;defaultOnAdd&quot;)}}\" on-before-remove=\"{{method('defaultOnBeforeRemove')}}\" on-remove=\"{{method('defaultOnRemove')}}\" on-success=\"{{method('defaultOnSuccess')}}\" on-failure=\"{{method('defaultOnFailure')}}\" on-request-success=\"{{method('defaultOnRequestSuccess')}}\" on-request-failure=\"{{method('defaultOnRequestFailure')}}\" on-file-success=\"{{method('defaultOnFileSuccess')}}\" on-file-failure=\"{{method('defaultOnFileFailure')}}\" on-progress=\"{{method('defaultOnProgress')}}\" on-retry=\"{{method('defaultOnRetry')}}\" on-chunk-success=\"{{method('defaultOnChunkSuccess')}}\" on-chunk-error=\"{{method('defaultOnChunkError')}}\" on-before-send=\"{{method('defaultOnBeforeSend')}}\" on-send=\"{{method('defaultOnSend')}}\" on-drag-enter=\"{{method('defaultOnDragEnter')}}\" on-drag-over=\"{{method('defaultOnDragOver')}}\" on-drag-leave=\"{{method('defaultOnDragLeave')}}\" on-before-drop=\"{{method('defaultOnBeforeDrop')}}\" on-drop=\"{{method('defaultOnDrop')}}\" on-before-paste=\"{{method('defaultOnBeforePaste')}}\" on-paste=\"{{method('defaultOnPaste')}}\" on-before-open=\"{{method('defaultOnBeforeOpen')}}\" on-select=\"{{method('defaultOnSelect')}}\"> <template is=\"registerYield\" yield-name=\"file\"> <lyte-file-select-area> <lyte-file-message class=\"lyteFileUpd {{if(queueList.length,'lyteHide','')}}\"> <zcat-icon width=\"24\" height=\"24\" stroke=\"var(--zcat-inputField-icon-placeholder)\" name=\"{{expHandlers(zcatProp.loading,'?:','loading-sun','upload-cloud')}}\"> </zcat-icon> <span class=\"placeholder\"> {{expHandlers(zcatProp.loading,'?:',expHandlers(zcatProp.loadingPlaceholder,'?:',zcatProp.loadingPlaceholder,\"Hold on your file has been uploading\"),expHandlers(zcatProp.placeholder,'+',expHandlers(expHandlers(zcatProp.isOptional,'&amp;&amp;',expHandlers(zcatProp.label,'!')),'?:',\" (Optional)\",\"\")))}} </span> </lyte-file-message> <div class=\"lyteFileUpdList\"> <template is=\"for\" _jsp=\"true\" items=\"{{queueList}}\" item=\"item\" index=\"index\"> <div class=\"lyteFileUploadedList {{item.status}}\"> <zcat-icon width=\"24\" height=\"24\" stroke=\"var(--zcat-inputField-icon-active)\" name=\"{{uploadedIcon}}\"> </zcat-icon> <div class=\"zcat-dF zcat-align-center zcat-gap-4\"> <span class=\"lyteuploadedfilename\"> {{item.name}} </span> <lyte-file-close data-value=\"{{item.id}}\" class=\"{{item.status}}\" data-zcqa=\"{{item.zcqa}}\"> </lyte-file-close> </div> </div> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(item.status,'==',&quot;error&quot;)}}\" lc-id=\"lc_id_0\"> <lyte-file-retry data-value=\"{{item.id}}\"> <span class=\"lyteFileUpdFailMsg\"> {{zcatProp.failureMessage}} </span> <span class=\"lyteFileUpdRetryMsg\"> {{zcatProp.retryText}} </span> </lyte-file-retry> </template></template> </template> </div> </lyte-file-select-area> </template> </lyte-fileupload> </template><template is=\"case\" case=\"{{expHandlers(expHandlers(zcatProp.variant,'===','secondary'),'&amp;&amp;',expHandlers(zcatProp.type,'===','multiple'))}}\" lc-id=\"lc_id_3\"> <lyte-fileupload data-zcqa=\"{{zcatProp.zcqa}}\" lt-prop-yield=\"true\" lt-prop-name=\"{{zcatProp.name}}\" lt-prop-multiple=\"{{zcatProp.multiple}}\" lt-prop-accept=\"{{expHandlers(zcatProp.accept,'?:',zcatProp.accept,'application/zip')}}\" id=\"{{zcatProp.id}}\" lt-prop-id=\"{{zcatProp.id}}\" lt-prop-class=\"{{zcatProp.class}}\" error-message=\"{{expHandlers(errorObj[zcatProp.key],'||',errorMessage)}}\" class=\"{{expHandlers(expHandlers(zcatProp.type,'===','multiple'),'?:','multi-file-upload','')}} {{zcatProp.class}} {{expHandlers(expHandlers(errorObj[zcatProp.key],'||',errorMessage),'?:','zcat-invalid','vertical')}} {{expHandlers(zcatProp.loading,'?:','fileupload-loading','')}}\" lt-prop-upload-multiple=\"{{zcatProp.uploadMultiple}}\" lt-prop-upload-multiple-count=\"{{zcatProp.uploadMultipleCount}}\" lt-prop-file-limit=\"{{zcatProp.fileLimit}}\" lt-prop-minimum-file-size=\"{{zcatProp.minimumFileSize}}\" lt-prop-total-files-size=\"{{zcatProp.totalFilesSize}}\" lt-prop-parallel=\"{{zcatProp.parallel}}\" lt-prop-auto-upload=\"{{zcatProp.autoUpload}}\" lt-prop-trigger-upload=\"{{zcatProp.triggerUpload}}\" lt-prop-param-name=\"{{zcatProp.paramName}}\" lt-prop-thumb=\"{{zcatProp.thumb}}\" lt-prop-tabindex=\"{{zcatProp.tabindex}}\" lt-prop-retry=\"{{zcatProp.retry}}\" lt-prop-files=\"{{lbind(zcatProp.files)}}\" lt-prop-folder=\"{{zcatProp.folder}}\" lt-prop-file-unit=\"{{zcatProp.fileUnit}}\" lt-prop-digits=\"{{zcatProp.digits}}\" lt-prop-message=\"{{zcatProp.message}}\" lt-prop-chunk=\"{{zcatProp.chunk}}\" lt-prop-chunk-size=\"{{zcatProp.chunkSize}}\" lt-prop-parallel-chunk-upload=\"{{zcatProp.parallelChunkUpload}}\" lt-prop-parallel-chunk-count=\"{{zcatProp.parallelChunkCount}}\" lt-prop-chunk-retry=\"{{zcatProp.chunkRetry}}\" lt-prop-ajax=\"{{zcatProp.ajax}}\" lt-prop-appearance=\"{{zcatProp.appearance}}\" lt-prop-disabled=\"{{zcatProp.disabled}}\" lt-prop-failure-message=\"{{zcatProp.failureMessage}}\" lt-prop-retry-text=\"{{zcatProp.retryText}}\" lt-prop-allow-replace=\"{{zcatProp.allowReplace}}\" lt-prop-files-count=\"{{expHandlers(zcatProp.filesCount,'?:',zcatProp.filesCount,100000)}}\" before-render=\"{{method('defaultBeforeRender')}}\" after-render=\"{{method('defaultAfterRender')}}\" on-reject=\"{{method(&quot;defaultOnReject&quot;)}}\" on-add=\"{{method(&quot;defaultOnAdd&quot;)}}\" on-before-remove=\"{{method('defaultOnBeforeRemove')}}\" on-remove=\"{{method('defaultOnRemove')}}\" on-success=\"{{method('defaultOnSuccess')}}\" on-failure=\"{{method('defaultOnFailure')}}\" on-request-success=\"{{method('defaultOnRequestSuccess')}}\" on-request-failure=\"{{method('defaultOnRequestFailure')}}\" on-file-success=\"{{method('defaultOnFileSuccess')}}\" on-file-failure=\"{{method('defaultOnFileFailure')}}\" on-progress=\"{{method('defaultOnProgress')}}\" on-retry=\"{{method('defaultOnRetry')}}\" on-chunk-success=\"{{method('defaultOnChunkSuccess')}}\" on-chunk-error=\"{{method('defaultOnChunkError')}}\" on-before-send=\"{{method('defaultOnBeforeSend')}}\" on-send=\"{{method('defaultOnSend')}}\" on-drag-enter=\"{{method('defaultOnDragEnter')}}\" on-drag-over=\"{{method('defaultOnDragOver')}}\" on-drag-leave=\"{{method('defaultOnDragLeave')}}\" on-before-drop=\"{{method('defaultOnBeforeDrop')}}\" on-drop=\"{{method('defaultOnDrop')}}\" on-before-paste=\"{{method('defaultOnBeforePaste')}}\" on-paste=\"{{method('defaultOnPaste')}}\" on-before-open=\"{{method('defaultOnBeforeOpen')}}\" on-select=\"{{method('defaultOnSelect')}}\"> <template is=\"registerYield\" yield-name=\"file\"> <lyte-file-select-area class=\"{{if(queueList.length,'fileUploaded','')}}\"> <lyte-file-message class=\"lyteFileUpd {{if(queueList.length,'fileUploaded','')}}\"> <zcat-icon width=\"24\" height=\"24\" stroke=\"var(--zcat-inputField-icon-placeholder)\" name=\"{{expHandlers(zcatProp.loading,'?:','loading-sun','upload-cloud')}}\"> </zcat-icon> <span class=\"placeholder\"> {{expHandlers(zcatProp.loading,'?:',expHandlers(zcatProp.loadingPlaceholder,'?:',zcatProp.loadingPlaceholder,\"Hold on your file has been uploading\"),expHandlers(zcatProp.placeholder,'+',expHandlers(expHandlers(zcatProp.isOptional,'&amp;&amp;',expHandlers(zcatProp.label,'!')),'?:',\" (Optional)\",\"\")))}} </span> </lyte-file-message> <div class=\"lyteFileUpdList\"> <template is=\"for\" _jsp=\"true\" items=\"{{queueList}}\" item=\"item\" index=\"index\"> <div class=\"lyteInputFileUpd {{item.status}}\"> <div class=\"zcat-dF zcat-gap-4 zcat-align-center\"> <zcat-icon width=\"16\" height=\"16\" stroke=\"var(--zcat-inputField-icon-active)\" name=\"{{uploadedIcon}}\"> </zcat-icon> <p class=\"lyteuploadedfilename\">{{item.name}}</p> </div> <div class=\"zcat-p-4 zcat-dF zcat-align-center\"> <lyte-file-close data-value=\"{{item.id}}\" class=\"{{item.status}}\" data-zcqa=\"{{item.zcqa}}\"> </lyte-file-close> </div> </div> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{expHandlers(item.status,'==',&quot;error&quot;)}}\" lc-id=\"lc_id_0\"> <lyte-file-retry data-value=\"{{item.id}}\"> <span class=\"lyteFileUpdFailMsg\"> {{zcatProp.failureMessage}} </span> <span class=\"lyteFileUpdRetryMsg\"> {{zcatProp.retryText}} </span> </lyte-file-retry> </template></template> </template> </div> </lyte-file-select-area> </template> </lyte-fileupload> </template></template> </template>";;
+ZcatFileupload._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"r","p":[0,1],"dN":[{"t":"a","p":[1]},{"t":"i","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"tX","p":[0,1,1],"cn":"lc_id_0"},{"t":"tX","p":[0,1,3,0],"cn":"lc_id_0"},{"t":"s","p":[0,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1,1]},{"t":"a","p":[1,1,1]},{"t":"cD","p":[1,1,1],"in":3,"sibl":[2]},{"t":"tX","p":[1,1,3,1]},{"t":"cD","p":[1,1],"in":2,"sibl":[1]},{"t":"a","p":[1,3,1]},{"t":"f","p":[1,3,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1,1]},{"t":"cD","p":[1,1,1],"in":2,"sibl":[1]},{"t":"tX","p":[1,1,3,0]},{"t":"a","p":[1,3,1]},{"t":"cD","p":[1,3,1],"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"tX","p":[1,1,1],"cn":"lc_id_0"},{"t":"tX","p":[1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[1],"in":0}],"dc":[3,2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true},"lc_id_1":{"dN":[{"t":"a","p":[1],"cn":"lc_id_1"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"a","p":[1,1,1]},{"t":"cD","p":[1,1,1],"in":3,"sibl":[2]},{"t":"tX","p":[1,1,3,1]},{"t":"cD","p":[1,1],"in":2,"sibl":[1]},{"t":"a","p":[1,3,1]},{"t":"f","p":[1,3,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1,1]},{"t":"cD","p":[1,1,1],"in":2,"sibl":[1]},{"t":"tX","p":[1,1,3,0]},{"t":"a","p":[1,3,1]},{"t":"cD","p":[1,3,1],"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"tX","p":[1,1,1],"cn":"lc_id_0"},{"t":"tX","p":[1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[1],"in":0}],"dc":[3,2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_1"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_1"}],"cdp":{"t":"a","p":[1]},"dcn":true},"lc_id_2":{"dN":[{"t":"a","p":[1],"cn":"lc_id_2"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1,1]},{"t":"a","p":[1,1,1]},{"t":"cD","p":[1,1,1],"in":3,"sibl":[2]},{"t":"tX","p":[1,1,3,1]},{"t":"cD","p":[1,1],"in":2,"sibl":[1]},{"t":"a","p":[1,3,1]},{"t":"f","p":[1,3,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"cD","p":[1,1],"in":2,"sibl":[1]},{"t":"tX","p":[1,3,1,1]},{"t":"a","p":[1,3,3]},{"t":"cD","p":[1,3,3],"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"tX","p":[1,1,1],"cn":"lc_id_0"},{"t":"tX","p":[1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[1],"in":0}],"dc":[3,2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_2"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_2"}],"cdp":{"t":"a","p":[2]},"dcn":true},"lc_id_3":{"dN":[{"t":"a","p":[1],"cn":"lc_id_3"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"a","p":[1,1,1]},{"t":"cD","p":[1,1,1],"in":3,"sibl":[2]},{"t":"tX","p":[1,1,3,1]},{"t":"cD","p":[1,1],"in":2,"sibl":[1]},{"t":"a","p":[1,3,1]},{"t":"f","p":[1,3,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1,1]},{"t":"cD","p":[1,1,1],"in":2,"sibl":[1]},{"t":"tX","p":[1,1,3,0]},{"t":"a","p":[1,3,1]},{"t":"cD","p":[1,3,1],"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"tX","p":[1,1,1],"cn":"lc_id_0"},{"t":"tX","p":[1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[1],"in":0}],"dc":[3,2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_3"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_3"}],"cdp":{"t":"a","p":[3]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true},"lc_id_1":{"dc":[1,0],"hc":true,"trans":true},"lc_id_2":{"dc":[1,0],"hc":true,"trans":true},"lc_id_3":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0","lc_id_1","lc_id_2","lc_id_3"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[2,1,0]}];;
+ZcatFileupload._observedAttributes = ["zcatProp", "featureObj", "errorMessage", "uploadedIcon", "errorObj"];
 export { ZcatFileupload };
+
 ZcatFileupload.register("zcat-fileupload", {
-  hash: "ZcatFileupload_2",
+  hash: "ZcatFileupload_4",
   refHash: "C_zcat-app_app_0"
 });

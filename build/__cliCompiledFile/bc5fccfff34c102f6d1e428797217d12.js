@@ -240,6 +240,6 @@ TabComp._observedAttributes = [
 export { TabComp };
 
 TabComp.register("tab-comp", {
-  hash: "TabComp_2",
+  hash: "TabComp_4",
   refHash: "C_zcat-app_app_0"
 });

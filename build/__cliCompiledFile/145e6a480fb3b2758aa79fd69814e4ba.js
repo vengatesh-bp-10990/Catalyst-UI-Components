@@ -199,6 +199,6 @@ KeyvalueComp._observedAttributes = [
 export { KeyvalueComp };
 
 KeyvalueComp.register("keyvalue-comp", {
-  hash: "KeyvalueComp_2",
+  hash: "KeyvalueComp_4",
   refHash: "C_zcat-app_app_0"
 });

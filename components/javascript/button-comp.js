@@ -356,7 +356,7 @@ ButtonComp._observedAttributes = [
 
 
 ButtonComp.register("button-comp", {
-  hash: "ButtonComp_2",
+  hash: "ButtonComp_4",
   refHash: "C_zcat-app_app_0"
 });
 

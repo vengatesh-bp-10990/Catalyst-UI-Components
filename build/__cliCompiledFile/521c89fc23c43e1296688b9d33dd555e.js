@@ -250,6 +250,6 @@ AlertComp._observedAttributes = [
 export { AlertComp };
 
 AlertComp.register("alert-comp", {
-  hash: "AlertComp_2",
+  hash: "AlertComp_4",
   refHash: "C_zcat-app_app_0"
 });

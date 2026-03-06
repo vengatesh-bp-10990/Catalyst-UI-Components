@@ -238,7 +238,7 @@ LayoutComp._observedAttributes = [];
 
 
 LayoutComp.register("layout-comp", {
-  hash: "LayoutComp_2",
+  hash: "LayoutComp_4",
   refHash: "C_zcat-app_app_0"
 });
 

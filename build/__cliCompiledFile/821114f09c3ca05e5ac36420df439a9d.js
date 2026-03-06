@@ -1,4 +1,5 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
+import Turbo from "@slyte/component/src/directives/lyte-turbo";
 import { Lyte } from "./node_modules/@slyte/core/index.js";
 import  {ZcatAppDb} from "./data-store/db";
 import  {ZcatAppComponentRegistry}  from "./components/component";

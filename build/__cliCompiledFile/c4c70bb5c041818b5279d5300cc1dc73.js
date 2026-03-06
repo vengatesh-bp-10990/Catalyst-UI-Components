@@ -1045,6 +1045,6 @@ InstallationComp._dynamicNodes = [{"t":"a","p":[1,3,1,19,11,1,3]},{"t":"a","p":[
 InstallationComp._observedAttributes = [];
 export { InstallationComp };
 InstallationComp.register("installation-comp", {
-  hash: "InstallationComp_2",
+  hash: "InstallationComp_4",
   refHash: "C_zcat-app_app_0"
 });

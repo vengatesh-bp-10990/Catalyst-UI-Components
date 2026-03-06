@@ -1,4 +1,5 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
+import "../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-checkbox.js";
 import { Component } from "../../node_modules/@slyte/component/index.js";
 import { prop } from "../../node_modules/@slyte/core/index.js";
 
@@ -72,6 +73,6 @@ ZcatToggle._dynamicNodes = [{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"cD","p":
 ZcatToggle._observedAttributes = ["self", "zcatProp", "isChecked"];
 export { ZcatToggle };
 ZcatToggle.register("zcat-toggle", {
-  hash: "ZcatToggle_2",
+  hash: "ZcatToggle_4",
   refHash: "C_zcat-app_app_0"
 });

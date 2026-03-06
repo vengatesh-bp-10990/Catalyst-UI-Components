@@ -223,6 +223,6 @@ AvatarComp._observedAttributes = [
 export { AvatarComp };
 
 AvatarComp.register("avatar-comp", {
-  hash: "AvatarComp_2",
+  hash: "AvatarComp_4",
   refHash: "C_zcat-app_app_0"
 });

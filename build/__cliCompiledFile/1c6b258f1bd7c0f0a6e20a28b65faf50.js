@@ -24,6 +24,6 @@ UsageComp._dynamicNodes = [{"t":"tX","p":[1,3,1,3,7,1,1]},{"t":"tX","p":[1,3,1,3
 UsageComp._observedAttributes = [];
 export { UsageComp };
 UsageComp.register("usage-comp", {
-  hash: "UsageComp_2",
+  hash: "UsageComp_4",
   refHash: "C_zcat-app_app_0"
 });

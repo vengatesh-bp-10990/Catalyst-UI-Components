@@ -152,6 +152,6 @@ CardsComp._observedAttributes = [
 export { CardsComp };
 
 CardsComp.register("cards-comp", {
-  hash: "CardsComp_2",
+  hash: "CardsComp_4",
   refHash: "C_zcat-app_app_0"
 });

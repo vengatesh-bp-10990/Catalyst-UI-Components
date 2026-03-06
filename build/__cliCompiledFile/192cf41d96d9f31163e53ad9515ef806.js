@@ -565,6 +565,6 @@ DropdownComp._observedAttributes = [
 export { DropdownComp };
 
 DropdownComp.register("dropdown-comp", {
-  hash: "DropdownComp_2",
+  hash: "DropdownComp_4",
   refHash: "C_zcat-app_app_0"
 });

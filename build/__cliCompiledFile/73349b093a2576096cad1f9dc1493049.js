@@ -356,6 +356,6 @@ RadioComp._observedAttributes = [
 export { RadioComp };
 
 RadioComp.register("radio-comp", {
-  hash: "RadioComp_2",
+  hash: "RadioComp_4",
   refHash: "C_zcat-app_app_0"
 });

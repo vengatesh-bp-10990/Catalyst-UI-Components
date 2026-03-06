@@ -285,6 +285,6 @@ ModalComp._observedAttributes = [
 export { ModalComp };
 
 ModalComp.register("modal-comp", {
-  hash: "ModalComp_2",
+  hash: "ModalComp_4",
   refHash: "C_zcat-app_app_0"
 });

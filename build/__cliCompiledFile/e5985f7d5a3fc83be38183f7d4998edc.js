@@ -177,6 +177,6 @@ DatepickerComp._observedAttributes = [
 export default DatepickerComp;
 
 DatepickerComp.register("datepicker-comp", {
-  hash: "DatepickerComp_2",
+  hash: "DatepickerComp_4",
   refHash: "C_zcat-app_app_0"
 });

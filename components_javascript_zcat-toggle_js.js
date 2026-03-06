@@ -11,22 +11,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatToggle": () => (/* binding */ ZcatToggle)
 /* harmony export */ });
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
-/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_checkbox_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-checkbox.js */ 71989920);
+/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
+/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
 
 
 
 
-class ZcatToggle extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_0__.Component {
+
+class ZcatToggle extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__.Component {
   constructor() {
     super();
   }
 
   data(arg1) {
     return Object.assign(super.data({
-      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('object'),
-      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('object', { default: {} }, { watch: true }),
-      isChecked: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('boolean', { default: false })
+      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('object'),
+      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('object', { default: {} }, { watch: true }),
+      isChecked: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_2__.prop)('boolean', { default: false })
     }), arg1);
   }
 
@@ -87,7 +89,7 @@ ZcatToggle._dynamicNodes = [{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"cD","p":
 ZcatToggle._observedAttributes = ["self", "zcatProp", "isChecked"];
 
 ZcatToggle.register("zcat-toggle", {
-  hash: "ZcatToggle_2",
+  hash: "ZcatToggle_4",
   refHash: "C_zcat-app_app_0"
 });
 
