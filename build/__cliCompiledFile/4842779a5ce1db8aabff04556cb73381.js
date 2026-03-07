@@ -26,6 +26,7 @@ import {Keyvalue as Keyvalue} from '/router/routes/index/keyvalue.js';
 import {Datepicker as Datepicker} from '/router/routes/index/datepicker.js';
 import {Linkbox as Linkbox} from '/router/routes/index/linkbox.js';
 import {Inlineedit as Inlineedit} from '/router/routes/index/inlineedit.js';
+import {Tooltip as Tooltip} from '/router/routes/index/tooltip.js';
 
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
 import { RouterMap } from "../../node_modules/@slyte/router/index.js";
@@ -143,6 +144,10 @@ class ZcatAppMap extends RouterMap {
             this.route("inlineedit",{
                 path:'/inlineedit',
                 handler: Inlineedit
+            });
+            this.route("tooltip",{
+                path:'/tooltip',
+                handler: Tooltip
             });
         });
 	}
