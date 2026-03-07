@@ -11,37 +11,6 @@ class ZcatButton extends Component {
   }
 
   data(arg1) {
-    // const defaultProp = {
-    //   menu: {
-    //     id: '',
-    //     list: [
-    //       {
-    //         label: '',
-    //         icon: {
-    //           Position: '',
-    //           name: '',
-    //           class: ''
-    //         }
-    //       }
-    //     ]
-    //   },
-    //   variant: 'primary',
-    //   class: '',
-    //   disabled: false,
-    //   loading: false,
-    //   size: '',
-    //   label: '',
-    //   icon: {
-    //     Position: '',
-    //     name: '',
-    //     class: ''
-    //   },
-    //   callback: {
-    //     name: '',
-    //     arguments: []
-    //   }
-    // };
-
     const defaultProp = {
       menu: {
         id: '',

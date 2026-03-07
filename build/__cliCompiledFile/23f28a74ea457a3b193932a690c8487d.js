@@ -12,19 +12,6 @@ class ZcatRadio extends Component {
   }
 
   data(arg1) {
-    const defaultProp = {
-      variant: '',
-      options: [
-        {
-          label: '',
-          value: '',
-          desc: '', // for secondary variant && icon class only for variant card
-          disabled: '',
-        }
-      ],
-      selected: '',
-      name: '',
-    };
     return Object.assign(super.data({
       self: prop('object'),
       zcatProp: prop('object'),
@@ -68,37 +55,6 @@ class ZcatRadio extends Component {
     return Object.assign(super.actions({}), arg1);
   }
 
-  // static observers() {
-  //   //  async function userObjToZcatProp() {
-  //   //   debugger
-  //   //   const zcatProp = this.getData('zcatProp');
-  //   //   const formData = this.getData('formData');
-  //   //   const key = this.getData('key');
-
-  //   //   if (formData && key) {
-  //   //     // Update zcatProp when user changes formData[key]
-  //   //     this.$addon.objectUtils(zcatProp, 'add', 'selected', formData[key]);
-  //   //   }
-  //   // }
-
-  //   async function zcatPropToUserObj() {
-  //     debugger
-  //     const zcatProp = this.getData('zcatProp');
-  //     const formData = this.getData('formData');
-  //     const key = this.getData('key');
-
-  //     if (zcatProp && key) {
-  //       // Update user formData when zcatProp.selected changes
-  //       this.setData(`formData.${key}`, zcatProp.selected);
-  //     }
-  //   }
-
-  //   return {
-  //     // userObjToZcatProp: userObjToZcatProp.observes('formData.*'),        // user → zcatProp
-  //     zcatPropToUserObj: zcatPropToUserObj.observes('zcatProp.selected') // zcatProp → user
-  //   };
-  // }
-
   _() {
     _;
   }
@@ -108,7 +64,6 @@ ZcatRadio._template = "<template tag-name=\"zcat-radio\"> <template is=\"switch\
 ZcatRadio._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"r","p":[0,1],"dN":[{"t":"a","p":[1]},{"t":"i","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":2,"sibl":[1]},{"t":"s","p":[2],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"tX","p":[0,1,1],"cn":"lc_id_0"},{"t":"tX","p":[0,1,3,0],"cn":"lc_id_0"},{"t":"s","p":[0,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[3,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"a","p":[1,1],"cn":"lc_id_0"},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[0]},{"t":"cD","p":[0],"in":0}],"dc":[0],"hc":true,"trans":true,"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true},"lc_id_1":{"dN":[{"t":"a","p":[1],"cn":"lc_id_1"},{"t":"f","p":[1],"dN":[{"t":"a","p":[0]},{"t":"r","p":[0,1],"dN":[{"t":"a","p":[1,1]},{"t":"cD","p":[1,1],"in":1,"sibl":[0]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":0,"cn":"lc_id_1"}],"cdp":{"t":"a","p":[1]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true},"lc_id_1":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0","lc_id_1"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[2,1,0]}];;
 ZcatRadio._observedAttributes = ["self", "zcatProp", "key", "formData"];
 export { ZcatRadio };
-
 ZcatRadio.register("zcat-radio", {
   hash: "ZcatRadio_4",
   refHash: "C_zcat-app_app_0"

@@ -9,45 +9,6 @@ class ZcatTab extends Component {
 		super();
 	}
 
-    // TabDetails: prop('object',{default:{
-    // 	variant: 'primary',
-    // 	activeTab: 'lyteTabActive',
-    // 	height: '200px',
-    // 	closeIcon: 'false',
-    // 	sizeClass:'default',
-    // 	list: [
-    // 		{	
-    // 			id:'tab1',
-    // 			icon:{
-    // 				name: '',
-    // 				class: 'zcat-w14 zcat-h14 zcat-tab-color zcat-flex-center'
-    // 			},
-    // 			title: {
-    // 				name: 'Tab1',
-    // 				badge: ''
-    // 			},
-    // 			body: {
-    // 				yield: 'Tabbody1' //template name
-    // 			}
-    // 		},
-    // 		{
-    // 			id:'tab2',
-    // 			icon:{
-    // 				name: '',
-    // 				class: 'zcat-w14 zcat-h14 zcat-tab-color zcat-flex-center'
-    // 			},
-    // 			title: {
-    // 				name: 'Tab2',
-    // 				badge: ''
-    // 			},
-    // 			body: {
-    // 				yield: 'Tabbody2' //template name
-    // 			}
-    // 		}
-    // 	]
-    // 	}
-    // })
-
     data(arg1) {
 		return Object.assign(super.data({
 			self: prop('object'),
@@ -59,15 +20,7 @@ class ZcatTab extends Component {
 		return Object.assign(super.methods({
 			async customLbindForTab(methodName) {
 				const self = this.getData('self');
-				const prop = this.getData('zcatProp');
-		
-				// if (
-				//   prop.variant == 'secondary' &&
-				//   !event.target.closest('#zcatSecondaryAccordion')
-				// ) {
-				//   return false;
-				// }
-		
+
 				if (methodName) {
 				  await self.executeMethod(
 					methodName,
@@ -79,14 +32,11 @@ class ZcatTab extends Component {
 	}
 
     static actions(arg1) {
-		return Object.assign(super.actions({
-			
-		}), arg1);
+		return Object.assign(super.actions({}), arg1);
 	}
 
     static observers(arg1) {
-		return Object.assign(super.observers({
-		}), arg1);
+		return Object.assign(super.observers({}), arg1);
 	}
 
     _() {
@@ -98,7 +48,6 @@ ZcatTab._template = "<template tag-name=\"zcat-tab\"> <div class=\"zcat-dN\"> <s
 ZcatTab._dynamicNodes = [{"t":"a","p":[3]},{"t":"r","p":[3,1],"dN":[{"t":"a","p":[1],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'width: fit-content;'","''"]}}}},{"t":"a","p":[1,1]},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[0]},{"t":"s","p":[0,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":4,"sibl":[3]},{"t":"s","p":[0,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{"dN":[{"t":"tX","p":[1,0],"cn":"default"}]},"dc":{"lc_id_0":{},"default":{}},"hd":true,"co":["lc_id_0"],"in":3,"sibl":[2]},{"t":"s","p":[0,5],"c":{"lc_id_0":{"dN":[],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1]},{"t":"s","p":[0,6],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[4,0],"hc":true,"trans":true,"in":3,"sibl":[2]},{"t":"cD","p":[1],"in":2,"sibl":[1]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'border: 1px solid var(--zcat-tabs-primary-border-default); border-top: 0px;'","''"]}}},"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"f","p":[0,1],"dN":[{"t":"a","p":[0]},{"t":"a","p":[0,1]},{"t":"i","p":[0,1],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[4],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'border: 1px solid var(--zcat-tabs-primary-border-default) !important; margin-bottom: -1px;'","''"]}}},"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"f","p":[0,1],"dN":[{"t":"a","p":[0]},{"t":"a","p":[0,1]},{"t":"i","p":[0,1],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[3,2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[3],"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
 ZcatTab._observedAttributes = ["self", "zcatProp"];
 export {ZcatTab};
-
 ZcatTab.register("zcat-tab", {
     hash: "ZcatTab_4",
     refHash: "C_zcat-app_app_0"

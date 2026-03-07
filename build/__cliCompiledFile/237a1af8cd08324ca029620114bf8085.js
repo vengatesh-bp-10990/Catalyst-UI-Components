@@ -20,27 +20,6 @@ class ZcatCheckbox extends Component {
 
   static methods(arg1) {
     return Object.assign(super.methods({
-      // async customLbindForCheckbox(methodName, value, ...args) {
-      //   debugger
-      //   const zcatProp = this.getData('zcatProp');
-      //   const formData = this.getData('formData');
-      //   const key = this.getData('key');
-
-      //   if (zcatProp && value) {
-      //     // Update the zcatProp object when a value is selected
-      //     this.$app.objectUtils(zcatProp, 'add', 'selected', value);
-      //   }
-
-      //   if (zcatProp && key) {
-      //     // Sync zcatProp.selected → formData.key
-      //     this.setData(`formData.${key}`, zcatProp.selected);
-      //   }
-
-      //    // If a method name is passed, execute it asynchronously
-      //   if (methodName && typeof this.executeMethod === 'function') {
-      //     await this.executeMethod(methodName, ...args);
-      //   }
-      // }
       async customLbindForCheckbox(methodName, value, ...args) {
         try {
           const zcatProp = this.getData("zcatProp");
