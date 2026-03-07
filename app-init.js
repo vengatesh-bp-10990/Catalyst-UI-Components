@@ -82,20 +82,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatAppComponentRegistry": () => (/* binding */ ZcatAppComponentRegistry)
 /* harmony export */ });
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../node_modules/@slyte/component/index.js */ 93132498);
+/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../node_modules/@slyte/component/index.js */ 93132498);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../node_modules/@zoho/lyte-ui-component/components/component.js */ 98708570);
 
 
 
-class ZcatAppComponentRegistry extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_0__.ComponentRegistry{
+
+class ZcatAppComponentRegistry extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__.ComponentRegistry{
     constructor(){
         super();
     }
     lookups(){
         return []
     }
-    // addRegistries() {
-
-    // }
+    addRegistries() {
+        return _node_modules_zoho_lyte_ui_component_components_component_js__WEBPACK_IMPORTED_MODULE_0__.LyteUiComponentComponentRegistry._instanceList;
+    }
 
     _() {
         _;

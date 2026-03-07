@@ -1,5 +1,6 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
 import { ComponentRegistry } from "../node_modules/@slyte/component/index.js";
+import { LyteUiComponentComponentRegistry } from "../node_modules/@zoho/lyte-ui-component/components/component.js";
 
 class ZcatAppComponentRegistry extends ComponentRegistry{
     constructor(){
@@ -8,9 +9,9 @@ class ZcatAppComponentRegistry extends ComponentRegistry{
     lookups(){
         return []
     }
-    // addRegistries() {
-
-    // }
+    addRegistries() {
+        return LyteUiComponentComponentRegistry._instanceList;
+    }
 
     _() {
         _;
