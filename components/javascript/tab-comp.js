@@ -235,8 +235,8 @@ class TabComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_M
   }
 }
 
-TabComp._template = "<template tag-name=\"tab-comp\"> <div class=\"zcat-page-wrapper\"> <div class=\"zcat-page-header\"> <h1 class=\"zcat-page-title\">Tabs</h1> <p class=\"zcat-page-desc\">Tabs organize content into separate views where only one view is visible at a time.</p> <div class=\"zcat-page-tabs\"> <span class=\"zcat-page-tab {{expHandlers(expHandlers(pageTab,'===','customize'),'?:','active','')}}\" onclick=\"{{action('showCustomizeTab')}}\">Customize</span> <span class=\"zcat-page-tab {{expHandlers(expHandlers(pageTab,'===','variants'),'?:','active','')}}\" onclick=\"{{action('showVariantsTab')}}\">All Variants</span> <span class=\"zcat-page-tab\">Change Logs</span> </div> </div> <!-- Customize Tab --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(pageTab,'===','customize')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-page-body\"> <div class=\"zcat-page-left\"> <h3 class=\"zcat-section-label\">preview</h3> <div class=\"zcat-preview-box\"> <div class=\"zcat-preview-area\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{tabObj}}\"></zcat-tab> </div> </div> <div class=\"zcat-code-tabs\"> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','slyte'),'?:','active','')}}\" onclick=\"{{action('showSlyteTab')}}\">sLyte</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','js'),'?:','active','')}}\" onclick=\"{{action('showJsTab')}}\">JS</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','html'),'?:','active','')}}\" onclick=\"{{action('showHtmlTab')}}\">HTML</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','css'),'?:','active','')}}\" onclick=\"{{action('showCssTab')}}\">CSS</span> </div> <div class=\"zcat-code-panel\"> <div class=\"zcat-code-lines\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','slyte')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{slyteCodeSnippet.code}}</pre></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','js')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{jsCodeSnippet.code}}</pre></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','html')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{htmlCodeSnippet.code}}</pre></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','css')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{cssCodeSnippet.code}}</pre></template></template> </div> <span class=\"zcat-code-copy\" onclick=\"{{action('copyCode')}}\" title=\"Copy code\"> <zcat-icon name=\"copy\" width=\"16\" height=\"16\" stroke=\"currentColor\" stroke-width=\"1.3\"></zcat-icon> </span> </div> </div> <div class=\"zcat-page-right\"> <div class=\"zcat-custom-header\"> <h3 class=\"zcat-custom-title\">Customise</h3> <zcat-button self=\"{{self}}\" zcat-prop=\"{{resetButtonObj}}\"></zcat-button> </div> <div class=\"zcat-custom-body\"> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Variant</span> <select data-action=\"changeTabVariant\" class=\"zcat-custom-select\"> <option value=\"primary\">Primary</option> <option value=\"secondary\">Secondary</option> <option value=\"code\">Code</option> </select> </div> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Size</span> <select data-action=\"changeTabSize\" class=\"zcat-custom-select\"> <option value=\"default\">Default</option> <option value=\"small\">Small</option> <option value=\"extra-small\">Extra-small</option> </select> </div> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Close Icon</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleCloseObj}}\"></zcat-toggle> </div> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Badge</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleBadgeObj}}\"></zcat-toggle> </div> </div> </div> </div></template></template> <!-- All Variants Tab --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(pageTab,'===','variants')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-page-left\" style=\"flex:1\"> <h3 class=\"zcat-section-label\" style=\"margin-top:4px\">Primary Variant</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\" style=\"min-width:360px\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Primary Tabs</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{variantPrimaryObj}}\"></zcat-tab> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">Secondary Variant</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\" style=\"min-width:360px\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Secondary (Pill) Tabs</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{variantSecondaryObj}}\"></zcat-tab> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">Code Variant</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\" style=\"min-width:360px\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Code Tabs (File Browser)</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{variantCodeObj}}\"></zcat-tab> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">With Badge</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\" style=\"min-width:360px\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Tabs with Badge Count</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{variantBadgeObj}}\"></zcat-tab> </div> </div> </div> </div></template></template> </div> </template><style>/* tab-comp specific overrides if needed */\n</style>";;
-TabComp._dynamicNodes = [{"t":"a","p":[1,1,5,1]},{"t":"a","p":[1,1,5,3]},{"t":"s","p":[1,5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,1,3,1,1],"cn":"lc_id_0"},{"t":"cD","p":[0,1,3,1,1],"in":8,"sibl":[7],"cn":"lc_id_0"},{"t":"a","p":[0,1,5,1],"cn":"lc_id_0"},{"t":"a","p":[0,1,5,3],"cn":"lc_id_0"},{"t":"a","p":[0,1,5,5],"cn":"lc_id_0"},{"t":"a","p":[0,1,5,7],"cn":"lc_id_0"},{"t":"s","p":[0,1,7,1,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":7,"sibl":[6],"cn":"lc_id_0"},{"t":"s","p":[0,1,7,1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":6,"sibl":[5],"cn":"lc_id_0"},{"t":"s","p":[0,1,7,1,5],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"s","p":[0,1,7,1,7],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"a","p":[0,1,7,3],"cn":"lc_id_0"},{"t":"cD","p":[0,1,7,3,1],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"a","p":[0,3,1,3],"cn":"lc_id_0"},{"t":"cD","p":[0,3,1,3],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,3,3,5,3],"cn":"lc_id_0"},{"t":"cD","p":[0,3,3,5,3],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,3,3,7,3],"cn":"lc_id_0"},{"t":"cD","p":[0,3,3,7,3],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[8,3,2,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[1,9],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,1,3,1],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"a","p":[0,7,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,7,1,3,1],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,11,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,11,1,3,1],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,15,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,15,1,3,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[3,2,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
+TabComp._template = "<template tag-name=\"tab-comp\"> <div class=\"zcat-page-wrapper\"> <div class=\"zcat-page-header\"> <h1 class=\"zcat-page-title\">Tabs</h1> <p class=\"zcat-page-desc\">Tabs organize content into separate views where only one view is visible at a time.</p> <div class=\"zcat-page-tabs\"> <span class=\"zcat-page-tab {{expHandlers(expHandlers(pageTab,'===','customize'),'?:','active','')}}\" onclick=\"{{action('showCustomizeTab')}}\">Customize</span> <span class=\"zcat-page-tab {{expHandlers(expHandlers(pageTab,'===','variants'),'?:','active','')}}\" onclick=\"{{action('showVariantsTab')}}\">All Variants</span> <span class=\"zcat-page-tab\">Change Logs</span> </div> </div> <!-- Customize Tab --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(pageTab,'===','customize')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-page-body\"> <div class=\"zcat-page-left\"> <h3 class=\"zcat-section-label\">preview</h3> <div class=\"zcat-preview-box\"> <div class=\"zcat-preview-area\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{tabObj}}\"></zcat-tab> </div> </div> <div class=\"zcat-code-tabs\"> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','slyte'),'?:','active','')}}\" onclick=\"{{action('showSlyteTab')}}\">sLyte</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','js'),'?:','active','')}}\" onclick=\"{{action('showJsTab')}}\">JS</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','html'),'?:','active','')}}\" onclick=\"{{action('showHtmlTab')}}\">HTML</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','css'),'?:','active','')}}\" onclick=\"{{action('showCssTab')}}\">CSS</span> </div> <div class=\"zcat-code-panel\"> <div class=\"zcat-code-lines\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','slyte')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{slyteCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','js')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{jsCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','html')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{htmlCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','css')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{cssCodeSnippet.code}}</pre></template></template></div> <span class=\"zcat-code-copy\" onclick=\"{{action('copyCode')}}\" title=\"Copy code\"> <zcat-icon name=\"copy\" width=\"16\" height=\"16\" stroke=\"currentColor\" stroke-width=\"1.3\"></zcat-icon> </span> </div> </div> <div class=\"zcat-page-right\"> <div class=\"zcat-custom-header\"> <h3 class=\"zcat-custom-title\">Customise</h3> <zcat-button self=\"{{self}}\" zcat-prop=\"{{resetButtonObj}}\"></zcat-button> </div> <div class=\"zcat-custom-body\"> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Variant</span> <select data-action=\"changeTabVariant\" class=\"zcat-custom-select\"> <option value=\"primary\">Primary</option> <option value=\"secondary\">Secondary</option> <option value=\"code\">Code</option> </select> </div> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Size</span> <select data-action=\"changeTabSize\" class=\"zcat-custom-select\"> <option value=\"default\">Default</option> <option value=\"small\">Small</option> <option value=\"extra-small\">Extra-small</option> </select> </div> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Close Icon</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleCloseObj}}\"></zcat-toggle> </div> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Badge</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleBadgeObj}}\"></zcat-toggle> </div> </div> </div> </div></template></template><!-- All Variants Tab --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(pageTab,'===','variants')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-page-left\" style=\"flex:1\"> <h3 class=\"zcat-section-label\" style=\"margin-top:4px\">Primary Variant</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\" style=\"min-width:360px\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Primary Tabs</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{variantPrimaryObj}}\"></zcat-tab> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">Secondary Variant</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\" style=\"min-width:360px\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Secondary (Pill) Tabs</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{variantSecondaryObj}}\"></zcat-tab> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">Code Variant</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\" style=\"min-width:360px\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Code Tabs (File Browser)</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{variantCodeObj}}\"></zcat-tab> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">With Badge</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\" style=\"min-width:360px\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Tabs with Badge Count</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-tab self=\"{{self}}\" zcat-prop=\"{{variantBadgeObj}}\"></zcat-tab> </div> </div> </div> </div></template></template></div> </template><style>/* tab-comp specific overrides if needed */\n</style>";;
+TabComp._dynamicNodes = [{"t":"a","p":[1,1,5,1]},{"t":"a","p":[1,1,5,3]},{"t":"s","p":[1,5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,1,3,1,1],"cn":"lc_id_0"},{"t":"cD","p":[0,1,3,1,1],"in":8,"sibl":[7],"cn":"lc_id_0"},{"t":"a","p":[0,1,5,1],"cn":"lc_id_0"},{"t":"a","p":[0,1,5,3],"cn":"lc_id_0"},{"t":"a","p":[0,1,5,5],"cn":"lc_id_0"},{"t":"a","p":[0,1,5,7],"cn":"lc_id_0"},{"t":"s","p":[0,1,7,1,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":7,"sibl":[6],"cn":"lc_id_0"},{"t":"s","p":[0,1,7,1,2],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":6,"sibl":[5],"cn":"lc_id_0"},{"t":"s","p":[0,1,7,1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"s","p":[0,1,7,1,4],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"a","p":[0,1,7,3],"cn":"lc_id_0"},{"t":"cD","p":[0,1,7,3,1],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"a","p":[0,3,1,3],"cn":"lc_id_0"},{"t":"cD","p":[0,3,1,3],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,3,3,5,3],"cn":"lc_id_0"},{"t":"cD","p":[0,3,3,5,3],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,3,3,7,3],"cn":"lc_id_0"},{"t":"cD","p":[0,3,3,7,3],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[8,3,2,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[1,8],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,1,3,1],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"a","p":[0,7,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,7,1,3,1],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,11,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,11,1,3,1],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,15,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,15,1,3,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[3,2,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
 
 TabComp._observedAttributes = [
   "activeTab",
@@ -376,8 +376,8 @@ class ZcatTab extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_M
     }
 }
 
-ZcatTab._template = "<template tag-name=\"zcat-tab\"> <div class=\"zcat-dN\"> <svg id=\"zcat-icon-plus\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 14 14\" fill=\"none\"> <path d=\"M6.99998 2.91675V11.0834M2.91665 7.00008H11.0833\" stroke=\"#101F3E\" stroke-width=\"1.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> </svg> </div> <lyte-tabs class=\"{{expHandlers(zcatProp.variant,'?:',zcatProp.variant,'')}}-tabs lyteTabDefaultTop {{zcatProp.class}} {{zcatProp.sizeClass}}\" data-zcqa=\"{{zcatProp.zcqa}}\" lt-prop-hover=\"{{expHandlers(zcatProp.hover,'?:',zcatProp.hover,'')}}\" lt-prop-active-class=\"{{expHandlers(zcatProp.activeTab,'?:',zcatProp.activeTab,'lyteTabActive')}}\" lt-prop=\"{&quot;position&quot; : {&quot;pos&quot; : &quot;{{expHandlers(zcatProp.position,'?:',zcatProp.position,&quot;&quot;)}}&quot;, &quot;align&quot; : &quot;{{expHandlers(zcatProp.align,'?:',zcatProp.align,&quot;&quot;)}}&quot;,&quot;height&quot; : &quot;{{expHandlers(zcatProp.height,'?:',zcatProp.height,&quot;&quot;)}}&quot;,&quot;type&quot; : &quot;{{expHandlers(zcatProp.type,'?:',zcatProp.type,&quot;&quot;)}}&quot;,&quot;max-width&quot; : &quot;{{expHandlers(zcatProp.maxWidth,'?:',zcatProp.maxWidth,&quot;&quot;)}}&quot;,&quot;tabStyle&quot; : &quot;{{expHandlers(zcatProp.tabStyle,'?:',zcatProp.tabStyle,&quot;&quot;)}}&quot;,&quot;menuWrapperClass&quot; : &quot;{{expHandlers(zcatProp.menuWrapperClass,'?:',zcatProp.menuWrapperClass,&quot;&quot;)}}&quot;}}\" lt-prop-close-icon=\"{{expHandlers(zcatProp.closeIcon,'?:',zcatProp.closeIcon,'false')}}\" on-before-open=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeOpen)}}\" on-open=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onOpen)}}\" on-before-menu-open=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeMenuOpen)}}\" on-menu-open=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onMenuOpen)}}\" on-before-menu-close=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeMenuClose)}}\" on-menu-close=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onMenuClose)}}\" on-menu-click=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onMenuClick)}}\" on-before-menu-render=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeMenuRender)}}\" on-after-menu-render=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onAfterMenuRender)}}\" on-before-delete=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeDelete)}}\" on-delete=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onDelete)}}\" after-render=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onAfterRender)}}\"> <template is=\"registerYield\" yield-name=\"tabYield\"> <lyte-tab-head style=\"{{expHandlers(expHandlers(zcatProp.variant,'===','secondary'),'?:','width: fit-content;','')}}\"> <template items=\"{{zcatProp.list}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-tab-title lt-prop-id=\"{{item.id}}\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.icon.name}}\" lc-id=\"lc_id_0\"> <lyte-svg lt-prop-path=\"#{{item.icon.name}}\" lt-prop-class=\"{{item.icon.class}}\"></lyte-svg> </template></template> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.title.badge}}\" lc-id=\"lc_id_0\"> {{item.title.name}} </template><template default=\"\"> <p class=\"tab-title\">{{item.title.name}}</p> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','code')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"code-tab-slide\"></div></template></template> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.title.badge}}\" lc-id=\"lc_id_0\"> <div class=\"zcat-tab-badge\">{{item.title.badge}}</div> </template></template> </lyte-tab-title></template> </lyte-tab-head> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'!==','code')}}\" is=\"case\" lc-id=\"lc_id_0\"><lyte-tab-body style=\"{{expHandlers(expHandlers(zcatProp.variant,'===','primary'),'?:','border: 1px solid var(--zcat-tabs-primary-border-default); border-top: 0px;','')}}\"> <template items=\"{{zcatProp.list}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-tab-content id=\"{{item.id}}\"> <lyte-yield yield-name=\"{{item.body.yield}}\"></lyte-yield> </lyte-tab-content></template> </lyte-tab-body></template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','code')}}\" is=\"case\" lc-id=\"lc_id_0\"><lyte-tab-body style=\"{{expHandlers(expHandlers(zcatProp.variant,'===','code'),'?:','border: 1px solid var(--zcat-tabs-primary-border-default) !important; margin-bottom: -1px;','')}}\"> <template items=\"{{zcatProp.list}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-tab-content id=\"{{item.id}}\"> <lyte-yield yield-name=\"{{item.body.yield}}\"></lyte-yield> </lyte-tab-content></template> </lyte-tab-body></template></template> </template> </lyte-tabs> </template><style>lyte-tabs * {\n    box-sizing: border-box;\n  }\n  lyte-tabs {\n    display: block;\n    background: var(--zcat-tabs-primary-bg);\n    position: relative;\n    width: 100%;\n    font-family: var(--zcat-font-family-primary);\n    font-weight: 400;\n  }\n  .primary-tabs lyte-tab-head {\n    display: flex;\n    border: none;\n    border-bottom: 1px solid var(--zcat-color-primarylight);\n    box-sizing: border-box;\n  }\n  .primary-tabs lyte-tab-title {\n    font-weight: 400;\n    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-primary-text-default);\n    padding: 0 8px;\n    margin: 0 10px 0 0;\n    cursor: pointer;\n    box-sizing: border-box;\n    background: var(--zcat-tabs-primary-bg);\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    border-bottom: 2px solid transparent;\n    height: 28px;\n    border-radius: 4px 4px 0px 0px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 6px;\n    position: relative;\n  }\n  .primary-tabs lyte-tab-title:last-child{\n    margin-right: 0;\n  }\n  .primary-tabs lyte-tab-title .zcat-tab-color{\n    stroke: var(--zcat-tabs-primary-icon-default);\n  }\n  .secondary-tabs lyte-tab-head,.secondary-tabs.small lyte-tab-head{\n    display: flex;\n    border: none;\n    background: var(--zcat-tabs-secondary-bg-default);\n    border-radius: 6px;\n    border-bottom: none;\n    padding: 4px;\n    gap: 4px;\n    box-sizing: border-box;\n  }\n  .secondary-tabs.Extsmall lyte-tab-head{\n    gap: 2px;\n  }\n  .secondary-tabs lyte-tab-title {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 2px;\n    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-secondary-text-default);\n    padding: 0 6px;\n    margin: 0;\n    cursor: pointer;\n    box-sizing: border-box;\n    background: transparent;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    border-radius: 4px;\n    height: 28px;\n    box-sizing: border-box;\n  }\n  .secondary-tabs lyte-tab-title .zcat-tab-color{\n    stroke: var(--zcat-tabs-secondary-icon-default);\n  }\n  .secondary-tabs.small lyte-tab-title,.secondary-tabs.Extsmall lyte-tab-title{\n    height: 20px;\n  }\n  .secondary-tabs.Extsmall lyte-tab-title{\n    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);\n  }\n  .code-tabs lyte-tab-head {\n    display: flex;\n    border: none;\n    border-radius: 6px;\n    padding: 0;\n    box-sizing: border-box;\n  }\n  .code-tabs lyte-tab-title {\n    position: relative;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 2px;\n    padding: 10px;\n    margin: 0 0 0 10px;\n    border: 1px solid var(--zcat-tabs-code-border-default);\n    cursor: pointer;\n    box-sizing: border-box;\n    background: var(--zcat-tabs-code-bg-default);\n    border-radius: 6px 6px 0 0;\n    overflow: visible;\n    height: 36px;\n    border-bottom: 0px;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title:hove{\n    border-color: var(--zcat-tabs-code-border-default);\n    background: var(--zcat-tabs-code-bg-default);\n  }\n  .code-tabs lyte-tab-title:first-child {\n    margin: 0;\n  }\n  .code-tabs lyte-tab-title .zcat-tab-color{\n    stroke: var(--zcat-tabs-code-icon-default);\n  }\n  .code-tabs .code-tab-slide {\n    position: absolute;\n    top: -1px;\n    right: -10px;\n    width: 20px;\n    height: 36px;\n    transform: skew(26deg);\n    background: var(--zcat-tabs-code-bg-default);\n    border: 1px solid var(--zcat-tabs-code-border-default);\n    border-left: none;\n    border-radius: 0 4px 0 0;\n    z-index: 1;\n    border-bottom: 0;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title:hover .code-tab-slide{\n    background: var(--zcat-tabs-code-bg-hover);\n  }\n  .code-tabs .lyteTabActive .code-tab-slide {\n    background: var(--zcat-tabs-code-bg-active);\n    border-bottom: none;\n  }\n  .code-tabs .tab-title {\n    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-code-text-default);\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    max-width: 200px;\n    margin: 0 1px 0 0;\n  }\n  lyte-tab-title span {\n    display: inline-block;\n    vertical-align: middle;\n  }\n  .primary-tabs lyte-tab-title.lyteTabActive {\n    font-family: var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-primary-text-active);\n    font-weight: 500;\n  }\n  .primary-tabs lyte-tab-title:hover,.primary-tabs lyte-tab-title.lyteTabActive:hover{\n    color: var(--zcat-tabs-primary-text-hover);\n  }\n  lyte-tab-body {\n    display: block;\n    border: none;\n    padding: 0;\n    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n    text-align: left;\n    overflow: auto;\n    box-sizing: border-box;\n  }\n  lyte-tab-content {\n    color: var(--zcat-body-text-primary);\n  }\n  .lyteTabShow {\n    display: block;\n    flex-grow: 1;\n  }\n  .lyteTabHide {\n    display: none;\n  }\n  /*  Tab top starts */\n  .lyteTabDefaultTop lyte-tab-body {\n    border-top: 0;\n  }\n  .lyteTabDefaultTop lyte-tab-head {\n    border-bottom: 0;\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title {\n    margin-bottom: 0;\n    border-bottom: 0;\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n    border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n    z-index: 1;\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n    stroke: var(--zcat-tabs-primary-icon-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n    border-bottom: none;\n    background: var(--zcat-tabs-secondary-bg-active);\n    color: var(--zcat-tabs-secondary-text-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n    stroke: var(--zcat-tabs-secondary-icon-active);\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n    border-bottom: none;\n    background: var(--zcat-tabs-code-bg-active);\n    color: var(--zcat-tabs-code-text-active);\n    z-index: 1;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n    stroke: var(--zcat-tabs-code-icon-active);\n  }\n  lyte-tab-title,\n  lyte-tab-title.lyteTabActive {\n    outline: none !important;\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n    background: var(--zcat-tabs-primary-bg-hover);\n    border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-primary-icon-hover);\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n    background: var(--zcat-tabs-primary-bg-active);\n    color: var(--zcat-tabs-primary-text-active);\n    border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-primary-icon-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n    color: var(--zcat-tabs-secondary-text-hover);\n    background: var(--zcat-tabs-secondary-bg-hover);\n    border-bottom: none;\n    margin-bottom: 0;\n  }\n  .code-tabs lyte-tab-title:hover .tab-title{\n    color: var(--zcat-tabs-code-text-hover);\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .tab-title {\n    color: var(--zcat-tabs-code-text-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n    border-bottom: none;\n    background: var(--zcat-tabs-secondary-bg-active);\n    color: var(--zcat-tabs-secondary-text-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-secondary-text-hover);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-secondary-icon-active);\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n    /* border: 1px solid var(--zcat-color-grey2); */\n    color: var(--zcat-tabs-code-text-hover);\n    background: var(--zcat-tabs-code-bg-hover);\n    border-bottom: none;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n    border: 1px solid var(--zcat-tabs-code-border-default);\n    border-bottom: none;\n    background: var(--zcat-tabs-code-bg-hover);\n    color: var(--zcat-tabs-code-text-hover);\n    z-index: 1;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-code-text-hover);\n  }\n  /*  Tab top ends */\n  /*  Tab bottom starts */\n  .lyteTabDefaultBottom lyte-yield {\n    display: flex;\n    flex-direction: column;\n  }\n  .lyteTabDefaultBottom lyte-tab-head {\n    order: 2;\n    border-top-color: #e5e5e5;\n  }\n  .lyteTabDefaultBottom lyte-tab-body {\n    order: 1;\n    border-bottom: 0;\n  }\n  .lyteTabDefaultBottom lyte-tab-title {\n    border-top: 1px solid #e5e5e5;\n    margin-top: -1px;\n  }\n  .lyteTabDefaultBottom lyte-tab-title.lyteTabActive {\n    border-top: 1px solid #2c7bd0;\n  }\n  .lyteTabDefaultBottom lyte-tab-title:hover {\n    border-top-color: #666;\n  }\n  .lyteTabDefaultBottom lyte-tab-title.lyteTabActive:hover {\n    border-top-color: #2c7bd0;\n  }\n  /*  Tab bottom ends */\n  /*  Tab left and right starts */\n  .lyteTabDefaultLeft lyte-yield {\n    display: flex;\n  }\n  .lyteTabDefaultLeft lyte-tab-head,\n  .lyteTabDefaultRight lyte-tab-head {\n    flex-direction: column;\n    flex-grow: 1;\n    padding: 10px 0;\n    width: 200px;\n    text-align: left;\n    overflow: auto;\n  }\n  .lyteTabDefaultLeft lyte-tab-head {\n    border-right: 0;\n  }\n  .lyteTabDefaultLeft lyte-tab-body,\n  .lyteTabDefaultRight lyte-tab-body {\n    flex-grow: 10;\n    width: calc(100% - 200px);\n    padding-top: 18px;\n  }\n  .lyteTabDefaultLeft lyte-tab-title.lyteTabActive,\n  .lyteTabDefaultLeft lyte-tab-title.lyteTabActive:hover,\n  .lyteTabDefaultRight lyte-tab-title.lyteTabActive,\n  .lyteTabDefaultRight lyte-tab-title.lyteTabActive:hover {\n    border-left: 1px solid #2c7bd0;\n    background: #f5f5f5;\n    position: relative;\n    z-index: 10;\n  }\n  .lyteTabDefaultRight lyte-yield {\n    display: flex;\n    flex-direction: row-reverse;\n  }\n  .lyteTabDefaultRight lyte-tab-head {\n    border-left: 0;\n  }\n  .lyteTabDefaultLeft lyte-tab-title,\n  .lyteTabDefaultRight lyte-tab-title {\n    margin: 0;\n    padding: 10px 15px;\n    overflow: visible;\n  }\n  .lyteTabDefaultLeft lyte-tab-title:hover,\n  .lyteTabDefaultRight lyte-tab-title:hover {\n    background: #fafafa;\n  }\n  /*  Tab left and right ends */\n  .lyteTabCloseIcon {\n    background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\");\n    background-position: -2px;\n    width: 10px;\n    height: 10px;\n    display: inline-block;\n    vertical-align: middle;\n    margin-left: 10px;\n    position: relative;\n    z-index: 1;\n    opacity: 0.7;\n  }\n  .lyteTabCloseIcon:hover {\n    opacity: 1;\n  }\n  .lyteTabAlignStart {\n    justify-content: flex-start;\n  }\n  .lyteTabAlignCenter {\n    justify-content: center;\n  }\n  .lyteTabAlignEnd {\n    justify-content: flex-end;\n  }\n  .lyteTabOverflowV lyte-tab-title {\n    overflow: visible;\n  }\n  .lyteTabForceHide {\n    display: none;\n  }\n  #moreMenu {\n    cursor: pointer;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    opacity: 0.7;\n    padding: 10px;\n  }\n  #moreMenu.lyteMenuSelected,\n  #moreMenu:hover {\n    opacity: 1;\n  }\n  #moreMenu span {\n    background-image: url(../../images/sprite_lyte.svg);\n    background-position: -294px -165px;\n    width: 17px;\n    height: 5px;\n  }\n  .lyteTabRightCollapse {\n    flex-flow: row-reverse;\n    justify-content: flex-start;\n  }\n  .lyteTabVH lyte-tab-title,\n  .lyteTabVH .lyteMenuSelected {\n    visibility: hidden;\n  }\n  lyte-tab-title.lyteTabDisable {\n    pointer-events: none;\n    cursor: default;\n    opacity: 0.7;\n  }\n  /*  Lyte Nested Tabs CSS Begins */\n  .lyteNestedTab .lyteTabDefaultTop > lyte-yield {\n    display: block;\n  }\n  .lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head {\n    flex-direction: row;\n    padding: 0;\n    width: auto;\n    border: 1px solid #ddd;\n    overflow: visible;\n  }\n  .lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head lyte-tab-title {\n    margin: 0 10px;\n    padding: 10px 5px;\n    overflow: hidden;\n    margin-bottom: -1px;\n    border: 0;\n    border-bottom: 1px solid #e5e5e5;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultTop\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title:hover {\n    background: #fff;\n    border: 0;\n    border-bottom: 1px solid #666;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultTop\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title.lyteTabActive {\n    border: 0;\n    border-bottom: 1px solid #2c7bd0;\n    background: #fff;\n  }\n  .lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-body {\n    width: auto;\n    padding: 15px;\n    border: 1px solid #ddd;\n    border-top: 0;\n  }\n  .lyteNestedTab .lyteTabDefaultBottom > lyte-yield {\n    flex-direction: column;\n  }\n  .lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-head {\n    flex-direction: row;\n    padding: 0;\n    width: auto;\n    border: 1px solid #ddd;\n    overflow: visible;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultBottom\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title {\n    margin: 0 10px;\n    padding: 10px 5px;\n    overflow: hidden;\n    margin-top: -1px;\n    border: 0;\n    border-top: 1px solid #e5e5e5;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultBottom\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title:hover {\n    background: #fff;\n    border: 0;\n    border-top: 1px solid #666;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultBottom\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title.lyteTabActive {\n    border: 0;\n    border-top: 1px solid #2c7bd0;\n    background: #fff;\n  }\n  .lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-body {\n    width: auto;\n    padding: 15px;\n    border: 1px solid #ddd;\n    border-bottom: 0;\n  }\n  .lyteNestedTab .lyteTabDefaultLeft > lyte-yield {\n    flex-direction: row;\n  }\n  .lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head {\n    order: 0;\n    border: 1px solid #ddd;\n    border-right: 0;\n  }\n  .lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head lyte-tab-title {\n    border: 0;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultLeft\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title.lyteTabActive {\n    border-bottom: 0;\n    border-left: 1px solid #2c7bd0;\n  }\n  .lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-body {\n    border: 1px solid #ddd;\n  }\n  .lyteNestedTab .lyteTabDefaultRight > lyte-yield {\n    flex-direction: row-reverse;\n  }\n  .lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-head {\n    border: 1px solid #ddd;\n    border-left: 0;\n    order: 0;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultRight\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title {\n    border: 0;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultRight\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title.lyteTabActive {\n    border: 0;\n    border-left: 1px solid #2c7bd0;\n  }\n  .lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-body {\n    border: 1px solid #ddd;\n  }\n\n  .zcat-tab-badge{\n    width: 16px;\n    height: 16px;\n    border-radius: 50%;\n    background: var(--zcat-badge-secondary-bg-primary);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font: var(--zcat-font-10-12) var(--zcat-font-family-primary);\n    color: var(--zcat-badge-secondary-text-primary);\n  }\n\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .code-tab-slide {\n    background: var(--zcat-tabs-code-bg-hover);\n}\n\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .code-tab-slide{\n  background: var(--zcat-tabs-code-bg-hover);\n}\n\n/* === Global base styles from reference css/zcat-tab.css === */\nlyte-tabs * {\n  box-sizing: border-box;\n}\nlyte-tabs {\n  display: block;\n  background: var(--zcat-tabs-primary-bg);\n  position: relative;\n  width: 100%;\n  font-family: var(--zcat-font-family-primary);\n  font-weight: 400;\n}\n.primary-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  border-bottom: 1px solid var(--zcat-color-primarylight);\n  box-sizing: border-box;\n  position: relative;\n}\n.primary-tabs lyte-tab-title {\n  font-weight: 400;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-primary-text-default);\n  padding: 0 8px;\n  margin: 0 10px 0 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  background: var(--zcat-tabs-primary-bg);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  border-bottom: 2px solid transparent;\n  height: 28px;\n  border-radius: 4px 4px 0px 0px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n}\n.primary-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-default);\n}\n.secondary-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  background: var(--zcat-tabs-secondary-bg-default);\n  border-radius: 6px;\n  border-bottom: none;\n  padding: 4px;\n  gap: 4px;\n  box-sizing: border-box;\n}\n.secondary-tabs lyte-tab-title {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-secondary-text-default);\n  padding: 0 6px;\n  margin: 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  background: transparent;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  border-radius: 4px;\n  height: 28px;\n  box-sizing: border-box;\n}\n.secondary-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-icon-default);\n}\n.secondary-tabs.small lyte-tab-title,.secondary-tabs.Extsmall lyte-tab-title{\n  height: 20px;\n}\n.secondary-tabs.Extsmall lyte-tab-title{\n  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);\n}\n.code-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  border-radius: 6px;\n  padding: 0;\n  box-sizing: border-box;\n  height: 36px;\n}\n.code-tabs lyte-tab-title {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n  padding: 10px;\n  margin: 0 0 0 10px;\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  cursor: pointer;\n  box-sizing: border-box;\n  background: var(--zcat-tabs-code-bg-default);\n  border-radius: 6px 6px 0 0;\n  overflow: visible;\n  height: 36px;\n  border-bottom: 0px;\n}\n.code-tabs lyte-tab-title:first-child {\n  margin: 0;\n}\n.code-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-icon-default);\n}\n.code-tabs .code-tab-slide {\n  position: absolute;\n  top: -1px;\n  right: -10px;\n  width: 20px;\n  height: 36px;\n  transform: skew(26deg);\n  background: var(--zcat-tabs-code-bg-default);\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  border-left: none;\n  border-radius: 0 4px 0 0;\n  z-index: 1;\n  border-bottom: 0;\n}\n.code-tabs .lyteTabActive .code-tab-slide {\n  background: var(--zcat-tabs-code-bg-active);\n  border-bottom: none;\n}\n.code-tabs .tab-title {\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-code-text-default);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  max-width: 200px;\n  margin: 0 1px 0 0;\n}\nlyte-tab-title span {\n  display: inline-block;\n  vertical-align: middle;\n}\n.primary-tabs lyte-tab-title.lyteTabActive {\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-primary-text-active);\n  font-weight: 600;\n}\n.primary-tabs lyte-tab-title:hover,.primary-tabs lyte-tab-title.lyteTabActive:hover{\n  color: var(--zcat-tabs-primary-text-hover);\n}\nlyte-tab-body {\n  display: block;\n  border: none;\n  padding: 0;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  text-align: left;\n  overflow: auto;\n  box-sizing: border-box;\n}\nlyte-tab-content {\n  color: var(--zcat-body-text-primary);\n}\n.lyteTabShow {\n  display: block;\n  flex-grow: 1;\n}\n.lyteTabHide {\n  display: none;\n}\n/*  Tab top starts */\n.lyteTabDefaultTop lyte-tab-body {\n  border-top: 0;\n}\n.lyteTabDefaultTop lyte-tab-head {\n  border-bottom: 0;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-head::after {\n  content: '';\n  display: block;\n  width: -webkit-fill-available;\n  background: var(--zcat-tabs-primary-border-default);\n  height: 1px;\n  position: absolute;\n  bottom: 0px;\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-head::after{\n  content: none;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-head::after{\n  content: none;\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title {\n  margin-bottom: 0;\n  border-bottom: 0;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: none;\n  background: var(--zcat-tabs-secondary-bg-active);\n  color: var(--zcat-tabs-secondary-text-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-icon-active);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: none;\n  background: var(--zcat-tabs-code-bg-active);\n  color: var(--zcat-tabs-code-text-active);\n  z-index: 1;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-icon-active);\n}\nlyte-tab-title,\nlyte-tab-title.lyteTabActive {\n  outline: none !important;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  background: var(--zcat-tabs-primary-bg-hover);\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-hover);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  background: var(--zcat-tabs-primary-bg-active);\n  color: var(--zcat-tabs-primary-text-active);\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  color: var(--zcat-tabs-secondary-text-hover);\n  background: var(--zcat-tabs-secondary-bg-hover);\n  border-bottom: none;\n  margin-bottom: 0;\n}\n.code-tabs lyte-tab-title:hover .tab-title,\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .tab-title {\n  color: var(--zcat-tabs-code-text-hover);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  border-bottom: none;\n  background: var(--zcat-tabs-secondary-bg-active);\n  color: var(--zcat-tabs-secondary-text-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-text-hover);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  /* border: 1px solid var(--zcat-color-grey2); */\n  color: var(--zcat-tabs-code-text-hover);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  background: var(--zcat-tabs-code-bg-hover);\n  color: var(--zcat-tabs-code-text-hover);\n  border-bottom: none;\n  z-index: 1;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-text-hover);\n}\n/*  Tab top ends */\n/*  Tab bottom starts */\n.lyteTabDefaultBottom lyte-yield {\n  display: flex;\n  flex-direction: column;\n}\n.lyteTabDefaultBottom lyte-tab-head {\n  order: 2;\n  border-top-color: #e5e5e5;\n}\n.lyteTabDefaultBottom lyte-tab-body {\n  order: 1;\n  border-bottom: 0;\n}\n.lyteTabDefaultBottom lyte-tab-title {\n  border-top: 1px solid #e5e5e5;\n  margin-top: -1px;\n}\n.lyteTabDefaultBottom lyte-tab-title.lyteTabActive {\n  border-top: 1px solid #2c7bd0;\n}\n.lyteTabDefaultBottom lyte-tab-title:hover {\n  border-top-color: #666;\n}\n.lyteTabDefaultBottom lyte-tab-title.lyteTabActive:hover {\n  border-top-color: #2c7bd0;\n}\n/*  Tab bottom ends */\n/*  Tab left and right starts */\n.lyteTabDefaultLeft lyte-yield {\n  display: flex;\n}\n.lyteTabDefaultLeft lyte-tab-head,\n.lyteTabDefaultRight lyte-tab-head {\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 10px 0;\n  width: 200px;\n  text-align: left;\n  overflow: auto;\n}\n.lyteTabDefaultLeft lyte-tab-head {\n  border-right: 0;\n}\n.lyteTabDefaultLeft lyte-tab-body,\n.lyteTabDefaultRight lyte-tab-body {\n  flex-grow: 10;\n  width: calc(100% - 200px);\n  padding-top: 18px;\n}\n.lyteTabDefaultLeft lyte-tab-title.lyteTabActive,\n.lyteTabDefaultLeft lyte-tab-title.lyteTabActive:hover,\n.lyteTabDefaultRight lyte-tab-title.lyteTabActive,\n.lyteTabDefaultRight lyte-tab-title.lyteTabActive:hover {\n  border-left: 1px solid #2c7bd0;\n  background: #f5f5f5;\n  position: relative;\n  z-index: 10;\n}\n.lyteTabDefaultRight lyte-yield {\n  display: flex;\n  flex-direction: row-reverse;\n}\n.lyteTabDefaultRight lyte-tab-head {\n  border-left: 0;\n}\n.lyteTabDefaultLeft lyte-tab-title,\n.lyteTabDefaultRight lyte-tab-title {\n  margin: 0;\n  padding: 10px 15px;\n  overflow: visible;\n}\n.lyteTabDefaultLeft lyte-tab-title:hover,\n.lyteTabDefaultRight lyte-tab-title:hover {\n  background: #fafafa;\n}\n/*  Tab left and right ends */\n.lyteTabCloseIcon {\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\");\n  background-position: -2px;\n  width: 10px;\n  height: 10px;\n  display: inline-block;\n  vertical-align: middle;\n  margin-left: 10px;\n  position: relative;\n  z-index: 1;\n  opacity: 0.7;\n}\n.lyteTabCloseIcon:hover {\n  opacity: 1;\n}\n.lyteTabAlignStart {\n  justify-content: flex-start;\n}\n.lyteTabAlignCenter {\n  justify-content: center;\n}\n.lyteTabAlignEnd {\n  justify-content: flex-end;\n}\n.lyteTabOverflowV lyte-tab-title {\n  overflow: visible;\n}\n.lyteTabForceHide {\n  display: none;\n}\n#moreMenu {\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0.7;\n  padding: 10px;\n}\n#moreMenu.lyteMenuSelected,\n#moreMenu:hover {\n  opacity: 1;\n}\n#moreMenu span {\n  background-image: url(../../images/sprite_lyte.svg);\n  background-position: -294px -165px;\n  width: 17px;\n  height: 5px;\n}\n.lyteTabRightCollapse {\n  flex-flow: row-reverse;\n  justify-content: flex-start;\n}\n.lyteTabVH lyte-tab-title,\n.lyteTabVH .lyteMenuSelected {\n  visibility: hidden;\n}\nlyte-tab-title.lyteTabDisable {\n  pointer-events: none;\n  cursor: default;\n  opacity: 0.7;\n}\n/*  Lyte Nested Tabs CSS Begins */\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield {\n  display: block;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head {\n  flex-direction: row;\n  padding: 0;\n  width: auto;\n  border: 1px solid #ddd;\n  overflow: visible;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head lyte-tab-title {\n  margin: 0 10px;\n  padding: 10px 5px;\n  overflow: hidden;\n  margin-bottom: -1px;\n  border: 0;\n  border-bottom: 1px solid #e5e5e5;\n}\n.lyteNestedTab\n  .lyteTabDefaultTop\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title:hover {\n  background: #fff;\n  border: 0;\n  border-bottom: 1px solid #666;\n}\n.lyteNestedTab\n  .lyteTabDefaultTop\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-bottom: 1px solid #2c7bd0;\n  background: #fff;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-body {\n  width: auto;\n  padding: 15px;\n  border: 1px solid #ddd;\n  border-top: 0;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield {\n  flex-direction: column;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-head {\n  flex-direction: row;\n  padding: 0;\n  width: auto;\n  border: 1px solid #ddd;\n  overflow: visible;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title {\n  margin: 0 10px;\n  padding: 10px 5px;\n  overflow: hidden;\n  margin-top: -1px;\n  border: 0;\n  border-top: 1px solid #e5e5e5;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title:hover {\n  background: #fff;\n  border: 0;\n  border-top: 1px solid #666;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-top: 1px solid #2c7bd0;\n  background: #fff;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-body {\n  width: auto;\n  padding: 15px;\n  border: 1px solid #ddd;\n  border-bottom: 0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield {\n  flex-direction: row;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head {\n  order: 0;\n  border: 1px solid #ddd;\n  border-right: 0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head lyte-tab-title {\n  border: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultLeft\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border-bottom: 0;\n  border-left: 1px solid #2c7bd0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-body {\n  border: 1px solid #ddd;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield {\n  flex-direction: row-reverse;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-head {\n  border: 1px solid #ddd;\n  border-left: 0;\n  order: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultRight\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title {\n  border: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultRight\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-left: 1px solid #2c7bd0;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-body {\n  border: 1px solid #ddd;\n}\n\n.zcat-tab-badge{\n  width: 16px;\n  height: 16px;\n  border-radius: 50%;\n  background: var(--zcat-badge-secondary-bg-primary);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font: var(--zcat-font-10-12) var(--zcat-font-family-primary);\n  color: var(--zcat-badge-secondary-text-primary);\n}\n\n/* === Global base styles from reference css/zcat-tab.css === */\nlyte-tabs * {\n  box-sizing: border-box;\n}\nlyte-tabs {\n  display: block;\n  background: var(--zcat-tabs-primary-bg);\n  position: relative;\n  width: 100%;\n  font-family: var(--zcat-font-family-primary);\n  font-weight: 400;\n}\n.primary-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  border-bottom: 1px solid var(--zcat-color-primarylight);\n  box-sizing: border-box;\n  position: relative;\n}\n.primary-tabs lyte-tab-title {\n  font-weight: 400;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-primary-text-default);\n  padding: 0 8px;\n  margin: 0 10px 0 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  background: var(--zcat-tabs-primary-bg);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  border-bottom: 2px solid transparent;\n  height: 28px;\n  border-radius: 4px 4px 0px 0px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n}\n.primary-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-default);\n}\n.secondary-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  background: var(--zcat-tabs-secondary-bg-default);\n  border-radius: 6px;\n  border-bottom: none;\n  padding: 4px;\n  gap: 4px;\n  box-sizing: border-box;\n}\n.secondary-tabs lyte-tab-title {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-secondary-text-default);\n  padding: 0 6px;\n  margin: 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  background: transparent;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  border-radius: 4px;\n  height: 28px;\n  box-sizing: border-box;\n}\n.secondary-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-icon-default);\n}\n.secondary-tabs.small lyte-tab-title,.secondary-tabs.Extsmall lyte-tab-title{\n  height: 20px;\n}\n.secondary-tabs.Extsmall lyte-tab-title{\n  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);\n}\n.code-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  border-radius: 6px;\n  padding: 0;\n  box-sizing: border-box;\n  height: 36px;\n}\n.code-tabs lyte-tab-title {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n  padding: 10px;\n  margin: 0 0 0 10px;\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  cursor: pointer;\n  box-sizing: border-box;\n  background: var(--zcat-tabs-code-bg-default);\n  border-radius: 6px 6px 0 0;\n  overflow: visible;\n  height: 36px;\n  border-bottom: 0px;\n}\n.code-tabs lyte-tab-title:first-child {\n  margin: 0;\n}\n.code-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-icon-default);\n}\n.code-tabs .code-tab-slide {\n  position: absolute;\n  top: -1px;\n  right: -10px;\n  width: 20px;\n  height: 36px;\n  transform: skew(26deg);\n  background: var(--zcat-tabs-code-bg-default);\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  border-left: none;\n  border-radius: 0 4px 0 0;\n  z-index: 1;\n  border-bottom: 0;\n}\n.code-tabs .lyteTabActive .code-tab-slide {\n  background: var(--zcat-tabs-code-bg-active);\n  border-bottom: none;\n}\n.code-tabs .tab-title {\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-code-text-default);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  max-width: 200px;\n  margin: 0 1px 0 0;\n}\nlyte-tab-title span {\n  display: inline-block;\n  vertical-align: middle;\n}\n.primary-tabs lyte-tab-title.lyteTabActive {\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-primary-text-active);\n  font-weight: 600;\n}\n.primary-tabs lyte-tab-title:hover,.primary-tabs lyte-tab-title.lyteTabActive:hover{\n  color: var(--zcat-tabs-primary-text-hover);\n}\nlyte-tab-body {\n  display: block;\n  border: none;\n  padding: 0;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  text-align: left;\n  overflow: auto;\n  box-sizing: border-box;\n}\nlyte-tab-content {\n  color: var(--zcat-body-text-primary);\n}\n.lyteTabShow {\n  display: block;\n  flex-grow: 1;\n}\n.lyteTabHide {\n  display: none;\n}\n/*  Tab top starts */\n.lyteTabDefaultTop lyte-tab-body {\n  border-top: 0;\n}\n.lyteTabDefaultTop lyte-tab-head {\n  border-bottom: 0;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-head::after {\n  content: '';\n  display: block;\n  width: -webkit-fill-available;\n  background: var(--zcat-tabs-primary-border-default);\n  height: 1px;\n  position: absolute;\n  bottom: 0px;\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-head::after{\n  content: none;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-head::after{\n  content: none;\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title {\n  margin-bottom: 0;\n  border-bottom: 0;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: none;\n  background: var(--zcat-tabs-secondary-bg-active);\n  color: var(--zcat-tabs-secondary-text-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-icon-active);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: none;\n  background: var(--zcat-tabs-code-bg-active);\n  color: var(--zcat-tabs-code-text-active);\n  z-index: 1;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-icon-active);\n}\nlyte-tab-title,\nlyte-tab-title.lyteTabActive {\n  outline: none !important;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  background: var(--zcat-tabs-primary-bg-hover);\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-hover);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  background: var(--zcat-tabs-primary-bg-active);\n  color: var(--zcat-tabs-primary-text-active);\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  color: var(--zcat-tabs-secondary-text-hover);\n  background: var(--zcat-tabs-secondary-bg-hover);\n  border-bottom: none;\n  margin-bottom: 0;\n}\n.code-tabs lyte-tab-title:hover .tab-title,\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .tab-title {\n  color: var(--zcat-tabs-code-text-hover);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  border-bottom: none;\n  background: var(--zcat-tabs-secondary-bg-active);\n  color: var(--zcat-tabs-secondary-text-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-text-hover);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  /* border: 1px solid var(--zcat-color-grey2); */\n  color: var(--zcat-tabs-code-text-hover);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  background: var(--zcat-tabs-code-bg-hover);\n  color: var(--zcat-tabs-code-text-hover);\n  border-bottom: none;\n  z-index: 1;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-text-hover);\n}\n/*  Tab top ends */\n/*  Tab bottom starts */\n.lyteTabDefaultBottom lyte-yield {\n  display: flex;\n  flex-direction: column;\n}\n.lyteTabDefaultBottom lyte-tab-head {\n  order: 2;\n  border-top-color: #e5e5e5;\n}\n.lyteTabDefaultBottom lyte-tab-body {\n  order: 1;\n  border-bottom: 0;\n}\n.lyteTabDefaultBottom lyte-tab-title {\n  border-top: 1px solid #e5e5e5;\n  margin-top: -1px;\n}\n.lyteTabDefaultBottom lyte-tab-title.lyteTabActive {\n  border-top: 1px solid #2c7bd0;\n}\n.lyteTabDefaultBottom lyte-tab-title:hover {\n  border-top-color: #666;\n}\n.lyteTabDefaultBottom lyte-tab-title.lyteTabActive:hover {\n  border-top-color: #2c7bd0;\n}\n/*  Tab bottom ends */\n/*  Tab left and right starts */\n.lyteTabDefaultLeft lyte-yield {\n  display: flex;\n}\n.lyteTabDefaultLeft lyte-tab-head,\n.lyteTabDefaultRight lyte-tab-head {\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 10px 0;\n  width: 200px;\n  text-align: left;\n  overflow: auto;\n}\n.lyteTabDefaultLeft lyte-tab-head {\n  border-right: 0;\n}\n.lyteTabDefaultLeft lyte-tab-body,\n.lyteTabDefaultRight lyte-tab-body {\n  flex-grow: 10;\n  width: calc(100% - 200px);\n  padding-top: 18px;\n}\n.lyteTabDefaultLeft lyte-tab-title.lyteTabActive,\n.lyteTabDefaultLeft lyte-tab-title.lyteTabActive:hover,\n.lyteTabDefaultRight lyte-tab-title.lyteTabActive,\n.lyteTabDefaultRight lyte-tab-title.lyteTabActive:hover {\n  border-left: 1px solid #2c7bd0;\n  background: #f5f5f5;\n  position: relative;\n  z-index: 10;\n}\n.lyteTabDefaultRight lyte-yield {\n  display: flex;\n  flex-direction: row-reverse;\n}\n.lyteTabDefaultRight lyte-tab-head {\n  border-left: 0;\n}\n.lyteTabDefaultLeft lyte-tab-title,\n.lyteTabDefaultRight lyte-tab-title {\n  margin: 0;\n  padding: 10px 15px;\n  overflow: visible;\n}\n.lyteTabDefaultLeft lyte-tab-title:hover,\n.lyteTabDefaultRight lyte-tab-title:hover {\n  background: #fafafa;\n}\n/*  Tab left and right ends */\n.lyteTabCloseIcon {\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\");\n  background-position: -2px;\n  width: 10px;\n  height: 10px;\n  display: inline-block;\n  vertical-align: middle;\n  margin-left: 10px;\n  position: relative;\n  z-index: 1;\n  opacity: 0.7;\n}\n.lyteTabCloseIcon:hover {\n  opacity: 1;\n}\n.lyteTabAlignStart {\n  justify-content: flex-start;\n}\n.lyteTabAlignCenter {\n  justify-content: center;\n}\n.lyteTabAlignEnd {\n  justify-content: flex-end;\n}\n.lyteTabOverflowV lyte-tab-title {\n  overflow: visible;\n}\n.lyteTabForceHide {\n  display: none;\n}\n#moreMenu {\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0.7;\n  padding: 10px;\n}\n#moreMenu.lyteMenuSelected,\n#moreMenu:hover {\n  opacity: 1;\n}\n#moreMenu span {\n  background-image: url(../../images/sprite_lyte.svg);\n  background-position: -294px -165px;\n  width: 17px;\n  height: 5px;\n}\n.lyteTabRightCollapse {\n  flex-flow: row-reverse;\n  justify-content: flex-start;\n}\n.lyteTabVH lyte-tab-title,\n.lyteTabVH .lyteMenuSelected {\n  visibility: hidden;\n}\nlyte-tab-title.lyteTabDisable {\n  pointer-events: none;\n  cursor: default;\n  opacity: 0.7;\n}\n/*  Lyte Nested Tabs CSS Begins */\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield {\n  display: block;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head {\n  flex-direction: row;\n  padding: 0;\n  width: auto;\n  border: 1px solid #ddd;\n  overflow: visible;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head lyte-tab-title {\n  margin: 0 10px;\n  padding: 10px 5px;\n  overflow: hidden;\n  margin-bottom: -1px;\n  border: 0;\n  border-bottom: 1px solid #e5e5e5;\n}\n.lyteNestedTab\n  .lyteTabDefaultTop\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title:hover {\n  background: #fff;\n  border: 0;\n  border-bottom: 1px solid #666;\n}\n.lyteNestedTab\n  .lyteTabDefaultTop\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-bottom: 1px solid #2c7bd0;\n  background: #fff;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-body {\n  width: auto;\n  padding: 15px;\n  border: 1px solid #ddd;\n  border-top: 0;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield {\n  flex-direction: column;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-head {\n  flex-direction: row;\n  padding: 0;\n  width: auto;\n  border: 1px solid #ddd;\n  overflow: visible;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title {\n  margin: 0 10px;\n  padding: 10px 5px;\n  overflow: hidden;\n  margin-top: -1px;\n  border: 0;\n  border-top: 1px solid #e5e5e5;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title:hover {\n  background: #fff;\n  border: 0;\n  border-top: 1px solid #666;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-top: 1px solid #2c7bd0;\n  background: #fff;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-body {\n  width: auto;\n  padding: 15px;\n  border: 1px solid #ddd;\n  border-bottom: 0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield {\n  flex-direction: row;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head {\n  order: 0;\n  border: 1px solid #ddd;\n  border-right: 0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head lyte-tab-title {\n  border: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultLeft\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border-bottom: 0;\n  border-left: 1px solid #2c7bd0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-body {\n  border: 1px solid #ddd;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield {\n  flex-direction: row-reverse;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-head {\n  border: 1px solid #ddd;\n  border-left: 0;\n  order: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultRight\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title {\n  border: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultRight\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-left: 1px solid #2c7bd0;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-body {\n  border: 1px solid #ddd;\n}\n\n.zcat-tab-badge{\n  width: 16px;\n  height: 16px;\n  border-radius: 50%;\n  background: var(--zcat-badge-secondary-bg-primary);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font: var(--zcat-font-10-12) var(--zcat-font-family-primary);\n  color: var(--zcat-badge-secondary-text-primary);\n}</style>";;
-ZcatTab._dynamicNodes = [{"t":"a","p":[3]},{"t":"r","p":[3,1],"dN":[{"t":"a","p":[1],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'width: fit-content;'","''"]}}}},{"t":"a","p":[1,1]},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[0]},{"t":"s","p":[0,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":4,"sibl":[3]},{"t":"s","p":[0,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{"dN":[{"t":"tX","p":[1,0],"cn":"default"}]},"dc":{"lc_id_0":{},"default":{}},"hd":true,"co":["lc_id_0"],"in":3,"sibl":[2]},{"t":"s","p":[0,5],"c":{"lc_id_0":{"dN":[],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1]},{"t":"s","p":[0,7],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[4,0],"hc":true,"trans":true,"in":3,"sibl":[2]},{"t":"cD","p":[1],"in":2,"sibl":[1]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'border: 1px solid var(--zcat-tabs-primary-border-default); border-top: 0px;'","''"]}}},"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"f","p":[0,1],"dN":[{"t":"a","p":[0]},{"t":"a","p":[0,1]},{"t":"i","p":[0,1],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[5],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'border: 1px solid var(--zcat-tabs-primary-border-default) !important; margin-bottom: -1px;'","''"]}}},"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"f","p":[0,1],"dN":[{"t":"a","p":[0]},{"t":"a","p":[0,1]},{"t":"i","p":[0,1],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[3,2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[3],"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
+ZcatTab._template = "<template tag-name=\"zcat-tab\"> <div class=\"zcat-dN\"> <svg id=\"zcat-icon-plus\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 14 14\" fill=\"none\"> <path d=\"M6.99998 2.91675V11.0834M2.91665 7.00008H11.0833\" stroke=\"#101F3E\" stroke-width=\"1.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> </svg> </div> <lyte-tabs class=\"{{expHandlers(zcatProp.variant,'?:',zcatProp.variant,'')}}-tabs lyteTabDefaultTop {{zcatProp.class}} {{zcatProp.sizeClass}}\" data-zcqa=\"{{zcatProp.zcqa}}\" lt-prop-hover=\"{{expHandlers(zcatProp.hover,'?:',zcatProp.hover,'')}}\" lt-prop-active-class=\"{{expHandlers(zcatProp.activeTab,'?:',zcatProp.activeTab,'lyteTabActive')}}\" lt-prop=\"{&quot;position&quot; : {&quot;pos&quot; : &quot;{{expHandlers(zcatProp.position,'?:',zcatProp.position,&quot;&quot;)}}&quot;, &quot;align&quot; : &quot;{{expHandlers(zcatProp.align,'?:',zcatProp.align,&quot;&quot;)}}&quot;,&quot;height&quot; : &quot;{{expHandlers(zcatProp.height,'?:',zcatProp.height,&quot;&quot;)}}&quot;,&quot;type&quot; : &quot;{{expHandlers(zcatProp.type,'?:',zcatProp.type,&quot;&quot;)}}&quot;,&quot;max-width&quot; : &quot;{{expHandlers(zcatProp.maxWidth,'?:',zcatProp.maxWidth,&quot;&quot;)}}&quot;,&quot;tabStyle&quot; : &quot;{{expHandlers(zcatProp.tabStyle,'?:',zcatProp.tabStyle,&quot;&quot;)}}&quot;,&quot;menuWrapperClass&quot; : &quot;{{expHandlers(zcatProp.menuWrapperClass,'?:',zcatProp.menuWrapperClass,&quot;&quot;)}}&quot;}}\" lt-prop-close-icon=\"{{expHandlers(zcatProp.closeIcon,'?:',zcatProp.closeIcon,'false')}}\" on-before-open=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeOpen)}}\" on-open=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onOpen)}}\" on-before-menu-open=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeMenuOpen)}}\" on-menu-open=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onMenuOpen)}}\" on-before-menu-close=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeMenuClose)}}\" on-menu-close=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onMenuClose)}}\" on-menu-click=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onMenuClick)}}\" on-before-menu-render=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeMenuRender)}}\" on-after-menu-render=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onAfterMenuRender)}}\" on-before-delete=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onBeforeDelete)}}\" on-delete=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onDelete)}}\" after-render=\"{{method(&quot;customLbindForTab&quot;,zcatProp.onAfterRender)}}\"> <template is=\"registerYield\" yield-name=\"tabYield\"> <lyte-tab-head style=\"{{expHandlers(expHandlers(zcatProp.variant,'===','secondary'),'?:','width: fit-content;','')}}\"> <template items=\"{{zcatProp.list}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-tab-title lt-prop-id=\"{{item.id}}\"> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.icon.name}}\" lc-id=\"lc_id_0\"> <lyte-svg lt-prop-path=\"#{{item.icon.name}}\" lt-prop-class=\"{{item.icon.class}}\"></lyte-svg> </template></template> <template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.title.badge}}\" lc-id=\"lc_id_0\"> {{item.title.name}} </template><template default=\"\"> <p class=\"tab-title\">{{item.title.name}}</p> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','code')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"code-tab-slide\"></div></template></template><template is=\"switch\" l-c=\"true\" _jsp=\"true\"><template is=\"case\" case=\"{{item.title.badge}}\" lc-id=\"lc_id_0\"> <div class=\"zcat-tab-badge\">{{item.title.badge}}</div> </template></template> </lyte-tab-title></template> </lyte-tab-head> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'!==','code')}}\" is=\"case\" lc-id=\"lc_id_0\"><lyte-tab-body style=\"{{expHandlers(expHandlers(zcatProp.variant,'===','primary'),'?:','border: 1px solid var(--zcat-tabs-primary-border-default); border-top: 0px;','')}}\"> <template items=\"{{zcatProp.list}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-tab-content id=\"{{item.id}}\"> <lyte-yield yield-name=\"{{item.body.yield}}\"></lyte-yield> </lyte-tab-content></template> </lyte-tab-body></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(zcatProp.variant,'===','code')}}\" is=\"case\" lc-id=\"lc_id_0\"><lyte-tab-body style=\"{{expHandlers(expHandlers(zcatProp.variant,'===','code'),'?:','border: 1px solid var(--zcat-tabs-primary-border-default) !important; margin-bottom: -1px;','')}}\"> <template items=\"{{zcatProp.list}}\" item=\"item\" index=\"index\" is=\"for\" _new=\"true\"><lyte-tab-content id=\"{{item.id}}\"> <lyte-yield yield-name=\"{{item.body.yield}}\"></lyte-yield> </lyte-tab-content></template> </lyte-tab-body></template></template></template> </lyte-tabs> </template><style>lyte-tabs * {\n    box-sizing: border-box;\n  }\n  lyte-tabs {\n    display: block;\n    background: var(--zcat-tabs-primary-bg);\n    position: relative;\n    width: 100%;\n    font-family: var(--zcat-font-family-primary);\n    font-weight: 400;\n  }\n  .primary-tabs lyte-tab-head {\n    display: flex;\n    border: none;\n    border-bottom: 1px solid var(--zcat-color-primarylight);\n    box-sizing: border-box;\n  }\n  .primary-tabs lyte-tab-title {\n    font-weight: 400;\n    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-primary-text-default);\n    padding: 0 8px;\n    margin: 0 10px 0 0;\n    cursor: pointer;\n    box-sizing: border-box;\n    background: var(--zcat-tabs-primary-bg);\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    border-bottom: 2px solid transparent;\n    height: 28px;\n    border-radius: 4px 4px 0px 0px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 6px;\n    position: relative;\n  }\n  .primary-tabs lyte-tab-title:last-child{\n    margin-right: 0;\n  }\n  .primary-tabs lyte-tab-title .zcat-tab-color{\n    stroke: var(--zcat-tabs-primary-icon-default);\n  }\n  .secondary-tabs lyte-tab-head,.secondary-tabs.small lyte-tab-head{\n    display: flex;\n    border: none;\n    background: var(--zcat-tabs-secondary-bg-default);\n    border-radius: 6px;\n    border-bottom: none;\n    padding: 4px;\n    gap: 4px;\n    box-sizing: border-box;\n  }\n  .secondary-tabs.Extsmall lyte-tab-head{\n    gap: 2px;\n  }\n  .secondary-tabs lyte-tab-title {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 2px;\n    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-secondary-text-default);\n    padding: 0 6px;\n    margin: 0;\n    cursor: pointer;\n    box-sizing: border-box;\n    background: transparent;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    border-radius: 4px;\n    height: 28px;\n    box-sizing: border-box;\n  }\n  .secondary-tabs lyte-tab-title .zcat-tab-color{\n    stroke: var(--zcat-tabs-secondary-icon-default);\n  }\n  .secondary-tabs.small lyte-tab-title,.secondary-tabs.Extsmall lyte-tab-title{\n    height: 20px;\n  }\n  .secondary-tabs.Extsmall lyte-tab-title{\n    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);\n  }\n  .code-tabs lyte-tab-head {\n    display: flex;\n    border: none;\n    border-radius: 6px;\n    padding: 0;\n    box-sizing: border-box;\n  }\n  .code-tabs lyte-tab-title {\n    position: relative;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 2px;\n    padding: 10px;\n    margin: 0 0 0 10px;\n    border: 1px solid var(--zcat-tabs-code-border-default);\n    cursor: pointer;\n    box-sizing: border-box;\n    background: var(--zcat-tabs-code-bg-default);\n    border-radius: 6px 6px 0 0;\n    overflow: visible;\n    height: 36px;\n    border-bottom: 0px;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title:hove{\n    border-color: var(--zcat-tabs-code-border-default);\n    background: var(--zcat-tabs-code-bg-default);\n  }\n  .code-tabs lyte-tab-title:first-child {\n    margin: 0;\n  }\n  .code-tabs lyte-tab-title .zcat-tab-color{\n    stroke: var(--zcat-tabs-code-icon-default);\n  }\n  .code-tabs .code-tab-slide {\n    position: absolute;\n    top: -1px;\n    right: -10px;\n    width: 20px;\n    height: 36px;\n    transform: skew(26deg);\n    background: var(--zcat-tabs-code-bg-default);\n    border: 1px solid var(--zcat-tabs-code-border-default);\n    border-left: none;\n    border-radius: 0 4px 0 0;\n    z-index: 1;\n    border-bottom: 0;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title:hover .code-tab-slide{\n    background: var(--zcat-tabs-code-bg-hover);\n  }\n  .code-tabs .lyteTabActive .code-tab-slide {\n    background: var(--zcat-tabs-code-bg-active);\n    border-bottom: none;\n  }\n  .code-tabs .tab-title {\n    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-code-text-default);\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    max-width: 200px;\n    margin: 0 1px 0 0;\n  }\n  lyte-tab-title span {\n    display: inline-block;\n    vertical-align: middle;\n  }\n  .primary-tabs lyte-tab-title.lyteTabActive {\n    font-family: var(--zcat-font-family-primary);\n    color: var(--zcat-tabs-primary-text-active);\n    font-weight: 500;\n  }\n  .primary-tabs lyte-tab-title:hover,.primary-tabs lyte-tab-title.lyteTabActive:hover{\n    color: var(--zcat-tabs-primary-text-hover);\n  }\n  lyte-tab-body {\n    display: block;\n    border: none;\n    padding: 0;\n    font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n    text-align: left;\n    overflow: auto;\n    box-sizing: border-box;\n  }\n  lyte-tab-content {\n    color: var(--zcat-body-text-primary);\n  }\n  .lyteTabShow {\n    display: block;\n    flex-grow: 1;\n  }\n  .lyteTabHide {\n    display: none;\n  }\n  /*  Tab top starts */\n  .lyteTabDefaultTop lyte-tab-body {\n    border-top: 0;\n  }\n  .lyteTabDefaultTop lyte-tab-head {\n    border-bottom: 0;\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title {\n    margin-bottom: 0;\n    border-bottom: 0;\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n    border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n    z-index: 1;\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n    stroke: var(--zcat-tabs-primary-icon-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n    border-bottom: none;\n    background: var(--zcat-tabs-secondary-bg-active);\n    color: var(--zcat-tabs-secondary-text-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n    stroke: var(--zcat-tabs-secondary-icon-active);\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n    border-bottom: none;\n    background: var(--zcat-tabs-code-bg-active);\n    color: var(--zcat-tabs-code-text-active);\n    z-index: 1;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n    stroke: var(--zcat-tabs-code-icon-active);\n  }\n  lyte-tab-title,\n  lyte-tab-title.lyteTabActive {\n    outline: none !important;\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n    background: var(--zcat-tabs-primary-bg-hover);\n    border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-primary-icon-hover);\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n    background: var(--zcat-tabs-primary-bg-active);\n    color: var(--zcat-tabs-primary-text-active);\n    border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n  }\n  .primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-primary-icon-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n    color: var(--zcat-tabs-secondary-text-hover);\n    background: var(--zcat-tabs-secondary-bg-hover);\n    border-bottom: none;\n    margin-bottom: 0;\n  }\n  .code-tabs lyte-tab-title:hover .tab-title{\n    color: var(--zcat-tabs-code-text-hover);\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .tab-title {\n    color: var(--zcat-tabs-code-text-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n    border-bottom: none;\n    background: var(--zcat-tabs-secondary-bg-active);\n    color: var(--zcat-tabs-secondary-text-active);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-secondary-text-hover);\n  }\n  .secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-secondary-icon-active);\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n    /* border: 1px solid var(--zcat-color-grey2); */\n    color: var(--zcat-tabs-code-text-hover);\n    background: var(--zcat-tabs-code-bg-hover);\n    border-bottom: none;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n    border: 1px solid var(--zcat-tabs-code-border-default);\n    border-bottom: none;\n    background: var(--zcat-tabs-code-bg-hover);\n    color: var(--zcat-tabs-code-text-hover);\n    z-index: 1;\n  }\n  .code-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n    stroke: var(--zcat-tabs-code-text-hover);\n  }\n  /*  Tab top ends */\n  /*  Tab bottom starts */\n  .lyteTabDefaultBottom lyte-yield {\n    display: flex;\n    flex-direction: column;\n  }\n  .lyteTabDefaultBottom lyte-tab-head {\n    order: 2;\n    border-top-color: #e5e5e5;\n  }\n  .lyteTabDefaultBottom lyte-tab-body {\n    order: 1;\n    border-bottom: 0;\n  }\n  .lyteTabDefaultBottom lyte-tab-title {\n    border-top: 1px solid #e5e5e5;\n    margin-top: -1px;\n  }\n  .lyteTabDefaultBottom lyte-tab-title.lyteTabActive {\n    border-top: 1px solid #2c7bd0;\n  }\n  .lyteTabDefaultBottom lyte-tab-title:hover {\n    border-top-color: #666;\n  }\n  .lyteTabDefaultBottom lyte-tab-title.lyteTabActive:hover {\n    border-top-color: #2c7bd0;\n  }\n  /*  Tab bottom ends */\n  /*  Tab left and right starts */\n  .lyteTabDefaultLeft lyte-yield {\n    display: flex;\n  }\n  .lyteTabDefaultLeft lyte-tab-head,\n  .lyteTabDefaultRight lyte-tab-head {\n    flex-direction: column;\n    flex-grow: 1;\n    padding: 10px 0;\n    width: 200px;\n    text-align: left;\n    overflow: auto;\n  }\n  .lyteTabDefaultLeft lyte-tab-head {\n    border-right: 0;\n  }\n  .lyteTabDefaultLeft lyte-tab-body,\n  .lyteTabDefaultRight lyte-tab-body {\n    flex-grow: 10;\n    width: calc(100% - 200px);\n    padding-top: 18px;\n  }\n  .lyteTabDefaultLeft lyte-tab-title.lyteTabActive,\n  .lyteTabDefaultLeft lyte-tab-title.lyteTabActive:hover,\n  .lyteTabDefaultRight lyte-tab-title.lyteTabActive,\n  .lyteTabDefaultRight lyte-tab-title.lyteTabActive:hover {\n    border-left: 1px solid #2c7bd0;\n    background: #f5f5f5;\n    position: relative;\n    z-index: 10;\n  }\n  .lyteTabDefaultRight lyte-yield {\n    display: flex;\n    flex-direction: row-reverse;\n  }\n  .lyteTabDefaultRight lyte-tab-head {\n    border-left: 0;\n  }\n  .lyteTabDefaultLeft lyte-tab-title,\n  .lyteTabDefaultRight lyte-tab-title {\n    margin: 0;\n    padding: 10px 15px;\n    overflow: visible;\n  }\n  .lyteTabDefaultLeft lyte-tab-title:hover,\n  .lyteTabDefaultRight lyte-tab-title:hover {\n    background: #fafafa;\n  }\n  /*  Tab left and right ends */\n  .lyteTabCloseIcon {\n    background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\");\n    background-position: -2px;\n    width: 10px;\n    height: 10px;\n    display: inline-block;\n    vertical-align: middle;\n    margin-left: 10px;\n    position: relative;\n    z-index: 1;\n    opacity: 0.7;\n  }\n  .lyteTabCloseIcon:hover {\n    opacity: 1;\n  }\n  .lyteTabAlignStart {\n    justify-content: flex-start;\n  }\n  .lyteTabAlignCenter {\n    justify-content: center;\n  }\n  .lyteTabAlignEnd {\n    justify-content: flex-end;\n  }\n  .lyteTabOverflowV lyte-tab-title {\n    overflow: visible;\n  }\n  .lyteTabForceHide {\n    display: none;\n  }\n  #moreMenu {\n    cursor: pointer;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    opacity: 0.7;\n    padding: 10px;\n  }\n  #moreMenu.lyteMenuSelected,\n  #moreMenu:hover {\n    opacity: 1;\n  }\n  #moreMenu span {\n    background-image: url(../../images/sprite_lyte.svg);\n    background-position: -294px -165px;\n    width: 17px;\n    height: 5px;\n  }\n  .lyteTabRightCollapse {\n    flex-flow: row-reverse;\n    justify-content: flex-start;\n  }\n  .lyteTabVH lyte-tab-title,\n  .lyteTabVH .lyteMenuSelected {\n    visibility: hidden;\n  }\n  lyte-tab-title.lyteTabDisable {\n    pointer-events: none;\n    cursor: default;\n    opacity: 0.7;\n  }\n  /*  Lyte Nested Tabs CSS Begins */\n  .lyteNestedTab .lyteTabDefaultTop > lyte-yield {\n    display: block;\n  }\n  .lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head {\n    flex-direction: row;\n    padding: 0;\n    width: auto;\n    border: 1px solid #ddd;\n    overflow: visible;\n  }\n  .lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head lyte-tab-title {\n    margin: 0 10px;\n    padding: 10px 5px;\n    overflow: hidden;\n    margin-bottom: -1px;\n    border: 0;\n    border-bottom: 1px solid #e5e5e5;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultTop\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title:hover {\n    background: #fff;\n    border: 0;\n    border-bottom: 1px solid #666;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultTop\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title.lyteTabActive {\n    border: 0;\n    border-bottom: 1px solid #2c7bd0;\n    background: #fff;\n  }\n  .lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-body {\n    width: auto;\n    padding: 15px;\n    border: 1px solid #ddd;\n    border-top: 0;\n  }\n  .lyteNestedTab .lyteTabDefaultBottom > lyte-yield {\n    flex-direction: column;\n  }\n  .lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-head {\n    flex-direction: row;\n    padding: 0;\n    width: auto;\n    border: 1px solid #ddd;\n    overflow: visible;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultBottom\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title {\n    margin: 0 10px;\n    padding: 10px 5px;\n    overflow: hidden;\n    margin-top: -1px;\n    border: 0;\n    border-top: 1px solid #e5e5e5;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultBottom\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title:hover {\n    background: #fff;\n    border: 0;\n    border-top: 1px solid #666;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultBottom\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title.lyteTabActive {\n    border: 0;\n    border-top: 1px solid #2c7bd0;\n    background: #fff;\n  }\n  .lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-body {\n    width: auto;\n    padding: 15px;\n    border: 1px solid #ddd;\n    border-bottom: 0;\n  }\n  .lyteNestedTab .lyteTabDefaultLeft > lyte-yield {\n    flex-direction: row;\n  }\n  .lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head {\n    order: 0;\n    border: 1px solid #ddd;\n    border-right: 0;\n  }\n  .lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head lyte-tab-title {\n    border: 0;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultLeft\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title.lyteTabActive {\n    border-bottom: 0;\n    border-left: 1px solid #2c7bd0;\n  }\n  .lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-body {\n    border: 1px solid #ddd;\n  }\n  .lyteNestedTab .lyteTabDefaultRight > lyte-yield {\n    flex-direction: row-reverse;\n  }\n  .lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-head {\n    border: 1px solid #ddd;\n    border-left: 0;\n    order: 0;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultRight\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title {\n    border: 0;\n  }\n  .lyteNestedTab\n    .lyteTabDefaultRight\n    > lyte-yield\n    > lyte-tab-head\n    lyte-tab-title.lyteTabActive {\n    border: 0;\n    border-left: 1px solid #2c7bd0;\n  }\n  .lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-body {\n    border: 1px solid #ddd;\n  }\n\n  .zcat-tab-badge{\n    width: 16px;\n    height: 16px;\n    border-radius: 50%;\n    background: var(--zcat-badge-secondary-bg-primary);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font: var(--zcat-font-10-12) var(--zcat-font-family-primary);\n    color: var(--zcat-badge-secondary-text-primary);\n  }\n\n  .code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .code-tab-slide {\n    background: var(--zcat-tabs-code-bg-hover);\n}\n\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .code-tab-slide{\n  background: var(--zcat-tabs-code-bg-hover);\n}\n\n/* === Global base styles from reference css/zcat-tab.css === */\nlyte-tabs * {\n  box-sizing: border-box;\n}\nlyte-tabs {\n  display: block;\n  background: var(--zcat-tabs-primary-bg);\n  position: relative;\n  width: 100%;\n  font-family: var(--zcat-font-family-primary);\n  font-weight: 400;\n}\n.primary-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  border-bottom: 1px solid var(--zcat-color-primarylight);\n  box-sizing: border-box;\n  position: relative;\n}\n.primary-tabs lyte-tab-title {\n  font-weight: 400;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-primary-text-default);\n  padding: 0 8px;\n  margin: 0 10px 0 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  background: var(--zcat-tabs-primary-bg);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  border-bottom: 2px solid transparent;\n  height: 28px;\n  border-radius: 4px 4px 0px 0px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n}\n.primary-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-default);\n}\n.secondary-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  background: var(--zcat-tabs-secondary-bg-default);\n  border-radius: 6px;\n  border-bottom: none;\n  padding: 4px;\n  gap: 4px;\n  box-sizing: border-box;\n}\n.secondary-tabs lyte-tab-title {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-secondary-text-default);\n  padding: 0 6px;\n  margin: 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  background: transparent;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  border-radius: 4px;\n  height: 28px;\n  box-sizing: border-box;\n}\n.secondary-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-icon-default);\n}\n.secondary-tabs.small lyte-tab-title,.secondary-tabs.Extsmall lyte-tab-title{\n  height: 20px;\n}\n.secondary-tabs.Extsmall lyte-tab-title{\n  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);\n}\n.code-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  border-radius: 6px;\n  padding: 0;\n  box-sizing: border-box;\n  height: 36px;\n}\n.code-tabs lyte-tab-title {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n  padding: 10px;\n  margin: 0 0 0 10px;\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  cursor: pointer;\n  box-sizing: border-box;\n  background: var(--zcat-tabs-code-bg-default);\n  border-radius: 6px 6px 0 0;\n  overflow: visible;\n  height: 36px;\n  border-bottom: 0px;\n}\n.code-tabs lyte-tab-title:first-child {\n  margin: 0;\n}\n.code-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-icon-default);\n}\n.code-tabs .code-tab-slide {\n  position: absolute;\n  top: -1px;\n  right: -10px;\n  width: 20px;\n  height: 36px;\n  transform: skew(26deg);\n  background: var(--zcat-tabs-code-bg-default);\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  border-left: none;\n  border-radius: 0 4px 0 0;\n  z-index: 1;\n  border-bottom: 0;\n}\n.code-tabs .lyteTabActive .code-tab-slide {\n  background: var(--zcat-tabs-code-bg-active);\n  border-bottom: none;\n}\n.code-tabs .tab-title {\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-code-text-default);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  max-width: 200px;\n  margin: 0 1px 0 0;\n}\nlyte-tab-title span {\n  display: inline-block;\n  vertical-align: middle;\n}\n.primary-tabs lyte-tab-title.lyteTabActive {\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-primary-text-active);\n  font-weight: 600;\n}\n.primary-tabs lyte-tab-title:hover,.primary-tabs lyte-tab-title.lyteTabActive:hover{\n  color: var(--zcat-tabs-primary-text-hover);\n}\nlyte-tab-body {\n  display: block;\n  border: none;\n  padding: 0;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  text-align: left;\n  overflow: auto;\n  box-sizing: border-box;\n}\nlyte-tab-content {\n  color: var(--zcat-body-text-primary);\n}\n.lyteTabShow {\n  display: block;\n  flex-grow: 1;\n}\n.lyteTabHide {\n  display: none;\n}\n/*  Tab top starts */\n.lyteTabDefaultTop lyte-tab-body {\n  border-top: 0;\n}\n.lyteTabDefaultTop lyte-tab-head {\n  border-bottom: 0;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-head::after {\n  content: '';\n  display: block;\n  width: -webkit-fill-available;\n  background: var(--zcat-tabs-primary-border-default);\n  height: 1px;\n  position: absolute;\n  bottom: 0px;\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-head::after{\n  content: none;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-head::after{\n  content: none;\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title {\n  margin-bottom: 0;\n  border-bottom: 0;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: none;\n  background: var(--zcat-tabs-secondary-bg-active);\n  color: var(--zcat-tabs-secondary-text-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-icon-active);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: none;\n  background: var(--zcat-tabs-code-bg-active);\n  color: var(--zcat-tabs-code-text-active);\n  z-index: 1;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-icon-active);\n}\nlyte-tab-title,\nlyte-tab-title.lyteTabActive {\n  outline: none !important;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  background: var(--zcat-tabs-primary-bg-hover);\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-hover);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  background: var(--zcat-tabs-primary-bg-active);\n  color: var(--zcat-tabs-primary-text-active);\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  color: var(--zcat-tabs-secondary-text-hover);\n  background: var(--zcat-tabs-secondary-bg-hover);\n  border-bottom: none;\n  margin-bottom: 0;\n}\n.code-tabs lyte-tab-title:hover .tab-title,\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .tab-title {\n  color: var(--zcat-tabs-code-text-hover);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  border-bottom: none;\n  background: var(--zcat-tabs-secondary-bg-active);\n  color: var(--zcat-tabs-secondary-text-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-text-hover);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  /* border: 1px solid var(--zcat-color-grey2); */\n  color: var(--zcat-tabs-code-text-hover);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  background: var(--zcat-tabs-code-bg-hover);\n  color: var(--zcat-tabs-code-text-hover);\n  border-bottom: none;\n  z-index: 1;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-text-hover);\n}\n/*  Tab top ends */\n/*  Tab bottom starts */\n.lyteTabDefaultBottom lyte-yield {\n  display: flex;\n  flex-direction: column;\n}\n.lyteTabDefaultBottom lyte-tab-head {\n  order: 2;\n  border-top-color: #e5e5e5;\n}\n.lyteTabDefaultBottom lyte-tab-body {\n  order: 1;\n  border-bottom: 0;\n}\n.lyteTabDefaultBottom lyte-tab-title {\n  border-top: 1px solid #e5e5e5;\n  margin-top: -1px;\n}\n.lyteTabDefaultBottom lyte-tab-title.lyteTabActive {\n  border-top: 1px solid #2c7bd0;\n}\n.lyteTabDefaultBottom lyte-tab-title:hover {\n  border-top-color: #666;\n}\n.lyteTabDefaultBottom lyte-tab-title.lyteTabActive:hover {\n  border-top-color: #2c7bd0;\n}\n/*  Tab bottom ends */\n/*  Tab left and right starts */\n.lyteTabDefaultLeft lyte-yield {\n  display: flex;\n}\n.lyteTabDefaultLeft lyte-tab-head,\n.lyteTabDefaultRight lyte-tab-head {\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 10px 0;\n  width: 200px;\n  text-align: left;\n  overflow: auto;\n}\n.lyteTabDefaultLeft lyte-tab-head {\n  border-right: 0;\n}\n.lyteTabDefaultLeft lyte-tab-body,\n.lyteTabDefaultRight lyte-tab-body {\n  flex-grow: 10;\n  width: calc(100% - 200px);\n  padding-top: 18px;\n}\n.lyteTabDefaultLeft lyte-tab-title.lyteTabActive,\n.lyteTabDefaultLeft lyte-tab-title.lyteTabActive:hover,\n.lyteTabDefaultRight lyte-tab-title.lyteTabActive,\n.lyteTabDefaultRight lyte-tab-title.lyteTabActive:hover {\n  border-left: 1px solid #2c7bd0;\n  background: #f5f5f5;\n  position: relative;\n  z-index: 10;\n}\n.lyteTabDefaultRight lyte-yield {\n  display: flex;\n  flex-direction: row-reverse;\n}\n.lyteTabDefaultRight lyte-tab-head {\n  border-left: 0;\n}\n.lyteTabDefaultLeft lyte-tab-title,\n.lyteTabDefaultRight lyte-tab-title {\n  margin: 0;\n  padding: 10px 15px;\n  overflow: visible;\n}\n.lyteTabDefaultLeft lyte-tab-title:hover,\n.lyteTabDefaultRight lyte-tab-title:hover {\n  background: #fafafa;\n}\n/*  Tab left and right ends */\n.lyteTabCloseIcon {\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\");\n  background-position: -2px;\n  width: 10px;\n  height: 10px;\n  display: inline-block;\n  vertical-align: middle;\n  margin-left: 10px;\n  position: relative;\n  z-index: 1;\n  opacity: 0.7;\n}\n.lyteTabCloseIcon:hover {\n  opacity: 1;\n}\n.lyteTabAlignStart {\n  justify-content: flex-start;\n}\n.lyteTabAlignCenter {\n  justify-content: center;\n}\n.lyteTabAlignEnd {\n  justify-content: flex-end;\n}\n.lyteTabOverflowV lyte-tab-title {\n  overflow: visible;\n}\n.lyteTabForceHide {\n  display: none;\n}\n#moreMenu {\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0.7;\n  padding: 10px;\n}\n#moreMenu.lyteMenuSelected,\n#moreMenu:hover {\n  opacity: 1;\n}\n#moreMenu span {\n  background-image: url(../../images/sprite_lyte.svg);\n  background-position: -294px -165px;\n  width: 17px;\n  height: 5px;\n}\n.lyteTabRightCollapse {\n  flex-flow: row-reverse;\n  justify-content: flex-start;\n}\n.lyteTabVH lyte-tab-title,\n.lyteTabVH .lyteMenuSelected {\n  visibility: hidden;\n}\nlyte-tab-title.lyteTabDisable {\n  pointer-events: none;\n  cursor: default;\n  opacity: 0.7;\n}\n/*  Lyte Nested Tabs CSS Begins */\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield {\n  display: block;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head {\n  flex-direction: row;\n  padding: 0;\n  width: auto;\n  border: 1px solid #ddd;\n  overflow: visible;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head lyte-tab-title {\n  margin: 0 10px;\n  padding: 10px 5px;\n  overflow: hidden;\n  margin-bottom: -1px;\n  border: 0;\n  border-bottom: 1px solid #e5e5e5;\n}\n.lyteNestedTab\n  .lyteTabDefaultTop\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title:hover {\n  background: #fff;\n  border: 0;\n  border-bottom: 1px solid #666;\n}\n.lyteNestedTab\n  .lyteTabDefaultTop\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-bottom: 1px solid #2c7bd0;\n  background: #fff;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-body {\n  width: auto;\n  padding: 15px;\n  border: 1px solid #ddd;\n  border-top: 0;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield {\n  flex-direction: column;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-head {\n  flex-direction: row;\n  padding: 0;\n  width: auto;\n  border: 1px solid #ddd;\n  overflow: visible;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title {\n  margin: 0 10px;\n  padding: 10px 5px;\n  overflow: hidden;\n  margin-top: -1px;\n  border: 0;\n  border-top: 1px solid #e5e5e5;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title:hover {\n  background: #fff;\n  border: 0;\n  border-top: 1px solid #666;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-top: 1px solid #2c7bd0;\n  background: #fff;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-body {\n  width: auto;\n  padding: 15px;\n  border: 1px solid #ddd;\n  border-bottom: 0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield {\n  flex-direction: row;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head {\n  order: 0;\n  border: 1px solid #ddd;\n  border-right: 0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head lyte-tab-title {\n  border: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultLeft\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border-bottom: 0;\n  border-left: 1px solid #2c7bd0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-body {\n  border: 1px solid #ddd;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield {\n  flex-direction: row-reverse;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-head {\n  border: 1px solid #ddd;\n  border-left: 0;\n  order: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultRight\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title {\n  border: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultRight\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-left: 1px solid #2c7bd0;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-body {\n  border: 1px solid #ddd;\n}\n\n.zcat-tab-badge{\n  width: 16px;\n  height: 16px;\n  border-radius: 50%;\n  background: var(--zcat-badge-secondary-bg-primary);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font: var(--zcat-font-10-12) var(--zcat-font-family-primary);\n  color: var(--zcat-badge-secondary-text-primary);\n}\n\n/* === Global base styles from reference css/zcat-tab.css === */\nlyte-tabs * {\n  box-sizing: border-box;\n}\nlyte-tabs {\n  display: block;\n  background: var(--zcat-tabs-primary-bg);\n  position: relative;\n  width: 100%;\n  font-family: var(--zcat-font-family-primary);\n  font-weight: 400;\n}\n.primary-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  border-bottom: 1px solid var(--zcat-color-primarylight);\n  box-sizing: border-box;\n  position: relative;\n}\n.primary-tabs lyte-tab-title {\n  font-weight: 400;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-primary-text-default);\n  padding: 0 8px;\n  margin: 0 10px 0 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  background: var(--zcat-tabs-primary-bg);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  border-bottom: 2px solid transparent;\n  height: 28px;\n  border-radius: 4px 4px 0px 0px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n}\n.primary-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-default);\n}\n.secondary-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  background: var(--zcat-tabs-secondary-bg-default);\n  border-radius: 6px;\n  border-bottom: none;\n  padding: 4px;\n  gap: 4px;\n  box-sizing: border-box;\n}\n.secondary-tabs lyte-tab-title {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-secondary-text-default);\n  padding: 0 6px;\n  margin: 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  background: transparent;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  border-radius: 4px;\n  height: 28px;\n  box-sizing: border-box;\n}\n.secondary-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-icon-default);\n}\n.secondary-tabs.small lyte-tab-title,.secondary-tabs.Extsmall lyte-tab-title{\n  height: 20px;\n}\n.secondary-tabs.Extsmall lyte-tab-title{\n  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);\n}\n.code-tabs lyte-tab-head {\n  display: flex;\n  border: none;\n  border-radius: 6px;\n  padding: 0;\n  box-sizing: border-box;\n  height: 36px;\n}\n.code-tabs lyte-tab-title {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2px;\n  padding: 10px;\n  margin: 0 0 0 10px;\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  cursor: pointer;\n  box-sizing: border-box;\n  background: var(--zcat-tabs-code-bg-default);\n  border-radius: 6px 6px 0 0;\n  overflow: visible;\n  height: 36px;\n  border-bottom: 0px;\n}\n.code-tabs lyte-tab-title:first-child {\n  margin: 0;\n}\n.code-tabs lyte-tab-title .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-icon-default);\n}\n.code-tabs .code-tab-slide {\n  position: absolute;\n  top: -1px;\n  right: -10px;\n  width: 20px;\n  height: 36px;\n  transform: skew(26deg);\n  background: var(--zcat-tabs-code-bg-default);\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  border-left: none;\n  border-radius: 0 4px 0 0;\n  z-index: 1;\n  border-bottom: 0;\n}\n.code-tabs .lyteTabActive .code-tab-slide {\n  background: var(--zcat-tabs-code-bg-active);\n  border-bottom: none;\n}\n.code-tabs .tab-title {\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-code-text-default);\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  max-width: 200px;\n  margin: 0 1px 0 0;\n}\nlyte-tab-title span {\n  display: inline-block;\n  vertical-align: middle;\n}\n.primary-tabs lyte-tab-title.lyteTabActive {\n  font-family: var(--zcat-font-family-primary);\n  color: var(--zcat-tabs-primary-text-active);\n  font-weight: 600;\n}\n.primary-tabs lyte-tab-title:hover,.primary-tabs lyte-tab-title.lyteTabActive:hover{\n  color: var(--zcat-tabs-primary-text-hover);\n}\nlyte-tab-body {\n  display: block;\n  border: none;\n  padding: 0;\n  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);\n  text-align: left;\n  overflow: auto;\n  box-sizing: border-box;\n}\nlyte-tab-content {\n  color: var(--zcat-body-text-primary);\n}\n.lyteTabShow {\n  display: block;\n  flex-grow: 1;\n}\n.lyteTabHide {\n  display: none;\n}\n/*  Tab top starts */\n.lyteTabDefaultTop lyte-tab-body {\n  border-top: 0;\n}\n.lyteTabDefaultTop lyte-tab-head {\n  border-bottom: 0;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-head::after {\n  content: '';\n  display: block;\n  width: -webkit-fill-available;\n  background: var(--zcat-tabs-primary-border-default);\n  height: 1px;\n  position: absolute;\n  bottom: 0px;\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-head::after{\n  content: none;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-head::after{\n  content: none;\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title {\n  margin-bottom: 0;\n  border-bottom: 0;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: none;\n  background: var(--zcat-tabs-secondary-bg-active);\n  color: var(--zcat-tabs-secondary-text-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-icon-active);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive {\n  border-bottom: none;\n  background: var(--zcat-tabs-code-bg-active);\n  color: var(--zcat-tabs-code-text-active);\n  z-index: 1;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-icon-active);\n}\nlyte-tab-title,\nlyte-tab-title.lyteTabActive {\n  outline: none !important;\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  background: var(--zcat-tabs-primary-bg-hover);\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-hover);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  background: var(--zcat-tabs-primary-bg-active);\n  color: var(--zcat-tabs-primary-text-active);\n  border-bottom: 2px solid var(--zcat-tabs-primary-border-active);\n}\n.primary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-primary-icon-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  color: var(--zcat-tabs-secondary-text-hover);\n  background: var(--zcat-tabs-secondary-bg-hover);\n  border-bottom: none;\n  margin-bottom: 0;\n}\n.code-tabs lyte-tab-title:hover .tab-title,\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive .tab-title {\n  color: var(--zcat-tabs-code-text-hover);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  border-bottom: none;\n  background: var(--zcat-tabs-secondary-bg-active);\n  color: var(--zcat-tabs-secondary-text-active);\n}\n.secondary-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.secondary-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-secondary-text-hover);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title:hover {\n  /* border: 1px solid var(--zcat-color-grey2); */\n  color: var(--zcat-tabs-code-text-hover);\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover {\n  border: 1px solid var(--zcat-tabs-code-border-default);\n  background: var(--zcat-tabs-code-bg-hover);\n  color: var(--zcat-tabs-code-text-hover);\n  border-bottom: none;\n  z-index: 1;\n}\n.code-tabs.lyteTabDefaultTop lyte-tab-title:hover .zcat-tab-color,.code-tabs.lyteTabDefaultTop lyte-tab-title.lyteTabActive:hover .zcat-tab-color{\n  stroke: var(--zcat-tabs-code-text-hover);\n}\n/*  Tab top ends */\n/*  Tab bottom starts */\n.lyteTabDefaultBottom lyte-yield {\n  display: flex;\n  flex-direction: column;\n}\n.lyteTabDefaultBottom lyte-tab-head {\n  order: 2;\n  border-top-color: #e5e5e5;\n}\n.lyteTabDefaultBottom lyte-tab-body {\n  order: 1;\n  border-bottom: 0;\n}\n.lyteTabDefaultBottom lyte-tab-title {\n  border-top: 1px solid #e5e5e5;\n  margin-top: -1px;\n}\n.lyteTabDefaultBottom lyte-tab-title.lyteTabActive {\n  border-top: 1px solid #2c7bd0;\n}\n.lyteTabDefaultBottom lyte-tab-title:hover {\n  border-top-color: #666;\n}\n.lyteTabDefaultBottom lyte-tab-title.lyteTabActive:hover {\n  border-top-color: #2c7bd0;\n}\n/*  Tab bottom ends */\n/*  Tab left and right starts */\n.lyteTabDefaultLeft lyte-yield {\n  display: flex;\n}\n.lyteTabDefaultLeft lyte-tab-head,\n.lyteTabDefaultRight lyte-tab-head {\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 10px 0;\n  width: 200px;\n  text-align: left;\n  overflow: auto;\n}\n.lyteTabDefaultLeft lyte-tab-head {\n  border-right: 0;\n}\n.lyteTabDefaultLeft lyte-tab-body,\n.lyteTabDefaultRight lyte-tab-body {\n  flex-grow: 10;\n  width: calc(100% - 200px);\n  padding-top: 18px;\n}\n.lyteTabDefaultLeft lyte-tab-title.lyteTabActive,\n.lyteTabDefaultLeft lyte-tab-title.lyteTabActive:hover,\n.lyteTabDefaultRight lyte-tab-title.lyteTabActive,\n.lyteTabDefaultRight lyte-tab-title.lyteTabActive:hover {\n  border-left: 1px solid #2c7bd0;\n  background: #f5f5f5;\n  position: relative;\n  z-index: 10;\n}\n.lyteTabDefaultRight lyte-yield {\n  display: flex;\n  flex-direction: row-reverse;\n}\n.lyteTabDefaultRight lyte-tab-head {\n  border-left: 0;\n}\n.lyteTabDefaultLeft lyte-tab-title,\n.lyteTabDefaultRight lyte-tab-title {\n  margin: 0;\n  padding: 10px 15px;\n  overflow: visible;\n}\n.lyteTabDefaultLeft lyte-tab-title:hover,\n.lyteTabDefaultRight lyte-tab-title:hover {\n  background: #fafafa;\n}\n/*  Tab left and right ends */\n.lyteTabCloseIcon {\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='%234D618A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\");\n  background-position: -2px;\n  width: 10px;\n  height: 10px;\n  display: inline-block;\n  vertical-align: middle;\n  margin-left: 10px;\n  position: relative;\n  z-index: 1;\n  opacity: 0.7;\n}\n.lyteTabCloseIcon:hover {\n  opacity: 1;\n}\n.lyteTabAlignStart {\n  justify-content: flex-start;\n}\n.lyteTabAlignCenter {\n  justify-content: center;\n}\n.lyteTabAlignEnd {\n  justify-content: flex-end;\n}\n.lyteTabOverflowV lyte-tab-title {\n  overflow: visible;\n}\n.lyteTabForceHide {\n  display: none;\n}\n#moreMenu {\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0.7;\n  padding: 10px;\n}\n#moreMenu.lyteMenuSelected,\n#moreMenu:hover {\n  opacity: 1;\n}\n#moreMenu span {\n  background-image: url(../../images/sprite_lyte.svg);\n  background-position: -294px -165px;\n  width: 17px;\n  height: 5px;\n}\n.lyteTabRightCollapse {\n  flex-flow: row-reverse;\n  justify-content: flex-start;\n}\n.lyteTabVH lyte-tab-title,\n.lyteTabVH .lyteMenuSelected {\n  visibility: hidden;\n}\nlyte-tab-title.lyteTabDisable {\n  pointer-events: none;\n  cursor: default;\n  opacity: 0.7;\n}\n/*  Lyte Nested Tabs CSS Begins */\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield {\n  display: block;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head {\n  flex-direction: row;\n  padding: 0;\n  width: auto;\n  border: 1px solid #ddd;\n  overflow: visible;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-head lyte-tab-title {\n  margin: 0 10px;\n  padding: 10px 5px;\n  overflow: hidden;\n  margin-bottom: -1px;\n  border: 0;\n  border-bottom: 1px solid #e5e5e5;\n}\n.lyteNestedTab\n  .lyteTabDefaultTop\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title:hover {\n  background: #fff;\n  border: 0;\n  border-bottom: 1px solid #666;\n}\n.lyteNestedTab\n  .lyteTabDefaultTop\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-bottom: 1px solid #2c7bd0;\n  background: #fff;\n}\n.lyteNestedTab .lyteTabDefaultTop > lyte-yield > lyte-tab-body {\n  width: auto;\n  padding: 15px;\n  border: 1px solid #ddd;\n  border-top: 0;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield {\n  flex-direction: column;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-head {\n  flex-direction: row;\n  padding: 0;\n  width: auto;\n  border: 1px solid #ddd;\n  overflow: visible;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title {\n  margin: 0 10px;\n  padding: 10px 5px;\n  overflow: hidden;\n  margin-top: -1px;\n  border: 0;\n  border-top: 1px solid #e5e5e5;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title:hover {\n  background: #fff;\n  border: 0;\n  border-top: 1px solid #666;\n}\n.lyteNestedTab\n  .lyteTabDefaultBottom\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-top: 1px solid #2c7bd0;\n  background: #fff;\n}\n.lyteNestedTab .lyteTabDefaultBottom > lyte-yield > lyte-tab-body {\n  width: auto;\n  padding: 15px;\n  border: 1px solid #ddd;\n  border-bottom: 0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield {\n  flex-direction: row;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head {\n  order: 0;\n  border: 1px solid #ddd;\n  border-right: 0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-head lyte-tab-title {\n  border: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultLeft\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border-bottom: 0;\n  border-left: 1px solid #2c7bd0;\n}\n.lyteNestedTab .lyteTabDefaultLeft > lyte-yield > lyte-tab-body {\n  border: 1px solid #ddd;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield {\n  flex-direction: row-reverse;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-head {\n  border: 1px solid #ddd;\n  border-left: 0;\n  order: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultRight\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title {\n  border: 0;\n}\n.lyteNestedTab\n  .lyteTabDefaultRight\n  > lyte-yield\n  > lyte-tab-head\n  lyte-tab-title.lyteTabActive {\n  border: 0;\n  border-left: 1px solid #2c7bd0;\n}\n.lyteNestedTab .lyteTabDefaultRight > lyte-yield > lyte-tab-body {\n  border: 1px solid #ddd;\n}\n\n.zcat-tab-badge{\n  width: 16px;\n  height: 16px;\n  border-radius: 50%;\n  background: var(--zcat-badge-secondary-bg-primary);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font: var(--zcat-font-10-12) var(--zcat-font-family-primary);\n  color: var(--zcat-badge-secondary-text-primary);\n}</style>";;
+ZcatTab._dynamicNodes = [{"t":"a","p":[3]},{"t":"r","p":[3,1],"dN":[{"t":"a","p":[1],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'width: fit-content;'","''"]}}}},{"t":"a","p":[1,1]},{"t":"f","p":[1,1],"dN":[{"t":"a","p":[0]},{"t":"s","p":[0,1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":4,"sibl":[3]},{"t":"s","p":[0,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{"dN":[{"t":"tX","p":[1,0],"cn":"default"}]},"dc":{"lc_id_0":{},"default":{}},"hd":true,"co":["lc_id_0"],"in":3,"sibl":[2]},{"t":"s","p":[0,5],"c":{"lc_id_0":{"dN":[],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1]},{"t":"s","p":[0,6],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[4,0],"hc":true,"trans":true,"in":3,"sibl":[2]},{"t":"cD","p":[1],"in":2,"sibl":[1]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'border: 1px solid var(--zcat-tabs-primary-border-default); border-top: 0px;'","''"]}}},"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"f","p":[0,1],"dN":[{"t":"a","p":[0]},{"t":"a","p":[0,1]},{"t":"i","p":[0,1],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[4],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0],"a":{"style":{"name":"style","helperInfo":{"name":"expHandlers","args":[null,"'?:'","'border: 1px solid var(--zcat-tabs-primary-border-default) !important; margin-bottom: -1px;'","''"]}}},"cn":"lc_id_0"},{"t":"a","p":[0,1],"cn":"lc_id_0"},{"t":"f","p":[0,1],"dN":[{"t":"a","p":[0]},{"t":"a","p":[0,1]},{"t":"i","p":[0,1],"in":1,"sibl":[0]},{"t":"cD","p":[0],"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[0],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[3,2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"cD","p":[3],"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
 ZcatTab._observedAttributes = ["self", "zcatProp"];
 
 
@@ -400,12 +400,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "LyteTabsComponent": () => (/* binding */ LyteTabsComponent)
 /* harmony export */ });
 /* harmony import */ var _lyte_menu_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lyte-menu.js */ 56289784);
-/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../component.js */ 98708570);
 /* harmony import */ var _slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../@slyte/core/index.js */ 60469700);
-/* harmony import */ var _slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../@slyte/component/index.js */ 93132498);
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../component.js */ 98708570);
 /* harmony import */ var _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../lyte-dom/modules/lyte-dom-utils.js */ 52000102);
 /* harmony import */ var _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2__);
-
 
 
 
@@ -416,11 +414,8 @@ __webpack_require__.r(__webpack_exports__);
  * Renders a tabs component
  * @component lyte-tabs
  * @version 1.0.0
- * @dependencies lyte-menu
- */
-
-/**
- * @domEvents commonEvents keydown, keyup, focus, blur, focusin, focusout 
+ * @utility addTab,deleteTab,openTab,enableTab,disableTab,addCloseIcon,resizeTab
+ * @methods onBeforeOpen,onOpen,onBeforeDelete,onDelete,onBeforeMenuOpen,onMenuOpen,onBeforeMenuCLose,onMenuClose,onMenuClick,onBeforeMenuRender,onAfterMenuRender
  */
 
 class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Component {
@@ -441,17 +436,15 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
            * @componentProperty {string} ltPropHover
            * @version 1.0.0
            * @default lyteTabHover 
-           * @input
            */
-          "ltPropHover": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'hover', 'lyteTabHover' ), 'input' : 'true', 'output' : 'false' }),
+          "ltPropHover": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'hover', 'lyteTabHover' ) }),
 
           /**
            * @componentProperty {string} ltPropActiveClass
            * @version 1.0.0
            * @default lyteTabActive
-           * @input
            */
-          "ltPropActiveClass": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'activeClass', 'lyteTabActive' ), 'input' : 'true', 'output' : 'false' }),
+          "ltPropActiveClass": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'activeClass', 'lyteTabActive' ) }),
           /**
            * @typedef {object} position
            * @property {top|bottom|left|right} pos
@@ -461,17 +454,16 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
            * @componentProperty {object} ltPropPosition
            * @version 1.0.0
            * @default { "pos":"top","align":"left" }
-           * @input
            */
-          "ltPropPosition": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("object", { "default":  { 'pos': 'top', 'align': 'left' }, 'input' : 'true', 'output' : 'false' }),
+          "ltPropPosition": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("object", { "default":  { 'pos': 'top', 'align': 'left' } }),
 
           /**
            * @componentProperty {boolean} ltPropCloseIcon
            * @version 1.0.0
            * @default false
-           * @input
+           * 
            */
-          "ltPropCloseIcon": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("boolean", { "default": false, 'input' : 'true', 'output' : 'false' }),
+          "ltPropCloseIcon": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("boolean", { "default": false }),
           "prevTarget": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("object", { "default": null }),
 
           /**
@@ -479,43 +471,36 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
            * @version 1.0.0
            * @default 400px
            * @suffix px,pt,cm,mm,vh,vm,em
-           * @input
            */
-          "ltPropHeight": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'height', "400px"),'input' : 'true', 'output' : 'false' }),
+          "ltPropHeight": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'height', "400px") }),
 
           /**
            * @componentProperty {string} ltPropType
            * @version 1.0.0
            * @options collapse
-           * @input
            */
-          "ltPropType": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { 'input' : 'true', 'output' : 'false' }), //options - collapse
+          "ltPropType": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string"), //options - collapse
 
           /**
            * @componentProperty {string} ltPropMaxWidth
            * @version 1.0.0
            * @default 90%
-           * @condition ltPropType collapse
            * @suffix px,pt,cm,mm,vh,vm,em,%
-           * @input
            */
-          "ltPropMaxWidth": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'maxWidth', "90%"), 'input' : 'true', 'output' : 'false' }),
+          "ltPropMaxWidth": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'maxWidth', "90%") }),
 
           /**
            * @componentProperty {string} ltPropTabStyle
            * @version 2.2.7
            * @options nested
-           * @input
            */
-          "ltPropTabStyle": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string",{'input' : 'true', 'output' : 'false'}),     //nested
+          "ltPropTabStyle": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string"),     //nested
 
           /**
            * @componentProperty {string} ltPropMenuWrapperClass
-           * @condition ltPropType collapse
            * @version 2.2.8
-           * @input
            */
-          "ltPropMenuWrapperClass": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string",{'input' : 'true', 'output' : 'false'}),
+          "ltPropMenuWrapperClass": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("string"),
           /**
            * @typedef {object} currentTab 
            * @property {string} index
@@ -524,19 +509,9 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
           /**
            * @componentProperty {currentTab} ltPropCurrentTab
            * @version 3.6.0
-           * @output
            */
-          "ltPropCurrentTab": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("object",{'input' : 'false', 'output' : 'true'}),
-           /**
-           * @componentProperty {number} ltPropActiveTab
-           * @version 3.110.0
-           * @default 0
-           * @minValue 0
-           * @input 
-           * @output 
-           */
-          "ltPropActiveTab": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('number',{ 'input' : 'true', 'output' : 'true'}),
-          "ltPropAriaAutoActivation" : (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('boolean',{ "default": false}),
+          "ltPropCurrentTab": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)("object"),
+          "ltPropActiveTab": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('number'),
           "ltPropHiddenTabs": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('array', { "default": [] }),
           "ltPropFireOnInit": (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)('boolean',{"default": true }),
           "createTabMenu" :  (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_3__.prop)( 'boolean', { "default" : false } ),
@@ -546,72 +521,28 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
     }
 
     init() {
-        /**
-         * @utility addTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { object } newTab
-         */
         this.$node.addTab = function (newTab) {
             this.component.constructTabs(this, newTab);
             this.component.collapseHeader(true);
         };
-        /**
-         * @utility deleteTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { string } tabId
-         */
         this.$node.deleteTab = function (tabId) {
             this.component.deleteTabContent(tabId, null);
         };
-        /**
-         * @utility openTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { string } tabId
-         */
         this.$node.openTab = function (tabId) {
             this.component.openTabContent(tabId, null);
         };
-        /**
-         * @utility enableTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { string } tabId
-         */
         this.$node.enableTab = function (tabId) {
             this.component.enableTab(tabId);
         };
-        /**
-         * @utility disableTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { string } tabId
-         */
         this.$node.disableTab = function (tabId) {
             this.component.disableTab(tabId);
         };
-        /**
-         * @utility addCloseIcon
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         */
         this.$node.addCloseIcon = function () {
             this.component.checkCloseIcon();
         };
-        /**
-         * @utility resizeTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         */
         this.$node.resizeTab = function(){
             this.component.collapseHeader(true);
             this.component.checkHeightOnResize();   
-        }
-        this.$node.reselectTab = function(){
-            var title = this.$node.querySelector('lyte-tab-head').querySelectorAll('lyte-tab-title');
-            this.component.openTabContent(title[this.component.getData('ltPropActive').id].getAttribute('lt-prop-id'));
         }
         this.$node.hideTab = function(id){
             if(!Array.isArray(id)){
@@ -667,7 +598,8 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
     }
 
     didConnect() {
-        _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()('LYTE-TAB-HEAD',this.$node).attr('role','tablist');
+        _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node).attr('role','tabs');
+        _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()('LYTE-TAB-HEAD').attr('role','tablist');
         this.initialFunc(true);
         this.rendered = true;
     }
@@ -716,10 +648,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
             var contents = this.getContent( _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()('lyte-tab-content',this.$node.querySelector('lyte-tab-body')) );
             var active = this.getData('ltPropActiveClass');
             var pos;
-            var tabpanel = ['top','bottom'];
-            if(!tabpanel.includes(position.pos)){
-                head.setAttribute('aria-orientation','vertical')
-            }
             this.setPosition(position);
             this.checkCloseIcon(head);
 
@@ -763,13 +691,11 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                 if(contents[i]){
                     if (pos && (pos === i || labels[pos].getAttribute('lt-prop-id') === contents[i].id)) {
                         this.executeOnBeforeOpen(labels[pos], labels[pos].getAttribute('lt-prop-id'), null, null);
-                        contents[i].classList.remove('lyteTabHide');
                         contents[i].classList.add('lyteTabShow');
                         this.setData('ltPropCurrentTab', { 'index': pos, 'name': labels[pos].textContent.trim(),'id' : labels[pos].getAttribute('lt-prop-id') });
                         this.executeOnOpen(labels[pos], labels[pos].getAttribute('lt-prop-id'), null, onRender);
                     }
                     else {
-                        contents[i].classList.remove('lyteTabShow');
                         contents[i].classList.add('lyteTabHide');
                         _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(labels[i]).attr('aria-selected',false);
                     }
@@ -819,16 +745,10 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                     if(onRender){
                         window._lyteUiUtils.dispatchEvent('lytetabafterrender', this.$node );
                     }
-                    /**
-                     * This method is invoked after a lyte-tabs component is rendered in the page.
-                     * @method afterRender
-                     * @author santhoshraj.s@zohocorp.com
-                     * @param { object } component
-                    */
                     onRender && this.getMethods('afterRender') && this.executeMethod('afterRender', this.$node);
                 }
                 else {
-                    var cs = window.getComputedStyle(this.$node);
+                    var cs = getComputedStyle(this.$node);
                     var borderDimensionY = ((cs.borderTop ? parseFloat(cs.borderTop) : 0) +
                         (cs.borderBottom ? parseFloat(cs.borderBottom) : 0));
                     var navHeight = this.$node.querySelector('.lyteTabNav').getBoundingClientRect().height;
@@ -862,23 +782,19 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
     }
 
     keydown(event) {
-        var menu = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()('#moreMenu',this.$node)[0];
-        if((event.target.tagName !== 'LYTE-TAB-TITLE' && event.target.id !== "moreMenu") || (menu && menu.classList.contains('lyteMenuSelected'))){
+        if(event.target.tagName !== 'LYTE-TAB-TITLE'){
             return;
         }
-        var head = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()('lyte-tab-head',this.$node);
-        var tabs = head.find('lyte-tab-title').not('.lyteTabForceHide').toArray();
-        menu && tabs.push(menu);
-        var curr_tab = head.find('.lyteTabFocused');
-        curr_tab = curr_tab.length === 0 ? head.find('.lyteTabActive') : curr_tab;
+        var tabs = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node).find('lyte-tab-title').toArray();
+        var curr_tab = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node).find('.lyteTabHover'); //$L(this.$node).find('.lyteTabActive');
+        curr_tab = curr_tab.length === 0 ? _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(this.$node).find('.lyteTabActive') : curr_tab;
         var tabFocus = tabs.indexOf(curr_tab[0]),prevFocus;
+
         var tab_length = tabs.length;
-        var isVertical = head[0].getAttribute('aria-orientation') == 'vertical';
-        if( ( (event.keyCode === 39 || event.keyCode === 37) && !isVertical )  || (isVertical && ( event.keyCode == 40 || event.keyCode == 38 ) ) ){
-            // tabs[tabFocus].setAttribute('tabindex', -1);
+        if (event.keyCode === 39 || event.keyCode === 37){
+            tabs[tabFocus].setAttribute('tabindex', -1);
             _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(tabs[tabFocus]).removeClass('lyteTabHover');
-            _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(tabs[tabFocus]).removeClass('lyteTabFocused');
-            if( event.keyCode === 39  ||  event.keyCode === 40){
+            if(event.keyCode === 39){
                 tabFocus++;
                 if( tabFocus >= tab_length ){
                     tabFocus = 0;
@@ -889,37 +805,11 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                     tabFocus = tab_length - 1;
                 }
             }
-            // tabs[tabFocus].setAttribute('tabindex', 0);
-            tabs[tabFocus].classList.add('lyteTabFocused');
-            if(tabs[tabFocus].id !== "moreMenu"){
-                _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(tabs[tabFocus]).addClass('lyteTabHover')
-            }
-            if( this.getData('ltPropAriaAutoActivation') ){
-                if(tabs[tabFocus].id === "moreMenu"){
-                    menu.click();
-                }else{
-                    this.openTabContent(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(tabs[tabFocus]).attr('lt-prop-id'), event);
-                }
-            }
+            tabs[tabFocus].setAttribute('tabindex', 0);
+            _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(tabs[tabFocus]).addClass('lyteTabHover')
         }
-        if(event.keyCode === 8 && this.getData('ltPropCloseIcon')){
-            this.$node.deleteTab(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(tabs[tabFocus]).attr('lt-prop-id'));
-            var next_tab = tabFocus - 1;
-            if( next_tab < 0 ){
-                next_tab = tabFocus + 1;
-            }
-            if( tabs[ next_tab ] ){
-                this.openTabContent( tabs[ next_tab ], null);
-                tabs[ next_tab ].focus();
-            }
-            return;
-        }
-        if(event.keyCode === 13 && !this.getData('ltPropAriaAutoActivation')){
-            if(tabs[tabFocus].id === "moreMenu"){
-                menu.click();
-            }else{
-                this.openTabContent(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(tabs[tabFocus]).attr('lt-prop-id'), event);
-            }
+        if(event.keyCode === 13){
+            this.openTabContent(_lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(tabs[tabFocus]).attr('lt-prop-id'), event);
         }
         tabs[tabFocus].focus();  
     }
@@ -1024,9 +914,8 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
         if (!id) {
             id = this.generateId(title);
         }
-        content = content ? content : '';
-        titleEle.innerHTML = title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        contentEle.innerHTML = content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        titleEle.innerHTML = title;
+        contentEle.innerHTML = content;
         titleEle.setAttribute('lt-prop-id', id);
         //aria-attribute
         titleEle.setAttribute('aria-controls', id);
@@ -1063,14 +952,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
         if (tabId) {
             var returnVal = true;
             if (this.getMethods('onBeforeDelete')) {
-                /**
-                 * This method is invoked whenever you try to delete a tab by clicking on the close icon or by invoking the deleteTab method. If returned false form the method the sepecified tab wont be deleted.
-                 * @method onBeforeDelete
-                 * @author santhoshraj.s@zohocorp.com
-                 * @condition ltPropCloseIcon true
-                 * @param { string } tabId
-                 * @param { object } component
-                */
                 returnVal = this.executeMethod('onBeforeDelete', tabId, this.$node, event);
                 returnVal = returnVal === undefined ? true : returnVal;
             }
@@ -1094,14 +975,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                 }
             }
             if (this.getMethods('onDelete')) {
-                /**
-                 * This method is invoked after a tab is deleted either by clicking on the close icon or by invoking the deleteTab method
-                 * @method onDelete
-                 * @author santhoshraj.s@zohocorp.com
-                 * @condition ltPropCloseIcon true
-                 * @param { string } tabId
-                 * @param { object } component
-                */
                 this.executeMethod('onDelete', tabId, this.$node, event);
             }
 
@@ -1121,7 +994,7 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                         if (headers[v].classList.contains('lyteTabDisable')) {
                             headers[v].classList.remove('lyteTabDisable');
                             if (headers[v].classList.contains('lyteTabForceHide')) {
-                                (0,_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.arrayUtils)(this.getData('menuLabels'), "push", this.getMenuLabel(headers[v])/*headers[v].textContent*/);
+                                this.$addon.arrayUtils(this.getData('menuLabels'), "push", this.getMenuLabel(headers[v])/*headers[v].textContent*/);
                             }
                         }
                         break;
@@ -1131,7 +1004,7 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
             if (typeof tabId == "object" && tabId.classList.contains('lyteTabDisable')) {
                 tabId.classList.remove('lyteTabDisable');
                 if (tabId.classList.contains('lyteTabForceHide')) {
-                    (0,_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.arrayUtils)(this.getData('menuLabels'), "push", this.getMenuLabel(tabId)/*tabId.textContent*/);
+                    this.$addon.arrayUtils(this.getData('menuLabels'), "push", this.getMenuLabel(tabId)/*tabId.textContent*/);
                 }
             }
         }
@@ -1149,7 +1022,7 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                             if (headers[v].classList.contains('lyteTabForceHide')) {
                                 var index = this.getData('menuLabels').indexOf(this.getMenuLabel(headers[v])/*headers[v].textContent*/);
                                 if (index != -1) {
-                                    (0,_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.arrayUtils)(this.getData('menuLabels'), "removeAt", index, 1);
+                                    this.$addon.arrayUtils(this.getData('menuLabels'), "removeAt", index, 1);
                                 }
                             }
                         }
@@ -1162,7 +1035,7 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                 if (tabId.classList.contains('lyteTabForceHide')) {
                     var index = this.getData('menuLabels').indexOf(this.getMenuLabel(tabId)/*tabId.textContent*/);
                     if (index != -1) {
-                        (0,_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.arrayUtils)(this.getData('menuLabels'), "removeAt", index, 1);
+                        this.$addon.arrayUtils(this.getData('menuLabels'), "removeAt", index, 1);
                     }
                 }
             }
@@ -1184,7 +1057,7 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                         content.classList.remove('lyteTabHide');
                         content.classList.add('lyteTabShow');
                     }
-                    _this.setData('ltPropCurrentTab', { 'index': window.v, 'name': label.textContent.trim() , 'id' : tabId });
+                    _this.setData('ltPropCurrentTab', { 'index': v, 'name': label.textContent.trim() , 'id' : tabId });
                     _this.executeOnOpen(label, tabId, event);
                     _this.setData('prevTarget', label);
                     
@@ -1207,12 +1080,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                         break;
                     }
                 }
-                if (this.getData('ltPropType') == "collapse" && this.getData('menuLabels').indexOf(this.getMenuLabel(label)/*label.textContent*/) > -1) {
-                    this.collapseHeader(true);
-                }
-
-                _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(label).attr('tabindex',0);
-                _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(label).attr('aria-selected','true');
             }
             if (typeof tabId == "object") {
                 if (tabId.classList.contains(this.getData('ltPropActiveClass'))) {
@@ -1243,12 +1110,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                         _this.setData('ltPropCurrentTab', { 'index': pos, 'name': label.textContent.trim(), 'id' : id });
                         _this.executeOnOpen(tabId, id, event);
                         _this.setData('prevTarget', tabId);
-                        if (_this.getData('ltPropType') == "collapse" && _this.getData('menuLabels').indexOf(_this.getMenuLabel(label)/*label.textContent*/) > -1) {
-                            _this.collapseHeader(true);
-                        }
-
-                        _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(label).attr('tabindex',0);
-                        _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(label).attr('aria-selected','true');
                     })
                 }else{
                     this.hideAll();
@@ -1271,15 +1132,31 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                     this.setData('ltPropCurrentTab', { 'index': pos, 'name': label.textContent.trim(), 'id': tempid });
                     this.executeOnOpen(tabId, id, event);
                     this.setData('prevTarget', tabId);
-                    if (this.getData('ltPropType') == "collapse" && this.getData('menuLabels').indexOf(this.getMenuLabel(label)/*label.textContent*/) > -1) {
-                        this.collapseHeader(true);
-                    }
-
-                    _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(label).attr('tabindex',0);
-                    _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(label).attr('aria-selected','true');
                 }
+                // this.hideAll();
+
+                // tabId.classList.add(this.getData('ltPropActiveClass'));
+                // if (content) {
+                //     content.classList.remove('lyteTabHide');
+                //     content.classList.add('lyteTabShow');
+                // }
+                // var headers = this.$node.querySelector('lyte-tab-head').querySelectorAll('lyte-tab-title'), pos;
+                // for (var v = 0; v < headers.length; v++) {
+                //     if (headers[v].isEqualNode(label) && headers[v].getAttribute('lt-prop-id') === id) {
+                //         pos = v;
+                //         break;
+                //     }
+                // }
+                // this.setData('ltPropCurrentTab', { 'index': pos, 'name': label.textContent.trim() });
+                // this.executeOnOpen(tabId, id, event);
+                // this.setData('prevTarget', tabId);
             }
-           
+            if (this.getData('ltPropType') == "collapse" && this.getData('menuLabels').indexOf(this.getMenuLabel(label)/*label.textContent*/) > -1) {
+                this.collapseHeader(true);
+            }
+
+            _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(label).attr('tabindex',0);
+            _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(label).attr('aria-selected','true');
         }
        
     }
@@ -1341,7 +1218,7 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
         }
         else {
             _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default().fastdom.measure(function () {
-                var cs = window.getComputedStyle(this.$node);
+                var cs = getComputedStyle(this.$node);
                 var borderDimensionY = ((cs.borderTop ? parseFloat(cs.borderTop) : 0) +
                     (cs.borderBottom ? parseFloat(cs.borderBottom) : 0));
                 var navHeight = this.$node.querySelector('.lyteTabNav').getBoundingClientRect().height;
@@ -1485,7 +1362,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
             if (!menu) {
                 var span = document.createElement('span');
                 span.id = "moreMenu";
-                span.tabIndex = '-1';
                 var uniqueSel = this.createUniqueSlector();
                 span.classList.add(uniqueSel);
                 span.appendChild(document.createElement('span'));
@@ -1502,8 +1378,8 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                 }
             }
             else/*if(onResize)*/ {
-                (0,_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.arrayUtils)(this.getData('menuLabels'), "removeAt", 0, this.getData('menuLabels').length);
-                (0,_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.arrayUtils)(this.getData('menuLabels'), "push", menuLabels);
+                this.$addon.arrayUtils(this.getData('menuLabels'), "removeAt", 0, this.getData('menuLabels').length);
+                this.$addon.arrayUtils(this.getData('menuLabels'), "push", menuLabels);
             }
         }
         else {
@@ -1597,16 +1473,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
         var returnVal;
          if(this.getData('ltPropFireOnInit')){
             if (this.getMethods('onBeforeOpen')) {
-                /**
-                 * It is triggered when the user clicks on a tab but before it is opened.
-                 * @method onBeforeOpen
-                 * @author santhoshraj.s@zohocorp.com
-                 * @param { object } currContent
-                 * @param { object } prevContent
-                 * @param { object } component
-                 * @param { string } clickedTab 
-                 * @param { string } PrevisousTab
-                */
                 returnVal = this.executeMethod('onBeforeOpen', this.$node.querySelector("#" + targetId), this.$node.querySelector("#" + prevEleId), this, clickedItem, this.getData('prevTarget') ? this.getData('prevTarget') : null, event);
             }
         }else{
@@ -1623,14 +1489,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
         
         if(this.getData('ltPropFireOnInit')){
             if (this.getMethods('onOpen') ) {
-                /**
-                 * It is triggered when the clicked tab is opened.
-                 * @method onOpen
-                 * @author santhoshraj.s@zohocorp.com
-                 * @param { object } currContent
-                 * @param { object } component
-                 * @param { string } clickedTab 
-                */
                 this.executeMethod('onOpen', this.$node.querySelector("#" + targetId), this, clickedItem, event, targetId);
             } 
         }else{
@@ -1688,104 +1546,43 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                     // tab.collapseHeader(true);
                 }
                 if (tab.getMethods('onMenuClick')) {
-                    /**
-                     * This method is called whenever menu item is clicked
-                     * @method onMenuClick
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { string } value
-                     * @param { object } Event
-                     * @param { object } lyteMenu
-                     * @param { object } MenuOriginElement
-                     * @param { object } ClickedItem
-                     * @param { object } tabComponent
-                     * @param { object } ClickedTabTitle
-                    */
                     tab.executeMethod('onMenuClick', value, event, menu, menuOriginElem, subMenu, tab, label);
                 }
             },
             onTabMenuBeforeOpen: function (menu, event, menuOriginElem) {
-                if (this.getMethods('onBeforeMenuOpen')) {
-                    /**
-                     * This method is called before opening menu.
-                     * @method onBeforeMenuOpen
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } Event
-                     * @param { object } MenuOriginElement
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onBeforeMenuOpen', menu, event, menuOriginElem, this);
+                var tab = this;
+                if (tab.getMethods('onBeforeMenuOpen')) {
+                    tab.executeMethod('onBeforeMenuOpen', menu, event, menuOriginElem, tab);
                 }
             },
             onTabMenuOpen: function (menu, event, menuOriginElem) {
-                if (this.getMethods('onMenuOpen')) {
-                    /**
-                     * This method is called when menu is opened.
-                     * @method onMenuOpen
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } Event
-                     * @param { object } MenuOriginElement
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onMenuOpen', menu, event, menuOriginElem, this);
+                var tab = this;
+                if (tab.getMethods('onMenuOpen')) {
+                    tab.executeMethod('onMenuOpen', menu, event, menuOriginElem, tab);
                 }
             },
             onBeforeClose: function (menu, event) {
-                if (this.getMethods('onBeforeMenuClose')) {
-                    /**
-                     * This method is called before closing menu.
-                     * @method onBeforeMenuClose
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } Event
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onBeforeMenuClose', menu, event, this);
+                var tab = this;
+                if (tab.getMethods('onBeforeMenuClose')) {
+                    tab.executeMethod('onBeforeMenuClose', menu, event, tab);
                 }
             },
             onClose: function (menu, event) {
-                if (this.getMethods('onMenuClose')) {
-                    /**
-                     * This method is called when menu is closed.
-                     * @method onMenuClose
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } Event
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onMenuClose', menu, event, this);
+                var tab = this;
+                if (tab.getMethods('onMenuClose')) {
+                    tab.executeMethod('onMenuClose', menu, event, tab);
                 }
             },
             MenubeforeRender: function (menu) {
-                if (this.getMethods('onBeforeMenuRender')) {
-                    /**
-                     * This method is invoked before component is rendered
-                     * @method onBeforeMenuRender
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onBeforeMenuRender', menu, this);
+                var tab = this;
+                if (tab.getMethods('onBeforeMenuRender')) {
+                    tab.executeMethod('onBeforeMenuRender', menu, tab);
                 }
             },
             MenuafterRender: function (menu) {
-                if (this.getMethods('onAfterMenuRender')) {
-                    /**
-                     * This method is invoked after component rendered
-                     * @method onAfterMenuRender
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onAfterMenuRender', menu, this);
+                var tab = this;
+                if (tab.getMethods('onAfterMenuRender')) {
+                    tab.executeMethod('onAfterMenuRender', menu, tab);
                 }
             }
         }), arg1);
@@ -1810,17 +1607,12 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                     }
                 }
                 comp = null;
+                compHead = null;
                 compHeaders = null;
                 compBody = null;
                 var position = this.getData('ltPropPosition');
-                var tabpanel = ['top','bottom'];
-                if(!tabpanel.includes(position.pos)){
-                    compHead.setAttribute('aria-orientation','vertical')
-                }
-                compHead = null;
                 this.setPosition(position);
                 this.setHeight(position);
-
                 //this.initialFunc(false);
             }.observes('ltPropPosition'),
 
@@ -1828,18 +1620,6 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
                 this.$node.style.height = this.getData('ltPropHeight');
                 this.setHeight(this.getData('ltPropPosition'));
             }.observes('ltPropHeight'),
-
-            onTypeChange: function () {
-                var head = this.$node.querySelector('lyte-tab-head');
-                var Tabtitles = this.getHeader(head.querySelectorAll('lyte-tab-title'));
-                if(this.getData('ltPropType') !== "collapse"){
-                    _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(Tabtitles).removeClass('lyteTabForceHide');
-                    _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()('#moreMenu',this.$node)[0].remove();
-                    this.setData('createTabMenu', false);
-                }else{
-                    this.$node.resizeTab();
-                }
-            }.observes('ltPropType'),
 
             onHideListChange: function(){
                 var head = this.$node.querySelector('lyte-tab-head');
@@ -1898,8 +1678,8 @@ class LyteTabsComponent extends _component_js__WEBPACK_IMPORTED_MODULE_1__.Compo
     }
 }
 
-LyteTabsComponent._template = "<template tag-name=\"lyte-tabs\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropYield}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"tabYield\"></lyte-yield> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{createTabMenu}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-menu id=\"lyteTabMenu\" on-before-open=\"{{method(&quot;onTabMenuBeforeOpen&quot;)}}\" on-open=\"{{method(&quot;onTabMenuOpen&quot;)}}\" on-before-close=\"{{method(&quot;onBeforeClose&quot;)}}\" on-close=\"{{method(&quot;onClose&quot;)}}\" on-menu-click=\"{{method(&quot;onClick&quot;)}}\" before-render=\"{{method('MenubeforeRender')}}\" after-render=\"{{method('MenuafterRender')}}\" lt-prop-yield=\"{{ltPropMenuYield}}\" lt-prop-wrapper-class=\"{{ltPropMenuWrapperClass}}\"> <template is=\"registerYield\" yield-name=\"yield\"> <lyte-yield yield-name=\"tab-menu\" hidden-tabs=\"{{menuLabels}}\"></lyte-yield> </template> </lyte-menu> </template></template> </template>";;
-LyteTabsComponent._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"i","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
+LyteTabsComponent._template = "<template tag-name=\"lyte-tabs\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropYield}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"tabYield\"></lyte-yield> </template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{createTabMenu}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-menu id=\"lyteTabMenu\" on-before-open=\"{{method(&quot;onTabMenuBeforeOpen&quot;)}}\" on-open=\"{{method(&quot;onTabMenuOpen&quot;)}}\" on-before-close=\"{{method(&quot;onBeforeClose&quot;)}}\" on-close=\"{{method(&quot;onClose&quot;)}}\" on-menu-click=\"{{method(&quot;onClick&quot;)}}\" before-render=\"{{method('MenubeforeRender')}}\" after-render=\"{{method('MenuafterRender')}}\" lt-prop-yield=\"{{ltPropMenuYield}}\" lt-prop-wrapper-class=\"{{ltPropMenuWrapperClass}}\"> <template is=\"registerYield\" yield-name=\"yield\"> <lyte-yield yield-name=\"tab-menu\" hidden-tabs=\"{{menuLabels}}\"></lyte-yield> </template> </lyte-menu> </template></template></template>";;
+LyteTabsComponent._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[2],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"i","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
 
 LyteTabsComponent._observedAttributes = [
     "ltPropYield",
@@ -1915,7 +1695,6 @@ LyteTabsComponent._observedAttributes = [
     "ltPropMenuWrapperClass",
     "ltPropCurrentTab",
     "ltPropActiveTab",
-    "ltPropAriaAutoActivation",
     "ltPropHiddenTabs",
     "ltPropFireOnInit",
     "createTabMenu",
@@ -1933,19 +1712,11 @@ LyteTabsComponent._observedAttributes = [
 //         return 'lyte_tab_tile_' + _lyteTab._lyteTabTitleId;
 //     }
 // }
-
 /**
- * @customElement lyte-tab-title
- */
-/**
- * @customElement lyte-tab-head
- */
-/**
- * @customElement lyte-tab-body
- */
-
-/**
- * @customElement lyte-tab-content
+ * @customElement lyte-tab-title,
+ *                lyte-tab-head,
+ *                lyte-tab-body,
+ *                lyte-tab-content
  */
 if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
     window._lyteUiUtils.registeredCustomElements['lyte-tab-title'] = true;
@@ -1965,19 +1736,15 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
             var lyteNode = this.$node;
 
             _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(lyteNode).attr('role','tab');
+            _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(lyteNode).attr('tabindex',-1);
+            _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(lyteNode).attr('aria-selected','false');
+
+
             var compEle = lyteNode.closest('lyte-tabs');
-            lyteNode._tabComp = compEle;
-            if(lyteNode.classList.contains(compEle.getData('ltPropActiveClass'))){
-                _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(lyteNode).attr('tabindex',0);
-                _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(lyteNode).attr('aria-selected','true');
-            }else{
-                _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(lyteNode).attr('tabindex',-1);
-                _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(lyteNode).attr('aria-selected','false');
-            }
             if(compEle.getData('ltPropCloseIcon') && compEle.component.rendered){
                 compEle.component.createCloseIcon([lyteNode]);
             }
-            if (compEle && compEle.component  ) {
+            if (compEle && compEle.component && compEle.getData('ltPropType') == "collapse" ) {
 
                 if (compEle.checkTabs) {
                     clearTimeout(compEle.checkTabs);
@@ -1987,7 +1754,7 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
                     lyteNode.closest('lyte-tab-head').classList.add('lyteTabVH');
                 }
                 compEle.checkTabs = setTimeout(function () {
-                    var tab = lyteNode._tabComp;
+                    var tab = lyteNode.closest('lyte-tabs');
                     if (tab) {
                         var comp = tab.component;
                         var head = lyteNode.closest('lyte-tab-head');
@@ -2004,7 +1771,7 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
                                 activeTabIndex = i;
                             }
                         }
-                        if (activeTabIndex == -1 && !titles[0].classList.contains('lyteTabTitleHide') && comp.rendered) {
+                        if (activeTabIndex == -1 && !titles[0].classList.contains('lyteTabTitleHide')) {
                             comp.openTabContent(titles[0], null);
                         }
                         if (totalWidth > compWidth || totalWidth > maxWidth) {
@@ -2023,14 +1790,11 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
 
         disconnectedCallback() {
             var lyteNode = this.$node;
-            var compEle = lyteNode._tabComp;
+            var compEle = lyteNode.closest('lyte-tabs');
             if (compEle && compEle.checkTabs) {
                 clearTimeout(compEle.checkTabs);
                 compEle.checkTabs = false;
-                var tabHead = _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()('lyte-tab-head',compEle)[0];
-                if(tabHead){
-                    tabHead.classList.remove('lyteTabVH');
-                }
+                lyteNode.closest('lyte-tab-head').classList.remove('lyteTabVH');
             }
         }
 
@@ -2076,14 +1840,6 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-content']) {
 
         connectedCallback() {
             var lyteNode = this.$node;
-            var tab_id = lyteNode.getAttribute('id');
-            var tab = lyteNode.closest('lyte-tabs');
-            var tab_title = tab.querySelector('[lt-prop-id="' + tab_id + '"]');
-            if(tab_title.classList.contains(tab.getData('ltPropActiveClass'))){
-                lyteNode.classList.add('lyteTabShow');
-            }else{
-                lyteNode.classList.add('lyteTabHide');
-            }
             _lyte_dom_modules_lyte_dom_utils_js__WEBPACK_IMPORTED_MODULE_2___default()(lyteNode).attr('role','tabpanel');
         }
 
@@ -2093,6 +1849,7 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-content']) {
     }
 
     LyteTabContentCustomElements.options = {clone : {allCallbacks : false}};
+
     LyteTabContentCustomElements.register("lyte-tab-content");
 }
 
@@ -2102,14 +1859,14 @@ window.addEventListener('resize', function () {
         window._lyteUiUtils.tabResizeTriggered = false;
     }
     window._lyteUiUtils.tabResizeTriggered = setTimeout(function () {
-        var tabs = _lyteUiUtils.querySelectorAll('lyte-tabs');
+        var tabs = window._lyteUiUtils.querySelectorAll('lyte-tabs');
         for (var i = 0; i < tabs.length; i++) {
             if (tabs[i].component && tabs[i].component.getData('ltPropType') == "collapse") {
                 tabs[i].component.collapseHeader(true);
             }
             tabs[i].component.checkHeightOnResize();
         }
-        _lyteUiUtils.tabResizeTriggered = false;
+        window._lyteUiUtils.tabResizeTriggered = false;
     }, 50);
 });
 
@@ -2118,16 +1875,16 @@ window.addEventListener('resize', function () {
  * <lyte-tabs>
  *     <template is = "registerYield" yield-name = "tabYield">
  *         <lyte-tab-head>
- *             <lyte-tab-title lt-prop-id = "tab1"> <span> Header 1 </span> </lyte-tab-title>
- *             <lyte-tab-title lt-prop-id = "tab2"> <span> Header 2 </span> </lyte-tab-title>
- *             <lyte-tab-title lt-prop-id = "tab3"> <span> Header 3 </span> </lyte-tab-title>
- *             <lyte-tab-title lt-prop-id = "tab4"> <span> Header 4 </span> </lyte-tab-title>
+ *             <lyte-tab-title lt-prop-id = "tabs1"> Header 1 </lyte-tab-title>
+ *             <lyte-tab-title lt-prop-id = "tabs2"> Header 2 </lyte-tab-title>
+ *             <lyte-tab-title lt-prop-id = "tabs3"> Header 3 </lyte-tab-title>
+ *             <lyte-tab-title lt-prop-id = "tabs4"> Header 4 </lyte-tab-title>
  *         </lyte-tab-head>
  *         <lyte-tab-body>
- *             <lyte-tab-content id = "tab1"> <span> Content 1 </span> </lyte-tab-content>
- *             <lyte-tab-content id = "tab2"> <span> Content 2 </span> </lyte-tab-content>
- *             <lyte-tab-content id = "tab3"> <span> Content 3 </span> </lyte-tab-content>
- *             <lyte-tab-content id = "tab4"> <span> Content 4 </span> </lyte-tab-content>
+ *             <lyte-tab-content id = "tabs1"> Content 1 </lyte-tab-content>
+ *             <lyte-tab-content id = "tabs2"> Content 2 </lyte-tab-content>
+ *             <lyte-tab-content id = "tabs3"> Content 3 </lyte-tab-content>
+ *             <lyte-tab-content id = "tabs4"> Content 4 </lyte-tab-content>
  *         </lyte-tab-body>
  *     </template>
  * </lyte-tabs>

@@ -3,7 +3,7 @@ import { LyteUiComponentComponentRegistry } from "../component.js";
 import { appendChild, insertBefore, insertAfter,replaceWith } from "../../../../@slyte/component/index.js";
 import { stringify, lyteUiGetValue, lyteUiReturnValueBy, lyteUiConcat, lyteUiI18n, lyteUiImageFile, lyteUiCapitalizeName, lyteUiFileSize, lyteUiOptGroupCheck, lyteUiIsObject, lyteUiReturnOnlyKey, lyteUiReturnOnlyValue } from "./exportable-helpers.js";
 import $L from "../../../lyte-dom/modules/lyte-dom-utils.js";
-window._lyteUiUtils = window._lyteUiUtils || { version : "4.11.0" };
+window._lyteUiUtils = window._lyteUiUtils || { version : "4.6.4" };
 _lyteUiUtils.cboxId = 0;
 _lyteUiUtils.rbuttonId = 0;
 _lyteUiUtils.calId = 0;
@@ -1582,46 +1582,12 @@ LyteUiComponentComponentRegistry.registerHelper('lyteUiGetStackValue',function(s
 	return index < stack.length && stack[index][prop];
 });
 
-LyteUiComponentComponentRegistry.registerHelper( 'lyteUiAttribute', function( value, aria, original_value, tab_index ){
-
-	if( tab_index == -1 ){
-		return false;
-	}
-
+LyteUiComponentComponentRegistry.registerHelper( 'lyteUiAttribute', function( value, aria, original_value ){
 	if( aria ){
 		value = original_value || value;
-		return value != void 0 ? value : false;
+		return value ? value : false;
 	}
 	return false
-} );
-
-LyteUiComponentComponentRegistry.registerHelper( "lyteNumericOnly", function( value ){
-	if( typeof value == "string" ){
-		if( isNaN( value ) ){
-			switch( this.$node.tagName ){
-				case "LYTE-SLIDER":
-				case "LYTE-MULTISLIDER": {
-					return ( this.data.ltPropContent || [] ).indexOf( value );
-				}
-				break;
-			}
-		}
-	}
-	return value;
-} );
-
-LyteUiComponentComponentRegistry.registerHelper( 'lyteSliderBoundary', function( ns, preferred_value ) {
-	var __data = this.data,
-	value = __data[ 'ltProp' + ns ];
-
-	if( __data.ltPropAria ){
-		var content = __data.ltPropContent || [];
-		if( content.length ){
-			return preferred_value ? content.indexOf( preferred_value ) : ( ns == "Min" ? 0 : content.length - 1 );
-		}
-		return preferred_value || value;
-	}
-	return false;
 } );
 
 LyteUiComponentComponentRegistry.registerHelper('lyteUiAddPE', function(val){	//used to add pointer events none for no colors

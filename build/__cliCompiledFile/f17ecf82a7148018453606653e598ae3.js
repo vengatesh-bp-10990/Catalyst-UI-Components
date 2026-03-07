@@ -15,7 +15,8 @@
     Compile.defaultImpDetails = {
         components: [],
         helpers: [],
-        alreadyImported: false
+        alreadyImported: false,
+        found : {}
     };
     Compile.htmlStr = {},
     Compile.pushDir = function(dirName){
@@ -23,9 +24,10 @@
             let actDirName = this.dirMap[dirName];
             if(actDirName && this.impObj.defaultDirectives.indexOf(actDirName) == -1){
                 this.impObj.defaultDirectives.push(actDirName);
-            }else if(this.impObj.defaultDirectives.indexOf(dirName) == -1){
-                this.impObj.defaultDirectives.push(dirName);
             }
+            // else if(this.impObj.defaultDirectives.indexOf(dirName) == -1){
+            //     this.impObj.defaultDirectives.push(dirName);
+            // }
         }
         else if(this.impObj.directives.indexOf(dirName) == -1){
             this.impObj.directives.push(dirName);
@@ -38,25 +40,37 @@
         "unbound" : "lyte-turbo",
         "turbo" : "lyte-turbo",
         "view-in" : "lyte-view",
-        "view-out" : "lyte-view"
+        "view-out" : "lyte-view",
+        "prop" : "lyte-save",
+        "node" : "lyte-save",
+        "data" : "lyte-save",
+        "hide-tag" : "lyte-hide",
+        "hide-tag-supported" : "lyte-hide",
+        "elemental" : "lyte-elemental"
     }
     Compile.impObj = {
+        "svgLoader": [],
         "components": [],
         "helpers": [],
         "directives" : [],
         "defaultDirectives" : [],
         "defaultComponents" : [],
         "registryMap": {},
+        "lyteRegistries" : {},
         "options" : {
-            "internalSlicer" : {}
+            "internalSlicer" : {
+                $bundlePurifier : false,
+                $bundleEncoder : false,
+                $bundleElemental : false
+            }
         }
     };
     Compile.debug = true;
     Compile.needDummyComponentsDiv = true;
     Compile.defaultComponents = ["link-to"];
     Compile.defaultSrcComponents = ["lyte-event-listener","import-shadow-style"];
-    Compile.defaultHelpers = ["unbound", "action", "lbind", "method", "unescape", "escape", "debugger", "log", "ifEquals", "if", "negate", "ifNotEquals", 'concat', 'encAttr', 'expHandlers'];
-    Compile.defaultDirectives = ["shadow","shadow-supported","turbo","turbo-supported","view-in","view-out","unbound"];
+    Compile.defaultHelpers = ["slyteImport","unbound", "action", "lbind", "method", "unescape", "escape", "debugger", "log", "ifEquals", "if", "negate", "ifNotEquals", 'concat', 'encAttr', 'expHandlers'];
+    Compile.defaultDirectives = ["shadow","shadow-supported","turbo","turbo-supported","view-in","view-out","unbound","elemental","data","prop","node","hide-tag","hide-tag-supported"];
     Compile.addUnbound = function(node,template,tagName,parentElementName){
         let hasUnbound,unboundVal,hasFastRender,fastRenderVal;
         if(node.hasAttribute("@unbound")){
@@ -265,6 +279,16 @@
                                     continue;
                                 }
                                 if (actObj) {
+                                    let arr = [];
+                                    Compile.getAllHelperNames(actObj,arr);
+                                    let self = this;
+                                    arr.forEach(function(hName){
+                                        if(hName == "unescape"){
+                                            self.defaultImpDetails.found.purifier = true;
+                                        }else if(hName == "escape"){
+                                            self.defaultImpDetails.found.encoder = true;
+                                        }
+                                    })
                                     if (this.defaultImpDetails.helpers.indexOf(actObj.name) == -1 && this.defaultHelpers.indexOf(actObj.name) == -1) {
                                         this.defaultImpDetails.helpers.push(actObj.name);
                                     }
@@ -452,6 +476,15 @@
                     attrToPush.dynamicValue = node.attributes[i].nodeValue;
                     attr[attrToPush.name] = attrToPush;
                     attr._special = true;
+                    let directiveName = attrToPush.name;
+                    directiveName = directiveName.substring(1) 
+                    if(directiveName == "prop" || directiveName == "node" || directiveName == "data"){
+                        let obj = {
+                            nodeName : node.localName,
+                            propName : attrToPush.dynamicValue
+                        }
+                        this.getParentFor(node,obj,{dirName : directiveName, dirValue : attrToPush.dynamicValue});
+                    }
                 }
             }
             
@@ -485,6 +518,31 @@
             }
         }
         return attr;
+    }
+    Compile.getParentFor = function(node,propObj,propDetails){
+        let newNode = node;
+        while(newNode){
+            let parentNode = newNode._parent;
+            if(parentNode){
+                if(parentNode && parentNode.tagName && parentNode.tagName == "TEMPLATE" && (parentNode.getAttribute("is") == "for" || parentNode.getAttribute("is") == "forIn")){
+                    propObj.parent = {
+                        nodeId : parentNode.getAttribute("node-id"),
+                        nodeType  : parentNode.getAttribute("is")
+                    }
+                    if(propDetails){
+                        if(!parentNode._dirObj){
+                            parentNode._dirObj = {};
+                        }
+                        if(!parentNode._dirObj[propDetails.dirName]){
+                            parentNode._dirObj[propDetails.dirName] = []
+                        }
+                        parentNode._dirObj[propDetails.dirName].push(propDetails.dirValue);
+                    }
+                    propObj = propObj.parent;
+                }
+            }
+            newNode = parentNode;
+        }
     }
     Compile.getImportedHelpers = function (array, helperArr) {
         for (let i = 0; i < array.length; i++) {
@@ -551,7 +609,14 @@
     }
     // window.pendingComponents = [];
 
-    Compile.getDynamicNodes = function(fileName, resolve, templateToRender, fromCLIFlag, errorObj) {
+    Compile.getDynamicNodes = function(
+        fileName,
+        resolve,
+        templateToRender,
+        fromCLIFlag,
+        errorObj,
+        elementalComponent
+    ) {
 
         this.fromCLI = fromCLIFlag;
         if( fromCLIFlag ) {
@@ -573,8 +638,13 @@
             else{
                 global.document = templateToRender;
             }
-            comp = document.querySelector("template[tag-name='" + fileName + "']")
+            if(elementalComponent){
+                comp = document.querySelector("template[@elemental='" + fileName + "']")    
+            }else{
+                comp = document.querySelector("template[tag-name='" + fileName + "']")
+            }
         }
+        let elementals = [];
         //console.log("components generating dynamicNodes"+fileName)
         if (!comp) {
             missingComp = fileName;
@@ -585,19 +655,42 @@
                 warning: warnings
             };
         } else {
-            var nextElement = comp.nextElementSibling;
-            if(nextElement && nextElement.tagName == "TEMPLATE" && nextElement.hasAttribute("view-port-template")) {
-                var viewPortIf = document.createElement("template");
-                viewPortIf.setAttribute("lyte-if", "{{lyteViewPort}}");
-                viewPortIf.setAttribute("vpc","true");
-                viewPortIf.content.appendChild(document.createElement("dummy-port-element"));
-                viewPortIf.content.appendChild(nextElement.content);
-                viewPortIf.content.appendChild(document.createElement("dummy-port-element"));
-                var falseCase = document.createElement("template");
-                falseCase.setAttribute("lyte-else","");
-                falseCase.content.appendChild(comp.content);
-                comp.innerHTML = "";
-                comp.content.appendChild(viewPortIf);
+            if(!elementalComponent){
+                var nextElement = comp.nextElementSibling;
+                if(nextElement && nextElement.tagName == "TEMPLATE" && nextElement.hasAttribute("view-port-template")) {
+                    var viewPortIf = document.createElement("template");
+                    viewPortIf.setAttribute("lyte-if", "{{lyteViewPort}}");
+                    viewPortIf.setAttribute("vpc","true");
+                    viewPortIf.content.appendChild(document.createElement("dummy-port-element"));
+                    viewPortIf.content.appendChild(nextElement.content);
+                    viewPortIf.content.appendChild(document.createElement("dummy-port-element"));
+                    var falseCase = document.createElement("template");
+                    falseCase.setAttribute("lyte-else","");
+                    falseCase.content.appendChild(comp.content);
+                    comp.innerHTML = "";
+                    comp.content.appendChild(viewPortIf);
+                    this.pushDir("view-in")
+                }
+                if(comp.parent){
+                    elementals = comp.parent.querySelectorAll("[@elemental]");
+                }
+                let elementalsList = [];
+                elementals.forEach(function(elemental){
+                    let elementalName = elemental.getAttribute("@elemental");
+                    if(elementalsList.indexOf(elementalName) == -1){
+                        elemental.setAttribute("is","elemental");
+                        elemental.setAttribute("value",elementalName);
+                        elemental.removeAttribute("elemental");
+                        debugger
+                        comp.content.prepend(elemental);
+                        elementalsList.push(elementalName);
+                    }else{
+                        errors.push(new Error("Duplicate Elemental template found '" + elementalName + "'"));  
+                    }
+                })
+            }
+            if(elementals.length){
+                this.pushDir("elemental");  
             }
             s = comp.content;
         }
@@ -669,21 +762,37 @@
                 else{
                     template = JSON.stringify(template);
                 }
-                // console.log("defaultDirectives - ", this.impObj.defaultDirectives);
                 returnValue = {
                     componentName: fileName,
                     dynamicNodes,
                     template,
                     _templateAttributes: d[0],
-
+                    warnings: warnings
                     // ,
                     // ...(this.fromCLI ? {
                     //     importDetails: this.impObj,
                     //     needToImpDetails: this.defaultImpDetails
                     // } : {})
-                    warnings: warnings
                 };
                 if(this.fromCLI){
+                    if(Compile.defaultImpDetails.found){
+                        if(Compile.defaultImpDetails.found.purifier){
+                            this.impObj.options.internalSlicer.$bundlePurifier = true;
+                        }
+                        if(Compile.defaultImpDetails.found.encoder){
+                            this.impObj.options.internalSlicer.$bundleEncoder = true;
+                        }
+                        if(elementals.length){
+                            this.impObj.options.internalSlicer.$bundleElemental = true;
+                        }
+                    }
+                    this.impObj.defaultDirectives.forEach(function(defDirective){
+                        if(defDirective.startsWith("lyte-")){
+                            let slicerName = "$"+defDirective.substring(5,defDirective.length);
+                            Compile.impObj.options.internalSlicer[slicerName] = true;
+                            // console.log("slicerName",slicerName);
+                        }
+                    })
                     returnValue.importDetails = Compile.deepCopyObject(this.impObj);
                     returnValue.needToImpDetails = Compile.deepCopyObject(this.defaultImpDetails);
                 }
@@ -703,19 +812,33 @@
         Compile.defaultImpDetails = this.defaultImpDetails = {
             components: [],
             helpers: [],
-            alreadyImported: false
+            alreadyImported: false,
+            found : {}
         };
         Compile.impObj = this.impObj = {
+            "svgLoader": [],
             "components": [],
             "helpers": [],
             "directives" : [],
             "defaultDirectives" : [],
             "defaultComponents" : [],
             "registryMap": {},
+            "lyteRegistries" : {},
             "options" : {
-                "internalSlicer" : {}
+                "internalSlicer" : {
+                    $bundlePurifier : false,
+                    $bundleEncoder : false,
+                    $bundleElemental : false,
+                    $save : false,
+                    $turbo : false,
+                    $shadow : false,
+                    $view : false,
+                    $promise : false,
+                    $hide : false
+                }
             }
         };
+        // console.log(fileName,this.impObj.options.internalSlicer.$bundleEncoder);
         this.fromCLI = undefined;
         return returnValue;
     }
@@ -744,6 +867,14 @@
             }
         }
         let compVal = this.defaultImpDetails.components;
+        if (nodeName) {
+            let tag = nodeName.toLowerCase();
+            if (tag === "slyte-svg-loader") {
+                let src = node.getAttribute("src"),
+                    arr = Compile.impObj.svgLoader;
+                if (src && !arr.includes(src)){ arr.push(src) };
+            }
+        }
         if (nodeName && nodeName.indexOf("-") != -1 && compVal.indexOf(nodeName) == -1 && this.defaultComponents.indexOf(nodeName) == -1) {
             if (nodeName == "lyte-import" || nodeName == "import-component" || nodeName == "import-helper") {
                 this.defaultImpDetails.alreadyImported = true;
@@ -771,6 +902,19 @@
                 }
                 node.replaceWith(template);
                 node = template;
+            }
+            if(node.hasAttribute("lyte-registry")){
+                let val = node.getAttribute("lyte-registry");
+                if(val.indexOf("{{") == -1){
+                    let tagName = node.tagName;
+                    if(tagName != "TEMPLATE"){
+                        if(!impObj.lyteRegistries[tagName]){
+                            impObj.lyteRegistries[tagName] = [val];
+                        }else{
+                            impObj.lyteRegistries[tagName].push(val);
+                        }
+                    }
+                }
             }
             if (node.hasAttribute("lyte-for")) {
                 let errorinfo = this.getErrorInfo(node);
@@ -832,6 +976,22 @@
                     template.setAttribute("unbound", lyteForOptions.unbound);
                 }
 
+                let nxtSibl = node.nextElementSibling;
+                if(nxtSibl && (nxtSibl.hasAttribute("lyte-await") || nxtSibl.hasAttribute("lyte-fail"))){ // may be wait
+                    let trueCase = document.createElement("template");
+                    trueCase.setAttribute("case", "true");
+                    trueCase[this.htmlStr.innerHTML] = template[this.htmlStr.innerHTML];
+                    // trueCase.innerHTML = template.innerHTML;
+                    template.innerHTML = "";
+                    template.content.appendChild(trueCase);
+                    template.setAttribute("has-child",true);
+                    // this.appendBreak(template)
+                    this.ifNextElementSibling(nxtSibl, template, svg, undefined, checker, errorObj, impObj, node, "for");
+                    nxtSibl = node.nextElementSibling;
+                    if(nxtSibl){ // may be fail
+                        this.ifNextElementSibling(nxtSibl, template, svg, undefined, checker, errorObj, impObj, node, "for");
+                    }
+                }
             } else if (node.hasAttribute("lyte-for-in")) {
                 let errorinfo = this.getErrorInfo(node);
                 var lyteFor = node.getAttribute("lyte-for-in");
@@ -890,13 +1050,37 @@
                 if (lyteForOptions.unbound) {
                     template.setAttribute("unbound", lyteForOptions.unbound);
                 }
+                let nxtSibl = node.nextElementSibling;
+                if(nxtSibl && (nxtSibl.hasAttribute("lyte-await") || nxtSibl.hasAttribute("lyte-fail"))){ // may be wait
+                    let trueCase = document.createElement("template");
+                    trueCase.setAttribute("case", "true");
+                    trueCase.innerHTML = template.innerHTML;
+                    template.innerHTML = "";
+                    template.content.appendChild(trueCase);
+                    template.setAttribute("has-child",true);
+                    this.ifNextElementSibling(nxtSibl, template, svg, undefined, checker, errorObj, impObj, node, "forIn");
+                    nxtSibl = node.nextElementSibling;
+                    if(nxtSibl){ // may be fail
+                        this.ifNextElementSibling(
+                            nxtSibl,
+                            template,
+                            svg,
+                            undefined,
+                            checker,
+                            errorObj,
+                            impObj,
+                            node,
+                            "forIn"
+                        );
+                    }
+                }
             } else if (node.hasAttribute("lyte-if")) {
-                var modifiedIf = this.handleLyteIf(node, svg, checker, errorObj);
+                var modifiedIf = this.handleLyteIf(node, svg, checker, errorObj, impObj);
                 node.replaceWith(modifiedIf);
                 node = modifiedIf;
             } else if (node.hasAttribute("lyte-switch")) {
                 // handleLyteSwitch(node,svg);//af check
-                var modifiedSwitch = this.handleLyteSwitch(node, svg, checker, errorObj);
+                var modifiedSwitch = this.handleLyteSwitch(node, svg, checker, errorObj, impObj);
                 node.replaceWith(modifiedSwitch);
                 node = modifiedSwitch;
             } else if (svg && node.tagName == "template" && node.hasAttribute("is") && this.regex.lyteTemplateType2.test(node.getAttribute("is"))) {
@@ -934,7 +1118,7 @@
                         if(node.nextElementSibling && node.nextElementSibling.hasAttribute("@view-out")){
                             node.nextElementSibling.removeAttribute("@view-out");
                             node.nextElementSibling.setAttribute("lyte-else","");
-                            var modifiedIf = this.handleLyteIf(node,svg);
+                            var modifiedIf = this.handleLyteIf(node, svg, checker, errorObj, impObj);
                             node.replaceWith(modifiedIf);
                             node = modifiedIf;
                         }else{
@@ -1086,6 +1270,20 @@
         str.innerHTML = ".....";
         return str.outerHTML;
     }
+    Compile.getAllHelperNames = function(obj,arr){
+        if(obj){
+            if(obj.name){
+                arr.push(obj.name);
+            }
+            if(obj.args && obj.args.length){
+                obj.args.forEach(function(item){
+                    if(item && typeof item == "object" && item.value){
+                        Compile.getAllHelperNames(item.value,arr);
+                    }
+                })
+            }
+        }
+    }
     //This method is the place where the deepNodes and helperNodes gets updated with the 
     //Values of the positions of dynamicNodes and helperNodes. 
     Compile.newGetDeepNodes = function(
@@ -1151,8 +1349,34 @@
         if (is === "for") {
             let template = node;
             node._forTemplate = {};
-
-            if (template) {
+            if(node.hasAttribute("has-child")){
+                let casesArr = {};
+                let cases = node.content.querySelectorAll("[case]");
+                var currentCaseTemplate;
+                var rtObj = {};
+                for(var i=0;i<cases.length;i++){
+                    let currentCase = cases[i];
+                    currentCaseTemplate = cases[i];
+                    let caseName = currentCase.getAttribute("case");
+                    currentCase.setAttribute("case", caseName );
+                    currentCase = currentCase.content;
+                    let dynamicNodes = [];
+                    currentCase._parent = node;
+                    this.processTemplate(currentCase, dynamicNodes, componentName,strict,errors,warnings,nearByParent);
+                    casesArr[caseName] = {dN: dynamicNodes};
+                    this.replaceCaseNode(currentCaseTemplate,componentName,errors,node,rtObj,nearByParent);
+                }
+                toBePushed = {"t": "f", p: deepN.slice(),"c":casesArr};
+                if(rtObj.svg){
+                    toBePushed.svg = true;
+                }
+                if(node._dirObj){
+                    let str = JSON.stringify(node._dirObj);
+                    node.setAttribute("dir-obj",str);
+                }
+                node = this.replaceParentNode(node, is, toBePushed,componentName,errors,true,nearByParent);
+            }
+            else if (template) {
                 node._forTemplate.content = template.content;
                 node._forTemplate.content._parent = template;
                 let dynamicNodes = [];
@@ -1164,12 +1388,35 @@
                     "dN": dynamicNodes
                 };
                 this.getTemplateDirectChild(dynamicNodes, toBePushed);
+                if(node._dirObj){
+                    let str = JSON.stringify(node._dirObj);
+                    node.setAttribute("dir-obj",str);
+                }
                 node = this.replaceParentNode(node, "for", toBePushed, componentName, errors, true, nearByParent);
             }
         } else if (is === "forIn") {
             let template = node;
             node._forInTemplate = {};
-            if (template) {
+            if(node.hasAttribute("has-child")){
+                let casesArr = {};
+                let cases = node.content.querySelectorAll("[case]");
+                var currentCaseTemplate;
+                var rtObj = {};
+                for(var i=0;i<cases.length;i++){
+                    let currentCase = cases[i];
+                    currentCaseTemplate = cases[i];
+                    let caseName = currentCase.getAttribute("case");
+                    currentCase.setAttribute("case", caseName );
+                    currentCase = currentCase.content;
+                    let dynamicNodes = [];
+                    currentCase._parent = node;
+                    this.processTemplate(currentCase, dynamicNodes, componentName,strict,errors,warnings,nearByParent);
+                    toBePushed = {"t": "fI", p: deepN.slice(),"c":casesArr};
+                    casesArr[caseName] = {dN: dynamicNodes};
+                    this.replaceCaseNode(currentCaseTemplate,componentName,errors,node,rtObj,nearByParent);
+                }
+            }
+            else if (template) {
                 node._forInTemplate.content = template.content;
                 node._forInTemplate.content._parent = template;
                 let dynamicNodes = [];
@@ -1181,12 +1428,19 @@
                     "dN": dynamicNodes
                 };
                 this.getTemplateDirectChild(dynamicNodes, toBePushed);
+                if(node._dirObj){
+                    let str = JSON.stringify(node._dirObj);
+                    node.setAttribute("dir-obj",str);
+                }
             }
             node = this.replaceParentNode(node, "forIn", toBePushed, componentName, errors, true, nearByParent);
         } else if (is === "switch" || is === "if" || is == "case") {
             // if(node.parentElement && /^(SELECT|TR|TABLE)$/.test(node.parentElement.tagName)) {
             //     warnings.push({message: errorMsg});
             // }
+            if(node.getAttribute("__vp") == "c-new" || node.getAttribute("__vp") == "c-old" ){
+                this.pushDir("view-in")
+            }
             let casesArr = {},
                 defaultArr = {};
             let defaultCase = node.content.querySelector("[default]");
@@ -1358,7 +1612,19 @@
                 "dN": dynamicNodes
             };
             this.getTemplateDirectChild(dynamicNodes, toBePushed);
-        } else if (node.nodeType == 3) {
+        }  else if(is === "elemental"){
+            node._componentTemplate = {};
+            node._componentTemplate.content = node.content;
+            let dynamicNodes = [];
+            this.processTemplate(node._componentTemplate.content, dynamicNodes, componentName, strict, errors, warnings, nearByParent);
+            this.getTransitionOrder(dynamicNodes);
+            toBePushed = {
+                "t": "eM",
+                p: deepN.slice(),
+                "dN": dynamicNodes
+            };
+            this.getTemplateDirectChild(dynamicNodes, toBePushed);
+        }  else if (node.nodeType == 3) {
             if (node.nodeValue.indexOf("{{") !== -1) {
             let syn = undefined
                 if (!this.fromCLI) {
@@ -1425,6 +1691,16 @@
                             return;
                         }
                         if (this.fromCLI && helperFunc) {
+                            let arr = [];
+                            Compile.getAllHelperNames(helperFunc,arr);
+                            let self = this;
+                            arr.forEach(function(hName){
+                                if(hName == "unescape"){
+                                    self.defaultImpDetails.found.purifier = true;
+                                }else if(hName == "escape"){
+                                    self.defaultImpDetails.found.encoder = true;
+                                }
+                            })
                             if (this.defaultImpDetails.helpers.indexOf(helperFunc.name) == -1 && this.defaultHelpers.indexOf(helperFunc.name) == -1) {
                                 this.defaultImpDetails.helpers.push(helperFunc.name);
                             }
@@ -1983,6 +2259,97 @@
         breakTemp.setAttribute("is", "break");
         temp.content.appendChild(breakTemp);
     }
+    Compile.ifNextElementSibling = function(nextSibling,temp, svg, hasBreak, check, errorObj, impObj, parentNode, parentNodeType){
+        var falseTemp;
+        var type;
+        var appendBreak;
+        if(nextSibling.hasAttribute("lyte-else")) {
+            type = "lyte-else";
+        } else if(nextSibling.hasAttribute("lyte-else-if")) {
+            type = "lyte-else-if";
+        } else if(nextSibling.hasAttribute("lyte-await")){
+            impObj.options.internalSlicer.$promise = true;
+            type = "__lyteAwait__"
+        } else if(nextSibling.hasAttribute("lyte-fail")){
+            impObj.options.internalSlicer.$promise = true;
+            type = "__lyteFail__"
+        }
+        if(type) {
+            if(type === "__lyteAwait__" || type == "__lyteFail__"){
+                if(type == "__lyteAwait__"){
+                    nextSibling.removeAttribute("lyte-await");
+                }
+                else if(type == "__lyteFail__"){
+                    nextSibling.removeAttribute("lyte-fail");
+                }
+                if(svg && nextSibling.tagName=="template"){
+                    falseTemp = document.createElement("template");
+                    falseTemp.setAttribute("case", type);
+                    falseTemp.innerHTML = nextSibling.innerHTML
+                } else if(nextSibling.tagName === "TEMPLATE") {
+                    falseTemp = nextSibling.cloneNode();
+                    falseTemp.innerHTML = nextSibling.innerHTML;
+                } else {
+                    falseTemp = document.createElement("template");
+                    falseTemp.setAttribute("case", type);
+                    falseTemp.innerHTML = nextSibling.outerHTML;
+                }
+                falseTemp.setAttribute("case", type);
+                falseTemp.setAttribute("has-child", true);
+                if(nextSibling.nextSibling && nextSibling.previousSibling && this.siblingNullCheck(nextSibling) && (nextSibling.nextSibling.nodeValue.trim() === "") && ("" === nextSibling.previousSibling.nodeValue.trim())) {
+                    nextSibling.nextSibling.remove();
+                }
+                nextSibling.remove();
+                debugger
+                if(parentNodeType == "if" || parentNodeType == "switch"){
+                    appendBreak = true;
+                }
+                parentNode.setAttribute("has-child",true);
+                // var breakTemp = document.createElement("template");
+                // breakTemp.setAttribute("is", "break");
+                // falseTemp.parent.appendChild(breakTemp);
+            }
+            else if(type === "lyte-else") {
+                nextSibling.removeAttribute("lyte-else");
+                if(svg && nextSibling.tagName=="template"){
+                    falseTemp = document.createElement("template");
+                    // falseTemp.setAttribute("case", "false");
+                    falseTemp[this.htmlStr.innerHTML] = nextSibling[this.htmlStr.innerHTML];
+                } else if(nextSibling.tagName === "TEMPLATE") {
+                    falseTemp = nextSibling.cloneNode();
+                    falseTemp[this.htmlStr.innerHTML] = nextSibling[this.htmlStr.innerHTML];
+                } else {
+                    falseTemp = document.createElement("template");
+                    // falseTemp.setAttribute("case", "false");
+                    falseTemp[this.htmlStr.innerHTML] = nextSibling[this.htmlStr.outerHTML];
+                }
+                falseTemp.setAttribute("default", "");
+                if(nextSibling.nextSibling && nextSibling.previousSibling && this.siblingNullCheck(nextSibling) && (nextSibling.nextSibling.nodeValue.trim() === "") && ("" === nextSibling.previousSibling.nodeValue.trim())) {
+                    nextSibling.nextSibling.remove();
+                }
+                nextSibling.remove();
+            }
+            else {
+                // falseTemp = document.createElement("template");
+                // falseTemp.setAttribute("case", "false");
+                // falseTemp.innerHTML = this.handleLyteIf(nextSibling,svg).outerHTML;
+                falseTemp = this.handleLyteIf(nextSibling, svg, check, errorObj, impObj).content;
+                if(nextSibling.nextSibling  && nextSibling.previousSibling && this.siblingNullCheck(nextSibling)  && (nextSibling.nextSibling.nodeValue.trim() === "") && ("" === nextSibling.previousSibling.nodeValue.trim())) {
+                    nextSibling.nextSibling.remove();
+                }
+                nextSibling.remove();
+    
+            }
+            if(hasBreak || appendBreak){
+                this.appendBreak(falseTemp);
+            }
+            temp.content.appendChild(falseTemp);
+            // if(appendBreak){
+            //     this.appendBreak(temp);
+            // }
+        }
+        return falseTemp;
+    }
     Compile.getCase = function (temp, element, check = {}) {
         var ifStmt, trueCase, falseCase;
         ifStmt = element.getAttribute("value");
@@ -2073,11 +2440,13 @@
         }
         return errorinfo;
     }
-    Compile.handleLyteIf = function (element, svg, check = {}, errorObj) {
+    Compile.handleLyteIf = function (element, svg, check = {}, errorObj, impObj) {
         var ifStmt;
         var temp = document.createElement("template");
         let errorinfo = this.getErrorInfo(element);
+        let ifNode = false;
         if (element.hasAttribute("lyte-if")) {
+            ifNode = true;
             ifStmt = element.getAttribute("lyte-if");
             element.removeAttribute("lyte-if")
             temp.setAttribute("is", "switch");
@@ -2145,52 +2514,68 @@
         var breakTemp = document.createElement("template");
         breakTemp.setAttribute("is", "break");
         trueTemp.content.appendChild(breakTemp);
+        // Else case handling
+        // if (element.nextElementSibling) {
+        //     var nextSibling = element.nextElementSibling;
+        //     var falseTemp;
+        //     var type;
+        //     if (nextSibling.hasAttribute("lyte-else")) {
+        //         type = "lyte-else";
+        //     } else if (nextSibling.hasAttribute("lyte-else-if")) {
+        //         type = "lyte-else-if";
+        //     }
+        //     if (type) {
+        //         if (type === "lyte-else") {
+        //             nextSibling.removeAttribute("lyte-else");
+        //             if (svg && nextSibling.tagName == "template") {
+        //                 falseTemp = document.createElement("template");
+        //                 // falseTemp.setAttribute("case", "false");
+        //                 falseTemp[this.htmlStr["innerHTML"]] = nextSibling[this.htmlStr["innerHTML"]]
+        //             } else if (nextSibling.tagName === "TEMPLATE") {
+        //                 falseTemp = nextSibling.cloneNode();
+        //                 falseTemp[this.htmlStr["innerHTML"]] = nextSibling[this.htmlStr["innerHTML"]];
+        //             } else {
+        //                 falseTemp = document.createElement("template");
+        //                 // falseTemp.setAttribute("default", "");
+        //                 falseTemp[this.htmlStr["innerHTML"]] = nextSibling[this.htmlStr["outerHTML"]];
+        //             }
+        //             falseTemp.setAttribute("default", "");
+        //             if (nextSibling.nextSibling && nextSibling.previousSibling && this.siblingNullCheck(nextSibling) && (nextSibling.nextSibling.nodeValue.trim() === "") && ("" === nextSibling.previousSibling.nodeValue.trim())) {
+        //                 nextSibling.nextSibling.remove();
+        //             }
+        //             nextSibling.remove();
+        //         } else {
+        //             falseTemp = this.handleLyteIf(nextSibling, svg, check, errorObj).content;
+
+        //             if (nextSibling.nextSibling && nextSibling.previousSibling && this.siblingNullCheck(nextSibling) && (nextSibling.nextSibling.nodeValue.trim() === "") && ("" === nextSibling.previousSibling.nodeValue.trim())) {
+        //                 nextSibling.nextSibling.remove();
+        //             }
+        //             nextSibling.remove();
+
+        //         }
+        //         temp.content.appendChild(falseTemp);
+        //     }
+        // }
         //Else case handling
-        if (element.nextElementSibling) {
-            var nextSibling = element.nextElementSibling;
-            var falseTemp;
-            var type;
-            if (nextSibling.hasAttribute("lyte-else")) {
-                type = "lyte-else";
-            } else if (nextSibling.hasAttribute("lyte-else-if")) {
-                type = "lyte-else-if";
-            }
-            if (type) {
-                if (type === "lyte-else") {
-                    nextSibling.removeAttribute("lyte-else");
-                    if (svg && nextSibling.tagName == "template") {
-                        falseTemp = document.createElement("template");
-                        // falseTemp.setAttribute("case", "false");
-                        falseTemp[this.htmlStr["innerHTML"]] = nextSibling[this.htmlStr["innerHTML"]]
-                    } else if (nextSibling.tagName === "TEMPLATE") {
-                        falseTemp = nextSibling.cloneNode();
-                        falseTemp[this.htmlStr["innerHTML"]] = nextSibling[this.htmlStr["innerHTML"]];
-                    } else {
-                        falseTemp = document.createElement("template");
-                        // falseTemp.setAttribute("default", "");
-                        falseTemp[this.htmlStr["innerHTML"]] = nextSibling[this.htmlStr["outerHTML"]];
-                    }
-                    falseTemp.setAttribute("default", "");
-                    if (nextSibling.nextSibling && nextSibling.previousSibling && this.siblingNullCheck(nextSibling) && (nextSibling.nextSibling.nodeValue.trim() === "") && ("" === nextSibling.previousSibling.nodeValue.trim())) {
-                        nextSibling.nextSibling.remove();
-                    }
-                    nextSibling.remove();
-                } else {
-                    falseTemp = this.handleLyteIf(nextSibling, svg, check, errorObj).content;
-
-                    if (nextSibling.nextSibling && nextSibling.previousSibling && this.siblingNullCheck(nextSibling) && (nextSibling.nextSibling.nodeValue.trim() === "") && ("" === nextSibling.previousSibling.nodeValue.trim())) {
-                        nextSibling.nextSibling.remove();
-                    }
-                    nextSibling.remove();
-
+        let nxtSibl = element.nextElementSibling;
+        if(nxtSibl) { //may be else
+            this.ifNextElementSibling(nxtSibl, temp, svg, undefined, check, errorObj, impObj, element, "if");
+            nxtSibl = element.nextElementSibling;
+            if(nxtSibl && (nxtSibl.hasAttribute("lyte-await") || nxtSibl.hasAttribute("lyte-fail"))){ // may be wait
+                this.ifNextElementSibling(nxtSibl, temp, svg, undefined, check, errorObj, impObj, element, "if");
+                nxtSibl = element.nextElementSibling;
+                if(nxtSibl){ // may be fail
+                    this.ifNextElementSibling(nxtSibl, temp, svg, undefined, check, errorObj, impObj, element, "if");
                 }
-                temp.content.appendChild(falseTemp);
             }
+        }
+        if (ifNode && element.nextSibling && element.previousSibling && this.siblingNullCheck(element) && (element.nextSibling.nodeValue.trim() === "") && ("" === element.previousSibling.nodeValue.trim())) {
+            element.nextSibling.remove();
         }
         return temp;
     }
 
-    Compile.handleLyteSwitch = function (node, svg, check, errorObj) {
+    Compile.handleLyteSwitch = function (node, svg, check, errorObj, impObj) {
         var template;
         var switchValue = node.getAttribute("lyte-switch");
         let errorinfo = this.getErrorInfo(node);
@@ -2246,11 +2631,11 @@
                 if (child.hasAttribute("lyte-if")) {
                     isChildTemplate = false;
                     var oldChild = child;
-                    child = this.handleLyteIf(child, svg, check, errorObj);
+                    child = this.handleLyteIf(child, svg, check, errorObj, impObj);
                     oldChild.remove();
                 } else if (child.hasAttribute("lyte-switch")) {
                     isChildTemplate = false;
-                    this.handleLyteSwitch(child, svg, check, errorObj);
+                    this.handleLyteSwitch(child, svg, check, errorObj, impObj);
                 }
                 if (isChildTemplate) {
                     template.content.appendChild(child, true);
@@ -2295,11 +2680,11 @@
             if (defaultCase.hasAttribute("lyte-if")) {
                 isDefCaseTemp = false;
                 var oldDefault = defaultCase;
-                defaultCase = this.handleLyteIf(defaultCase, svg, check, errorObj);
+                defaultCase = this.handleLyteIf(defaultCase, svg, check, errorObj, impObj);
                 oldDefault.remove();
             } else if (defaultCase.hasAttribute("lyte-switch")) {
                 isDefCaseTemp = false;
-                this.handleLyteSwitch(defaultCase, svg, check, errorObj);
+                this.handleLyteSwitch(defaultCase, svg, check, errorObj, impObj);
             }
             if (isDefCaseTemp) {
                 template.content.appendChild(defaultCase, true);
@@ -2309,6 +2694,14 @@
                 defTemp.setAttribute("default", "");
                 defTemp.content.appendChild(defaultCase, true);
                 template.content.appendChild(defTemp);
+            }
+        }
+        let nxtSibl = node.nextElementSibling;
+        if(nxtSibl && (nxtSibl.hasAttribute("lyte-await") || nxtSibl.hasAttribute("lyte-fail"))){ // may be wait
+            this.ifNextElementSibling(nxtSibl, template, svg, true, check, errorObj, impObj, node, "switch");
+            nxtSibl = node.nextElementSibling;
+            if(nxtSibl){ // may be fail
+                this.ifNextElementSibling(nxtSibl, template, svg, true, check, errorObj, impObj, node, "switch");
             }
         }
         if (check.fromParser) {

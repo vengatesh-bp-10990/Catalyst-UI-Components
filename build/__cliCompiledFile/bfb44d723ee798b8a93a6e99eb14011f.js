@@ -257,22 +257,6 @@
 				if($L(element).hasClass('sortable-parent')) {
 					element[0]._sortableParentData.droppable = false;
 				}
-			},
-
-			shiftPlaceholder: function(element, utilOptions){
-
-				if( !utilOptions ){
-					return;
-				}
-
-				var placeholder = element[0].querySelector('.lyteSortablePlaceholder');
-				var destParent = utilOptions.parent;
-
-				var sortableElement = destParent.querySelector('.sortable-element');
-				if( placeholder && sortableElement ){
-					_lyteUiUtils.insertBefore( sortableElement, placeholder );
-				}
-
 			}
 		};
 		function positionDropLine(data, position) {
@@ -335,7 +319,7 @@
 		};
 		var findSortableChild = function(data){
 			var childarray = [];
-			data._placeholder && data._placeholder.parentElement && Array.from(data._placeholder.parentElement.children).forEach(function(ele){
+			Array.from(data._placeholder.parentElement.children).forEach(function(ele){
 				if(ele.tagName != "TEMPLATE" && !($L(ele).hasClass('sortable-element-selected'))){
 					childarray.push(ele);
 				}
@@ -351,13 +335,7 @@
 			return true;
 		};
 
-		$L.prototype.sortable = function(object, utilOptions) {
-
-			if( object && !object.internalCall ){
-				Array.from(this).forEach(function(element){
-					element && ( element._sortableConnectedWith = object.connectedWith);
-				});
-			}
+		$L.prototype.sortable = function(object) {
 			
 			var manageSortable = $L.prototype.manageSortable;
 			if(!manageSortable.init){
@@ -493,9 +471,6 @@
 				else if(object === "enableDroppable"){
 					manageSortable.enableDroppable(this);
 				}
-				else if(object == "shiftPlaceholder"){
-					manageSortable.shiftPlaceholder(this, utilOptions);
-				}
 				return;
 			}
 			var data = object ? object : {};
@@ -579,7 +554,6 @@
 							data.connectedWith = elemArray[i]._sortableParentData.connectedWith;
 						}
 					}
-					data.internalCall = true;
 					$L(elemArray[i]).sortable(Object.assign({},data));
 
 
@@ -598,8 +572,6 @@
 				data._parentElem = data._parentElem == undefined ? _sortableData._parentElem : data._parentElem;
 
 				//Data overriding
-				data.allowOuterHover = (data.allowOuterHover == undefined) ? _sortableData.allowOuterHover : data.allowOuterHover;
-				data.outerHoverDir = data.outerHoverDir ? data.outerHoverDir : _sortableData.outerHoverDir;
 				data.containment = data.containment ? data.containment : _sortableData.containment;
 				data.containmentBoundaries =  data.containmentBoundaries ?  data.containmentBoundaries : _sortableData.containmentBoundaries;
 				data.connected = data.connectedWith ? manageSortable.isEqual(data.connectedWith, _sortableData.connectedWith) : _sortableData.connected;
@@ -682,8 +654,6 @@
 				$L(data._parentElem).addClass('sortable-parent','lyteSortableParent');
 
 				//Data initialization
-				data.allowOuterHover = (data.allowOuterHover == undefined) ? false : data.allowOuterHover;
-				data.outerHoverDir = data.outerHoverDir ? data.outerHoverDir : undefined;
 				data.containment = data.containment;
 				data.containmentBoundaries = data.containmentBoundaries ?   data.containmentBoundaries : {top: 0 ,left:0 ,right:0 ,bottom : 0};
 				data.connectedWith = data.connectedWith ? data.connectedWith : [];
@@ -1396,38 +1366,7 @@
 									if(!_sortableElem){
 										return;
 									}
-
-									if( data.allowOuterHover ){
-										var potentialNewParent = $L(document.elementFromPoint(_mousePosition.x, _mousePosition.y)).closest('.sortable-parent')[0];
-										if( potentialNewParent && potentialNewParent != data._parentElem && isNewParentPartOfConnectedWith( potentialNewParent, data._parentElem._sortableConnectedWith ) ){
-											var newParent = potentialNewParent;
-											var sortableElement = newParent.querySelector('.'+data.sortableElemClass);
-											if( sortableElement && newParent ){
-												var sortableElementRect = sortableElement.getBoundingClientRect();
-												var tempClientY = sortableElementRect.top + (sortableElementRect.height / 2);
-												var tempClientX = sortableElementRect.left + (sortableElementRect.width / 2);
-												if( newParent._sortableParentData && newParent._sortableParentData.outerHoverDir == 'horizontal' ){
-													_elemBelow = document.elementFromPoint(_mousePosition.x, tempClientY);
-												}
-												else{
-													_elemBelow = document.elementFromPoint(tempClientX,_mousePosition.y);
-												}
-											}
-											else{
-													_elemBelow = document.elementFromPoint(_mousePosition.x,_mousePosition.y);
-											}
-										}
-										else if( data.outerHoverDir === "horizontal" ){
-											_elemBelow = document.elementFromPoint(_mousePosition.x,_initClientY);
-										}
-										else{
-											_elemBelow = document.elementFromPoint(_initClientX,_mousePosition.y);
-										}
-									}
-									else{
-										_elemBelow = document.elementFromPoint(_mousePosition.x,_mousePosition.y);
-									}
-
+									_elemBelow = document.elementFromPoint(_mousePosition.x,_mousePosition.y);
 									if(data.multiSortable) {
 										if(_elemBelow) {
 											var sortableClasses = data.allSortableClass;
@@ -1447,9 +1386,6 @@
 									}
 									else {
 										droppablePlace = _elemBelow ? _elemBelow.closest('.'+_sortableElemClass) : null;
-										if( $L(_elemBelow).hasClass('sortable-parent')  && $L(_elemBelow).find('.'+data.placeholder).length > 0){
-											return;
-										}
 										if(_elemBelow && $L(_elemBelow).hasClass('sortable-parent')){
 											droppablePlace = _elemBelow;
 										}
@@ -1780,32 +1716,6 @@
 						manageSortable.measureQueue.push(measure1);
 					}
 				}
-			}
-
-			var isNewParentPartOfConnectedWith = function( potentialNewParent, selector ){
-				if( !selector ){
-					return false;
-				}
-
-				var selectorArray = selector.split(',');
-				var retArray = [];
-				selectorArray.forEach(function(item){
-					var items = $L(item.trim());
-					if(items.length){
-						for(var i=0;i < items.length ;i++){
-							if(retArray.indexOf(items[i]) == -1 && items[i].tagName != "TEMPLATE"){
-								retArray.push(items[i]);
-							}
-						}
-					}
-					else{
-						if(retArray.indexOf(items) == -1 && items.tagName != "TEMPLATE"){
-							retArray.push(items);
-						}
-					}
-				});
-
-				return retArray.includes( potentialNewParent );
 			}
 			
 			var iselemCanDropOnTop =  function(data,_elemBelow,_sortableElem){
@@ -2199,7 +2109,6 @@
 					elem_data.sortableElemClass = data.sortableElemClass;
 					elem_data._parentElem = $L(elem)[0];
 
-					elem_data.internalCall = true;
 					$L(not_sortable).sortable(Object.assign({},elem_data));
 				}
 			};
@@ -2622,8 +2531,7 @@
 			}
 
 			var onDragStart = function(data, event){
-				// data.onDragStart(data._div, data._source, event, data._div._origin);
-				data.onDragStart(data._div, data._source, event, data._div._origin, data._fromIndex);
+				data.onDragStart(data._div,data._source, event,data._div._origin);
 			}
 
 			var onDrag = function(data,event){
@@ -2660,9 +2568,7 @@
 					}
 				}
 				var placeholder = document.querySelectorAll('#dummy').length == 1 ? document.querySelectorAll('#dummy')[0] : data._placeholder;
-				data._toIndex = checkDroppedItemPosition(data, data._placeholder, findSortableChild(data));
-				// var returnVal = data.onPlaceholder(data._div,placeholder, data._parentElem, placeholder ? placeholder.parentElement : null);
-				var returnVal = data.onPlaceholder(data._div, placeholder, data._parentElem, placeholder ? placeholder.parentElement : null, data._fromIndex, data._toIndex);
+				var returnVal = data.onPlaceholder(data._div,placeholder, data._parentElem, placeholder ? placeholder.parentElement : null);
 				return (returnVal == undefined) ? true : returnVal;
 			}
 
@@ -2754,13 +2660,12 @@
 							// cancel : data.cancel,
 							// items : data.items,
 							// cursorAt : data.cursorAt,
-							restrict : (id._sortableParentData && id._sortableParentData.restrict) ? id._sortableParentData.restrict : data.restrict,
+							restrict : data.restrict,
 							// scrollDivX : data.scrollDivX,
 							// omitRestricted : data.omitRestricted,
 							sortableElemClass : data.sortableElemClass,
-							dblTouchEvent : data.dblTouchEvent,
+							dblTouchEvent : data.dblTouchEvent
 							// clone : data.clone
-							internalCall: true
 						});
 					}
 				});

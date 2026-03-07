@@ -1,7 +1,7 @@
 import { Lyte } from "@slyte/core";
 import { _LC } from "@slyte/component";
 function loadComponent(componentName,registryClass) {
-    if(!registryClass || !registryClass._hash){
+    if(!registryClass){ //  || !registryClass.__lyteOptionsMap.get(registryClass).hash
         registryClass = _LC.getDefaultRegistry();
     }
     if(typeof componentName === "string") {
@@ -11,9 +11,9 @@ function loadComponent(componentName,registryClass) {
     var downloadType = "component";
     for(var i=0;i<componentName.length;i++) {
         let cmpName = componentName[i];
-        let hash = registryClass._hash;
+        let hash = _LC.map.registry.get(registryClass).hash;
         if(typeof cmpName == "object"){
-            hash = cmpName.registry ? cmpName.registry._hash : hash;
+            hash = cmpName.registry ? _LC.map.registry.get(cmpName.registry).hash : hash;
             cmpName = cmpName.name;
         }
         if(cmpName.indexOf("/") != -1){

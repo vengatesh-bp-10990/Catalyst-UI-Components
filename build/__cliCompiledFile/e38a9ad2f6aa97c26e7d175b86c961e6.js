@@ -1,7 +1,11 @@
-import { Dberror, ValidationError } from "./dberror";
+import { Dberror } from "./dberror";
 import { Schema } from "./Schema.js";
-import { cmpData,nestScp,isEntity, deepCopyObject, establishObjectBinding, checkProperty, newGetSuperClass, defProp, removeNestScp } from "@slyte/core/src/lyte-utils.js";
+import { cmpData,nestScp,isEntity, deepCopyObject, establishObjectBinding, checkProperty, newGetSuperClass, getSuperClass, defProp, removeNestScp} from "@slyte/core/src/lyte-utils.js";
 import { Entity } from "./Entity.js";
+import { Serializer  } from "./Serializer";
+import { cmpSet, emit } from "./commonUtils";
+import { ValidationError } from "./ValidationError";
+
 // import { isMixin } from "../../core/src/lyte-utils";
 
 // function getOrigParent(cls){
@@ -11,6 +15,84 @@ import { Entity } from "./Entity.js";
 // 	}
 // 	return prt;
 // }
+
+function gE(db, def, pKey, isDeleted, prx){
+	var args = arguments, 
+	args0 = args[1], 
+	isObj = typeof def == "object" && def != null,
+	defless = db.applicationConnector && db.applicationConnector.__type == "REST" ? db.applicationConnector.schemaless : undefined, 
+	_defless,
+	appIns = db.$app || db.$addon;
+	if(isObj){
+		def = args0.schema, 
+		pKey = args0.pK, 
+		isDeleted = args0.isDeleted;
+	}
+	var isSchema = defless == true && typeof def == "string" ? false : (def ? (getSuperClass(def, true) === "Schema") : def);
+	def = isSchema ? getSchemaObj(db, def) : def;
+	var name = def && def._name ? def._name : def; 
+	if( !def  ){
+		Dberror.error(appIns,"LD02","Schema ",name);
+		return;
+	}
+	else if(defless == true && !isSchema && name){
+		def = db.schemaless[name];
+		if(!def){
+			Dberror.error(appIns,"LD02","Schema");
+			return;	
+		}
+		_defless = true;
+	}    
+	if(isDeleted === true){
+		var deleted = def._deleted;
+		var obj = deleted.get(pKey);
+		if(obj && obj.data){
+			if(prx && appIns.$mutate){
+				return appIns.$mutate.create(obj.data);
+			}
+			else{
+				return obj.data;
+			}
+		}
+	}
+	else{
+		var isComp = def.isComp; 
+		pKey = (pKey == undefined) ? "" : pKey;
+		if(!isComp && def.data._recMap){
+			var rec = def.data._recMap.get(pKey.toString());
+			if(prx && appIns.$mutate){
+				return appIns.$mutate.create(rec);
+			}
+			return rec;
+		}
+		else{
+			var data = def.data, entity;
+			if(_defless != true){
+				entity = data.filter(function(ins){
+					if(comparePk(ins, pKey)){
+						return ins;
+					}
+				});
+			}
+			else{
+				entity = data.filter(function(ins){
+					if(ins[def._pK] === pKey){
+						return ins;
+					}
+				});
+			}    
+			if(entity[0]){
+				if(prx && appIns.$mutate){
+					return appIns.$mutate.create(entity[0]);
+				}
+				else{
+					return entity[0];
+				}
+			}
+		}
+	}
+	return undefined;
+}
 
 function changePersist(record, value){
 	if(!record.$.isUnloaded || record.$.isPeristed !== value){
@@ -513,12 +595,23 @@ function validateRelatedRecord(db, record, key, field){
 	}
 }
 
-function validateRecord(db, record, fields){
-	var result, ret = true, returnVal;
+function validateRecord(db, record, fields,validateCallBack){
+	var result, ret = true, returnVal,validateError= {};
 	for(var field in fields){
-		returnVal = validateField(db, record, field, fields[field], result);
+		returnVal = validateField(db, record, field, fields[field], result,undefined,validateCallBack,validateError);
 		if(ret === true && returnVal === false){
 			ret = false;
+		}
+	}
+	if(validateCallBack){
+		var res = validateCallBack.apply(record.$ ,[validateError])
+		if(res && typeof res == "object"){
+			for (var e in res){
+				ValidationError.setRecErr(record.$,e,res[e])
+			}
+		}
+		else if (res == true){
+			return true;
 		}
 	}
 	if(ret === false || (record.$.isError === true && record.$.error && Object.keys(record.$.error).length)){
@@ -527,14 +620,21 @@ function validateRecord(db, record, fields){
 	return true;
 }
 
-function validateField(db, record, key, field, result, obj){
+function validateField(db, record, key, field, result, obj,validateCallBack , validateError){
 	var val = obj && obj.old ? obj.value : record[key], 
 	ret, 
 	err = record.$, 
 	clear,
 	db = record.$.schema.db,
 	lyte = record.$.schema.db.lyte,
-	validateOptions = true;
+	validateOptions = true,
+	opts;
+	if(validateCallBack && err.error[key]){
+		val = obj = err.error[key].value;
+		opts = { 
+			skipValidation : true
+		};
+	}
 	if(field.type == "relation"){
 		ret = validateRelatedRecord(db, record, key, field);
 		if(ret === false){
@@ -544,7 +644,11 @@ function validateField(db, record, key, field, result, obj){
 		validateOptions = false;
 	}
 	else if(field.mandatory && !record.$.error.hasOwnProperty(key) && (val === undefined || val === "" || (Array.isArray(val) && val.length === 0) )){
-		ValidationError.setRecErr(err, key, {code : "ERR02", message : Dberror.errorCodes.ERR02, value : val});
+		if(validateCallBack){
+			validateError = {code : "ERR02", message : Dberror.errorCodes.ERR02, value : val}
+		}else{
+			ValidationError.setRecErr(err, key, {code : "ERR02", message : Dberror.errorCodes.ERR02, value : val});
+		}
 	}
 	if(validateOptions){
 		clear = true;
@@ -552,14 +656,21 @@ function validateField(db, record, key, field, result, obj){
 			for(var property in field){
 				var resp = checkProperty(property, val, key, field[property], record, isEntity(record) ? record.$.schema._name : undefined, db, ValidationError.errorCodes, undefined, field, true);
 				if(resp !== true){
-					if(typeof resp == "object"){
-						resp.value = val; 
+					if(validateCallBack){
+						validateError[key] = resp;
+					}else{
+						if(typeof resp == "object"){
+							resp.value = val; 
+						}
+						ValidationError.setRecErr(err,key,resp);
+						clear = false;
+						//err[field] = resp;
 					}
-					ValidationError.setRecErr(err,key,resp);
-					clear = false;
-					//err[field] = resp;
 					break;
 				}
+			}
+			if(obj && clear && validateCallBack){
+				setData(record.$,key,val,opts);
 			}
 			if(Entity.strictValueSet === false && obj && clear){
 				cmpSet( lyte, record, key, val, undefined, true );
@@ -577,12 +688,14 @@ function addOnSave(db,name,record,attr,field,pK,relPk){
 	var saveQ = saveMod[record[pK]] = saveMod[record[pK]] || {} 
 	var recs = record[attr] || [];
 	if(field.relType == "belongsTo"){
-		recs = !Array.isArray(record[attr]) ? [record[attr]] : record[attr]; 
+		recs = record[attr] && !Array.isArray(record[attr]) ? [record[attr]] : record[attr]; 
 	}
-	recs.forEach(function(item){
-		var q = saveQ[field.relKey] = saveQ[field.relKey] || [];
-		checkAndAddToArray(q, item[relPk]);
-	});
+	if(recs){
+		recs.forEach(function(item){
+			var q = saveQ[field.relKey] = saveQ[field.relKey] || [];
+			checkAndAddToArray(q, item[relPk]);
+		});
+	}
 }
 
 function removeOnSave(db, name, pkVal){
@@ -632,12 +745,18 @@ function registerField(db,def,key,field,obs){
 			if(oldField.hasOwnProperty("watch")){
 				delete def._fldGrps.watch[key];
 			}
+			if(oldField.hasOwnProperty("inherit")){
+				delete def._fldGrps.inherit[key];
+			}
 		}
 		if(field.hasOwnProperty("default")){
 			def._fldGrps.default[key] = field;
 		}
 		if(field.hasOwnProperty("watch") && (field.watch == true || Array.isArray(field.watch)) && /^(array|object)$/.test(field.type)){
 			def._fldGrps.watch[key] = field;
+		}
+		if(field.opts &&  field.opts.hasOwnProperty("inherit")){
+			def._fldGrps.inherit[key] = field;
 		}		
 	}
 	else if(field._type == "prop"){
@@ -647,6 +766,9 @@ function registerField(db,def,key,field,obs){
 		}
 		else{
 			Dberror.warn(db.lyte, key+" in Schema-"+def._name+" is not a valid prop");
+		}
+		if(field.type && (field.type.hasOwnProperty("properties") || field.type.hasOwnProperty("items"))){
+			def._fldGrps.nested_prop[key]=field
 		}
 	}
 	if(field.type === "relation"){
@@ -698,7 +820,7 @@ function relDef(def, key, relTo, field){
 function unRegCb(db,type,name){
 	var callback = db[type][name];
 	if(!callback){
-		Dberror.error(db.lyte,"LD02",type,name);
+		Dberror.error(db,"LD02",type,name);
 		return;
 	}
 	var extendedBy = callback.__extendedBy;
@@ -939,13 +1061,36 @@ function compareObjects(obj1, obj2, qP){
 	return true;
 }
 
-function setData(self, attr, value, opts, redoObj, ignoreChange){
+function setData(self, attr, value, opts, redoObj, ignoreChange,inherit){
 	var toEmit = {emit : false, attr : [], oldRec : {}}, 
 	schema = self.schema, 
 	db = schema.db,
 	_estObsBind = false, 
 	record = self.entity, 
 	attrData;
+	if(inherit && attr){
+		var mfl = self.schema._fldGrps.inherit;
+		for(var v in mfl){
+			if(self.entity[mfl[v].relKey] && attr[mfl[v].relKey]){
+				if(mfl[v].relType == "belongsTo" ){
+					self.schema._arrPk.forEach(function(_key){
+						delete attr[mfl[v].relKey][_key]
+					})
+					setData(self.entity[mfl[v].relKey].$,attr[mfl[v].relKey],undefined,undefined,undefined,ignoreChange,true);
+				}
+				else{
+					var len = attr[mfl[v].relKey].length
+					for(var j=len-1; j>=0; j--){
+						self.schema._arrPk.forEach(function(_key){
+							delete attr[mfl[v].relKey][j][_key];
+						})
+						setData(self.entity[mfl[v].relKey][j].$,attr[mfl[v].relKey][j],undefined,undefined,undefined,ignoreChange,true);
+					}
+				}
+				delete attr[mfl[v].relKey];
+			}
+		}
+	}
 	if(record && record.$.isStrict && record.$.isDeleted){
 		Dberror.warn(db.lyte, "LD29");
 		return;
@@ -1049,10 +1194,10 @@ function setValue(self,attr,value,opts,toEmit,ignoreChange,deepChange){
 						}
 						else {
 							if(val && typeof val == bPkType){
-								relRec = db.cache.getEntity((val._type) ? val._type : field.relatedTo, val);
+								relRec = gE(db,(val._type) ? val._type : field.relatedTo, val);
 							}
 						}
-						if(isEntity(relRec) && relRec === record[attr][i]){
+						if(isEntity(relRec) && relRec.$.entity === record[attr][i]){
 							j++;
 						}
 						else{
@@ -1091,10 +1236,10 @@ function setValue(self,attr,value,opts,toEmit,ignoreChange,deepChange){
 				}
 				else {
 					if(value && typeof value == bPkType){
-						relRec = db.cache.getEntity((value._type) ? value._type : field.relatedTo, value);
+						relRec = gE(db,(value._type) ? value._type : field.relatedTo, value);
 					}
 				}
-				if(isEntity(relRec) && relRec === record[attr]){
+				if(isEntity(relRec) && relRec.$.entity === record[attr]){
 					return;
 				}
 				// oldVal = this.createCopy(record[attr]);
@@ -1138,7 +1283,7 @@ function setValue(self,attr,value,opts,toEmit,ignoreChange,deepChange){
 				var relRecord = value[i], relMod1 = (value[i] && value[i]._type) ? value[i]._type : field.relatedTo;
 				relMod1 = getSchemaObj(db, relMod1);
 				if(!isComp && value[i] && typeof value[i] === bPkType){
-					relRecord = db.cache.getEntity((value[i]._type) ? value[i]._type : field.relatedTo, value[i]);
+					relRecord = gE(db,(value[i]._type) ? value[i]._type : field.relatedTo, value[i]);
 					if(relRecord == undefined){
 						addToRelate(db, schema._name, record, rel, value[i]);
 					}
@@ -1154,16 +1299,16 @@ function setValue(self,attr,value,opts,toEmit,ignoreChange,deepChange){
 					}
 					else if(!isEntity(relRecord)){
 						if(isPoly && value[i] && value[i]._type){
-							relRecord = db.cache.getEntity(db.getSchema(value[i]._type), getpKVal(value[i], db.getSchema(value[i]._type)));
+							relRecord = gE(db,db.getSchema(value[i]._type), getpKVal(value[i], db.getSchema(value[i]._type)));
 						}
 						else if(isComp){
-							relRecord = db.cache.getEntity((value[i]._type) ? value[i]._type : field.relatedTo, value[i]);
+							relRecord = gE(db,(value[i]._type) ? value[i]._type : field.relatedTo, value[i]);
 							if(!relRecord){
 								relRecord = newRecord(db, relMod1, value[i], opts ? opts.skipValidation : undefined);
 							}
 						}
 						else if(value[i].$ && value[i].$.isSavedState){
-							relRecord = db.cache.getEntity((value[i]._type) ? value[i]._type : field.relatedTo, value[i].$.pK);
+							relRecord = gE(db,(value[i]._type) ? value[i]._type : field.relatedTo, value[i].$.pK);
 							// if(!relRecord){
 							// 	//to check 	
 							// }
@@ -1296,6 +1441,9 @@ function estAttrs(record, attr, value, toEmit, deepChange, opts, clear){
 	}
 	if(clear){
 		ValidationError.clrRecErr(record.$, attr);
+	}
+	if(record.$.srtObs){
+		changeRelPkMaps(record, undefined, undefined, "sort", attr);
 	}
 	var obj = {};
 	obj._type = "update";
@@ -1743,7 +1891,7 @@ function establishToRelated(record, relArr){
 	rel = {},
 	db = bSchema.db;
 	relArr.forEach(function(item){
-		var rec = db.cache.getEntity(db.getSchemaObj(item.schema).def, item.pkVal);
+		var rec = gE(db,db.getSchemaObj(item.schema).def, item.pkVal);
 		if(rec){
 			var fSchema = rec.$.schema;
 			getRelations(db, fSchema, item.key, bSchema, rel);
@@ -1753,7 +1901,7 @@ function establishToRelated(record, relArr){
 }
 
 function add(value,type,opts,redoObj){
-	var record = this.entity, 
+	var record = this.entity.$.entity, 
 	schema = record.$.schema,
 	db = schema.db,
 	attr = this.key, 
@@ -1779,7 +1927,7 @@ function add(value,type,opts,redoObj){
 					continue;
 				}
 				
-				rec = db.cache.getEntity(this.polymorphic && type ? (typeof type == "string" ? db.getSchema(type) : type) : rel.forward.relatedTo, rec);	
+				rec = gE(db,this.polymorphic && type ? (typeof type == "string" ? db.getSchema(type) : type) : rel.forward.relatedTo, rec);	
 			}
 		}
 		if((!isComp && relMod.fieldList[pK].type.toLowerCase() == typeof rec) || (isComp && typeof rec == "object" && Object.keys(rec).length === relMod._arrPk.length) ){
@@ -1787,7 +1935,7 @@ function add(value,type,opts,redoObj){
 				err.push({code : "ERR22", data : value[i], message : Dberror.errorCodes.ERR22});
 				continue;
 			}
-			rec = db.cache.getEntity(this.polymorphic && type ? (typeof type == "string" ? db.getSchema(type) : type) : rel.forward.relatedTo, rec);
+			rec = gE(db,this.polymorphic && type ? (typeof type == "string" ? db.getSchema(type) : type) : rel.forward.relatedTo, rec);
 		}
 		else if(typeof rec == "object" && !isEntity(rec)){
 			if(this.polymorphic){
@@ -1816,6 +1964,7 @@ function add(value,type,opts,redoObj){
 			err.push({code : "ERR15", data : value[i], message : Dberror.errorCodes.ERR15, error : rec});
 		}
 		else if(isEntity(rec) && !hasDuplicateRelation(rec, record[attr], pK, polyType, relMod)){
+			rec = rec.$.entity;
 			var resp = establishLink(db, rel.forward, rel.backward, record, rec);
 			if(resp != true){
 				err.push({code : resp, data : value[i], message : Dberror.errorCodes[resp]});
@@ -1883,7 +2032,7 @@ function add(value,type,opts,redoObj){
 }
 
 function remove(key,type,redoObj){
-	var record = this.entity, 
+	var record = this.entity.$.entity, 
 	schema = record.$.schema, 
 	db = schema.db,
 	lyte = db.lyte,
@@ -1913,18 +2062,18 @@ function remove(key,type,redoObj){
 				err.push({code : "ERR22", data : key[i], message : Dberror.errorCodes.ERR22});
 				continue;
 			}
-			relatedRecord = db.cache.getEntity((type)?(typeof type == "string" ? db.getSchema(type) : type):rel.forward.relatedTo,key[i]);
+			relatedRecord = gE(db,(type)?(typeof type == "string" ? db.getSchema(type) : type):rel.forward.relatedTo,key[i]);
 			polyType = type;
 		}
 		else if(isEntity(key[i])){
-			relatedRecord = key[i];
+			relatedRecord = key[i].$.entity;
 			polyType = type ? type : ((relatedRecord && relatedRecord._type) ? relatedRecord._type : undefined);
 		}
 		if(relatedRecord){
 			var index = getIndex(record[attr], pK, relatedRecord.$.get(pK),polyType);
-			demolishLink(db, relatedRecord, pK, db.cache.getEntity(schema.def, record.$.pK), rel.forward.relKey, undefined, undefined, undefined, true);
+			demolishLink(db, relatedRecord, pK, gE(db,schema.def, record.$.pK), rel.forward.relKey, undefined, undefined, undefined, true);
 			if(rel.backward != null){
-				demolishLink(db, record, schema._pK, db.cache.getEntity((polyType)?(typeof polyType == "string" ? db.getSchema(polyType) : polyType):rel.forward.relatedTo, relatedRecord.$.pK), rel.backward.relKey, rel.forward);
+				demolishLink(db, record, schema._pK, gE(db,(polyType)?(typeof polyType == "string" ? db.getSchema(polyType) : polyType):rel.forward.relatedTo, relatedRecord.$.pK), rel.backward.relKey, rel.forward);
 			}
 			arr.push(relatedRecord);
 			indices.push(index);
@@ -2333,7 +2482,7 @@ function idSerialize(db, obj, rel, expose, partialObj, partialRef){
 								value : nDef
 							},
 							record : {
-								value : db.cache.getEntity(nDef.def, item.$.pK)
+								value : gE(db,nDef.def, item.$.pK)
 							}
 						});		
 						if(item.$.isDeleted){
@@ -2449,7 +2598,7 @@ function rSerialize(db, data, rel, bDef, pK, pkVal, expose, partialObj, partialR
 				value : nDef
 			},
 			record : {
-				value : db.cache.getEntity(nDef.def, data.$.pK)
+				value : gE(db,nDef.def, data.$.pK)
 			}
 		});
 		if(Array.isArray(partialObj)){
@@ -2498,7 +2647,7 @@ function partialSerialize(db, obj, key, val, rel, def, bDef, pkVal, expose, part
 								polyType =  rec._type ? rec._type : rec.$.schema._name;
 								bDef = db.schema[polyType];
 							}
-							var record = db.cache.getEntity(bDef.def, pKey);
+							var record = gE(db,bDef.def, pKey);
 							removeBackwardRel(rec, rel, pK, pkVal);
 							if(rec.$.isNew){
 								pType = "added";
@@ -2528,7 +2677,7 @@ function partialSerialize(db, obj, key, val, rel, def, bDef, pkVal, expose, part
 										value : polymorphic ? db.schema[polyType] : getSchemaObj(db, relTo)
 									},
 									record : {
-										value :  db.cache.getEntity(newPartDef, pKey)
+										value :  gE(db,newPartDef, pKey)
 									}																										
 								});
 								// if(partialRef){
@@ -2564,7 +2713,7 @@ function partialSerialize(db, obj, key, val, rel, def, bDef, pkVal, expose, part
 						else{
 							dObj[bpK] = pKey;
 						}
-						var record = db.cache.getEntity(bDef.def, pKey) || db.cache.getEntity(bDef.def, pKey, true);
+						var record = gE(db,bDef.def, pKey) || gE(db,bDef.def, pKey, true);
 						if(partial){
 							var newPart = {}; 
 							_defProp(newPart, "$", {});
@@ -2648,7 +2797,7 @@ function partialSerialize(db, obj, key, val, rel, def, bDef, pkVal, expose, part
 					value : partMod
 				},
 				record : {
-					value : db.cache.getEntity(partMod.def, val.$.pK)
+					value : gE(db,partMod.def, val.$.pK)
 				}
 			});
 			// if(partialRef){
@@ -2666,14 +2815,16 @@ function partialSerialize(db, obj, key, val, rel, def, bDef, pkVal, expose, part
 	}
 }
 
-function removeSelfCircularReference(db, name, obj, expose, type, partialObj, partialRef, parentRel,addNotDefinedFields){
+function removeSelfCircularReference(db, name, obj, expose, type, partialObj, partialRef, parentRel,addNotDefinedFields,inherit){
 	var def = db.schema[name], 
 	fieldList = def.fieldList,
 	pkVal = getpKVal(obj,def),  
-	record = db.cache.getEntity(def.def, pkVal), 
+	record = gE(db,def.def, pkVal), 
 	partObj = isEntity(record) ? record.$.partial : undefined, 
 	polymorphicType = obj && obj.$ ? obj.$.polymorphicType : undefined, 
-	refId;
+	refId,
+	recmp = new Map();
+	recmp.set(obj,pkVal)
 	db.$.recStack[name] = db.$.recStack[name] || []; 
 	var ret = checkAndAddToArray(db.$.recStack[name], pkVal)
 	if(partialRef){
@@ -2739,7 +2890,7 @@ function removeSelfCircularReference(db, name, obj, expose, type, partialObj, pa
 							value : record
 						},
 						record: {
-							value: db.cache.getEntity(field.relatedTo, partPk.$.pK)
+							value: gE(db,field.relatedTo, partPk.$.pK)
 						}
 					});
 				}
@@ -2766,13 +2917,22 @@ function removeSelfCircularReference(db, name, obj, expose, type, partialObj, pa
 				continue;
 			}
 		}
-		if((expose == true || expose == "clone" || expose == "state") && obj[key] && typeof obj[key] == "object" && field && field.type != "relation"){
+		if((expose == true || expose == "state") && obj[key] && typeof obj[key] == "object" && field && field.type != "relation"){
 			obj[key] = deepCopyObject(obj[key]);
 			continue;
+		}
+		if(expose && expose.type == "clone"){
+			if(obj[key]  && field && field.type == "relation"){
+				relSlave = field.opts && field.opts.inherit?true:false;
+				if(!relSlave){
+					delete obj[key]
+				}
+			}
 		}
 		if(obj[key] && field && field.type == "relation"){
 			relTo = field.relatedTo;
 			relType = field.relType;
+			Slave = field.opts && field.opts.inherit ? true : false;
 			bDef = getSchemaObj(db, relTo);
 			if(bDef == undefined){
 				continue;
@@ -2789,7 +2949,17 @@ function removeSelfCircularReference(db, name, obj, expose, type, partialObj, pa
 			if(expose == "idb"){
 				idbSerialize(db, val, rel, def, bDef, pkVal, expose);
 			}
-			else if(expose || serialize == "id"){
+			else if(inherit && Slave){
+				toChildJSON(db,relTo,relType,obj[key],key,def._name,recmp,addNotDefinedFields,expose)
+				if(relType == "belongsTo"){
+					var _PK = getSchemaObj(db,relTo)._pK
+					if(obj[key][_PK] == pkVal && relTo == def.def){
+						delete obj[key];
+					}
+					obj[key] = Object.assign({} , obj[key])
+				}
+			}
+			else if((expose && !inherit)|| (inherit && !Slave) || serialize == "id"){
 				idSerialize(db, obj, rel, expose, partialObj, partialRef);
 			}
 			else if(serialize === "record"){
@@ -2826,7 +2996,24 @@ function removeSelfCircularReference(db, name, obj, expose, type, partialObj, pa
 				}
 			}
 		}
-		
+	}
+	if(expose == "state"){
+		var fields = record.$.schema.fieldList;
+		for(var key in fields){
+			if(!record.hasOwnProperty(key)){
+				if(fields[key].type == "relation"){
+					if(fields[key].relType == "hasMany"){
+						obj[key] = [];
+					}
+					else{
+						obj[key] = undefined;
+					}
+				}
+				else{
+					obj[key] = undefined;
+				}
+			}
+		}
 	}
 	if(partialRef){
 		var refKey = partialRef.refKey;
@@ -2849,12 +3036,13 @@ function getpKVal(ins, schema){
 	return obj;
 }
 
-function toJSONObj(db, schema, data, expose, type, partial, parentRel, addNotDefinedFields){
+function toJSONObj(db, schema, data, expose, type, partial, parentRel, addNotDefinedFields,inherit){
 	var copyObj, 
 	pkVal, 
 	name = schema._name, 
 	pK = schema._pK;
-	if(expose == true || expose == "state" || expose == "clone"){
+	var inhFldLen = schema._fldGrps.inherit && Object.keys(schema._fldGrps.inherit).length 
+	if((expose == true || expose == "state" ) && ( !inherit || (inherit && !inhFldLen))){
 		copyObj = Object.assign({},data);
 	}
 	else{
@@ -2864,34 +3052,34 @@ function toJSONObj(db, schema, data, expose, type, partial, parentRel, addNotDef
 		pkVal = copyObj.$.pK;
 	}
 	else{
-		pkVal = db.cache.getEntity(schema.def, getpKVal(copyObj, schema)).$.pK;
+		pkVal = gE(db,schema.def, getpKVal(copyObj, schema)).$.pK;
 	}
 	var partialObj = partial ? partial.obj : undefined, partialMp;
 	if(partialObj && !partialObj.has(pkVal)){
 		partialObj.set(pkVal,{});
 		partialMp = partialObj.get(pkVal); 
 	}
-	removeSelfCircularReference(db, name, copyObj,expose,type, partialMp, partial && partial.ref ? partial.ref : undefined, parentRel,addNotDefinedFields);
+	removeSelfCircularReference(db, name, copyObj,expose,type, partialMp, partial && partial.ref ? partial.ref : undefined, parentRel,addNotDefinedFields,inherit);
 	if(expose == "idb"){
-		db.idbIns.removeNotNeededKeys(db, name, copyObj);
+		db.idbIns.removeNotNeededKeys(db, name, copyObj, schema.idbObj);
 	}
 	return copyObj;
 }
 
-function toJSON(db,name,obj,expose,type,partialObj,parentRel,addNotDefinedFields){
+function toJSON(db,name,obj,expose,type,partialObj,parentRel,addNotDefinedFields,inherit){
 	var copyObj, 
 	def = db.schema[name];
 	db.$.recStack = {};
 	if(Array.isArray(obj)){
 		var arr = [];
 		for(var i=0; i<obj.length; i++){
-			copyObj = toJSONObj(db, def, obj[i], expose, type, partialObj, parentRel,addNotDefinedFields);
+			copyObj = toJSONObj(db, def, obj[i], expose, type, partialObj, parentRel,addNotDefinedFields,inherit);
 			arr.push(copyObj);
 		}
 		return arr;
 	}
 	else if(obj && (typeof obj === "object" || isEntity(obj))){
-		copyObj = toJSONObj(db, def, obj, expose, type, partialObj, parentRel,addNotDefinedFields);
+		copyObj = toJSONObj(db, def, obj, expose, type, partialObj, parentRel,addNotDefinedFields,inherit);
 	}
 	db.$.recStack = {};
 	return copyObj;
@@ -2943,11 +3131,36 @@ function recChk(lyte, rec){
 }
 
 function initCB(db, type, ins, key, obj){
-	var args = obj.args, ret = {}, _appC, _appS;
+	var args = obj.args, ret = {}, _appC, _appS,appIns = db.$app || db.$addon;
 	obj.argsObj ? obj.argsObj.callback = key : undefined;
+	//@Slicer.developmentStart
+	PerfomanceLog(
+        db.lyte,
+        obj.argsObj?obj.argsObj.__reqId__:undefined,
+        key,
+        obj.argsObj?obj.argsObj.schemaName:undefined
+    )
+	//@Slicer.developmentEnd
 	if(ins){
 		if(ins[key]){
-			ret.data = ins[key].apply(ins, obj.argsObj ? [obj.argsObj] : obj.args);
+			 //@Slicer.catchAllErrorsStart
+			try{
+			 //@Slicer.catchAllErrorsEnd
+				ret.data = ins[key].apply(ins, obj.argsObj ? [obj.argsObj] : obj.args);
+				//@Slicer.developmentStart
+				PerfomanceLog(
+                    db.lyte,
+                    obj.argsObj?obj.argsObj.__reqId__:undefined,
+                    key,
+                    obj.argsObj?obj.argsObj.schemaName:undefined
+                )
+				//@Slicer.developmentEnd
+			//@Slicer.catchAllErrorsStart
+			}
+			catch(err){
+				appIns && appIns.appError ? appIns.appError.error(db,err):Dberror.error(db,err);
+			}
+			 //@Slicer.catchAllErrorsEnd
 			// if(db.debug){
 			// 	Dberror.log(key+" of "+ type+"-"+ins.constructor.name+ " called", "#008000")
 			// }
@@ -2958,21 +3171,63 @@ function initCB(db, type, ins, key, obj){
 		var appC = db.applicationConnector, appS = db.applicationSerializer;
 		if(type == "connector" && appC){
 			if(appC[key]){
-				ret.data = appC[key].apply(appC, obj.argsObj ? [obj.argsObj] : obj.args);
+				 //@Slicer.catchAllErrorsStart
+				try{
+				 //@Slicer.catchAllErrorsEnd
+					ret.data = appC[key].apply(appC, obj.argsObj ? [obj.argsObj] : obj.args);
+					//@Slicer.developmentStart
+					PerfomanceLog(
+                        db.lyte,
+                        obj.argsObj?obj.argsObj.__reqId__:undefined,
+                        key,
+                        obj.argsObj?obj.argsObj.schemaName:undefined
+                    )
+					//@Slicer.developmentEnd
+				 //@Slicer.catchAllErrorsStart
+				}catch(err){
+					appIns && appIns.appError ? appIns.appError.error(db,err):Dberror.error(db,err);
+				}
+				 //@Slicer.catchAllErrorsEnd
 				return ret;
 			}
 		}
 		else if(type == "serializer" && appS){
 			if(appS[key]){
-				ret.data = appS[key].apply(appS, obj.argsObj ? [obj.argsObj] : obj.args);
+				 //@Slicer.catchAllErrorsStart
+				try{
+				 //@Slicer.catchAllErrorsEnd
+					ret.data = appS[key].apply(appS, obj.argsObj ? [obj.argsObj] : obj.args);
+					//@Slicer.developmentStart
+					PerfomanceLog(
+                        db.lyte,
+                        obj.argsObj?obj.argsObj.__reqId__:undefined,
+                        key,
+                        obj.argsObj?obj.argsObj.schemaName:undefined
+                    )
+					//@Slicer.developmentEnd
+				 //@Slicer.catchAllErrorsStart
+				}catch(err){
+					appIns && appIns.appError ? appIns.appError.error(db,err):Dberror.error(db,err);
+				}
+				 //@Slicer.catchAllErrorsEnd
 				return ret;
 			}
 		}
 	}
+	
 }
 
-function cB(callback,args){
-	return callback.func.apply(callback.context, args.concat(callback.name));
+function cB(callback,args,db){
+	//@Slicer.catchAllErrorsStart
+	try{
+	//@Slicer.catchAllErrorsEnd
+		return callback.func.apply(callback.context, args.concat(callback.name));	
+	//@Slicer.catchAllErrorsStart
+	}catch(err){
+		var appIns = db.$app || db.$addon;
+		appIns && appIns.appError ? appIns.appError.error(db,err) : Dberror.error(db,err)
+	}
+	//@Slicer.catchAllErrorsEnd
 }
 
 function cbScp(db, ins, key, type){
@@ -3112,7 +3367,7 @@ function newRecord(db, def, opts, skipValidation){
 				for(var j=0; j<optsRelVal.length; j++){
 					var relRecord = undefined, relMod = getSchemaObj(db, fieldKeys.relatedTo), ind;
 					if(optsRelVal[j] && isEntity(optsRelVal[j])){
-						relRecord = optsRelVal[j];
+						relRecord = optsRelVal[j].$.entity;
 					}
 					else if(isComp && typeof optsRelVal[j] == "object"){
 						var ind = getIndex(bDef.data, bPk, getpKVal(optsRelVal[j], bDef));
@@ -3133,7 +3388,7 @@ function newRecord(db, def, opts, skipValidation){
 						}
 					}
 					else if(optsRelVal[j] && typeof optsRelVal[j] == bPkType.toLowerCase()){
-						relRecord = db.cache.getEntity(relMod.def, optsRelVal[j]);
+						relRecord = gE(db,relMod.def, optsRelVal[j]);
 					}
 					else if(optsRelVal[j] && typeof optsRelVal[j] == "object"){
 						if(polymorphic){
@@ -3232,8 +3487,13 @@ function getInd(data,pKey,pkVal,type){
 		if(type && rec._type !== type){
 			continue;
 		}
-		if(rec[pKey] == pkVal){
+		if(rec[pKey] == pkVal ){
 			return i;
+		}
+		if(pKey && typeof pKey == "string" && pKey.search(/[.]/g)!=-1){
+			if((isEntity(rec) && rec.$.get && rec.$.get(pKey) == pkVal)){
+				return i;
+			}
 		}
 	}
 	return -1;
@@ -3322,7 +3582,7 @@ function toInsertData(db, def, payLoad, saveParent, index){
 	return data;
 }
 
-function insertIntoStore(db,schemaCls,data,saveParent,stack,partialObj,index, checkRelData){
+function insertIntoStore(db,schemaCls,data,saveParent,stack,partialObj,index, checkRelData ,clone){
 	var ret;
 	if(Array.isArray(data)){
 		ret = [];
@@ -3345,7 +3605,7 @@ function insertIntoStore(db,schemaCls,data,saveParent,stack,partialObj,index, ch
 				cDef = (cDef.extendedBy[data._type]) ? db.getSchemaObj(data._type) : undefined;
 				// cDef = getSchemaObj(db, cDef);
 			}
-			if(isEntity(data))
+			if(isEntity(data) && !clone)
 			{
 				return undefined;
 			}
@@ -3375,29 +3635,35 @@ function insertIntoStore(db,schemaCls,data,saveParent,stack,partialObj,index, ch
 					});
 				}
 			}
-			if(!isDuplicateEntity(cDef, data, cDef._pK)){
-				var rec = new cDef.def(data, {}, db);
-				cDef.data.push(rec);
-				var toRel = db.$.toRelate[cDef._name], pkVal = rec.$.pK;
-				if(saveParent){
-					db.$.saveParent = rec;
+			if(!clone){
+				if(!isDuplicateEntity(cDef, data, cDef._pK)){
+					var rec = new cDef.def(data, {}, db);
+					cDef.data.push(rec);
+					var toRel = db.$.toRelate[cDef._name], pkVal = rec.$.pK;
+					if(saveParent){
+						db.$.saveParent = rec;
+					}
+					ret = validateAndPush(db,cDef,rec,partialObj);
+					if(toRel && toRel.has(pkVal)){
+						establishToRelated(rec, toRel.get(pkVal));
+						toRel.delete(pkVal);
+					}
 				}
-				ret = validateAndPush(db,cDef,rec,partialObj);
-				if(toRel && toRel.has(pkVal)){
-					establishToRelated(rec, toRel.get(pkVal));
-					toRel.delete(pkVal);
+				else{
+					ret = validateAndMerge(cDef,data,partialObj);
+					if(ret && ret.data){
+						ret = ret.data;
+					}
+					else if(ret && ret.type){
+						Array.isArray(result.args) ? result.args.splice(0,0,db.lyte) : [db.lyte]
+						Dberror[result.type].apply(Dberror, result.args || [db.lyte]);
+						return;
+					}
 				}
 			}
 			else{
-				ret = validateAndMerge(cDef,data,partialObj);
-				if(ret && ret.data){
-					ret = ret.data;
-				}
-				else if(ret && ret.type){
-					Array.isArray(result.args) ? result.args.splice(0,0,db.lyte) : [db.lyte]
-					Dberror[result.type].apply(Dberror, result.args || [db.lyte]);
-					return;
-				}
+				var rec = new cDef.def(data, {}, db,clone);
+				var ret = validateAndPush(db,cDef,rec,undefined,clone)
 			}
 			if(saveParent){
 				db.$.saveParent = undefined;
@@ -3442,7 +3708,7 @@ function insertIntoStore(db,schemaCls,data,saveParent,stack,partialObj,index, ch
 	return ret;
 }
 
-function validateAndPush(db,def,data,partialObj){
+function validateAndPush(db,def,data,partialObj,clone){
 	if(!def.rel){
 		def.rel = {};
 	}
@@ -3459,6 +3725,10 @@ function validateAndPush(db,def,data,partialObj){
 			def.data.splice(index,1);	
 			return new ValidationError(db.lyte, item, {code : "ERR26", data : data, message : Dberror.errorCodes.ERR26});
 		}
+	}
+	if(clone){
+		data = validateJSON(db,def,data,undefined,undefined,undefined,clone)
+		return data;
 	}
 	var mapPk = (( data.$.pK == undefined || typeof data.$.pK == "object") ? data.$.pK : data.$.pK.toString());
 	def.data._recMap.set(mapPk, data);
@@ -3477,7 +3747,7 @@ function validateAndPush(db,def,data,partialObj){
 	return data;
 }
 
-function validateJSON(db,def,data,keys,toValidate,partialObj){
+function validateJSON(db,def,data,keys,toValidate,partialObj,clone){
 	var validate = (toValidate) ? toValidate.toValidate : undefined;
 	var fields = (validate && Object.keys(validate).length) ? validate : def.fieldList;
 	var extended = def.extend ? true : false;
@@ -3489,7 +3759,7 @@ function validateJSON(db,def,data,keys,toValidate,partialObj){
 		if(fld){
 			if(fld.type == "relation" && data[key]){
 				var partialAdd = (toValidate && toValidate.toPartialAdd) ? toValidate.toPartialAdd[key] : undefined;
-				var resp = handleRelation(db, key, def, fld, data, partialAdd, partialObj);
+				var resp = handleRelation(db, key, def, fld, data, partialAdd, partialObj, clone);
 				if(resp != true){
 					return new ValidationError(db.lyte, key, {code : resp, data : data, message : Dberror.errorCodes[resp]});
 				}
@@ -3533,7 +3803,7 @@ function validateJSON(db,def,data,keys,toValidate,partialObj){
 	return data;
 }
 
-function handleRelation(db,key,def,field,data,partialAdd, partialObj){
+function handleRelation(db,key,def,field,data,partialAdd,partialObj,clone){
 	var rel = {},
 	mRel = def.rel = def.rel || {};
 	if (!mRel.hasOwnProperty(key)){
@@ -3546,12 +3816,12 @@ function handleRelation(db,key,def,field,data,partialAdd, partialObj){
 	else{
 		rel = mRel[key];
 	}
-	return solveRelation(db, rel, def, getSchemaObj(db, field.relatedTo), key, data, partialAdd, partialObj);
+	return solveRelation(db, rel, def, getSchemaObj(db, field.relatedTo), key, data, partialAdd, partialObj,clone);
 }
 
 function getRelations(db,fDef,key,bDef,rel){
 	if(bDef == undefined){
-		Dberror.error("LD05",fDef.fieldList[key].relatedTo,key,fDef._name)
+		Dberror.error(db,"LD05",fDef.fieldList[key].relatedTo,key,fDef._name)
 		return "ERR11";
 	}
 	rel.forward = fDef.fieldList[key];
@@ -3647,7 +3917,7 @@ function getBackwardRel(fDef,rel,bDef){
 	return relatedTo?bDef.fieldList[relatedTo]:undefined;			
 }
 
-function solveRelation(db,rel,fDef,bDef,key,data,partialAdd,partialObj){
+function solveRelation(db,rel,fDef,bDef,key,data,partialAdd,partialObj,clone){
 	var forward = rel.forward, 
 	partial = partialObj ? partialObj[key] : undefined, 
 	partialRel = partial && partial.partial, 
@@ -3675,7 +3945,7 @@ function solveRelation(db,rel,fDef,bDef,key,data,partialAdd,partialObj){
 	}
 	for(var i=0; i<val.length; i++){
 		var ret;
-		ret = createAndRelate(db, fDef, bDef, data, key, val[i], rel, partial);
+		ret = createAndRelate(db, fDef, bDef, data, key, val[i], rel, partial,clone);
 		if(ret != true){
 			return ret;
 		}
@@ -3683,7 +3953,7 @@ function solveRelation(db,rel,fDef,bDef,key,data,partialAdd,partialObj){
 	return true;
 }
 
-function createAndRelate(db, fDef, bDef, data, key, val, rel, partial){
+function createAndRelate(db, fDef, bDef, data, key, val, rel, partial,clone){
 	if(!rel.backward){
 		if(rel.forward.relatedTo === fDef){
 			rel.backward = rel.forward;
@@ -3697,11 +3967,11 @@ function createAndRelate(db, fDef, bDef, data, key, val, rel, partial){
 	isPoly = rel.forward && rel.forward.opts ? rel.forward.opts.polymorphic : undefined,
 	relatedRecord, 
 	newPartial = partial && partial.hasOwnProperty(val[pK]) ? partial[val[pK]] : partial;
-	if(!isComp && typeof val == bDef.fieldList[bDef._pK].type){
-		relatedRecord = db.cache.getEntity(bDef.def, val);
+	if(!isComp && typeof val == bDef.fieldList[bDef._pK].type && !clone){
+		relatedRecord = gE(db,bDef.def, val);
 	}
 	else if(typeof val == "object" && !isEntity(val)){
-		relatedRecord = insertIntoStore(db, bDef.def, val, undefined, undefined, newPartial);					
+		relatedRecord = insertIntoStore(db, bDef.def, val, undefined, undefined, newPartial,undefined,undefined,clone);					
 	}
 	if(relatedRecord && relatedRecord.$ && relatedRecord.$.isError){
 		cmpSet(db.lyte, data.$, "isError", true);
@@ -3962,6 +4232,141 @@ function removeFromStore(def,keys,fromStore,ignorePartial, delayPer, onlyRem, de
 	}
 }
 
+function removeChildRecords(db,scope,record,recMap,partOnlyRem){
+	if(!recMap.get(record) && scope){
+		recMap.set(record,true);
+		var pkval=record?record.$.pK:undefined,arrPK=[]
+		var r = scope._fldGrps.inherit;
+		for(var v in r){
+			var fkey = r[v].relKey?r[v].relKey:undefined
+			if(record && fkey){
+				if(scope.fieldList[fkey].relType=="belongsTo" && record[scope.fieldList[fkey].relKey]){
+					removeChildRecords(db,getSchemaObj(db,scope.fieldList[fkey].relatedTo),record[scope.fieldList[fkey].relKey],recMap);
+				}
+				else if(scope.fieldList[fkey].relType=="hasMany" && record[scope.fieldList[fkey].relKey]){
+					var len = record[scope.fieldList[fkey].relKey].length;
+					for(var v1=len-1; v1>=0; v1--){
+						removeChildRecords(db,getSchemaObj(db,scope.fieldList[fkey].relatedTo),record[scope.fieldList[fkey].relKey][v1],recMap);
+					}
+				}
+			}
+		}
+		arrPK.push(pkval);
+		removeFromStore(scope,arrPK,true,true,undefined,undefined,partOnlyRem);
+	}
+}
+
+function rBinherit(scope,recmp){
+	var record=scope.entity,
+	rel=scope.schema._fldGrps.inherit;
+	for(var v in rel){
+		if(rel[v].opts && rel[v].opts.inherit && rel[v].relatedTo!=scope.schema._name && record[rel[v].relKey]){
+			if(rel[v].relType === "belongsTo"){
+				var _record = record[rel[v].relKey]
+				if(_record && !recmp.get(_record)){
+					recmp.set(_record,true);
+					// rollBackRecord(_record.$,{inherit:true});
+					// rBinherit(_record.$,recmp);
+					_record.$.revert();
+				}
+			}
+			else if (rel[v].relType === "hasMany"){
+				var rel_len = record[rel[v].relKey].length;
+				if(rel_len != 0 ){
+					for(var j=0; j<rel_len; j++){
+						var _record = record[rel[v].relKey][j]
+						if(_record && !recmp.get(_record)){
+							recmp.set(_record,true);
+							// rollBackRecord(_record.$,{inherit:true});
+							// rBinherit(_record.$,recmp);
+							_record.$.revert()
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+function toChildJSON(db,model,reltype,record,relKey,parent,recmp,addNotDefinedFields,expose){
+	var mdl=getSchemaObj(db,model),mdlf=mdl.fieldList,rel={},pk;
+	if(!Array.isArray(record)){
+		record=[record];
+	}
+	for(var i =0 ;i<record.length; i++){
+		if(!recmp.get(record[i])){
+			var pval = getpKVal(record[i],mdl);
+			recmp.set(record[i],pval);
+		}
+		if(!addNotDefinedFields){
+			for (var fldKeys in record[i]){
+				if(!mdlf.hasOwnProperty(fldKeys)){
+					delete record[i][fldKeys];
+				}
+			}
+		}
+		mdl.relations.forEach(function(s){
+			for(var j=0; j<s.length; j++){
+				var v = s[j].relKey?s[j].relKey:undefined;
+				if(v && mdlf[v] && mdlf[v].type == "relation" && record[i][mdlf[v].relKey]){
+					if(record[i][mdlf[v].relKey] && mdlf[v].opts && mdlf[v].opts.inherit){
+						if(mdlf[v].relType =="hasMany" && record[i][mdlf[v].relKey]){
+							for (var v1=0; v1<record[i][mdlf[v].relKey].length; v1++){
+								pval=getpKVal(record[i][mdlf[v].relKey][v1],getSchemaObj(db , mdlf[v].relatedTo));
+								if(!recmp.get(record[i][mdlf[v].relKey][v1])){
+									recmp.set(record[i][mdlf[v].relKey][v1],pval);
+									toChildJSON(db,mdlf[v].relatedTo,mdlf[v].relType,record[i][mdlf[v].relKey][v1],mdlf[v].relKey,mdlf[v].relatedTo,recmp,addNotDefinedFields,expose);
+									 //store.$.toChildJSON(mdlf[v].relatedTo,mdlf[v].relType,record[i][mdlf[v].relKey][v1],mdlf[v].relKey,mdlf[v].relatedTo,recmp,str);
+									if(typeof(record[i][mdlf[v].relKey][v1]) == "object"){
+										record[i][mdlf[v].relKey][v1]=Object.assign({},record[i][mdlf[v].relKey][v1]);
+									}
+								}
+								else if(isEntity(record[i][mdlf[v].relKey][v1]) && recmp.get(record[i][mdlf[v].relKey][v1])){
+									if(typeof pval == "object"){
+										record[i][mdlf[v].relKey][v1] = pval;
+									}
+									else{
+										var robj = {};
+										robj[(mdlf[v].relatedTo)._pK] = pval;
+										record[i][mdlf[v].relKey][v1] = robj;
+									}
+									record[i][mdlf[v].relKey][v1]=(typeof pval == "object")?pval:{[getSchemaObj(db , mdlf[v].relatedTo)._pK]:pval};
+								}
+							}
+						}
+						else if(mdlf[v].relType =="belongsTo" && record[i][mdlf[v].relKey]){
+							pval=getpKVal(record[i][mdlf[v].relKey],getSchemaObj(db,mdlf[v].relatedTo));
+							if(!recmp.get(record[i][mdlf[v].relKey])){
+								recmp.set(record[i][mdlf[v].relKey],pval);
+								toChildJSON(db,mdlf[v].relatedTo,mdlf[v].relType,record[i][mdlf[v].relKey],mdlf[v].relKey,mdlf[v].relatedTo,recmp,addNotDefinedFields,expose);
+								record[i][mdlf[v].relKey] = Object.assign({},record[i][mdlf[v].relKey])
+							}
+							else{
+								record[i][mdlf[v].relKey]=(typeof pval == "object")?pval:{[getSchemaObj(db , mdlf[v].relatedTo)._pK]:pval}
+							}
+						}
+						if(Object.keys(record[i][mdlf[v].relKey]).length==0){
+							delete record[i][mdlf[v].relKey];
+						}
+					}
+					else if(isEntity(record[i][mdlf[v].relKey])||(mdlf[v].relType == "hasMany" && isEntity((record[i][mdlf[v].relKey][0])))){
+						if(!expose || (expose && expose.type!="clone")){
+							getRelations(db,mdl, mdlf[v].relKey, getSchemaObj(db,mdlf[v].relatedTo), rel);
+							idSerialize(db,record[i],rel,true);
+						}
+						else{
+							delete record[i][mdlf[v].relKey]
+						}
+					}
+				}
+			}
+		})
+		if(isEntity(record[i])){
+			record[i]=Object.assign({},record[i]);
+		}
+	}
+}
+
 function toDemolishRelation(def,index,ignorePartial,onlyRem,delayPers,partOnlyRem){
 	var record = def.data[index], 
 	relations = def.relations,
@@ -4011,7 +4416,20 @@ function toDemolishLink(def,record,relation,ignorePartial,onlyRem,delayPers,part
 	if(!relDef){
 		return;
 	}
-	var bRelation = getBackwardRel(def, relation, getSchemaObj(db, relDef));
+	var relSchema = getSchemaObj(db, relDef);
+	var bRelation = getBackwardRel(def, relation, relSchema);
+	if(!bRelation || (relation === bRelation)){
+		if(records){
+			if(Array.isArray(records)){
+				for(var i=0; i<records.length; i++){
+					demolishSingleRelation(records[i],relSchema._name,relation.relKey,record,priKey,onlyRem,delayPers)
+				} 
+			}
+			else if(isEntity(records)){
+				demolishSingleRelation(records,relSchema._name,relation.relKey,record,priKey,onlyRem,delayPers)
+			}
+		}
+	}
 	if(relation.dummy || (relation == bRelation)){
 		records = getRelatedRecord(record,getSchemaObj(db, relation.relatedTo),relation.dummy);
 	}
@@ -4143,7 +4561,7 @@ function validateAndMerge(def, data, partialObj, mergeErr, ignoreStrict){
 		return { type:"error", args:["LD28", def._name, isEntity(data) ? data : JSON.stringify(data)]};				
 	}
 
-	var record = db.cache.getEntity(def.def, getpKVal(data, def));
+	var record = gE(db,def.def, getpKVal(data, def));
 	if(!record || !isEntity(record)){
 		return { type:"error", args:["LD04",isEntity(data) ? data : JSON.stringify(data)]};
 	}
@@ -4190,6 +4608,24 @@ function mergeData(db,record,data,partialObj,mergeErr){
 				var rel = {};
 				getRelations(db, record.$.schema, key, getSchemaObj(db, field.relatedTo), rel);
 				var bMod = rel.forward.relatedTo;
+				if(field.relType == "hasMany" && partialObj && partialObj[key] && partialObj[key].replace){
+					var rec_ar=record[key]._recMap,arr_rec=[];
+					rec_ar.forEach(function(rec,key_i){
+						arr_rec.push(key_i);
+					})
+					arr_rec.forEach(function(i){
+						if(gE(db,field.relatedTo,i).$.isNew){
+							removeFromStore(getSchemaObj(db,field.relatedTo),i,true);
+						}
+						else{
+							demolishLink(db, gE(db,field.relatedTo,i),gE(db,field.relatedTo,i).$.schema._pK,record,rel.forward.relKey,undefined,undefined,true,true);
+							if(rel.backward != null){
+								demolishLink(db,record,def._pK,gE(db,field.relatedTo,i),rel.backward.relKey,rel.forward,undefined,true,true);
+							}
+						}
+					})
+					delete partialObj[key];
+				}
 				var result = compareRelations(db, record,data,key,field,partialObj ? partialObj[key] : undefined ,todo, mergeErr);
 				mergeRecords(db, todo, result, def, getSchemaObj(db, bMod), record, key, data, rel, partialObj, mergeErr);
 			}
@@ -4224,8 +4660,8 @@ function mergeRecords(db, todo, result, def, bMod, record, key, data, rel, parti
 	if(Array.isArray(todo.remove)){
 		todo.remove.forEach(function(obj){
 			var pkVal = obj.pK, schemaName = obj.schema, _def = db.getSchema(schemaName);
-			demolishLink(db, record, pK, db.cache.getEntity(_def, pkVal), rel.backward.relKey,  rel.forward, rel.backward, true); 
-			demolishLink(db, db.cache.getEntity(_def, pkVal), db.getSchemaObj(schemaName)._pK, record, rel.forward.relKey, rel.backward, rel.forward, true); 
+			demolishLink(db, record, pK, gE(db,_def, pkVal), rel.backward.relKey,  rel.forward, rel.backward, true); 
+			demolishLink(db, gE(db,_def, pkVal), db.getSchemaObj(schemaName)._pK, record, rel.forward.relKey, rel.backward, rel.forward, true); 
 		});
 	}
 	if(record && record.hasOwnProperty(key)){
@@ -4445,7 +4881,7 @@ function rllBckRecArr(db, oldVal, ins, def, field){
 				for(var j=0; j<records.length; j++){
 					var relatedRecord = records[j];
 					if(typeof relatedRecord == "string"){
-						relatedRecord = db.cache.getEntity(rel.forward.relatedTo,relatedRecord);
+						relatedRecord = gE(db,rel.forward.relatedTo,relatedRecord);
 					}
 					if(relatedRecord != undefined && recChk(db.lyte, relatedRecord)){ // temp check to know if record exist in store
 						establishLink(db, rel.forward, rel.backward, ins, relatedRecord, undefined);
@@ -4641,12 +5077,6 @@ function rollBackNew(def, record, pK){
 
 }
 
-function emit(db, type, record, attr, err){
-	record.$.emit(type, [record,attr,err]);
-	record.$.schema.emit(type, [record, attr, err]);
-	db.emit(type, [record.$.schema._name, record, attr, err]);
-}
-
 function hasRecordsArrayChanged(record, attr, old){
 	var arr = old || record.$.getInitialValues(attr), 
 	changed = true;
@@ -4685,7 +5115,21 @@ function isDefData(data){
 function handleArrOp(lyte,data,type,obj,pos,len){
     len = len != undefined ? len : 0;
     // var toBind = typeof lyte.arrayUtils != "undefined" ? true : false, 
-	var ret;
+	var ret, sort, arrayUtils = lyte && lyte.$utils && lyte.$utils.arrayUtils ? lyte.$utils.arrayUtils : undefined;
+	if(data.key && data.entity){
+		var fld = data.entity.$.schema.fieldList[data.key], srtObs = false;
+		if(fld && fld.opts && fld.opts.sort){
+			if(fld.opts.sort.sortFn){
+				sort = fld.opts.sort.sortFn;
+				if(fld.opts.sort.observes){
+					srtObs = true;
+				}
+			}
+			else{
+				sort = { sortBy: fld.opts.sort.sortBy, sortOrder: fld.opts.sort.sortOrder };
+			}
+		}
+	}
     switch(type){
         case "push": {
             if(isDefData(data)){
@@ -4697,7 +5141,15 @@ function handleArrOp(lyte,data,type,obj,pos,len){
 					data._recMap.set(obj[data.pK], obj);					
 				}
             }
-			ret = lyte && lyte.$utils && lyte.$utils.arrayUtils ? lyte.$utils.arrayUtils(data, "push", obj) : data.push(obj);
+			if(!sort){
+				ret = arrayUtils ? arrayUtils(data, "push", obj) : data.push(obj);
+			}
+			else{
+				ret = arrayUtils ? arrayUtils(data, "sort", sort, [obj]) : data.push(obj);
+			}
+			if(srtObs && obj && obj.$){
+				!obj.$.hasOwnProperty("srtObs") ? _defProp(obj.$, "srtObs", true, false, true) : undefined;
+			}
             break;
         }
         case "removeAt": {
@@ -4716,8 +5168,12 @@ function handleArrOp(lyte,data,type,obj,pos,len){
                     mpKey !== undefined && data._recMap ? data._recMap.delete(mpKey) : undefined;
                 }
             }
+			var _rec = data[pos];
+			if(srtObs && _rec && _rec.$ && !changeRelPkMaps(_rec, undefined, undefined, "srtObsChk", data.key)){
+				_rec.$.hasOwnProperty("srtObs") ? _rec.$.srtObs = false : undefined;
+			}
             // ret =  data.$splice ? data.$splice(pos,len) : data.splice(pos,len);
-			ret = lyte && lyte.$utils && lyte.$utils.arrayUtils ? lyte.$utils.arrayUtils(data, "splice", pos, len) : data.splice(pos,len);
+			ret = arrayUtils ? arrayUtils(data, "splice", pos, len) : data.splice(pos,len);
             break;
         }
         case "insertAt": {
@@ -4731,14 +5187,34 @@ function handleArrOp(lyte,data,type,obj,pos,len){
 				}
             }
             // ret = data.$splice ? data.$splice(pos,len,obj) : data.splice(pos,len,obj);
-			ret = lyte && lyte.$utils && lyte.$utils.arrayUtils ? lyte.$utils.arrayUtils(data, "splice", pos, len, obj) : data.splice(pos, len, obj);
+			if(!sort){
+				ret = arrayUtils  ? arrayUtils(data, "splice", pos, len, obj) : data.splice(pos, len, obj);
+			}
+			else{
+				ret = arrayUtils ? arrayUtils(data, "sort", sort, [obj]) : data.splice(pos,len,obj);
+			}
+			if(srtObs && obj && obj.$){
+				!obj.$.hasOwnProperty("srtObs") ? _defProp(obj.$, "srtObs", true, false, true) : undefined;
+			}
             break;
         }
         case "replaceAt": {
             // ret = data.$splice ? data.splice(pos,len,obj) : data.splice(pos,len,obj);
-			ret = lyte && lyte.$utils && lyte.$utils.arrayUtils ? lyte.$utils.arrayUtils(data, "splice", pos, 1, obj) : data.splice(pos, 1, obj);
+			if(!sort){
+				ret = arrayUtils  ? arrayUtils(data, "splice", pos, 1, obj) : data.splice(pos, 1, obj);
+			}
+			else {
+				ret = arrayUtils  ? arrayUtils(data, "splice", pos, 1, obj) : data.splice(pos, 1, obj);
+			}
+			if(srtObs && obj && obj.$){
+				!obj.$.hasOwnProperty("srtObs") ? _defProp(obj.$, "srtObs", true, false, true) : undefined;
+			}
 			break;
         }
+		case "sort" : {
+			ret = arrayUtils ? arrayUtils(data, "sort", sort) : undefined;	
+			break;
+		}
         default: {
             Dberror.error(lyte,"LD07", type);
             break;
@@ -4786,15 +5262,6 @@ function defUtls(obj,def,ins,key){
 
 function defPar(arr){
     _defProp(arr, "partial", new Map());
-}
-
-function cmpSet(lyte, obj, key, value, opts, fromStore){
-    if(lyte && lyte.$utils && lyte.$utils.set){
-        lyte.$utils.set(obj, key, value, opts, fromStore);
-    }
-    else{
-        obj[key] = value;
-    }
 }
 
 function _defProp(scp, key, val, enume, write, conf){
@@ -4853,7 +5320,7 @@ function mergeResponse(db, data , schema , response , pK , partialObj, cPersist)
     if(mergeError(schema, data, response)){
         return;
     }
-    var isRec = db.cache.getEntity(data.$.schema.def, data.$.pK), 
+    var isRec = gE(db,data.$.schema.def, data.$.pK), 
 	dirtyId, 
 	mergeDone = false,
 	result;
@@ -4926,7 +5393,8 @@ function removeDirtyStack(data,partial){
 
 function mergeNewDataKeys(db, partialObj, data, response, cPersist){
     if(partialObj && ((data && data.partial && data.partial.size) || partialObj.partial == true)){ //true checked since partial key can come in this 
-        if(Array.isArray(partialObj)){				
+        if(Array.isArray(partialObj)){	
+			var rep = partialObj.replace?partialObj.replace:false;				
             partialObj.forEach(function(item, index){
                 if(item.$){
                     var pK = item.$.schema._pK;
@@ -4938,7 +5406,12 @@ function mergeNewDataKeys(db, partialObj, data, response, cPersist){
                         handleArrOp(db.lyte, data, "removeAt", undefined, ind, 1);
                     }
                     else{
-                        mergeNewDataKeys(db, item, ind != -1 ? data[ind] : undefined, response ? response[index] : undefined, cPersist);
+						if(rep && item.$.record && item.$.record.$.isNew){
+							rep = true;
+						}
+						else{
+							mergeNewDataKeys(db, item, ind != -1 ? data[ind] : undefined, response ? response[index] : undefined, cPersist);
+						}
 						data.partial ? data.partial.delete(item.$.pkVal) : undefined;
                     }
 					if(!item._removedAttr || (item._removedAttr && Object.keys(item._removedAttr).length)){
@@ -4955,7 +5428,7 @@ function mergeNewDataKeys(db, partialObj, data, response, cPersist){
 						}
 					});
 					toRemPart.forEach(function(rItm){
-						var rec = db.cache.getEntity(db.getSchema(data.schema._name), rItm) || db.cache.getEntity(db.getSchema(data.schema._name), rItm, true);
+						var rec = gE(db,db.getSchema(data.schema._name), rItm) || gE(db,db.getSchema(data.schema._name), rItm, true);
 						data.partial.delete(rItm);
 						rec ? removeParentNesting(rec) : undefined;
 					});	
@@ -4967,7 +5440,7 @@ function mergeNewDataKeys(db, partialObj, data, response, cPersist){
         if(partialObj.$.onlyDetach){ //only for belongsTo
 			var parent = partialObj.$.parent;
 			if(parent && parent.$.partial && parent.$.partial[partialObj.$.relKey] && parent.$.partial[partialObj.$.relKey].has(partialObj.$.pkVal) && parent.$.partial[partialObj.$.relKey].get(partialObj.$.pkVal).type == "removed"){                        
-				var rec = db.cache.getEntity(db.getSchema(partialObj.$.schema.__class), partialObj.$.pkVal) || store.peekRecord(partialObj.$.model, partialObj.$.pkVal, true);
+				var rec = gE(db,db.getSchema(partialObj.$.schema.__class), partialObj.$.pkVal) || store.peekRecord(partialObj.$.model, partialObj.$.pkVal, true);
 				parent.$.partial[partialObj.$.relKey].delete(partialObj.$.pkVal);
 				if(!parent.$.partial[partialObj.$.relKey].size){
 					delete parent.$.partial[partialObj.$.relKey];
@@ -5017,7 +5490,7 @@ function mergeError(schema, data, response){
 }
 
 function mergePartialObj(db, partialObj, data, response, doMerge, cPersist){
-    var prec = db.cache.getEntity(partialObj.$.schema.def, partialObj.$.pkVal), data = data || prec, isRec = prec ? true : false, mergeDone;
+    var prec = gE(db,partialObj.$.schema.def, partialObj.$.pkVal), data = data || prec, isRec = prec ? true : false, mergeDone;
     if(partialObj && partialObj.$ && partialObj.$.processed){
         return;
     }
@@ -5053,7 +5526,7 @@ function mergeNewRecord(db, partialObj, data, response, doMerge, cPersist){
 	pKeys = mdl._arrPk, 
 	oldPk = data.$.pK, 
 	lyte = db.lyte,
-	rec = db.cache.getEntity(mdl.def, oldPk), 
+	rec = gE(db,mdl.def, oldPk), 
 	result, 
 	partRec = partialObj.$ ? partialObj.$.entity : undefined;
 	if(isEntity(partRec) && partRec !== rec){
@@ -5065,7 +5538,7 @@ function mergeNewRecord(db, partialObj, data, response, doMerge, cPersist){
 		if(cPersist !== true){
 			pKeys.forEach(function(item){
 				if(!response || !response.hasOwnProperty(item)){
-					Dberror.error(lyte,"LD16", mdl._name, isEntity(data) ? (typeof data.$.pK == "object" ? JSON.stringify(data.$.pK) : data.$.pK) : undefined);
+					Dberror.error(db,"LD16", mdl._name, isEntity(data) ? (typeof data.$.pK == "object" ? JSON.stringify(data.$.pK) : data.$.pK) : undefined);
 					return;
 				}	
 				cmpSet(lyte, data, item, response[item], undefined, true);
@@ -5129,6 +5602,7 @@ function mergeModifiedRec(db, partialObj, data, response, doMerge, mergeDone, cP
 	}
 	cmpSet(lyte, data.$, "isModified", false);
 	changePersist(data, true);
+	deleteFromArray(data.$.schema.dirty , data.$.pK)
 	if(!data.$.dN || ( data.$.dN && Object.keys(data.$.dN).length == 0 )){
 		removeParentNesting(data);
 	}
@@ -5147,7 +5621,7 @@ function mergeDeletedRec(db, partialObj, data){
 	}
 	obj = schema._deleted.get(pkVal); 
 	var rec = obj ? obj.data : undefined;
-	var isRec = db.cache.getEntity(schema.def, pkVal);
+	var isRec = gE(db,schema.def, pkVal);
 	if(rec){
 		cmpSet(db.lyte, rec.$, "isDeleted", false);
 		cmpSet(db.lyte, rec.$, "isUnloaded", true);
@@ -5191,43 +5665,111 @@ function mergeDeletedRec(db, partialObj, data){
 	partialObj && partialObj.$ ? partialObj.$.processed = true : undefined;
 }
 
-function changeRelPkMaps(data, oldPk, newPk){
+function changeRelPkMaps(data, oldPk, newPk, type, changedField){
 	var schema = data.$.schema,
 	db = schema.db,
+	lyte = db.lyte,
 	relations = schema.relations;
 	relations.forEach(function(rels, key){
-		rels.forEach(function(itm){
+		var relsLen = rels.length;
+		for(var i=0; i<relsLen; i++){
+			var itm = rels[i];
 			var attr = itm.relKey, relType = itm.relType, inv;
 			if(data.hasOwnProperty(attr)){
 				var relRec = data[attr],
-				bMod = getSchemaObj(db, itm.relatedTo), inv;
+				bMod = getSchemaObj(db, itm.relatedTo), 
+				inv, 
+				isSortDef;
 				if(bMod){
 					inv = getBackwardRel(schema,itm,bMod);
 					if(inv && inv.relType == "hasMany"){
+						isSortDef = inv.opts && inv.opts.sort && inv.opts.sort.sortFn && inv.opts.sort.observes;
 						if(relType == "belongsTo" && isEntity(relRec)){
-							relRec[inv.relKey] && relRec[inv.relKey]._recMap && relRec[inv.relKey]._recMap.delete(oldPk) ? relRec[inv.relKey]._recMap.set(newPk, data) : undefined;
+							switch(type){
+								case "sort":
+								case "srtObsChk": {
+									if(relRec && Array.isArray(relRec[inv.relKey])){
+										if(type == "sort"){
+											if(isSortDef && inv.opts.sort.observes.indexOf(changedField) != -1){
+												handleArrOp(lyte, relRec[inv.relKey], "sort");
+											}
+										}
+										else if(changedField !== inv.relKey){
+											return true;
+										}
+									}
+									break;
+								}
+								default: {
+									relRec[inv.relKey] && relRec[inv.relKey]._recMap && relRec[inv.relKey]._recMap.delete(oldPk) ? relRec[inv.relKey]._recMap.set(newPk, data) : undefined;
+								}
+							}
 						}
 						else if(relType == "hasMany" && Array.isArray(relRec)){
-							relRec.forEach(function(rec){
-								isEntity(rec) && rec[inv.relKey] && rec[inv.relKey]._recMap && rec[inv.relKey]._recMap.delete(oldPk) ? rec[inv.relKey]._recMap.set(newPk, data) : undefined;
-							});
+							var relRecLen = relRec.length;
+							for(var l=0;l<relRecLen;l++){
+								var rec = relRec[l];
+								switch(type){
+									case "sort":
+									case "srtObsChk": {
+										if(rec && Array.isArray(rec[inv.relKey])){
+											if(type == "sort"){
+												if(isSortDef && inv.opts.sort.observes.indexOf(changedField) != -1){
+													handleArrOp(lyte, rec[inv.relKey], "sort");
+												}
+											}
+											else if(changedField !== inv.relKey){
+												return true;
+											}
+										}
+										break;
+									}
+									default: {
+										isEntity(rec) && rec[inv.relKey] && rec[inv.relKey]._recMap && rec[inv.relKey]._recMap.delete(oldPk) ? rec[inv.relKey]._recMap.set(newPk, data) : undefined;
+									}
+								}
+							}
 						}
 					}
 				}
 			}
-		});
+		}
 	});
+
 	var _rels = data.$._relationships;
 	for(var md in _rels){
 		var mdObj = _rels[md];
+		var mdlIns = getSchemaObj(db, db.getSchema(md));
 		for(var attr in mdObj){
 			var arr = mdObj[attr];
-			arr.forEach(function(rec){
+			var fldObj = mdlIns.fieldList[attr];
+			var isSortDef = fldObj.opts && fldObj.opts.sort && fldObj.opts.sort.sortFn && fldObj.opts.sort.observes;
+			var arrLen = arr.length;
+			for(var j=0; j<arrLen; j++){
+				var rec = arr[j];
 				var relData = rec[attr];
 				if(Array.isArray(relData)){
-					relData._recMap && relData._recMap.delete(oldPk) ? relData._recMap.set(newPk, data) : undefined;
+					switch(type){
+						case "sort":
+						case "srtObsChk": {
+							if(Array.isArray(relData)){
+								if(type == "sort"){
+									if(isSortDef && fldObj.opts.sort.observes.indexOf(changedField) != -1){
+										handleArrOp(lyte, relData, "sort");
+									}
+								}
+								else if(changedField !== fldObj.relKey){
+									return true;
+								}
+							}
+							break;		
+						}
+						default : {
+							relData._recMap && relData._recMap.delete(oldPk) ? relData._recMap.set(newPk, data) : undefined;
+						}
+					}
 				}
-			});
+			}
 		}
 	}
 }
@@ -5264,194 +5806,287 @@ function getDsrzEmpData(schema, field){
 	return false;
 }
 
-// function defpayObjUtls(obj){
-// 	Object.defineProperties(obj,{
-// 		set:{
-// 			value: payloadSet
-// 		},
-// 		remove:{
-// 			value: payloadRemove
-// 		}
-// 	})
-// }
+function defpayObjUtls(db,scope){
+	Object.defineProperties(scope,{
+		set:{
+			value: payloadSet.bind({db,scope})
+		},
+		remove:{
+			value: payloadRemove.bind({db,scope})
+		}
+	})
+}
 
-// function defPayArrUtls(obj){
-// 	Object.defineProperties(obj,{
-// 		add : {
-// 			value : payloadAdd
-// 		},
-// 		remove : {
-// 			value : payloadRemove
-// 		}
-// 	})
-// }
+function defPayArrUtls(db,scope){
+	Object.defineProperties(scope,{
+		add : {
+			value : payloadAdd.bind({db,scope})
+		},
+		remove : {
+			value : payloadRemove.bind({db,scope})
+		}
+	})
+}
 
-// function payloadAdd(key,index){
-// 	if(!Array.isArray(key)){
-// 		key=[key];
-// 	}
-// 	var def = this._schema, db = def.db, partObj=this._partialObj, payload=this._payloadObj;
-// 	for(var i =0 ; i<key.length; i++){
-// 		var record = db.cache.getEntity({schema:def, pK:key[i]}), partial={};
-// 		_defProp(partial, "$", {});
-// 		var nPartial = 	partial.$;
-// 		Object.defineProperties(nPartial,{
-// 			pkVal : {
-// 				value : record.$.pK
-// 			},
-// 			type : {
-// 				value : "related"
-// 			},
-// 			schema : {
-// 				value : def
-// 			},
-// 			record : {
-// 				value : record
-// 			}
-// 		});
-// 		var _pk = typeof(record.$.pK) == "object" ? record.$.pK : { [record.$.model._pK] : record.$.pK };
-// 		if(index){
-// 			Lyte.arrayUtils(partObj,"insertAt",index,partial);
-// 			Lyte.arrayUtils(payload,"insertAt",index,_pK);
-// 			index=index++;
-// 		}
-// 		else{
-// 			Lyte.arrayUtils(partObj,"push",partial);
-// 			Lyte.arrayUtils(payload,"push",_pk);
-// 		}
-// 		store.$.defProp(_pk, "$", {});
-// 		store.$.defpayObjUtls(_pk.$);
-// 		Object.defineProperties(_pk.$,{
-// 			_pkVal : {
-// 				value : record.$.pK
-// 			},
-// 			_model : {
-// 				value : modelName
-// 			},
-// 			_partialObj : {
-// 				value : partial
-// 			},
-// 			_payloadObj:{
-// 				value:_pk
-// 			}
-// 		});
-// 	}
-// }
+function payloadAdd(key,index){
+	if(!Array.isArray(key)){
+		key=[key];
+	}
+	var schemaName = this.scope._schema,partObj=this.scope._partialObj,payload=this.scope._payloadObj;
+	var def = this.db.getSchema(schemaName);
+	var field = {opts : { serialize : this.scope._serialize}};
+	var _pk = {} , partial={};
+	for(var i =0 ; i<key.length; i++){
+		if(partObj._removedRecords && partObj._removedRecords.hasOwnProperty(key[i])){
+			delete partObj._removedRecords[key[i]];
+			_pk = partObj._removedRecords[key[i]]._payload;
+			partial = partObj._removedRecords[key[i]]._partial;
+		}
+		else{
+			var record=gE(this.db,def,key[i]);
+			var data = PayloadSerialize(this.db,field,_pk,record,undefined,getSchemaObj(this.db,def),partial)
+			_pk = data.payload;
+			partial= data.partial;
+		}
+		if(!this.scope.partRecMap.get(key[i])){
+			if( index != undefined && typeof index == "number"){
+				this.db.lyte.arrayUtils(partObj,"insertAt",index,partial);
+				this.db.lyte.arrayUtils(payload,"insertAt",index,_pK);
+				index=index++;
+			}
+			else{
+				this.db.lyte.arrayUtils(partObj,"push",partial);
+				this.db.lyte.arrayUtils(payload,"push",_pk);
+			}
+			this.scope.partRecMap.set(key[i],true);
+		}
+	}
+}
+function payloadRemove(key){
+	var modelName = this.scope._schema,partObj=this.scope._partialObj,payload=this.scope._payloadObj;
+	if(!Array.isArray(key)){
+		key=[key];
+	}
+	for(var j =0; j<key.length; j++){
+		if(Array.isArray(payload)){
+			var len=payload.length;
+			if(this.scope._serialize && this.scope._serialize == "id"){
+				if(payload.includes(key[j])){
+					var _index = payload.indexOf(key[j]);
+					payload.splice(_index,1);
+				}
+			}
+			else{
+				for(var i =0; i<len; i++){
+					if(partObj[i] && partObj[i].$.pkVal == key[j]){
+						!partObj.hasOwnProperty("_removedRecords") ? Object.defineProperties(partObj,{ _removedRecords :{ value : { [partObj[i].$.pkVal] :{ _partial:partObj[i] , _payload : payload[i]} } } } ):partObj._removedRecords[partObj[i].$.pkVal] = { _partial:partObj[i] , _payload : payload[i]};
+						this.db.lyte.arrayUtils(partObj,"removeAt",i,1);
+						this.db.lyte.arrayUtils(payload,"removeAt",i,1);
+						this.scope.partRecMap.delete(key[j]);
+					}
+				}
+			}
+		}
+		else{
+			if(payload[key[j]]){
+				partObj.hasOwnProperty("_removedAttr") && !partObj._removedAttr.hasOwnProperty(key[j])? partObj._removedAttr[key[j]]={ _partial:partObj[key[j]] , _payload : payload[key[j]]} : !partObj.hasOwnProperty("_removedAttr") ? Object.defineProperties(partObj,{ _removedAttr : { value : { _partial:partObj[key[j]] , _payload : payload[key[j]]} } }):undefined;
+				if(partObj[key[j]]){
+					partObj._removedAttr[key[j]]._partial = partObj[key[j]];
+					this.db.lyte.objectUtils(partObj,"delete",key[j]);
+				}
+				this.db.lyte.objectUtils(payload,"delete",key[j]);
+			}
+		}
+	}
+}
+function payloadSet(fkey){
+	if(!Array.isArray(fkey)){
+		fkey=[fkey];
+	}
+	var schemaName=this.scope._schema,pk=this.scope._pkVal,payload=this.scope._payloadObj , def = this.db.getSchema(schemaName);
+	var record = gE(this.db, def, pk), partial=this.scope._partialObj , model=getSchemaObj(this.db,def);
+	for(var i_key=0; i_key<fkey.length; i_key++){
+		var key = fkey[i_key];
+		if(!this.scope._payloadObj[key]){
+			if(partial.hasOwnProperty("_removedAttr")){
+				if(partial._removedAttr.hasOwnProperty(key) && partial._removedAttr[key] != true){
+					payload[key]=partial._removedAttr[key]._payload;
+					if(partial._removedAttr[key]._partial){
+						partial[key] = partial._removedAttr[key]._partial;
+					}
+					this.db.lyte.objectUtils(partial._removedAttr,"delete",key);
+					return;
+				}
+			}
+			var field = model.fieldList[key];
+			if(record[key] && field.type == "relation"){
+				if(field.relType == "hasMany"){
+					partial[key]=[];
+					payload[key]=[];
+					if(field.opts && field.opts.serialize=="id"){
+						payLoadIdSerialize(this.db,payload,key,record,model,field,partial)
+					}
+					_defProp(payload[key], "$", {});
+					defPayArrUtls(this.db,payload[key].$);
+					Object.defineProperties(payload[key].$,{
+						_key:{
+							value:field.relKey
+						},
+						_partialObj:{
+							value:partial[key]
+						},
+						_schema:{
+							value:field.relatedTo._name
+						},
+						_payloadObj:{
+							value:payload[key]
+						},
+						replace:{
+							value:replaceCheck,
+							writable:true
+						},
+						partRecMap : {
+							value: new Map()
+						}
+					})
+					if(field.opts && field.opts.serialize && !payload[key].$.serialize){
+						Object.defineProperty(payload[key].$,"_serialize",{
+							value : field.opts.serialize
+						})
+					}
+					if(field.opts && field.opts.serialize!="id" || !field.opts){
+						if(field.opts.serialize == "record"){
+							for(i=0; i<record[key].length; i++){
+								payload[key].$.add(record[key][i].$.pK);
+							}
+						}
+						if(field.opts.serialize=="partial"){
+							var dirtyRecords = record[key].partial;
+							dirtyRecords.forEach(function(value,pk){
+								payload[key].$.add(pk);
+							})
+						}
+					}
+				}
+				else{
+					partial[key]={};
+					payload[key]={};
+					var data = PayloadSerialize(this.db,field,payload[key],record[key],key,getSchemaObj(this.db,field.relatedTo),partial[key]);
+					payload[key]=data.payload
+					partial[key]=data.partial
+				}
+			}
+			else{
+				payload[key]=record[key];
+				partial[key]=record[key];
+			}
+		}
 
-// function payloadRemove(key){
-// 	var def = this._schema, 
-// 	partObj=this._partialObj, 
-// 	payload=this._payloadObj;
-// 	if(!Array.isArray(key)){
-// 		key=[key];
-// 	}
-// 	for(var j =0; j<key.length; j++){
-// 		if(Array.isArray(payload)){
-// 			var len = payload.length;
-// 			for(var i =0; i<len; i++){
-// 				if(partObj[i].$.pkVal == key){
-// 					partObj.splice(i, 1);
-// 					payload.splice(i, 1);
-// 					// Lyte.arrayUtils(partObj,"removeAt",i,1);
-// 					// Lyte.arrayUtils(payload,"removeAt",i,1);
-// 				}
-// 			}
-// 		}
-// 		else{
-// 			if(payload[key] && partObj[key]){
-// 				delete payload[key[j]];
-// 				delete partObj[key[j]];
-// 				// Lyte.objectUtils(payload,"delete",key[j]);
-// 				// Lyte.objectUtils(partObj,"delete",key[j]);
-// 			}
-// 		}
-// 	}
-// }
-
-// function payloadSet(fkey){
-// 	if(!Array.isArray(fkey)){
-// 		fkey=[fkey];
-// 	}
-// 	var def = this._schema, db = def.db, pk = this._pkVal, payload = this._payloadObj;
-// 	var record = db.cache.getEntity({schema:def.def,pK:pk}), partial=this._partialObj;
-// 	for(i_key=0; i_key<fkey.length; i_key++){
-// 		var key = fkey[i_key];
-// 		var field = def.fieldList[key];
-// 		if(record[key] && field.type == "relation"){
-// 			if(field.relType == "hasMany"){
-// 				partial[key]=[];
-// 				payload[key]=[];
-// 				_defProp(payload[key], "$", {});
-// 				defPayArrUtls(payload[key].$);
-// 				Object.defineProperties(payload[key].$,{
-// 					_key:{
-// 						value:field.relKey
-// 					},
-// 					_partialObj:{
-// 						value:partial[key]
-// 					},
-// 					_schema:{
-// 						value:field.relatedTo
-// 					},
-// 					_payloadObj:{
-// 						value:payload[key]
-// 					},
-// 					// replace:{
-// 					// 	value:store.$.replaceCheck,
-// 					// 	writable:true
-// 					// }
-// 				})
-// 				for(i=0; i<record[key].length; i++){
-// 					payload[key].$.add(record[key][i].$.pK);
-// 				}
-// 			}
-// 			else{
-// 				partial[key]={};
-// 				payload[key]={};
-// 				payload[key]=typeof record[key].$.pK =="object" ? record[key].$.pK:{[record[key].$.model._pK]:record[key].$.pK};
-// 				_defProp(partial[key], "$", {});
-// 				var nPartial = 	partial[key].$;
-// 				Object.defineProperties(nPartial,{
-// 					pkVal : {
-// 						value : record.$.pK
-// 					},
-// 					type : {
-// 						value : "related"
-// 					},
-// 					schema : {
-// 						value : def
-// 					},
-// 					record : {
-// 						value : record[key]
-// 					}
-// 				});
-// 				_defProp(payload[key], "$", {});
-// 				Object.defineProperties(payload[key].$,{
-// 					_pkVal : {
-// 						value : record[key].$.pK
-// 					},
-// 					_schema : {
-// 						value : field.relatedTo
-// 					},
-// 					_partialObj : {
-// 						value : partial[key]
-// 					},
-// 					_payloadObj:{
-// 						value:payload[key]
-// 					}
-// 				});
-// 				defpayObjUtls(payload[key].$);
-// 			}
-// 		}
-// 		else{
-// 			payload[key]=record[key];
-// 			partial[key]=record[key];
-// 		}
-// 	}
-// }
-
-// function replaceCheck(bool){
-// 	store.$.defProp(this._partialObj,"replace",bool)
-// }
-
-export { evAdd,evRemove,evEmit,addTo_Del,genUnRedoStack,deepCopyStack,deepCopyAttrs,unredoOp,unregisterDef,updateFieldValidation,handleCachedResponse,addToCachedBatch,checkObjAndAddToArr,addToRelate,getDefaultVal,deepValueChange,updateDn,deepRelIter,deepRelOptions,handleResults,handleResponse,setState,validateRelatedRecord,validateRecord,validateField,addOnSave,removeOnSave,registerField,unRegCb,extendDef,demoLishObserverBindings,establishObsBindings,isEmpty,isEmptyObj,isEmptyArray,compareObjects,setData,changeCallbck,setValue,estAttrs,checkAttrs,checkForCorrectRelation,partialData,removeDeepNest,addDeepNest,makeDirty,setDeepNest,deleteDeepNest,getRelatedRecord,removeParentNesting,cmpRelInitVal,_attrsForRel,establishToRelated,add,remove,filter,filterBy,checkAndAddToArray,deleteFromArray,genPk,generateRandomPk,isDuplicateRecord,pkPresence,updateJSON,isDirty,isRelDirty,polymorphicToJSON,polyToJSON,removeBackwardRel,checkPresenceInArray,idbSerialize,idSerialize,recordSerialize,rSerialize,partialSerialize,removeSelfCircularReference,getpKVal,toJSONObj,toJSON,createCopy,initPartialObj,recChk,initCB,cB,cbScp,getFromCB,comparePk,newRecord,getIndex,getCompInd,getInd,isDuplicateEntity,compareRecords,hasRecordInArray,hasDuplicateRelation,toInsertData,insertIntoStore,validateAndPush,validateJSON,handleRelation,getRelations,getBackwardRel,solveRelation,createAndRelate,singleEstablishLink,establishLink,removeFromStore,toDemolishRelation,toDemolishLink,demolishSingleRelation,demolishLink,validateAndMerge,mergeData,mergeRecords,compareRelations,compareRecordWithObj,rllBckRecArr,sortBy,mapBy,revertToOldVal,removePartial,rollBackDelete,rollBackNew,emit,hasRecordsArrayChanged,cacheQuery,cacheRecordQuery,isDefData,handleArrOp,defArrUtls,defPolyUtls,defUtls,defPar,cmpSet,_defProp,removePartialKeys,mergeResponse,removeDirtyStack,mergeNewDataKeys,mergeError,mergePartialObj,mergeNewRecord,mergeModifiedRec,mergeDeletedRec,changeRelPkMaps,updateNestScp, compareData, schArgs, dbModName, getSchemaObj, changePersist};
+	}
+}
+function payLoadIdSerialize(db,payload,key,record,model,field,partial){
+	var rel={};
+	payload[key] = deepCopyObject(record[key]);
+	getRelations(db,model,key,getSchemaObj(db,field.relatedTo),rel);
+	idSerialize(db,payload,rel,undefined,partial);
+}
+function PayloadSerialize(db,field,payload,record,key,model,partial){
+	var getPayloadData=typeof record.$.pK =="object" ? record.$.pK:{[record.$.schema._pK]:record.$.pK};
+	var mdl = model;
+	var data, part, isModifiedFlag = false;
+	if(field.opts && field.opts.serialize){
+		part =  initPartialObj(model._name);
+		if(field.opts.serialize == "record"){
+			getPayloadData = toJSON(db,model._name,record,undefined,undefined,part);
+		}
+		if(field.opts.serialize == "partial"){
+			var dirty = isDirty(db,record,mdl.relations);
+			var rec = record;
+			if(rec.$.isModified ||(dirty && dirty.length)){
+				data = updateJSON(db,rec,mdl,dirty);
+				getPayloadData = toJSON(db,model._name,data,undefined,undefined,part)
+				isModifiedFlag = true;
+			}
+			else{
+				part.obj.set( record.$.pK , partial)
+			}
+		}
+		partial = part.obj.get( record.$.pK ) || partial;
+		var partobj ={
+			pkVal : {
+				value : record.$.pK
+			},
+			type : {
+				value : "related"
+			},
+			schema : {
+				value : mdl
+			},
+			record : {
+				value : record[key] || record
+			}
+		}
+		if(isModifiedFlag == true){
+			partobj.type.value="modified"
+		}
+		if(getPayloadData){
+			var argObj = {
+				entityData : getPayloadData,
+				cachedData : record
+			}
+			payload = Serializer.serializeRecords(db,model._name,getPayloadData,record,undefined,"serializeEntity",undefined,argObj,part.obj)
+		}
+		if(field.opts && field.opts.serialize == "id"){
+			getPayloadData=record.$.pK
+		}
+		if(typeof payload == "object"){
+			if(partial && !partial.$){
+				_defProp(partial, "$", {});
+			}
+			var nPartial = 	partial.$;
+			Object.defineProperties(nPartial,partobj);
+			if(field.opts && field.opts.serialize && payload.$ && !payload.$._serialize && field.relType == "belongsTo"){
+				Object.defineProperty(payload.$,"_serialize",{
+					value : field.opts.serialize
+				})
+			}
+		}
+		var data = {
+			"payload": payload,
+			"partial": partial
+		}
+		return data;
+	}
+}
+function replaceCheck(bool){
+	_defProp(this._partialObj,"replace",bool)
+}
+function savingDonorRecord(scope){
+	var donor = scope.donor, dirtAttr = scope.getDirtyProps() , relDirty = isDirty(scope.db,scope.entity,scope.schema.relations);
+	if(relDirty.length || dirtAttr.length){
+		var state = scope.toJSON("state");
+		setData(donor.$,state, undefined , undefined , undefined , undefined , true);
+		scope.persist();
+	}
+	return donor.$;
+}
+function requestIdGenerator ( name , type , db){
+	var id = Math.floor(Math.random() * 90000000).toString();
+	//@Slicer.developmentStart
+	//console.log("%c" + (name ? name+" > "+type+" > "+id : type+" > "+id),'color:Cyan')
+	//db.lyte.log((name ? name+" > "+type+" > "+id : type+" > "+id) , "db" , "Cyan")
+	db.lyte.log("["+id+"] "+ type +" of " + name, "db", "Cyan") ; 
+	//@Slicer.developmentEnd
+	return id;
+}
+function PerfomanceLog(lyte,reqId,type,name){
+	if(lyte.config){
+		if(lyte.config.performance){
+			lyte.time("["+reqId+"]" + type + " of " + name);
+		}
+		else if(lyte.config.debug){
+			lyte.log( "["+reqId+"]" + type + " of " + name );
+		}
+	}
+}
+export { gE, replaceCheck , defPayArrUtls, defpayObjUtls,evAdd,evRemove,evEmit,addTo_Del,genUnRedoStack,deepCopyStack,deepCopyAttrs,unredoOp,unregisterDef,updateFieldValidation,handleCachedResponse,addToCachedBatch,checkObjAndAddToArr,addToRelate,getDefaultVal,deepValueChange,updateDn,deepRelIter,deepRelOptions,handleResults,handleResponse,setState,validateRelatedRecord,validateRecord,validateField,addOnSave,removeOnSave,registerField,unRegCb,extendDef,demoLishObserverBindings,establishObsBindings,isEmpty,isEmptyObj,isEmptyArray,compareObjects,setData,changeCallbck,setValue,estAttrs,checkAttrs,checkForCorrectRelation,partialData,removeDeepNest,addDeepNest,makeDirty,setDeepNest,deleteDeepNest,getRelatedRecord,removeParentNesting,cmpRelInitVal,_attrsForRel,establishToRelated,add,remove,filter,filterBy,checkAndAddToArray,deleteFromArray,genPk,generateRandomPk,isDuplicateRecord,pkPresence,updateJSON,isDirty,isRelDirty,polymorphicToJSON,polyToJSON,removeBackwardRel,checkPresenceInArray,idbSerialize,idSerialize,recordSerialize,rSerialize,partialSerialize,removeSelfCircularReference,getpKVal,toJSONObj,toJSON,createCopy,initPartialObj,recChk,initCB,cB,cbScp,getFromCB,comparePk,newRecord,getIndex,getCompInd,getInd,isDuplicateEntity,compareRecords,hasRecordInArray,hasDuplicateRelation,toInsertData,insertIntoStore,validateAndPush,validateJSON,handleRelation,getRelations,getBackwardRel,solveRelation,createAndRelate,singleEstablishLink,establishLink,removeFromStore,toDemolishRelation,toDemolishLink,demolishSingleRelation,demolishLink,validateAndMerge,mergeData,mergeRecords,compareRelations,compareRecordWithObj,rllBckRecArr,sortBy,mapBy,revertToOldVal,removePartial,rollBackDelete,rollBackNew,emit,hasRecordsArrayChanged,cacheQuery,cacheRecordQuery,isDefData,handleArrOp,defArrUtls,defPolyUtls,defUtls,defPar,_defProp,removePartialKeys,mergeResponse,removeDirtyStack,mergeNewDataKeys,mergeError,mergePartialObj,mergeNewRecord,mergeModifiedRec,mergeDeletedRec,changeRelPkMaps,updateNestScp, compareData, schArgs, dbModName, getSchemaObj, changePersist , removeChildRecords , rBinherit , toChildJSON , savingDonorRecord , requestIdGenerator,PerfomanceLog};

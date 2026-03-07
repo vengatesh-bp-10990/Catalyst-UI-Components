@@ -1,5 +1,5 @@
 import { Connector } from "./Connector";
-import { getFromCB, initCB, addToCachedBatch, cbScp, cB, initPartialObj, toJSON, compareData, dbModName } from "./utils.js";
+import { getFromCB, initCB, addToCachedBatch, cbScp, cB, initPartialObj, toJSON, compareData, gE } from "./utils.js";
 import { GraphqlSerializer } from "./GraphqlSerializer";
 import { graphQlconfig, cpdGql } from "./gqlUtils";
 /*convert to custom class*/
@@ -181,7 +181,7 @@ class GraphqlConnector extends Connector {
                 if(scope){
                     var data;
                     if(key !== undefined){
-                        data = db.cache.getEntity(mdl.def,key);							
+                        data = gE(db,mdl.def,key);							
                     }
                     else{
                         data = db.cache.getAll(mdl.def);
@@ -303,7 +303,7 @@ class GraphqlConnector extends Connector {
         qP = urlObj.qP;
         var partial = initPartialObj(db, name, type, qP, undefined, urlObj.url, customData, argsObj);
         var changedData = toJSON(db, name, data, undefined, "create", partial);
-        GraphqlSerializer.sendingData(db, name, changedData, urlObj, type, customData, data, argsObj);
+        GraphqlSerializer.sendingData(db, name, changedData, urlObj, type, customData, data, argsObj,partial.obj);
         cpdGql(db,def,type,qP,mutationName,createdVariables,urlObj,changedData,customData,argsObj);
         return this.handleRequest(db, urlObj, name, data, type, changedData, customData, partial.obj, undefined, undefined, partial.ref, argsObj);
     }
@@ -328,7 +328,7 @@ class GraphqlConnector extends Connector {
         qP = urlObj.qP;
         var partial = initPartialObj(db, name, type, qP, key, urlObj.url, customData, argsObj);
         var updatedData = toJSON(db, name, data, undefined, undefined, partial);
-        GraphqlSerializer.sendingData(db, name, updatedData, urlObj, type, customData, record, argsObj);
+        GraphqlSerializer.sendingData(db, name, updatedData, urlObj, type, customData, record, argsObj,partial.obj);
         cpdGql(db,def,type,qP,mutationName,createdVariables,urlObj,updatedData,customData,argsObj);
         return this.handleRequest(db, urlObj, name, record, type, updatedData, customData, partial.obj,key, undefined, partial.ref, argsObj);
     }
@@ -358,7 +358,7 @@ class GraphqlConnector extends Connector {
             });				
         }
         var pkVal = (isSingleRecord) ?  (data ? data.$.pK : undefined) : ids;
-        def.serializer.constructor.sendingData(db, name, pkVal, urlObj, type, customData, data, argsObj);
+        def.serializer.constructor.sendingData(db, name, pkVal, urlObj, type, customData, data, argsObj,partial.obj);
         cpdGql(db,def,type,qP,mutationName,createdVariables,urlObj,pkVal,customData,argsObj);
         return this.handleRequest(db, urlObj, name, data, type, pkVal, customData, undefined, key, undefined, undefined, argsObj);
     }

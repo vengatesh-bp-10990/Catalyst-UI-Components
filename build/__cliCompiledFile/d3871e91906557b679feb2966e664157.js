@@ -7,8 +7,14 @@ class Directive extends Service {
     static register(compName, options){
         var _registryClass = _LC.getRegistryClass(options);
         if(!_registryClass){
-            Lyte.error("registry class for the directive '"+compName+"' not registered with Lyte")
+            _LC.directive._pendingDirectives.push({
+                compClass : this,
+                compName : compName,
+                options : options
+            });
             return;
+            // Lyte.error("registry class for the directive '"+compName+"' not registered with Lyte")
+            // return;
         }
         this._refHash = options.refHash;
         compName = compName || _LC.String.dasherize(this.name);
@@ -31,7 +37,7 @@ _LC.directive.appendHooks = function(state,comp,domAppendedFirstTime,initial,dep
     if(comp._transitionAppend && comp._transitionAppend.length){
         comp._transitionAppend.forEach(function(node){
             node._specialAttributeDetails.forEach(function(attr){
-                if(comp.$component._defaultDirectives.indexOf(attr.hookName) != -1){
+                if(comp.$registry._defaultDirectives.indexOf(attr.hookName) != -1){
                     if(node._defaultDirectives){
                         node._defaultDirectives.push(attr.hookName)
                     }else{
@@ -39,17 +45,27 @@ _LC.directive.appendHooks = function(state,comp,domAppendedFirstTime,initial,dep
                     }
                     return;
                 }
-                else if(comp.$component.registeredDirectives.indexOf(attr.hookName) == -1){
-                    Lyte.warn("Directive names "+attr.hookName+" not found in the registry" + comp.$component.name);
+                else if(comp.$registry.registeredDirectives.indexOf(attr.hookName) == -1){
+                    Lyte.warn("Directive names "+attr.hookName+" not found in the registry - " + comp.$registry.constructor.name);
                     return;
                 }
                 if(!node._directiveIns){
                     let dIns;
-                    let lIns = _LC.getAppOrAddon(comp.$component);
-                    let directiveClass = comp.$component._registeredDirectivesClass[attr.hookName];
+                    let lIns = _LC.getAppOrAddon(comp.$registry);
+                    let directiveClass = comp.$registry._registeredDirectivesClass[attr.hookName];
                     lIns.scopedInstance(directiveClass,[],function(ins){
                         dIns = ins
                     },[])
+                    if(dIns.onConfigChange){
+                        let config = _LC.directive.getTransitionArg(node,attr.hookName);
+                        dIns.config = config;
+                        let obj = {
+                            type : "init",
+                            oldValue : null,
+                            newValue : config
+                        }
+                        dIns.onConfigChange.apply(dIns,[obj])
+                    }
                     node._directiveIns = dIns;
                 }
                 var directiveIns = node._directiveIns;
@@ -95,14 +111,14 @@ _LC.directive.removeHooks = function(state,comp,content,node,ownpromise,chld,sib
     var self = this;
     if(content._specialAttributeDetails && content._specialAttributeDetails.length){
     content._specialAttributeDetails.forEach(function(attr){
-        if(comp.$component.registeredDirectives.indexOf(attr.hookName) == -1){
-            Lyte.warn("Directive names "+attr.hookName+" not found in the registry" + comp.$component.name);
+        if(comp.$registry.registeredDirectives.indexOf(attr.hookName) == -1){
+            Lyte.warn("Directive names "+attr.hookName+" not found in the registry" + comp.$registry.constructor.name);
             return;
         }
         if(!content._directiveIns){
             let dIns;
-            let lIns = _LC.getAppOrAddon(comp.$component);
-            let directiveClass = comp.$component._registeredDirectivesClass[attr.hookName];
+            let lIns = _LC.getAppOrAddon(comp.$registry);
+            let directiveClass = comp.$registry._registeredDirectivesClass[attr.hookName];
             lIns.scopedInstance(directiveClass,[],function(ins){
                 dIns = ins
             },[])
@@ -192,41 +208,41 @@ _LC.directive.removeHooksCall = function(state,comp,ev,attr,content){
         transIns[state].call(transIns,ev);
     }
 }
-_LC.directive.setSpecialNodes = function(comp,helperNode,dynamicN,info,options){
-    if(helperNode && (helperNode._hooksPresent || helperNode._defaultSetSpecialNode)){
-        if(helperNode._specialNodes){
-            if(helperNode.getAttribute("is") == "for"){
-                helperNode._specialNodes[options.itemIndex][info.in] = dynamicN;
-            }else if(helperNode.getAttribute("is") == "forIn"){
-                helperNode._specialNodes[options.itemIndex][info.in] = dynamicN;
-            }
-            else if(helperNode && /if|switch/g.test(helperNode.getAttribute("is"))){
-                helperNode._specialNodes[info.in] = dynamicN;  
-            }
-            else if(helperNode && helperNode.tagName == "LYTE-YIELD"){
-                helperNode._specialNodes[info.in] = dynamicN;
-            }
-        }
-    }else if(dynamicN && dynamicN._hooksPresent){
-        comp._specialNodes[info.in] = dynamicN;
-        comp._hooksPresent = true;
-        comp.hc = true;
-    }else if(dynamicN && dynamicN._defaultSetSpecialNode){
-        comp._specialNodes[info.in] = dynamicN;
-        comp._defaultSetSpecialNode = true;
-    }
-    if(info.chld){
-        dynamicN._chld = info.chld;
-    }
-    if(info.dc){
-        dynamicN.dc = info.dc;
-        dynamicN.hc = info.hc;
-    }
-    if(info.sibl){
-        dynamicN._sibl = info.sibl;
-    }
-}
-_LC.directive.removeFromDom = function(content){
+// _LC.directive.setSpecialNodes = function(comp,helperNode,dynamicN,info,options){
+//     if(helperNode && (helperNode._hooksPresent || helperNode._defaultSetSpecialNode)){
+//         if(helperNode._specialNodes){
+//             if(helperNode.getAttribute("is") == "for"){
+//                 helperNode._specialNodes[options.itemIndex][info.in] = dynamicN;
+//             }else if(helperNode.getAttribute("is") == "forIn"){
+//                 helperNode._specialNodes[options.itemIndex][info.in] = dynamicN;
+//             }
+//             else if(helperNode && /if|switch/g.test(helperNode.getAttribute("is"))){
+//                 helperNode._specialNodes[info.in] = dynamicN;  
+//             }
+//             else if(helperNode && helperNode.tagName == "LYTE-YIELD"){
+//                 helperNode._specialNodes[info.in] = dynamicN;
+//             }
+//         }
+//     }else if(dynamicN && dynamicN._hooksPresent){
+//         comp._specialNodes[info.in] = dynamicN;
+//         comp._hooksPresent = true;
+//         comp.hc = true;
+//     }else if(dynamicN && dynamicN._defaultSetSpecialNode){
+//         comp._specialNodes[info.in] = dynamicN;
+//         comp._defaultSetSpecialNode = true;
+//     }
+//     if(info.chld){
+//         dynamicN._chld = info.chld;
+//     }
+//     if(info.dc){
+//         dynamicN.dc = info.dc;
+//         dynamicN.hc = info.hc;
+//     }
+//     if(info.sibl){
+//         dynamicN._sibl = info.sibl;
+//     }
+// }
+_LC.directive.removeFromDom = function(content) {
     if(Array.isArray(content)){
         for(let s=0;s<content.length; s++ ) {
             if(Array.isArray(content[s])){
@@ -599,7 +615,7 @@ _LC.directive.getSiblTransition = function(hookNodes,j,sibl,pnode,parentPrev){
             let node = hookNodes[indNew];
             if(node){
                 if(node.tagName == "TEMPLATE" && node.hc && node._childPromise){
-                    if(!node._childPromise.length){
+                    if(node._childPromise && !node._childPromise.length){
                         this.getNxtSiblTrans(node,pnode,sibl,hookNodes);
                     }else if(sibl && node._childPromise && node._childPromise.length){
                         let ln = node._childPromise.length;
@@ -609,7 +625,7 @@ _LC.directive.getSiblTransition = function(hookNodes,j,sibl,pnode,parentPrev){
                     sibl.$push(node._ownPromise);
                 }
                 else if(sibl && node.component && node._childPromise){
-                    if(!node._childPromise.length){
+                    if(node._childPromise && !node._childPromise.length){
                         this.getNxtSiblTrans(node,pnode,sibl,hookNodes);
                     }else{
                         let ln = node._childPromise.length;
@@ -628,7 +644,7 @@ _LC.directive.getSiblTransition = function(hookNodes,j,sibl,pnode,parentPrev){
     }
 }
 _LC.directive.getNxtSiblTrans = function(node,template,sibl,hookNodes){
-    while(node._sibl && !sibl.length){
+    while(node && node._sibl && !sibl.length){
         let ind = node._sibl[0];
         node = hookNodes[ind];
         if(node && node.tagName == "TEMPLATE" && node.hc){
@@ -676,9 +692,11 @@ _LC.directive.getChildTransition = function(hookNodes,j,chld){
 }
 _LC.directive.getDirectTransChild = function(template,chld){
     let promiseArr = template._childPromise;
-    let ln = promiseArr.length
-    for(let i=ln-1; i>=0; i--){
-        chld.$push(promiseArr[i]);
+    if(promiseArr){
+        let ln = promiseArr.length
+        for(let i=ln-1; i>=0; i--){
+            chld.$push(promiseArr[i]);
+        }
     }
 }
 _LC.directive.pushChildPromise = function(ele,childProms){
@@ -794,7 +812,7 @@ _LC.directive.removeForContent = function(comp,direct,fakeRemove,node,totalProms
             var nodeStack = [];
             obj.previousPromise = previousPromise;
             this.transitionRemoveHelpers(comp,node,totalProms,forContent,specialNodes,obj,nodeStack);
-            if(totalProms && !totalProms.length){
+            if(!totalProms || !totalProms.length){
                 this.rmOtherNodes(node,forContent);
             }
             for(var j=0; j<nodeStack.length; j++){
@@ -832,7 +850,7 @@ _LC.directive.removeForInContent = function(comp,direct,fakeRemove,node,totalPro
             // var yieldChild = node._yieldChild;
             obj.previousPromise = previousPromise;
             this.transitionRemoveHelpers(comp,node,totalProms,forContent,specialNodes,obj,nodeStack);
-            if(totalProms && !totalProms.length){
+            if(!totalProms || !totalProms.length){
                 this.rmOtherNodes(node,forContent);
             }
             for(var j=0; j<nodeStack.length; j++){
@@ -869,7 +887,7 @@ _LC.directive.removeIfContent = function(comp,direct,fakeRemove,node,totalProms,
         var nodeStack = [];
         obj.previousPromise = previousPromise;
         this.transitionRemoveHelpers(comp,node,totalProms,caseContent,specialNodes,obj,nodeStack);
-        if(totalProms && !totalProms.length){
+        if(!totalProms || !totalProms.length){
             this.rmOtherNodes(node,caseContent);
         }
         _LC.removeDynamicNodes(node,comp);
@@ -927,7 +945,7 @@ _LC.directive.removeForIndexContent = function(comp,node,totalProms,previousProm
             totalProms.$push(proms);
         });
     }
-    if(totalProms && !totalProms.length){
+    if(!totalProms || !totalProms.length){
         // this.rmOtherNodes(node,forContent);
         if(node._helpers[index]) {
             for(let j=0;j<node._helpers[index].length;j++) {
@@ -983,7 +1001,7 @@ _LC.directive.updateRenderedComp = function(comp,activeComponent,node,keepAlive)
         }
     }
 }
-_LC.directive.updateDynamicComp = function(comp,update,component,activeComponent,node,newComponent){
+_LC.directive.updateDynamicComp = function(comp,update,component,activeComponent,node,newComponent,placeHolder,placeHolderParent){
     let returnVal;
     if(!update) {
         if(comp._dependentPromise){
@@ -1007,7 +1025,7 @@ _LC.directive.updateDynamicComp = function(comp,update,component,activeComponent
             this.setTransitionNodes(component._specialNodes,component,dependentPromises,true,stack);
         }
         _LC.ignoreDisconnect = true;
-        _LC.insertBeforeNative(node.parentNode,component, node);
+        _LC.insertBeforeNative(placeHolderParent,component, placeHolder);
         _LC.ignoreDisconnect = false;
         this.appendHooks('onAppend',comp,undefined,undefined,dependentPromises)
         this.appendHooks('afterAppend',comp,undefined,undefined,dependentPromises)
@@ -1030,7 +1048,7 @@ _LC.directive.removeRenderedComponent = function(comp,node,previousPromise){
     var nodeStack = [];
     obj.previousPromise = previousPromise;
     directiveObj.transitionRemoveHelpers(comp,renderedComponent,totalProms,[renderedComponent],renderedComponent._specialNodes,obj,nodeStack);
-    if(totalProms && !totalProms.length){
+    if(!totalProms || !totalProms.length){
         node._renderedComponent[key].remove();
         node._renderedComponent[key] = null;
     }
@@ -1148,25 +1166,25 @@ _LC.directive.infoI = function(comp,info,dynamicN,helperNode,options){
         this.setSpecialNodes(comp,helperNode, dynamicN, info, options); 
     }
 }
-_LC.directive.infoA = function(comp,info,dynamicN,helperNode,attr,yieldComp,options){
-    this.setSpecialNodes(comp,helperNode,dynamicN,info,options);
-    if(dynamicN._specialAttributeDetails && dynamicN._specialAttributeDetails.length){
-        dynamicN._specialAttributeDetails.push(attr);
-    }else{
-        dynamicN._specialAttributeDetails = [attr];
-    }
-    // if(attr.stringValue){
-        // dynamicN.removeAttribute(attr.name);
-        // dynamicN.setAttribute(attr.hookName,attr.stringValue);
-    // }
-    if(yieldComp){
-        yieldComp._transitionAppend.$push(dynamicN);
-    }
-    else if(comp._transitionAppend.indexOf(dynamicN)==-1 && dynamicN && dynamicN.getAttribute("is") != "component"){
-        comp._transitionAppend.$push(dynamicN);
-    }
-}
-_LC.directive.infoF = function(comp,info,dynamicN,helperNode,type,options){
+// _LC.directive.infoA = function(comp,info,dynamicN,helperNode,attr,yieldComp,options){
+//     this.setSpecialNodes(comp,helperNode,dynamicN,info,options);
+//     if(dynamicN._specialAttributeDetails && dynamicN._specialAttributeDetails.length){
+//         dynamicN._specialAttributeDetails.push(attr);
+//     }else{
+//         dynamicN._specialAttributeDetails = [attr];
+//     }
+//     // if(attr.stringValue){
+//         // dynamicN.removeAttribute(attr.name);
+//         // dynamicN.setAttribute(attr.hookName,attr.stringValue);
+//     // }
+//     if(yieldComp){
+//         yieldComp._transitionAppend.$push(dynamicN);
+//     }
+//     else if(comp._transitionAppend.indexOf(dynamicN)==-1 && dynamicN && dynamicN.getAttribute("is") != "component"){
+//         comp._transitionAppend.$push(dynamicN);
+//     }
+// }
+_LC.directive.infoF = function(comp, info, dynamicN, helperNode, type, options) {
     if(!info._igTs){
         if(type == "cM"){
             dynamicN._defaultSetSpecialNode = true;
@@ -1177,5 +1195,5 @@ _LC.directive.infoF = function(comp,info,dynamicN,helperNode,type,options){
 _LC.directive.infoE = function(comp,helperNode,dynamicN,info,options){
     this.setSpecialNodes(comp,helperNode,dynamicN,info,options);
 }
-export default Directive;
+export {Directive};
 //ignorei18n_end

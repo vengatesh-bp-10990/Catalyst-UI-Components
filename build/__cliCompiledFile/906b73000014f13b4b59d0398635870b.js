@@ -1,14 +1,14 @@
 import { Lyte } from "@slyte/core";
-import { errorCodes } from "@slyte/core/src/errors.js";
+// import { errorCodes } from "@slyte/core/src/errors.js";
 import { Service } from "@slyte/core";
 import { Logger } from './lyte-error';
-import { resolvePromises } from './rsvp';
-const _keywords = {
-  "component" : ["init", "didConnect", "didDestroy", "constructor", "onError", "actions", "methods", "data"],
-  "adapter" : ["namespace", "actionNamespace", "host", "withCredentials", "buildURL", "methodForRequest", "headersForRequest", "reloadRecord", "reloadRecord", "reloadAll", "processRequest", "parseResponse", "parseRequest", "super"],
-  "serializer" : ["normalize", "normalizeResponse", "serialize", "serializeKey", "deserializeKey", "extractMeta", "payloadKey", "serializeRecord", "normalizeRecord", "super"],
-  "route" : ["getDependencies", "getResources", "beforeModel", "model", "afterModel", "redirect", "renderTemplate", "afterRender", "beforeExit", "didDestroy", "queryParams", "title", "routeName", "component", "parent", "currentModel", "forceFetch", "setTitle", "setQueryParams", "getQueryParams", "setDynamicParam", "getDynamicParam", "removeFromCache", "refresh", "transitionTo", "replaceWith","actions"]
-};  
+// import { resolvePromises } from './rsvp';
+// const _keywords = {
+//   "component" : ["init", "didConnect", "didDestroy", "constructor", "onError", "actions", "methods", "data"],
+//   "adapter" : ["namespace", "actionNamespace", "host", "withCredentials", "buildURL", "methodForRequest", "headersForRequest", "reloadRecord", "reloadRecord", "reloadAll", "processRequest", "parseResponse", "parseRequest", "super"],
+//   "serializer" : ["normalize", "normalizeResponse", "serialize", "serializeKey", "deserializeKey", "extractMeta", "payloadKey", "serializeRecord", "normalizeRecord", "super"],
+//   "route" : ["getDependencies", "getResources", "beforeModel", "model", "afterModel", "redirect", "renderTemplate", "afterRender", "beforeExit", "didDestroy", "queryParams", "title", "routeName", "component", "parent", "currentModel", "forceFetch", "setTitle", "setQueryParams", "getQueryParams", "setDynamicParam", "getDynamicParam", "removeFromCache", "refresh", "transitionTo", "replaceWith","actions"]
+// };  
 // var arrayUtils =  function() {
 //     let lc = window.CrmComponentRegistry._instanceList[0]._getLyteComponent();
 //     return lc.aF.apply(lc, arguments);
@@ -44,15 +44,15 @@ const _keywords = {
 // var removeLyteEventListener = function(){
 //   return Lyte.Component.removeLyteEventListener.apply(Lyte.Component,arguments);
 // }
-function getNearestApp(node){
-    while(node){
-      if(node.component){
-        return node.component.getApp();
-      }
-      node = node.parentElement;
-    }
-    return Lyte._getDefaultAppIns();
-}
+// function getNearestApp(node){
+//     while(node){
+//       if(node.component){
+//         return node.component.getApp();
+//       }
+//       node = node.parentElement;
+//     }
+//     return Lyte._getDefaultAppIns();
+// }
 function defProp() {
 	Object.defineProperty.apply(Object, arguments);
 }
@@ -95,23 +95,23 @@ function observes(){
   }
 }
 
-function isKeyword(key, scope){
-  var arr = ["component", "adapter", "serializer", "route"];
-  if(scope){
-    arr = [scope];
-  }
-  var len = arr.length;
-  for(var i=0;i<len;i++){
-    var keyArr = _keywords[arr[i]];
-    if(keyArr){
-      var res = keyArr.indexOf(key);
-      if(res != -1){
-        return true;
-      }
-    }
-  }
-  return false;
-}
+// function isKeyword(key, scope){
+//   var arr = ["component", "adapter", "serializer", "route"];
+//   if(scope){
+//     arr = [scope];
+//   }
+//   var len = arr.length;
+//   for(var i=0;i<len;i++){
+//     var keyArr = _keywords[arr[i]];
+//     if(keyArr){
+//       var res = keyArr.indexOf(key);
+//       if(res != -1){
+//         return true;
+//       }
+//     }
+//   }
+//   return false;
+// }
 
 function injectServiceToModules(scp, services){
   var mdlObj = scp.$.injectServices;
@@ -155,13 +155,6 @@ function registerErrorCodes(obj, lyte) {
 
 
 function isEntity(object){
-  if(object && object.$ && object.$.hasOwnProperty("isModified")) {
-    return true;
-  }
-  return false;
-}
-
-function isRecord(object){
   if(object && object.$ && object.$.hasOwnProperty("isModified")) {
     return true;
   }
@@ -358,6 +351,9 @@ function genMapId(map){
 // };
 
 function checkNestedProp(id,path,dtype,wobj,object,property,value,check){
+  if (dtype.type instanceof Function){
+    dtype = dtype.type;
+  }
   if(path.length!=0){
       if(dtype.type == 'array'){
           if(dtype.items && !isNaN(path[0]) && typeof(dtype.items)=='object'){
@@ -373,56 +369,96 @@ function checkNestedProp(id,path,dtype,wobj,object,property,value,check){
           }
       }
   }
-  else{
-      var err;
-      if(dtype.properties || dtype.items){
-          var component={};component.__data={};
-          if(dtype.properties){
-                  component.__data[property]=dtype.properties[property];
-              }
-              else{
-                  component.__data[property]=dtype;
-              }
-          var cp = validateData(object, property, value, component);
-          if(cp && typeof(cp)=="object" && cp.code){
-              cp.value=value;
-              cp.path=wobj.path;
-              (wobj.Error && wobj.Error[wobj.key])?(wobj.Error[wobj.key].code && wobj.Error[wobj.key].nested)?wobj.Error[wobj.key].nested:wobj.Error[wobj.key].nested={}:wobj.Error[wobj.key]={code:cp.code,message:cp.message,nested:{}};
-              err = wobj.Error[wobj.key].nested;
-              wobj.path.split('.').forEach(function(k){
-                  if(err && !err[k]){
-                      err=err[k]={};
+  else {
+    var err;
+    if (dtype && (dtype.properties || dtype.items) && !check.hasOwnProperty("warn")) {
+      var component = {};component.__data = {};
+      if (dtype.properties) {
+          component.__data[property] = dtype.properties[property];
+      } else if(dtype.items) {
+        component.__data[property] = dtype.items;      
+      } else
+      {
+          component.__data[wobj.index] = dtype;
+      }
+      var cp = validateData(object, property, value, component);
+      var errKey = wobj.attr ? wobj.attr : wobj.key,_path = wobj.path.split(".");
+      var PathWay = wobj.index == undefined && property? wobj.path+(wobj.path!="" ?".":"")+property : wobj.index !=undefined ? wobj.path+(wobj.path!="" ?".":"")+wobj.index : wobj.path;
+      if (cp && (typeof cp === 'undefined' ? 'undefined' : typeof(cp)) == "object" && cp.code) {
+          cp.value = value;
+          cp.path = wobj.path !=""?wobj.path:property;
+          // if(wobj.isRec && fromStore && wobj.key ==  undefined && wobj.path!=""){
+          //     errKey = wobj.path.split(".")[0]
+          //     _path.shift();
+          //     _path = (_path.length == 1 && _path[0] == property) ? [] : _path;
+          // }
+          // wobj.Error ? true : wobj.Error = {}
+          wobj.Error && wobj.Error[errKey] ? wobj.Error[errKey].code && wobj.Error[errKey].nested ? wobj.Error[errKey].nested : wobj.Error[errKey].nested = {} : wobj.Error[errKey] = { nested: {} };
+          wobj.Error[errKey].code = "ERR34"
+          wobj.Error[errKey].message = Logger.errorCodes.ERR31;
+          err = wobj.Error[errKey].nested;
+          wobj._cmpErr[errKey] ? true : wobj._cmpErr[errKey]={};
+          wobj._cmpErr[errKey].code = "ERR34";
+          wobj._cmpErr[errKey].message = Logger.errorCodes.ERR31;
+          var cmpErrPath = wobj._cmpErr[errKey].path ? wobj._cmpErr[errKey].path : [] ;
+          if(wobj.path !=""){
+              _path.forEach(function (k) {
+                  if (err && !err[k]) {
+                      err = err[k] = {};
+                  } else {
+                      err = err[k];
+                  }
+              });
+          }
+          wobj.index != undefined ? err[wobj.index] = cp : err[property] = cp;
+          if(!cmpErrPath.includes(PathWay)){
+            cmpErrPath.push(PathWay)
+          }
+          wobj._cmpErr[errKey].path = cmpErrPath;
+      } else{
+          // if(wobj.isRec && fromStore && wobj.key ==  undefined){
+          //     errKey = wobj.path.split(".")[0]
+          //     _path.shift();
+          //     _path = (_path.length == 1 && _path[0] == property) ? [property] : _path;
+          // }
+          err = wobj.Error[errKey] && wobj.Error[errKey].nested ? wobj.Error[errKey].nested : undefined;
+          var cmpErr = wobj._cmpErr[errKey] || undefined;
+          if(cmpErr && cmpErr.path && cmpErr.path.includes(PathWay)){
+            var ind = cmpErr.path.indexOf(PathWay)
+            cmpErr.path.splice(ind,1)
+          }
+          //var p = object.$.error[property];
+          if(err){
+              var key = wobj.index || property; 
+              var flag = true,
+              p = PathWay.split(".");
+              p.forEach(function (r) {
+                  if (err[r] && err[r].code) {
+                      delete err[r];
+                      if(err && Object.keys(err).length == 0){
+                          flag = true;
+                      }
+                      else{
+                          flag = false;
+                      }
                   }
                   else{
-                      err=err[k];
+                    err = err[r]
                   }
-              })
-              wobj.index?err[wobj.index]=cp:err[property]=cp;
-              (object.$ && object.$.error)?object.$.error=err:object.$={error:err};
-              Object.defineProperty(object,'$',{
-                  enumerable:false,
-                  writable:false
               });
-          }
-          else if(!cp && object.$ && (object.$.error[property] ||(wobj.index && object.$.error[wobj.index]))){
-              err = wobj.Error[wobj.key].nested||undefined;
-              var key = wobj.index||property;
-              delete object.$.error[key];
-              var f = true,p=wobj.path.split(".");
-              (wobj.index)?p.push(wobj.index):p;
-              p.forEach(function(r){
-                  if(err[r] && err[r].code){
-                      f=false;
-                  }
-                  err=err[r];
-              });
-              if(f == true && wobj.Error[wobj.key]){
-                  delete wobj.Error[wobj.key];
+              if (flag == true && wobj.Error[errKey] && wobj._cmpErr[errKey]) {
+                  delete wobj.Error[errKey];
+                  delete wobj._cmpErr[errKey]
               }
           }
-          check.value=cp;
+
       }
-  } 
+      if((check.value && check.value.hasOwnProperty("code") && cp.code) || !check.value){
+          check.value = cp;
+      }
+  }
+}
+  wobj.index && delete wobj.index; 
 }
 
 var types = ["string", "object", "number", "boolean", "array", "component"];
@@ -540,7 +576,11 @@ function getClass(arr, mainClass,clsObj) {
 
   return currentClass;
 }
-
+Object.defineProperty(Object.prototype,"getMixinPropertyNames",{
+  value:function(){
+    return Object.getOwnPropertyNames(this);
+  }
+});
 
 Function.prototype.tempApply=Function.prototype.apply;
 Function.prototype.tempCall=Function.prototype.call;
@@ -597,6 +637,11 @@ function createCustomClass(classDefFunc, fromInside) {
           return function(prop1) {
               return dummyObj.arg1.hasOwnProperty(prop1);
           }  
+        }
+        else if (prop=="getMixinPropertyNames"){
+          return function(prop1){
+            return Object.getOwnPropertyNames(dummyObj.arg1);
+          }
         }
         else if(dummyObj.arg1.hasOwnProperty(prop)) {
           return dummyObj.arg1[prop];
@@ -690,10 +735,13 @@ function createCustomClass(classDefFunc, fromInside) {
   arg1._hasOwnProperty=function(target,prop,receiver){
     return arg1.prototype.hasOwnProperty(prop)
   }
+  arg1._getMixinPropertyNames=function(target,prop,receiver){
+    return Object.getOwnPropertyNames(arg1.prototype);
+  }
 
      let tempProxy=new Proxy({} /*proxy.prototype*/, {
 
-      "get" : function(target, prop) {
+      "get" : function(target, prop,receiver) {
         //  if(Object.hasOwn(arg1._initialCopyClass.prototype,prop))
         //    return arg1.prototype[prop];
         if(prop === "deleteProp") {
@@ -705,6 +753,11 @@ function createCustomClass(classDefFunc, fromInside) {
             return function(prop1){
                 return arg1._hasOwnProperty(target,prop1);
             }
+        }
+        else if (prop=="getMixinPropertyNames"){
+          return function(prop1){
+            return arg1._getMixinPropertyNames(target,prop1,receiver);
+          }
         }
         else {
           if(arg1.prototype[prop] && typeof arg1.prototype[prop]=="function" ) {
@@ -817,7 +870,7 @@ function checkProperty(property, dataVal, key, fieldVal, record, name, scp, erro
   // var errorCodes = scp.errorCodes;
   var exts = "extends";
   switch(property){
-    case "type" : 
+    case "type" : errorCodes
       if(typeof fieldVal !== "string"){
         var _fld = getCustomData(scp, fieldVal._name, fromDb);
         if (_fld && dataVal !== undefined && dataVal !== null) {
@@ -827,16 +880,16 @@ function checkProperty(property, dataVal, key, fieldVal, record, name, scp, erro
                   return { code: "ERR03", message: errorCodes.ERR03, expected: fieldVal };
               }
               if(_fld.hasOwnProperty("items")){
-                  _ret = checkProperty("items", dataVal, key, _fld.items);
+                  _ret = checkProperty("items", dataVal, key, _fld.items, undefined, undefined, scp, errorCodes);
               }
           }else if(typeof dataVal === "object" && _fld.type == "object" && _fld.hasOwnProperty("properties")){
-              _ret = checkProperty("properties", dataVal, key, _fld.properties);
+              _ret = checkProperty("properties", dataVal, key, _fld.properties, undefined, undefined, scp, errorCodes);
           } 
           else if (fieldVal && _fld.type != typeof(dataVal)) {
             return { code: "ERR03", message: errorCodes.ERR03, expected: fieldVal };
           }
           if(_ret !== true){
-              return _ret;
+              return Object.assign(_ret, { code:"ERR31", message:errorCodes.ERR31, value: dataVal});
           }
         }
       }
@@ -941,35 +994,59 @@ function checkProperty(property, dataVal, key, fieldVal, record, name, scp, erro
       break;
     case "items" :{
       if(Array.isArray(dataVal)){
+        var _resp = true;
         for(var i=0; i<dataVal.length; i++){
           for(var property in fieldVal){
             var resp = checkProperty(property, dataVal[i], i, fieldVal[property], undefined, undefined, scp, errorCodes, undefined, fieldVal);
             if(resp != true){
-              resp.path = resp.path ? i + "." + resp.path : resp.path;
-              return resp;
+              var _path = resp.path || [""], plen = _path.length;
+              for(var l=0; l<plen; l++){
+                var path = _path[l];
+                path = path ? i + "." + path : i.toString();
+                if(_resp !== true){
+                  _resp.path.indexOf(path) == -1 ? _resp.path.push(path) : undefined; 
+                }
+                else{
+                  _resp = { path: [path]};
+                }
+              }
+              break;
             }
           }
-        }         
+        }
+        return _resp;         
       }
       break;        
     }
     case "properties" :
       if(typeof dataVal == "object" && !Array.isArray(dataVal)){
+        var _resp = true
         for (var key in dataVal) {
           if(fieldVal.hasOwnProperty(key)){
-              var fld = fieldVal[key]
+              var fld = fieldVal[key]; 
               for (var property in fld) {
                   var resp = checkProperty(property, dataVal[key], key, fld[property], undefined, undefined, scp, errorCodes, undefined, fld);
                   if (resp != true) {
-                      resp.path = resp.path ? property + "." + resp.path : property.toString();
-                      return resp;
+                    var _path = resp.path || [""], plen = _path.length;
+                    for(var l=0; l<plen; l++){
+                      var path = _path[l];
+                      path = path ? key + "." + path : key.toString();
+                      if(_resp !== true){
+                        _resp.path.indexOf(path) == -1 ? _resp.path.push(path) : undefined; 
+                      }
+                      else{
+                        _resp = { path: [path]};
+                      }
+                    }
+                    break;
                   }
               }
           }
-          else if(field.exact){
-              return { code : "ERR29", message: Lyte.errorCodes.ERR29, property: key };
+          // else if(field.exact){
+            //     return { code : "ERR29", message: errorCodes.ERR29, property: key };
+            // }
           }
-        }
+          return _resp;
       }
       break;
     case "validation" :{
@@ -985,7 +1062,7 @@ function checkProperty(property, dataVal, key, fieldVal, record, name, scp, erro
     case "instanceof": 
     {
         if(typeof dataVal === "object" && !Array.isArray(dataVal) && !(dataVal instanceof fieldVal)){
-            return { code: "ERR30", message: Lyte.errorCodes.ERR30, property: key, instanceof: fieldVal};
+          return { code: "ERR30", message: errorCodes.ERR30, property: key, instanceof: fieldVal};
         }
     }
   }
@@ -1016,6 +1093,17 @@ function copyObject( obj, internal )  {
   var cloneObject = copies[0].target, targetReferences = [cloneObject];
   while(current = copies.shift()){
       keys = Object.keys(current.source);
+      if(current.source instanceof Map){
+        keys = current.source.keys().toArray()
+        for(MapKeys = 0 ; MapKeys < keys.length ; MapKeys++){
+            if( typeof current.source.get(keys[MapKeys]) != "object"){
+              current.target.set(keys[MapKeys] , current.source.get(keys[MapKeys])) 
+            }else{
+              current.target.set(keys[MapKeys],copyObject(current.source.get(keys[MapKeys]))) 
+            }
+        }
+        continue;
+      }
       for(propertyIndex = 0; propertyIndex < keys.length; propertyIndex++){
           descriptor = Object.getOwnPropertyDescriptor(current.source, keys[propertyIndex]);
           if(!descriptor){
@@ -1027,7 +1115,7 @@ function copyObject( obj, internal )  {
           }
           nextSource = descriptor.value;
           if(!(descriptor.value instanceof Promise)){
-            descriptor.value = Array.isArray(nextSource) ? [] : nextSource instanceof Set ? new Set() : Object.create(Object.getPrototypeOf(nextSource));
+        descriptor.value = Array.isArray(nextSource) ? [] : nextSource instanceof Set ? new Set() : nextSource instanceof Map ? new Map() : Object.create(Object.getPrototypeOf(nextSource));
           }
           indexOf = sourceReferences.indexOf(nextSource);
           if(indexOf != -1){
@@ -1078,7 +1166,7 @@ function defineRelation(name,type,opts){
   return relation;
 }
 
-function establishObserverBindings(observers,fromStore,properties,model,lyteScp) {
+function establishObserverBindings(observers,fromStore,properties,model,lyteScp,_LC) {
   var scope = this;
   var watchProps = model && fromStore ? model._fldGrps.JsonPathWatch : scope.constructor._deepWatchProperties;
   if(fromStore){
@@ -1093,6 +1181,9 @@ function establishObserverBindings(observers,fromStore,properties,model,lyteScp)
       var isArrayObserver = false;
       var isObjectObserver = false;
       if(typeof props[j] == "string"){
+        if(_LC && _LC.freeze && scope.component && _LC.freeze.prop(scope, props[j])){
+          continue;
+        }
         if(props[j].search(/^\$\./g)!=-1){
          
           var JsonPath = props[j];
@@ -1233,31 +1324,68 @@ const nestScp = {};
 const __nestRef__ = {};
 const __nestScp__ = new Map();
 function establishObjectBinding(data, attr, fromStore, update, storeRecord, watch) {
-  var model, fld, nestObj;
+  var model, fld, nestObj,customDtype;
   var checkAttrs=data.__component__ && data.__component__.component.__data?data.__component__.component.__data[attr]:undefined, db;
   if (fromStore || storeRecord) {
-      model = (data.$)? (data.$.schema ? data.$.schema : data.$.model) :(storeRecord && storeRecord.$.model)?storeRecord.$.model:undefined;
+    if(data.$ && data.$.schema){
+      model = data.$.schema;
       db = model.db;
-      fld = model ? model.fieldList[attr] : undefined;
-      if (!fld) {
-          return;
+    }
+      fld = model && model.fieldList && model.fieldList.hasOwnProperty(attr)? model.fieldList[attr] : {};
+      if(fld){
+        var _checkDtype = false ; 
+        if(fld.type && fld.type instanceof Function){
+          var _dtype = fld.type;
+          if(_dtype.hasOwnProperty("properties") || _dtype.hasOwnProperty("items")){
+            _checkDtype = true;
+          }
+        }
       }
-      checkAttrs=fld;
-      watch = fld.watch;
+      if (fld && (fld.type !== "relation" && fld.watch) || _checkDtype){
+        checkAttrs=fld;
+        watch = fld.watch ? fld.watch : watch;
+    }
+    else{
+      if(data._scp){
+         var keys = Array.from(data._scp.keys());
+          keys.forEach(function (id) {
+            var _mpObj = data._scp.get(id), 
+            mpObj = _mpObj.paths;
+            var _dtype = nestScp[id] || undefined;
+            watch = _dtype && _dtype.watch?_dtype.watch:watch;
+              for (var key in mpObj) {
+                  var path = key ? key.split(".") : [];
+                  path.push(attr);
+                  bindObj(data, attr, id, path, new Map(),undefined,checkAttrs,watch,true);
+              }
+         });
+      }
+     return;
+   }
   }
   if (update && data._scp && data._scp.size) {
       var keys = Array.from(data._scp.keys());
       keys.forEach(function (id) {
         var _mpObj = data._scp.get(id), 
         mpObj = _mpObj.paths;
+        var _dtype = nestScp[id] || undefined;
+        watch = _dtype && _dtype.watch?_dtype.watch:watch;
           for (var key in mpObj) {
-              var path = key ? key.split(".") : [];
-              path.push(attr);
-              bindObj(data, attr, id, path, new Map(),checkAttrs,watch);
+            var path = key ? key.split(".") : [];
+            path.push(attr);
+            bindObj(data, attr, id, path, new Map(),checkAttrs,watch , true);
           }
       });
   }
-  if ((!fromStore || fld.watch || fld.properties || fld.items || watch) && data[attr]) {
+  var customDtype = false;
+  if(checkAttrs && checkAttrs.type && checkAttrs.type instanceof Function){
+    var _dt = checkAttrs.type;
+    if(_dt.hasOwnProperty("properties") || _dt.hasOwnProperty("items")){
+     customDtype = true;
+      checkAttrs = _dt; 
+    }
+  }
+  if ((!fromStore || fld.watch || fld.properties || fld.items || watch || customDtype) && data[attr]) {
       var _scpObj, kmpKey;
       if (data && data.__component__) {
           data.__component__.__scpObj || Object.defineProperty(data.__component__, "__scpObj", {
@@ -1278,7 +1406,7 @@ function establishObjectBinding(data, attr, fromStore, update, storeRecord, watc
           var __nestScp1Set__ = false, __nestScp2Set__ = false;
           if (fromStore) {
               if(data[attr] && !__nestScp__.has(data[attr])){
-                  nestObj = { db: db, model: model._name, attr: attr, pK: data.$.pK };
+                  nestObj = { db: db, model: model._name, attr: attr, pK: data.$.pK , Error : {} };
                   __nestScp1Set__ = true;
               }
               else{
@@ -1288,22 +1416,39 @@ function establishObjectBinding(data, attr, fromStore, update, storeRecord, watc
                 var refMp = __nestRef__[__nId] = __nestRef__[__nId] || new Map();
                 var refMpId = genMapId(refMp);
                 refMp.set(refMpId, true);
-                setRecBindMap(nestScp[__nId], {db:db, model:model._name, attr: attr, pK: data.$.pK});
+                setRecBindMap(nestScp[__nId], {db:db, model:model._name, attr: attr, pK: data.$.pK , Error : {} });
                 obj[attr] = __nId+"_"+refMpId;
               }
           } else {
             if(data[attr] && !__nestScp__.has(data[attr])){
               // nestObj = { data: data[attr] };
-              nestObj = {
-                data : data[attr],
-                dtype : data.__component__.component.__data[attr],
-                Error:data.__component__.component.data.errors,
-                key:attr
-              };
+              var ErrMap = [],cmpDataKeys = {};
+              cmpDataKeys.key=attr;
+              cmpDataKeys.dtype = data.__component__.component.__data[attr];
+              cmpDataKeys._cmpErr = data.errors;
+              cmpDataKeys.Error={};
+              ErrMap.push(cmpDataKeys);
+              nestObj = { data: data[attr], PropsInfo : ErrMap };
+              if(cmpDataKeys.dtype.watch){
+                nestObj.watch = true;
+              }
                 __nestScp2Set__ = true;
             }
             else{
                 var __nId = __nestScp__.get(data[attr])
+                var scope = nestScp[__nId];
+                if(scope){
+                  var errMp = scope.PropsInfo;
+                  var cmpDataKeys = {};
+                  cmpDataKeys.key=attr;
+                  cmpDataKeys.Error = {}
+                  cmpDataKeys._cmpErr = data.errors;
+                  cmpDataKeys.dtype = data.__component__.component.__data[attr];
+                  if(cmpDataKeys.dtype.watch){
+                    scope.watch = true;
+                  }
+                  errMp.push(cmpDataKeys);
+                }
                 var refMp = __nestRef__[__nId] = __nestRef__[__nId] || new Map();
                 var refMpId = genMapId(refMp);
                 refMp.set(refMpId, true);
@@ -1322,6 +1467,7 @@ function establishObjectBinding(data, attr, fromStore, update, storeRecord, watc
                 nestScp[nestScpId].db = db;
               }
               setRecBindMap(nestScp[nestScpId], nestObj);
+              nestScp[nestScpId].Error = nestObj.Error
               //     setRecBindMap(model._name, attr, data.$.pK, nestScpId); 
           }
           if(__nestScp2Set__){   
@@ -1348,8 +1494,10 @@ function establishWatchScope(watchProps,model){
       if(typeof object == "object"){
         establishObjectBinding(scope.component.data,v,false,undefined,undefined,watch)
       }
+      var dataDef = scope.component.__data;
       if( nestScp[__nestScp__.get(object)]){
-        nestScp[__nestScp__.get(object)].dtype.watch = watch;
+        // nestScp[__nestScp__.get(object)].dtype.watch = watch;
+        dataDef[v].watch = watch;        
       }
     }
     else{
@@ -1411,9 +1559,15 @@ function bindObj(data, key, id, path, mp, checkAttrs, watch) {
     }
     return;
   }
-  var attrs;
-  if(checkAttrs && (checkAttrs.hasOwnProperty("items")||checkAttrs.hasOwnProperty("properties"))){
-      attrs=checkAttrs.items || checkAttrs.properties;
+  var attrs,nestedSCP;
+  if(checkAttrs){
+      if((checkAttrs.hasOwnProperty("items")||checkAttrs.hasOwnProperty("properties"))){
+          attrs=checkAttrs.items || checkAttrs.properties;
+          nestedSCP = true;
+      }
+      else if(watch == undefined && checkAttrs.watch == true){
+          watch = checkAttrs.watch 
+      }
   }
   attrs=watch?undefined:attrs;
   if (Array.isArray(value)) {
@@ -1435,7 +1589,7 @@ function bindObj(data, key, id, path, mp, checkAttrs, watch) {
       if(Array.isArray(watch)){
         _establish = checkEstablishingSCP(value,path,watch)
       }
-      if(_establish || (typeof watch =="boolean" && watch )){
+      if(_establish || (typeof watch =="boolean" && watch ) || nestedSCP){
           estObjScp(value, id, path, cyclic);
       }
     }
@@ -1459,7 +1613,7 @@ function bindObj(data, key, id, path, mp, checkAttrs, watch) {
       if(Array.isArray(watch)){
         _establish = checkEstablishingSCP(value,path,watch)
       }
-      if(_establish || (typeof watch =="boolean" && watch ) ){
+      if(_establish || (typeof watch =="boolean" && watch ) || nestedSCP ){
           estObjScp(value, id, path, cyclic);
       }
     }
@@ -1908,6 +2062,19 @@ function _lyteInit(LClass,ins){
         }
     }
   };
+  var consoleTime = [];
+  ins.time = function(fn) {
+      if(this.config.performance) {
+        var index;
+        if((index = consoleTime.indexOf(fn)) != -1) {
+          consoleTime.splice(index,1);
+          console.timeEnd(fn);
+        } else {
+          consoleTime.push(fn)
+          console.time(fn);
+        }
+      }
+    }
   ins.isComponent = function(object) {
       if(object && object.$node && object.__data) {
         return true;
@@ -2232,11 +2399,11 @@ function _lyteInit(LClass,ins){
   //   }
   // }
 
-  // ins.setConfig = function(key, value){
-  //   var configObj = window.__config = window.__config || {};
-  //   configObj[key] = value;
-  // }
-  // ins.getConfig = getConfig;
+  ins.setConfig = function(key, value) {
+    var configObj = window.__config = window.__config || {};
+    configObj[key] = value;
+  }
+  ins.getConfig = getConfig;
 }
 
 
@@ -2417,15 +2584,152 @@ function addStateToMap(event, target, XHR, stateName) {
       XHR.addEventListener("readystatechange", callback);
   }
 }
-
+function getModuleInfo(jsClass){
+  if(!jsClass || typeof jsClass !== "function"){
+    //@Slicer.developmentStart
+    Lyte.error("Invalid argument passed to the getModuleInfo api");
+    //@Slicer.developmentEnd
+    return;
+  }
+  let name = jsClass.__lMod;
+  return name ? { name : name } : false;
+}
+function addSlash(value) {
+  return ((value[0] != "/") ? "/" : "") + value;
+}
+function pathJoin() {
+  let args = Array.prototype.slice.call(arguments); // Convert arguments to an array
+  for (let index = 0; index < args.length; index++) {
+      if (index !== 0) {
+          args[index] = args[index].replace(/^\/+/, ""); // Remove leading slashes
+      }
+      if (index !== args.length - 1) {
+          args[index] = args[index].replace(/\/+$/, ""); // Remove trailing slashes
+      }
+  }
+  return args.join("/"); // Join with a single slash
+}
+function slyteImport(src, config){
+  let basePath = "";
+  if(config && typeof config == "object"){
+    if(src.match(/\.(jpg)|(jpeg)|(png)|(gif)|(bmp)|(webp)|(ico)|(avif)|$/)){
+      basePath = config.image || config.default || "";
+    }
+    else if(src.match(/\.css$/)){
+      basePath = config.css || config.default || "";
+    }
+    else if(src.match(/\.js$/)){
+      basePath = config.js || config.default || "";
+    }
+    else{
+      basePath = config.other || config.default || "";
+    }
+  } else if (typeof config == "string"){
+    basePath = config;
+  }
+  if(src!=undefined){
+      let entry = addSlash(src);
+      if (window.LyteFingerPrint && LyteFingerPrint.fingerPrint && LyteFingerPrint.fingerPrint[entry]) {
+          return pathJoin(basePath, addSlash(LyteFingerPrint.fingerPrint[entry].trim()));
+      }
+      return pathJoin(basePath, src);
+  }
+  throw new Error("Missing path argument!!!");
+}
+function addLink(appIns,outlet,style,options,observerFlag,callback){
+  let replaceFn = function(linkurl){
+    if(linkurl.indexOf('$')){
+        linkurl = linkurl.replace(/\$([a-zA-Z0-9_]+)/g, (match, key) => {
+            if(appIns.env[key] !== undefined){
+              return appIns.env[key]
+            }else{
+              Lyte.error(key+" is not available in env object");
+              return match
+            }
+            //return appIns.env[key] !== undefined ? appIns.env[key] : match//Add the error console here;
+        });
+        return linkurl;   
+    }
+  }
+  let getFingerPrintedVal = function(linkurl){
+      let fingerPrintedVal = window.LyteFingerPrint && window.LyteFingerPrint.get(linkurl);
+      if(fingerPrintedVal){
+          linkurl = fingerPrintedVal;
+      }
+      return linkurl;
+  }
+  let getStaticPath = function(linkurl){
+      let basePath = appIns.cssStaticPath,
+          config = appIns.staticPath;
+      if(config){
+        if(typeof config == "object"){
+            basePath = config.css || config.default || "";
+        } else if (typeof config == "string"){
+            basePath = config;
+        }
+      }
+      if(basePath){
+          linkurl = basePath+linkurl;
+      }
+      return linkurl;
+  }
+  if(!observerFlag){
+      let linkurl
+      if(typeof style == "string"){
+          linkurl = style
+          style = document.createElement("link");
+          style.setAttribute("rel","stylesheet");
+      }else{
+          linkurl = style.getAttribute("href");
+      }
+      let originalLinkUrl = linkurl;
+      linkurl = getStaticPath(getFingerPrintedVal(replaceFn(linkurl)));
+      style.setAttribute('href',linkurl);
+      let idVal = "dynamicStyle-"+appIns.__styleStack.length;
+      style.setAttribute('id',idVal);
+      callback && (style.onload = callback);
+      outlet.appendChild(style); // Need to update for prepend cases
+      appIns.__styleStack.push({id:idVal,replaceFilePath : linkurl,filePath : originalLinkUrl}) //
+  }else{
+      let arr = appIns.__styleStack;
+      let len = arr.length;
+      for(let i=0;i<len;i++){
+          let {id,replaceFilePath,filePath} = arr[i];
+          let newUrl = getStaticPath(getFingerPrintedVal(replaceFn(filePath)));
+          if(replaceFilePath != newUrl){
+              let node = document.querySelector('#'+id);
+              arr[i].replaceFilePath = newUrl;
+              node.setAttribute('href',newUrl);
+          }
+      }
+  }
+}
+function refreshParentRoute(appIns,observerFlag){
+  if(appIns){
+    let routeInstance = appIns.$router.getRouteInstance();
+    let nodeToRefresh;
+    while(routeInstance){
+      let dynamicVars = routeInstance.dynamicVars;
+      if(dynamicVars && dynamicVars[observerFlag] == "r"){
+        nodeToRefresh = routeInstance;
+      }
+      routeInstance = routeInstance.parent;
+    }
+    if(nodeToRefresh){
+      nodeToRefresh.refresh({refreshTemplate:true});
+    }
+  }
+}
 export {
   /*addToInstance,
   createEngineInstance, */
+  slyteImport,
   removeStateFromMap,
   addStateToMap,
   types,
   nestScp,
   nestScpId,
+  __nestScp__,
   getConfig,
   getCurrentRouterInstance,
   registerErrorCodes,
@@ -2455,7 +2759,7 @@ export {
   extendService,
   extendMixin,
   toAddSuper,
-  isKeyword,
+  // isKeyword,
   injectServiceToModules,
   observes,
   getSuperClass,
@@ -2478,7 +2782,7 @@ export {
   // getComponentTemplate,
   // get,
   checkNestedProp,
-  getNearestApp,
+  // getNearestApp,
   isInheritedClass,
   globalsSet,
   globalsGet,
@@ -2488,5 +2792,8 @@ export {
   _lyteDidConnect,
   checkEstablishingSCP,
   checkWatchPath,
-  establishWatchScope
+  establishWatchScope,
+  getModuleInfo,
+  addLink,
+  refreshParentRoute
 }

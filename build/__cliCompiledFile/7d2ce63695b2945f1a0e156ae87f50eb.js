@@ -1,11 +1,4 @@
-import { Lyte } from "./lyte";
 import { extendEventListeners } from "./lyte-utils";
-import { LyteAddon } from "./LyteAddon";
-
-// add function which throws error //ex Lyte.attr function need to be added with checking secind arguments as object ans so it will override the original Lyte.attr function in develepment mode
-class LyteError extends Error {
-
-}
 
 const level = 0;
 class Logger extends Error {
@@ -44,8 +37,12 @@ class Logger extends Error {
     }
     static getErrorMessage(code, withCode){
       var args = Array.from(arguments).slice(1);
-      if(this.errorCodes[code]) {
-          var msg = this.errorCodes[code].replace(/{(\d+)}/g, function(t, i) {
+      var message = this.errorCodes[code];
+      if(typeof message == "function"){
+         return code+": "+message.apply(this, args);
+      }
+      else if(message) {
+          var msg = message.replace(/{(\d+)}/g, function(t, i) {
               return args[i];
           });
           return code+": "+msg;
@@ -64,60 +61,139 @@ class Logger extends Error {
         }
     }
     static error(){
-        var args = Array.from(arguments), arg0 = arguments[0], ins, errorObj, logLevel = Logger.level;
-        if(arg0 instanceof Lyte || arg0 instanceof LyteAddon){
+        var args = Array.from(arguments), arg0 = arguments[0], ins, errorObj, logLevel = Logger.level, scIns,logCls;
+        if(arg0.__isApp || arg0.__isAddon){
             ins = arg0;
             args.splice(0,1);
+        }
+        else if(arg0.$app || arg0.$addon){
+            scIns = arg0;
+            ins = arg0.$app || arg0.$addon;
+            args.splice(0, 1);
+        }
+        if(ins){
+            logCls = ins.constructor;
             if(ins.hasOwnProperty("logLevel")){
                 logLevel = ins.logLevel;
+                if(typeof logLevel =="function"){
+                    logLevel = logLevel.apply(ins,[logCls,"error",args[0],args[1],this,ins,logCls]);
+                }
+            }
+            else if(logCls.hasOwnProperty("logLevel")){
+                logLevel = logCls.logLevel;
+                if(typeof logLevel =="function"){
+                    logLevel = logLevel.apply(ins,[logCls,"error",args[0],args[1],this,ins,logCls]);
+                }
             }
         }
-        if(logLevel < 3){
+        if(logLevel <= 3){
             errorObj = args[0];
             var parse = errorObj.stack, 
             context = this;
             errorObj = parse ? errorObj : new this(this.getErrorMessage.apply(this, args));
             while(context !== Logger){
                 if (context.hasOwnProperty("onerror")) {
-                    context.onerror.call(context, errorObj, args[1], this, ins);
+                    context.onerror.call(context, errorObj, args[1], this, ins, scIns);
                 }
                 if(context.hasOwnProperty("triggerEvent")){
-                    context.triggerEvent.call(context, "error", errorObj, args[1], this, ins);
+                    context.triggerEvent.call(context, "error", errorObj, args[1], this, ins, scIns);
                 }
                 context = Object.getPrototypeOf(context);
             }
             if (Logger.hasOwnProperty("onerror")) {
-                Logger.onerror.call(Logger, errorObj, args[1], this, ins);
+                Logger.onerror.call(Logger, errorObj, args[1], this, ins, scIns);
             }
             if(Logger.hasOwnProperty("triggerEvent")){
-                Logger.triggerEvent.call(Logger, "error", errorObj, args[1], this, ins);
+                Logger.triggerEvent.call(Logger, "error", errorObj, args[1], this, ins, scIns);
+            }
+            if(scIns){
+                // if(scIns.onerror) {
+                //     scIns.onerror.call(scIns, errorObj, args[1], this, ins, scIns);
+                // }
+                // if(scIns.triggerEvent){
+                //     scIns.triggerEvent.call(scIns, "error", errorObj, args[1], this, ins, scIns);
+                // }
+                var scCls = scIns.constructor;
+                if(scCls.onerror) {
+                    scCls.onerror.call(scCls, errorObj, args[1], this, ins, scIns);
+                }
+                if(scCls.triggerEvent){
+                    scCls.triggerEvent.call(scCls, "error", errorObj, args[1], this, ins, scIns);
+                }
+                if(scIns.$registry || scIns.$router){
+                    var Ins = scIns.$registry || scIns.$router;
+                    // if(Ins.onerror) {
+                    //     Ins.onerror.call(Ins, errorObj, args[1], this, ins, scIns);
+                    // }
+                    // if(Ins.triggerEvent){
+                    //     Ins.triggerEvent.call(Ins, "error", errorObj, args[1], this, ins, scIns);
+                    // }
+                    var regcls = Ins.constructor;
+                    if(regcls.onerror) {
+                        regcls.onerror.call(regcls, errorObj, args[1], this, ins, scIns);
+                    }
+                    if(regcls.triggerEvent){
+                        regcls.triggerEvent.call(regcls, "error", errorObj, args[1], this, ins, scIns);
+                    }
+                }
             }
             if(ins){
                 if(ins.onerror) {
-                    ins.onerror.call(ins, errorObj, args[1], this, ins);
+                    ins.onerror.call(ins, errorObj, args[1], this, ins, scIns);
                 }
                 if(ins.triggerEvent){
-                    ins.triggerEvent.call(ins, "error", errorObj, args[1], this, ins);
+                    ins.triggerEvent.call(ins, "error", errorObj, args[1], this, ins, scIns);
+                }
+                var insCls = ins.constructor;
+                if(insCls.onerror) {
+                    insCls.onerror.call(insCls, errorObj, args[1], this, ins, scIns);
+                }
+                if(insCls.triggerEvent){
+                    insCls.triggerEvent.call(insCls, "error", errorObj, args[1], this, ins, scIns);
                 }
             }
-            var safari = errorObj.stack && errorObj.stack.indexOf(errorObj.message) == -1
-            if (parse && !safari) {
-                errorObj = JSON.parse(JSON.stringify(errorObj, Object.getOwnPropertyNames(errorObj)));
-            }
-            if(args[1]) {
-                console.error(errorObj.stack ? (safari ? errorObj : errorObj.stack) : errorObj.message, args[1]);
-            } else {
-                console.error(errorObj.stack ? (safari ? errorObj : errorObj.stack) : errorObj.message);    
+            if(logLevel < 3){
+                var safari = errorObj.stack && errorObj.stack.indexOf(errorObj.message) == -1
+                if (parse && !safari) {
+                    errorObj = JSON.parse(JSON.stringify(errorObj, Object.getOwnPropertyNames(errorObj)));
+                }
+                if(args[1]) {
+                    console.error(errorObj.stack ? (safari ? errorObj : errorObj.stack) : errorObj.message, args[1]);
+                } else {
+                    console.error(errorObj.stack ? (safari ? errorObj : errorObj.stack) : errorObj.message);    
+                }
             }
         }
     }
     static warn(){
-        var args = Array.from(arguments), arg0 = arguments[0], ins, errorObj, logLevel = Logger.level;
-        if(arg0 instanceof Lyte || arg0 instanceof LyteAddon){
+        var args = Array.from(arguments), arg0 = arguments[0], ins, errorObj, logLevel = Logger.level,logCls;
+        if(arg0.__isApp || arg0.__isAddon){
             ins = arg0;
             args.splice(0,1);
             if(ins.hasOwnProperty("logLevel")){
                 logLevel = ins.logLevel;
+            }
+        }
+        else if(arg0.$app || arg0.$addon){
+            ins = arg0.$app || arg0.$addon;
+            args.splice(0, 1);
+            if(ins.hasOwnProperty("logLevel")){
+                logLevel = ins.logLevel;
+            }
+        }
+        if(ins){
+            logCls = ins.constructor;
+            if(ins.hasOwnProperty("logLevel")){
+                logLevel = ins.logLevel;
+                if(typeof logLevel =="function"){
+                    logLevel = logLevel.apply(ins,[logCls,"warn",args[0],this,ins,logCls]);
+                }
+            }
+            else if(logCls.hasOwnProperty("logLevel")){
+                logLevel = logCls.logLevel;
+                if(typeof logLevel =="function"){
+                    logLevel = logLevel.apply(ins,[logCls,"warn",args[0],this,ins,logCls]);
+                }
             }
         }
         if(logLevel < 2){
@@ -127,12 +203,28 @@ class Logger extends Error {
         }
     }
     static log(){
-        var args = Array.from(arguments), arg0 = arguments[0], ins, errorObj, logLevel = Logger.level;
-        if(arg0 instanceof Lyte || arg0 instanceof LyteAddon){
+        var args = Array.from(arguments), arg0 = arguments[0], ins, errorObj, logLevel = Logger.level,logCls;
+        if(arg0.__isApp || arg0.__isAddon){
             ins = arg0;
             args.splice(0,1);
+        }
+        else if(arg0.$app || arg0.$addon){
+            ins = arg0.$app || arg0.$addon;
+            args.splice(0, 1);
+        }
+         if(ins){
+            logCls = ins.constructor;
             if(ins.hasOwnProperty("logLevel")){
                 logLevel = ins.logLevel;
+                if(typeof logLevel =="function"){
+                    logLevel = logLevel.apply(ins,[logCls,"log",args[0],this,ins,logCls]);
+                }
+            }
+            else if(logCls.hasOwnProperty("logLevel")){
+                logLevel = logCls.logLevel;
+                if(typeof logLevel =="function"){
+                    logLevel = logLevel.apply(ins,[logCls,"log",args[0],this,ins,logCls]);
+                }
             }
         }
         if(logLevel == 0){
@@ -143,7 +235,6 @@ class Logger extends Error {
     }
 }
 Logger.errorCodes = {
-    ERR01 : "Primary key cannot be modified", 
     ERR02 : "Mandatory prop cannot be empty", 
     ERR03 : "Type of value does not match the specified data type",
     ERR04 : "Value is greater than the maximum value allowed",
@@ -153,26 +244,10 @@ Logger.errorCodes = {
     ERR08 : "String does not match the specified pattern", 
     ERR09 : "Values in array are not unique", 
     ERR10 : "Value is not equal to the specified constant", 
-    ERR11 : "Schema of related field is not defined",
-    ERR12 : "Schema of backward relation is not defined", 
-    ERR13 : "Entity not found", 
-    ERR14 : "Schema does not match the schema defined in the related field", 
-    ERR15 : "Error in creating a entity as a relation",
-    ERR16 : "Entity with primary key already exists", 
-    ERR17 : "Value cannot be changed because entity has been deleted", 
-    ERR18 : "Action not defined", 
-    ERR19 : "Schema not defined",
-    ERR20 : "Key not specified", 
-    ERR21 : "'one' relationship expects a single object/id", 
-    ERR22 : "Type not specified for polymorphic relation", 
-    ERR23: "Primary Key value not present", 
-    ERR24: "Error while relating entities", 
-    ERR25: "Backward relation not present",
-    ERR26: "Primary key value cannot be undefined or null",
-    ERR27: "Observer can observe only string data type value, '{0}' value cannot be observed in the function named '{1}' in the component '{2}'",
     ERR29: "Property not defined in the object",
-    ERR30: "Property's value is not an instanceof the mentioned class",      
-    L001: "{0} {1} is already registered",
+    ERR30: "Property's value is not an instanceof the mentioned class", 
+    ERR31: "Type definition for nested properties / items does not match with the value" ,     
+    L001: "{0} {1} is already registered"
     // /* move to component */
     // LC001: "Error while parsing custom prop handler attribute {0}. Check if the value provided is a valid JSON",
     // LC002: "{0} Component is not compiled. Please compile using Lyte CLI",
@@ -186,6 +261,4 @@ Logger.errorCodes = {
     // LC010: "Parent Node / reference Node not provided for insertBefore method",
 };
 extendEventListeners(Logger);
-
-window.Logger = Logger;
 export { Logger };

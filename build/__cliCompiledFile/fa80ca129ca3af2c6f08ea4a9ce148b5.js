@@ -1,7 +1,8 @@
-import { getFromCB, initCB, addToCachedBatch, cbScp, cB, initPartialObj, toJSON, compareData } from "./utils.js";
+import { getFromCB, initCB, addToCachedBatch, cbScp, cB, initPartialObj, toJSON, compareData, gE ,_defProp } from "./utils.js";
 import { RESTSerializer } from "./RESTSerializer.js";
 import { isEntity } from "@slyte/core/src/lyte-utils";
 import { Connector } from "./Connector.js";
+import { Dberror } from "./dberror.js";
 /*convert to custom class*/
 class RESTConnector extends Connector {
     static register(parent){
@@ -160,199 +161,266 @@ class RESTConnector extends Connector {
         return ret;
     }
     static get(db, type, def, key, queryParams, cacheQuery, customData, cacheData, unload, forceFetch){
-        var name = def && def._name ? def._name : def, 
-        argsObj = { type: type, schemaName : name, queryParams: queryParams, opts:{cacheData:cacheData !== undefined ? cacheData : true, cacheQuery:cacheQuery!== undefined ? cacheQuery : false, unload: unload!==undefined?unload:false, forceFetch: forceFetch!==undefined?forceFetch:false }, customData: customData, key: key}, 
-        mdl = def,
-        makeBatch = db.$.makeBatch, 
-        defless = db.applicationConnector && db.applicationConnector.__type == "REST" ? db.applicationConnector.schemaless : undefined;
-        if(defless && typeof def == "string"){
-            var defobj = db.schemaless, _name = def; 
-			def = defobj[_name] = defobj[_name] || {};
-            def._name = _name;
-        }
-        if(mdl || ( typeof mdl == "string"  && defless === true)){
-            RESTConnector.getConnector(db, def, argsObj, defless);
-            RESTConnector.getSerializer(db, def, argsObj, defless);
-            if(unload){
-                if(key !== undefined){
-                    db.dropEntity(def.def, key);
-                }
-                else{
-                    db.dropAll(def.def);
-                }
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd
+            var name = def && def._name ? def._name : def, 
+            argsObj = {
+                type: type,
+                schemaName : name,
+                queryParams: queryParams,
+                opts:{cacheData:cacheData !== undefined ? cacheData : true, cacheQuery:cacheQuery!== undefined ? cacheQuery : false, unload: unload!==undefined?unload:false, forceFetch: forceFetch!==undefined?forceFetch:false },
+                customData: customData,
+                key: key
+            }, 
+            mdl = def,
+            makeBatch = db.$.makeBatch, 
+            defless = db.applicationConnector && db.applicationConnector.__type == "REST" ? db.applicationConnector.schemaless : undefined;
+            //@Slicer.developmentStart
+            var reqId = arguments[12] || undefined;
+            _defProp(argsObj,"__reqId__",reqId);
+            //@Slicer.developmentEnd
+            if(defless && typeof def == "string"){
+                var defobj = db.schemaless, _name = def; 
+                def = defobj[_name] = defobj[_name] || {};
+                def._name = _name;
             }
-            customData = customData == undefined ? getFromCB(db,"connector", mdl.connector, "customData") : customData;
-            var urlObj = this.buildURL(db, type, "GET", def, key, undefined, queryParams,undefined,customData,undefined,argsObj), 
-            self = this,
-            queryParams = urlObj.qP, 
-            toCheckParams = (cacheQuery && typeof cacheQuery !== "boolean") ? cacheQuery : (queryParams && typeof queryParams == "object") ? queryParams : undefined;
-            if(key == undefined && toCheckParams && db.schema.cachedQueries && db.schema.cachedQueries[name] && !forceFetch){
-                var cachedQueries = db.schema.cachedQueries[name], 
-                sendData;
-                for(var i=0; i<cachedQueries.length; i++){
-                    var qry = cachedQueries[i];
-                    if(!qry.hasDeletedRecords){
-                        var params = qry.cacheQuery;
+            if(mdl || ( typeof mdl == "string"  && defless === true)){
+                RESTConnector.getConnector(db, def, argsObj, defless);
+                RESTConnector.getSerializer(db, def, argsObj, defless);
+                if(unload){
+                    if(key !== undefined){
+                        db.dropEntity(def.def, key);
+                    }
+                    else{
+                        db.dropAll(def.def);
+                    }
+                }
+                customData = customData == undefined ? getFromCB(db,"connector", mdl.connector, "customData") : customData;
+                var urlObj = this.buildURL(db, type, "GET", def, key, undefined, queryParams,undefined,customData,undefined,argsObj), 
+                self = this,
+                queryParams = urlObj.qP, 
+                toCheckParams = (cacheQuery && typeof cacheQuery !== "boolean") ? cacheQuery : (queryParams && typeof queryParams == "object") ? queryParams : undefined;
+                if(key == undefined && toCheckParams && db.schema.cachedQueries && db.schema.cachedQueries[name] && !forceFetch){
+                    var cachedQueries = db.schema.cachedQueries[name], 
+                    sendData;
+                    for(var i=0; i<cachedQueries.length; i++){
+                        var qry = cachedQueries[i];
+                        if(!qry.hasDeletedRecords){
+                            var params = qry.cacheQuery;
+                            if(compareData(params, toCheckParams, true)){
+                                sendData = [qry.data, "cache", undefined, qry.status];
+                                break;
+                            }
+                        }
+                    }
+                    if(sendData){
+                        return new Promise(function(resolve){
+                            if(makeBatch){
+                                addToCachedBatch(db,Array.isArray(sendData) ? sendData[0][name] : sendData);
+                            }
+                            resolve(sendData);
+                        });
+                    }
+                }
+                else if(key !== undefined && toCheckParams && db.schema.cachedRecordQueries && db.schema.cachedRecordQueries[name] && db.schema.cachedRecordQueries[name][key] && !forceFetch){
+                    var cachedQueries = db.schema.cachedRecordQueries[name][key], 
+                    sendData;
+                    for(var i=0; i<cachedQueries.length; i++){
+                        var params = cachedQueries[i].cacheQuery;
                         if(compareData(params, toCheckParams, true)){
-                            sendData = [qry.data, "cache", undefined, qry.status];
+                            sendData = [cachedQueries[i].data, "cache", undefined, cachedQueries[i].status];
                             break;
                         }
                     }
-                }
-                if(sendData){
-                    return new Promise(function(resolve){
-                        if(makeBatch){
-                            addToCachedBatch(db,Array.isArray(sendData) ? sendData[0][name] : sendData);
-                        }
-                        resolve(sendData);
-                    });
-                }
-            }
-            else if(key !== undefined && toCheckParams && db.schema.cachedRecordQueries && db.schema.cachedRecordQueries[name] && db.schema.cachedRecordQueries[name][key] && !forceFetch){
-                var cachedQueries = db.schema.cachedRecordQueries[name][key], 
-                sendData;
-                for(var i=0; i<cachedQueries.length; i++){
-                    var params = cachedQueries[i].cacheQuery;
-                    if(compareData(params, toCheckParams, true)){
-                        sendData = [cachedQueries[i].data, "cache", undefined, cachedQueries[i].status];
-                        break;
-                    }
-                }
-                if(sendData){
-                    return new Promise(function(resolve){
-                        if(makeBatch){
-                            addToCachedBatch(db,Array.isArray(sendData) ? sendData[0][name] : sendData);
-                        }
-                        resolve(sendData);
-                    });
-                }
-            }
-            else if(!forceFetch){
-                var scope = cbScp(db, def.connector, type == "getAll" ? RESTConnector.REFETCHALL : RESTConnector.REFETCH, "connector");
-                if(scope){
-                    var data, callRefetch = false;
-                    if(key !== undefined){
-                        data = db.cache.getEntity(mdl.def,key);		
-                        callRefetch = isEntity(data) ? true : false; 					
-                    }
-                    else{
-                        data = db.cache.getAll(mdl.def);
-                        callRefetch = data && data.length ? true : false;
-                    }
-                    argsObj.cachedData = data;
-                    if(callRefetch && !cB(scope, [argsObj])){
-                        var toRet = {};
-                        toRet[name] = data;
+                    if(sendData){
                         return new Promise(function(resolve){
                             if(makeBatch){
-                                addToCachedBatch(db,toRet[name]);
+                                addToCachedBatch(db,Array.isArray(sendData) ? sendData[0][name] : sendData);
                             }
-                            resolve([toRet, "cache"], "success", undefined, true);
+                            resolve(sendData);
                         });
                     }
                 }
-            }
-            if(urlObj.method == "POST"){
-                var res = initCB(db,"serializer", mdl.serializer, RESTSerializer.SERIALIZE, { argsObj: argsObj, args:[type,undefined,undefined,customData,name,queryParams]});
-                if(res){
-                    urlObj.data = res.data;
-                    if(urlObj.data && (typeof urlObj.data == "object" || isEntity(urlObj.data) || Array.isArray(urlObj.data)) && !(urlObj.data instanceof FormData)){
-                        // urlObj.reqData = Lyte.deepCopyObject(urlObj.data);
-                        urlObj.data = JSON.stringify(urlObj.data);
-                    }
-                    argsObj.data = urlObj.data;
-                }
-            }
-            var prmXhr;
-            var prm = new Promise(function(resolve, reject){
-                var idbObj = def ? def.idb : undefined, 
-                processRequest = getFromCB(db,"connector", def ? def.connector : undefined, RESTConnector.PROCESSREQUEST),payLoad, sendXHR = true, 
-                batchPro = false, 
-                opts = { cacheQuery : cacheQuery, cacheData : cacheData, customD : customData},
-                argsXHR = [db,name,type,key,urlObj,customData,argsObj,opts];
-                if(processRequest){
-                    sendXHR = false;
-                    var returnPromise = self.callGeneric(db,type,def,undefined,undefined,customData, queryParams,key,urlObj.url,undefined,urlObj.method,urlObj.headers,argsObj);
-                    if(returnPromise instanceof Promise){
-                        batchPro = true;
-                        returnPromise.then(function(resp){
-                            resp = (resp == "" ? JSON.parse("{}") : JSON.parse(resp));
-                            payLoad = RESTSerializer.getResponse(db,resp,def,type,key,urlObj,undefined,customData,opts,argsObj);
-                            resolve([payLoad]);
-                        },function(message){
-                            reject(message);
-                        });
-                    }
-                    else{
-                        sendXHR = true;
-                    }
-                }
-                if(makeBatch && !batchPro){
-                    RESTConnector.constructBatch.apply(RESTConnector, argsXHR).then(function(resObj){
-                        var payLoad = resObj.content;
-                        RESTConnector.getSuccess(db,def,type,key,urlObj,undefined,resolve,reject,payLoad,resObj,undefined,opts,argsObj);
-                    },function(resObj){
-                        RESTConnector.getFailure(db,def,type,key,urlObj,undefined,resolve,reject,opts,resObj.content,resObj.code,argsObj,resObj);
-                    });
-                }
-                else if(idbObj && db.idbIns){
-                    db.idbIns.getFromIDB(idbObj, name, type, queryParams, key, urlObj).then(function(payLoad){
-                        var res = initCB(db,"serializer", def.serializer, RESTSerializer.IDBRESPONSE, { argsObj: argsObj, args:[name, type, queryParams, key, payLoad]});
-                        if(res){
-                            payLoad = res.data;
-                        }
-                        if(payLoad == false){
-                            var xhrPrm = RESTConnector.sendXHR.apply(RESTConnector, argsXHR);
-                            xhrPrm.then(function(resp){
-                                RESTConnector.getSuccess(db,def,type,key,urlObj,resp,resolve,reject,undefined,undefined,undefined,opts,argsObj);
-                            }, function(resp){
-                                RESTConnector.getFailure(db,def,type,key,urlObj,resp,resolve,reject,opts,undefined,undefined,argsObj);
-                            });	
-                            prmXhr = xhrPrm.xhr;						
+                else if(!forceFetch){
+                    var scope = cbScp(db, def.connector, type == "getAll" ? RESTConnector.REFETCHALL : RESTConnector.REFETCH, "connector");
+                    if(scope){
+                        var data, callRefetch = false;
+                        if(key !== undefined){
+                            data = gE(db,mdl.def,key);		
+                            callRefetch = isEntity(data) ? true : false; 					
                         }
                         else{
-                            RESTConnector.getSuccess(db, def,type,key,urlObj,undefined,resolve,reject,payLoad,undefined,"idb",opts,argsObj);
+                            data = db.cache.getAll(mdl.def);
+                            callRefetch = data && data.length ? true : false;
                         }
-                    },function(message){
-                        var xhrPrm = RESTConnector.sendXHR.apply(RESTConnector, argsXHR);
-                        xhrPrm.then(function(resp){
-                            RESTConnector.getSuccess(db, def,type,key,urlObj,resp,resolve,reject,undefined,undefined,undefined,opts,argsObj);
-                        }, function(resp){
-                            RESTConnector.getFailure(db,def,type,key,urlObj,resp,resolve,reject,opts,undefined,undefined,argsObj);
-                        });		
-                        prmXhr = xhrPrm.xhr;					
-                    });
+                        argsObj.cachedData = data;
+                        if(callRefetch && !cB(scope, [argsObj])){
+                            var toRet = {};
+                            toRet[name] = data;
+                            return new Promise(function(resolve){
+                                if(makeBatch){
+                                    addToCachedBatch(db,toRet[name]);
+                                }
+                                resolve([toRet, "cache"], "success", undefined, true);
+                            });
+                        }
+                    }
                 }
-                else if(sendXHR){
-                    var xhrPrm = RESTConnector.sendXHR.apply(RESTConnector, argsXHR);
-                    xhrPrm.then(function(resp){
-                        RESTConnector.getSuccess(db, def,type,key,urlObj,resp,resolve,reject,undefined,undefined,undefined,opts,argsObj);
-                    },function(resp){
-                        RESTConnector.getFailure(db,def,type,key,urlObj,resp,resolve,reject,opts,undefined,undefined,argsObj);
-                    });
-                    prmXhr = xhrPrm.xhr;
+                if(urlObj.method == "POST"){
+                    var res = initCB(db,"serializer", mdl.serializer, RESTSerializer.SERIALIZE, { argsObj: argsObj, args:[type,undefined,undefined,customData,name,queryParams]});
+                    if(res){
+                        urlObj.data = res.data;
+                        if(urlObj.data && (typeof urlObj.data == "object" || isEntity(urlObj.data) || Array.isArray(urlObj.data)) && !(urlObj.data instanceof FormData)){
+                            // urlObj.reqData = Lyte.deepCopyObject(urlObj.data);
+                            urlObj.data = JSON.stringify(urlObj.data);
+                        }
+                        argsObj.data = urlObj.data;
+                    }
                 }
-            });
-            if(prmXhr){
-                prm.xhr = prmXhr;
+                var prmXhr;
+                var prm = new Promise(function(resolve, reject){
+                   //@Slicer.catchAllErrorsStart
+                    try{
+                    //@Slicer.catchAllErrorsEnd
+                        var idbObj = db.idbIns ? db.idbIns.getIDBObj(def, queryParams, type, key, customData) : undefined, 
+                        processRequest = getFromCB(
+                            db,
+                            "connector",
+                            def ? def.connector : undefined,
+                            RESTConnector.PROCESSREQUEST
+                        ),payLoad, sendXHR = true, 
+                        batchPro = false, 
+                        opts = {
+                            cacheQuery : cacheQuery,
+                            cacheData : cacheData,
+                            customD : customData
+                        },
+                        argsXHR = [db, name, type, key, urlObj, customData, argsObj, opts];
+                        if(processRequest){
+                            sendXHR = false;
+                            //@Slicer.developmentStart
+                            db.lyte ? db.lyte.time(argsObj.__reqId__+"_"+"processRequest"+"_promise") : undefined;
+                            //@Slicer.developmentEnd
+                            var returnPromise = self.callGeneric(
+                                db,
+                                type,
+                                def,
+                                undefined,
+                                undefined,
+                                customData,
+                                queryParams,
+                                key,
+                                urlObj.url,
+                                undefined,
+                                urlObj.method,
+                                urlObj.headers,
+                                argsObj
+                            );
+                            if(returnPromise instanceof Promise){
+                                batchPro = true;
+                                returnPromise.then(function(resp){
+                                    resp = (resp == "" ? JSON.parse("{}") : JSON.parse(resp));
+                                    payLoad = RESTSerializer.getResponse(db,resp,def,type,key,urlObj,undefined,customData,opts,argsObj);
+                                    //@Slicer.developmentStart
+                                    db.lyte ? db.lyte.time(argsObj.__reqId__+"_"+"processRequest"+"_promise") : undefined;
+                                    //@Slicer.developmentEnd
+                                    resolve([payLoad]);
+                                },function(message){
+                                    //@Slicer.developmentStart
+                                    db.lyte ? db.lyte.time(argsObj.__reqId__+"_"+"processRequest"+"_promise") : undefined;
+                                    //@Slicer.developmentEnd
+                                    reject(message);
+                                });
+                            }
+                            else{
+                                sendXHR = true;
+                            }
+                        }
+                        if(makeBatch && !batchPro){
+                            RESTConnector.constructBatch.apply(RESTConnector, argsXHR).then(function(resObj){
+                                var payLoad = resObj.content;
+                                RESTConnector.getSuccess(db,def,type,key,urlObj,undefined,resolve,reject,payLoad,resObj,undefined,opts,argsObj);
+                            },function(resObj){
+                                RESTConnector.getFailure(db,def,type,key,urlObj,undefined,resolve,reject,opts,resObj.content,resObj.code,argsObj,resObj);
+                            });
+                        }
+                        else if(idbObj && db.idbIns){
+                            db.idbIns.getFromIDB(idbObj, name, type, queryParams, key, urlObj, customData).then(function(payLoad){
+                                argsObj.payLoad = payLoad;
+                                var res = initCB(db,"serializer", def.serializer, RESTSerializer.IDBRESPONSE, { argsObj: argsObj, args:[name, type, queryParams, key, payLoad]});
+                                if(res){
+                                    payLoad = res.data;
+                                    argsObj.payLoad = payLoad;
+                                }
+                                if(payLoad == false){
+                                    var xhrPrm = RESTConnector.sendXHR.apply(RESTConnector, argsXHR);
+                                    xhrPrm.then(function(resp){
+                                        RESTConnector.getSuccess(db,def,type,key,urlObj,resp,resolve,reject,undefined,undefined,undefined,opts,argsObj);
+                                    }, function(resp){
+                                        RESTConnector.getFailure(db,def,type,key,urlObj,resp,resolve,reject,opts,undefined,undefined,argsObj);
+                                    });	
+                                    prmXhr = xhrPrm.xhr;						
+                                }
+                                else{
+                                    RESTConnector.getSuccess(db, def,type,key,urlObj,undefined,resolve,reject,payLoad,undefined,"idb",opts,argsObj);
+                                }
+                            },function(message){
+                                var xhrPrm = RESTConnector.sendXHR.apply(RESTConnector, argsXHR);
+                                xhrPrm.then(function(resp){
+                                    RESTConnector.getSuccess(db, def,type,key,urlObj,resp,resolve,reject,undefined,undefined,undefined,opts,argsObj);
+                                }, function(resp){
+                                    RESTConnector.getFailure(db,def,type,key,urlObj,resp,resolve,reject,opts,undefined,undefined,argsObj);
+                                });		
+                                prmXhr = xhrPrm.xhr;					
+                            });
+                        }
+                        else if(sendXHR){
+                            var xhrPrm = RESTConnector.sendXHR.apply(RESTConnector, argsXHR);
+                            xhrPrm.then(function(resp){
+                                RESTConnector.getSuccess(db, def,type,key,urlObj,resp,resolve,reject,undefined,undefined,undefined,opts,argsObj);
+                            },function(resp){
+                                RESTConnector.getFailure(db,def,type,key,urlObj,resp,resolve,reject,opts,undefined,undefined,argsObj);
+                            });
+                            prmXhr = xhrPrm.xhr;
+                        }
+                    //@Slicer.catchAllErrorsStart
+                    }catch(err){
+                        Dberror.error(db,err);
+                        return reject()
+                    }
+                    //@Slicer.catchAllErrorsEnd
+                });
+                if(prmXhr){
+                    prm.xhr = prmXhr;
+                }
+                return prm;
             }
-            return prm;
+            else {
+                Dberror.error(db.lyte,"LD02","Schema",name);
+                return Promise.reject({code : "ERR19", message : Dberror.errorCodes.ERR19, data:name});
+            }
+            //@Slicer.catchAllErrorsStart
+        }catch(err){
+            Dberror.error(db,err);
+            return Promise.reject()
         }
-        else {
-            Dberror.error(db.lyte,"LD02","Schema",name);
-            return Promise.reject({code : "ERR19", message : Dberror.errorCodes.ERR19, data:name});
-        }
+        //@Slicer.catchAllErrorsEnd
     }
     static create(db, name, data, isSingleRecord, customData, qP){
         var type= isSingleRecord ? "createEntity": "create", 
         def = db.schema[name], 
         argsObj = { type: type, schemaName : name, queryParams: qP, customData: customData};
+        //@Slicer.developmentStart
+        var reqId = arguments[7] || undefined;
+        _defProp(argsObj,"__reqId__",reqId);
+        //@Slicer.developmentEnd
         customData = customData == undefined ? getFromCB(db,"connector", def.connector, "customData") : customData;
         var urlObj = this.buildURL(db, type, "POST", def, undefined, data,qP,undefined,customData,undefined,argsObj);
         qP = urlObj.qP;
         var partial = initPartialObj(db, name, type, qP, undefined, urlObj.url, customData, argsObj);
         var changedData = toJSON(db, name, data, undefined, "create", partial);
-        RESTSerializer.sendingData(db, name, changedData, urlObj, type, customData, data, argsObj);
+        RESTSerializer.sendingData(db, name, changedData, urlObj, type, customData, data, argsObj,partial.obj);
         return this.handleRequest(db, urlObj, name, data, type, changedData, customData, partial.obj, undefined, undefined, partial.ref, argsObj);
     }
     static put(db, name, data, record, isSingleRecord,customData, qP){
@@ -363,12 +431,16 @@ class RESTConnector extends Connector {
         partialObj = new Map(), 
         key = isSingleRecord ? (isComp && bK ? record[bK] : record.$.pK) : undefined, 
         argsObj = { type: type, schemaName : name, queryParams: qP, customData: customData, key: key};
+        //@Slicer.developmentStart
+        var  reqId =  arguments[8] || undefined;
+        _defProp(argsObj,"__reqId__",reqId);
+        //@Slicer.developmentEnd
         customData = customData == undefined ? getFromCB(db,"connector", def.connector, "customData") : customData;
         var urlObj = this.buildURL(db, type, "PATCH", def, key, data, qP, undefined, customData, undefined, argsObj);
         qP = urlObj.qP;
         var partial = initPartialObj(db, name, type, qP, key, urlObj.url, customData, argsObj);
         var updatedData = toJSON(db, name, data, undefined, undefined, partial);
-        RESTSerializer.sendingData(db, name, updatedData, urlObj, type, customData, record, argsObj);
+        RESTSerializer.sendingData(db, name, updatedData, urlObj, type, customData, record, argsObj,partial.obj);
         return this.handleRequest(db, urlObj, name, record, type, updatedData, customData, partial.obj,key, undefined, partial.ref, argsObj);
     }
     static del(db, name, data, isSingleRecord, destroy, customData, qP){
@@ -378,6 +450,10 @@ class RESTConnector extends Connector {
         type = destroy || "deleteEntity", 
         key = isSingleRecord ? (isComp && bK ? data[bK] : data.$.pK) : undefined, 
         argsObj = { type: type, schemaName : name, queryParams: qP, customData: customData, key: key};
+        //@Slicer.developmentStart
+        var reqId = arguments[8];
+        _defProp(argsObj,"__reqId__",reqId);
+        //@Slicer.developmentEnd
         customData = customData == undefined ? getFromCB(db,"connector", def.connector, "customData") : customData;
         var urlObj = this.buildURL(db, type, "DELETE", def, key, data,qP,undefined,customData,undefined,argsObj);
         qP = urlObj.qP;
@@ -389,7 +465,7 @@ class RESTConnector extends Connector {
             });				
         }
         var pkVal = (isSingleRecord) ?  (data ? data.$.pK : undefined) : ids;
-        RESTSerializer.sendingData(db, name, pkVal, urlObj, type, customData, data, argsObj);
+        RESTSerializer.sendingData(db, name, pkVal, urlObj, type, customData, data, argsObj,partial.obj);
         return this.handleRequest(db, urlObj, name, data, type, pkVal, customData, undefined, key, undefined, undefined, argsObj);
     }
     static handleAjax(obj){
@@ -408,7 +484,7 @@ class RESTConnector extends Connector {
         }
         return RESTConnector.handleRequest(obj.db, urlObj, obj.schema, undefined, "ajax",undefined,obj.schema,undefined,undefined,undefined,undefined,argsObj);
     }
-    static handleAction(db,actionName,def,record,customData,qP,method,data){
+    static handleAction(db,actionName,def,record,customData,qP,method,data,reqId){
         var pkVal;
         if(record && isEntity(record)){
             pkVal = record.$.get(def._pK);				
@@ -418,6 +494,9 @@ class RESTConnector extends Connector {
         argsObj = { type: type, schemaName : name, queryParams: qP, customData: customData, actionName:actionName}
         RESTConnector.getConnector(db, def, argsObj);
         RESTConnector.getSerializer(db, def, argsObj);
+        //@Slicer.developmentStart
+        _defProp(argsObj, "__reqId__", reqId)
+        //@Slicer.developmentEnd
         customData = customData == undefined ? getFromCB(db,"connector", def ? def.connector : undefined, "customData") : customData;
         var urlObj = this.buildURL(db,type, method ? method : "POST", def, pkVal, record, qP, actionName, customData, undefined, argsObj);
         argsObj.data = urlObj.data = data, qP = urlObj.qP;

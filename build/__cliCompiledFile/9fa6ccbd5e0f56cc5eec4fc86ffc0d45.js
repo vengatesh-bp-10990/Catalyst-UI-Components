@@ -155,10 +155,6 @@ class LyteTooltipComponent extends Component {
          this.bind_aria();
       }
 
-      if( ( this.data.ltPropTooltipConfig || {} ).aria ){
-        this.setData( 'ltPropAria', true );
-      }
-
       if( this.getMethods( 'afterRender' ) ) {
             /**
              * @method afterRender
@@ -866,23 +862,7 @@ class LyteTooltipComponent extends Component {
             delete node.tooltip;
             delete span.nodeName1;
 
-            var randomId = span._random;
-
-            if( config.aria ){
-              // node.setAttribute( 'aria-expanded', "false" );
-
-              if( randomId ){
-                  var __describe_attr = "aria-describedby",
-                  __describe = node.getAttribute( __describe_attr ) || "";
-                  __describe = __describe.replace( randomId, '' ).trim();
-
-                  if( __describe ){
-                      node.setAttribute( __describe_attr, __describe );
-                  } else {
-                      node.removeAttribute( __describe_attr );
-                  }
-              }
-            }
+            config.aria && node.setAttribute( 'aria-expanded', "false" );
 
              if( __endClass ){
                 $L( span ).removeClass( __endClass ).on( 'transitionend', fn );
@@ -963,7 +943,7 @@ class LyteTooltipComponent extends Component {
 
                   nodeName1.tooltip = nodeName1.tooltip || {};
 
-                  nodeName1.tooltip.config = $L.extend( { reuse : false, position : '', appearance : 'callout', margin : 0, showdelay : 0, hidedelay : 0, maxdisplaytime : 5000, keeptooltip : false, aria : false || this.data.ltPropAria, hideOnClick : true, startClass : "", endClass : "", animationClass : "", maxAnimationLimit : 2000 }, this.data.ltPropTooltipConfig || {} );
+                  nodeName1.tooltip.config = $L.extend( { reuse : false, position : '', appearance : 'callout', margin : 0, showdelay : 0, hidedelay : 0, maxdisplaytime : 5000, keeptooltip : false, aria : false, hideOnClick : true, startClass : "", endClass : "", animationClass : "", maxAnimationLimit : 2000 }, this.data.ltPropTooltipConfig || {} );
                   nodeName1.tooltip.title = title;
 
                   this.propertySetting( nodeName1 );
@@ -981,7 +961,7 @@ class LyteTooltipComponent extends Component {
                       toolclass = Jnode.attr( 'lt-prop-tooltip-class' ),
                       ltPropId = __config.id || this.getData( 'ltPropId' ), 
                       ltPropClass = this.getData( 'ltPropClass' ),
-                      randomId = 'lytetooltip' + Date.now();
+                      randomId = Date.now() + 'lytetooltip';
 
                       if( is_exist ){
                           this.removeTooltip( span );
@@ -1031,22 +1011,11 @@ class LyteTooltipComponent extends Component {
                       if( tooltip.config.aria ){
                         var __obj = {
                           role : "tooltip",
-                          "aria-hidden" : "false",
-                          "aria-live" : "polite",
-                          id : randomId
+                          "aria-hidden" : "false"
                         };
                         Jobj.attr( __obj );
 
-                        // nodeName1.setAttribute( 'aria-expanded', 'true' );
-
-                        var __describe_attr = "aria-describedby",
-                        __describe = nodeName1.getAttribute( __describe_attr ) || "",
-                        __split = __describe.split( /\s+/ );
-
-                        if( __split.indexOf( randomId ) == -1 ){
-                            __describe = randomId + " " + __describe;
-                            nodeName1.setAttribute( __describe_attr, __describe.trim() );
-                        }
+                        nodeName1.setAttribute( 'aria-expanded', 'true' );
                       }
 
                       tooltip.settime = setTimeout( this.createTooltip.bind( this ), tooltip.config.showdelay, event, span, tooltip.config.position == 'followcursor' );

@@ -1,6 +1,6 @@
 import { Service } from "@slyte/core"
 import { isEntity } from "@slyte/core/src/lyte-utils";
-import { checkPresenceInArray, getpKVal, getRelatedRecord, initCB } from "./utils";
+import { checkPresenceInArray, getpKVal, getRelatedRecord, initCB, gE } from "./utils";
 
 class LyteIDB extends Service {
   static getBlobURL( url ) {
@@ -8,38 +8,41 @@ class LyteIDB extends Service {
   }
 
   static changeIDBState(db, rec, parent){
-      rec.$.inIDB = rec.$.inIDB || {};
-      if(parent){
-        rec.$.inIDB[parent.schema] = rec.$.inIDB[parent.schema] || new Map();
-        rec.$.inIDB[parent.schema].set(parent.pK, true);
-      }
-      else{
-        Object.defineProperty(rec.$.inIDB, "self", {
-          value: true
-        });
-      }
-      var relMod = db.schema[rec.$.schema._name] && db.schema[rec.$.schema._name].idb ? db.schema[rec.$.schema._name].idb.deserializeKeys : undefined;
-      if(relMod){
-        for(var k=0;k<relMod.length;k++){
-          var rel = rec.$.schema.fieldList[relMod[k]];
-          if(rec.hasOwnProperty(relMod[k]) && rel.relType == "hasMany"){
-            if(Array.isArray(rec[relMod[k]])){
-              for(var p=0; p<rec[relMod[k]].length; p++){
-                if(isEntity(rec[relMod[k]][p])){
-                  LyteIDB.changeIDBState(db, rec[relMod[k]][p], parent ? parent : {schema:rec.$.schema._name, pK:rec.$.pK});
+      if(isEntity(rec)){
+
+        rec.$.inIDB = rec.$.inIDB || {};
+        if(parent){
+          rec.$.inIDB[parent.schema] = rec.$.inIDB[parent.schema] || new Map();
+          rec.$.inIDB[parent.schema].set(parent.pK, true);
+        }
+        else{
+          Object.defineProperty(rec.$.inIDB, "self", {
+            value: true
+          });
+        }
+        var relMod = db.schema[rec.$.schema._name] && db.schema[rec.$.schema._name].idb ? db.schema[rec.$.schema._name].idb.deserializeKeys : undefined;
+        if(relMod){
+          for(var k=0;k<relMod.length;k++){
+            var rel = rec.$.schema.fieldList[relMod[k]];
+            if(rec.hasOwnProperty(relMod[k]) && rel.relType == "hasMany"){
+              if(Array.isArray(rec[relMod[k]])){
+                for(var p=0; p<rec[relMod[k]].length; p++){
+                  if(isEntity(rec[relMod[k]][p])){
+                    LyteIDB.changeIDBState(db, rec[relMod[k]][p], parent ? parent : {schema:rec.$.schema._name, pK:rec.$.pK});
+                  }
+                }
+                rec[relMod[k]].inIDB || Object.defineProperty(rec[relMod[k]], "inIDB", {value: {}});
+                if(parent){
+                  rec[relMod[k]].inIDB[parent.schema] = rec[relMod[k]].inIDB[parent.schema] || new Map();
+                  rec[relMod[k]].inIDB[parent.schema].set(parent.pK, true);        
+                }
+                else{
+                  rec[relMod[k]].inIDB.self = true;
                 }
               }
-              rec[relMod[k]].inIDB || Object.defineProperty(rec[relMod[k]], "inIDB", {value: {}});
-              if(parent){
-                rec[relMod[k]].inIDB[parent.schema] = rec[relMod[k]].inIDB[parent.schema] || new Map();
-                rec[relMod[k]].inIDB[parent.schema].set(parent.pK, true);        
+              else if(isEntity(rec[relMod[k]])){
+                LyteIDB.changeIDBState(db, rec[relMod[k]], parent ? parent : {schema:rec.$.schema._name, pK:rec.$.pK});
               }
-              else{
-                rec[relMod[k]].inIDB.self = true;
-              }
-            }
-            else if(isEntity(rec[relMod[k]])){
-              LyteIDB.changeIDBState(db, rec[relMod[k]], parent ? parent : {schema:rec.$.schema._name, pK:rec.$.pK});
             }
           }
         }
@@ -263,13 +266,15 @@ class LyteIDB extends Service {
                 if(/^(push|getAll|getEntity)$/.test(qType)){
                   arr = _data[obj.q.schema];
                 }
-                arr = _data;
+                else{
+                  arr = _data;
+                }
                 if(arr && !Array.isArray(arr)){
                   arr = [_data];
                 }
                 if(!/^(delete|deleteEntity)$/.test(qType)){
                   arr.forEach(function(item,index){
-                    var rec = idbIns.db.cache.getEntity({schema:idbIns.db.getSchema(key),pK:getpKVal(item, idbIns.db.getSchemaObj(key))});
+                    var rec = gE(idbIns.db, idbIns.db.getSchema(obj.q.schema),getpKVal(item, idbIns.db.getSchemaObj(obj.q.schema)));
                     if(rec){
                       LyteIDB.changeIDBState(idbIns.db, rec);
                       // rec.$.inIDB = true;
@@ -390,8 +395,8 @@ class LyteIDB extends Service {
           var itm = { schema: obj.schema, key: obj.key, type: obj.req, customData: obj.customData, queryParams: obj.queryParams };
           delete obj.customData;
           var res, cData;
-          res = initCB(this.db, "serializer", this.db.getSchemaObj(itm.schema).serializer, "beforeIDBGet", {argsObj:[itm]});
-          if(res && res.data){
+          res = initCB(this.db, "serializer", this.db.getSchemaObj(itm.schema).serializer, "beforeIDBGet", {argsObj:{idbObj:itm}});
+          if(res){
             cData = res.data;
             if(cData && typeof cData == "object"){
               delete cData.type;
@@ -437,13 +442,22 @@ class LyteIDB extends Service {
       }
   }
 
+  getIDBObj(model, queryParams, type, key, customData, modelName){
+          if(model && model.hasOwnProperty('idb')){
+              if(typeof model.idb == "function"){
+                  return model.idb.apply(model, [{schemaName:modelName ? modelName : model._name, type:type, queryParams:queryParams, key:key, customData:customData}]);
+              }
+              return model.idb;
+          }
+      }
+
   IDBQProcess(obj){
     var pK = this.db.getSchemaObj(obj.schema)._pK, 
     newQ, 
     res, 
     cData;
-    res = initCB(this.db, "serializer", this.db.getSchemaObj(obj.schema).serializer, "beforeIDBCrud", {args:[obj]});
-    if(res && res.data){
+    res = initCB(this.db, "serializer", this.db.getSchemaObj(obj.schema).serializer, "beforeIDBCrud", {argsObj:{idbObj:obj}});
+    if(res){
       cData = res.data;
       if(cData){
         delete cData.customData;
@@ -472,7 +486,7 @@ class LyteIDB extends Service {
     }
   }
 
-  getFromIDB(idbObj ,name, type, queryParams,key, urlObj, xhr){
+  getFromIDB(idbObj ,name, type, queryParams,key, urlObj, customData){
     var self = this;
     return new Promise(function(resolve, reject){
       if(LyteIDB.worker){
@@ -481,6 +495,8 @@ class LyteIDB extends Service {
         if(reqType == "getCachedData"){
           obj.queryParams = queryParams;
         }
+        obj.queryCache = idbObj.queryCache;
+        obj.customData = customData;
         self.postMessage(obj);
       }else{
         reject();
@@ -493,8 +509,9 @@ class LyteIDB extends Service {
       data = [data];
     }
     var schema = db.schema[name], 
-    self = this;;
-    if(!schema || !schema.hasOwnProperty("idb") || (schema.idb && !schema.idb.hasOwnProperty("queryCache"))){
+    self = this,
+    idb = this.getIDBObj(schema, urlObj && urlObj.qP ? urlObj.qP : undefined, type, key, customData);
+    if(!schema || !idb || (idb && !idb.hasOwnProperty("queryCache"))){
               data.forEach(function(item, index){
                   if(item && isEntity(item)){
                       self.updateRelationsIDB(db, item, schema.relations, customData, type);
@@ -502,8 +519,7 @@ class LyteIDB extends Service {
               });
       return;
     }
-    var idb = schema.idb,
-    queryCache = idb.queryCache,
+    var queryCache = idb.queryCache,
     name = schema._name;
     // var q =	db.$.idbQ2[schema._name] = db.$.idbQ2[schema._name] || [];
     if(data){
@@ -658,15 +674,14 @@ class LyteIDB extends Service {
 
   idbQ2Push(db,name,rawData,queryParams,type,key,meta,customData){
     try{
-      var schema = db.schema[name];
-      if(schema && schema.hasOwnProperty("idb")){
+      var schema = db.schema[name], idb = this.getIDBObj(schema, queryParams, type, key, customData);
+      if(idb){
         // rawData = deepCopyObject(rawData);
         var qObj = {
           schema :name,
           type:type
         }, 
-        pK = schema._pK, 
-        idb = schema.idb;
+        pK = schema._pK;
         switch(type){
           case "update":
           case "create":{
@@ -813,7 +828,7 @@ class LyteIDB extends Service {
     }
   }
 
-  removeNotNeededKeys(db, name, rawData){
+  removeNotNeededKeys(db, name, rawData, idbObj){
     var schema = db.schema[name], 
     fields = schema.fieldList, 
     deserializeKeys = schema.idb ? schema.idb.deserializeKeys : undefined,

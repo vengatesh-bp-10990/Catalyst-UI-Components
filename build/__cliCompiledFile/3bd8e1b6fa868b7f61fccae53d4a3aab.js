@@ -51,14 +51,22 @@ class Turbo extends Service {
             component = preDefObj.component = ins
         },[regIns])
         component._registryClass = compClass._registryClass;
-        component.$registry = component.$component = regIns;
-    	component.data = {};
+        component.$registry = regIns;
+        component.data = {};
+        var appScp = this.$app || this.$registry.$app || this.$registry.$addon;
+        if(component.$registry.constructor.lazyRegister){
+            self.doRegistration(componentName, constr, constr.componentClass, component.$registry.constructor, component.$registry);
+        }        
+        if((appScp && appScp.$mutate)|| (appScp && appScp.$mutate)){
+            component.data = appScp.$mutate.create(component.data);
+        }
+        let cmpData = _LC.getCmpData(component.data);
     	let data = compClass._data ? compClass._data.apply(component) : {};
     	var def = "default";
     	for(let key in data) {
-            component.data[key] = data[key][def];
+            cmpData[key] = data[key][def];
         }
-        component.data.errors = {};
+        cmpData.errors = {};
         component.__data = data;
         var obsAttrs = regIns.constructor._registeredComponentClass[componentName]._observedAttributes;
         preDefObj.data = preDefObj.data || {};
@@ -76,9 +84,9 @@ class Turbo extends Service {
                 } else {
                      actVal = initProperties[key];
                 }
-                let error = _LC.handleValidation(component.data, key, actVal, component);
+                let error = _LC.handleValidation(cmpData, key, actVal, component);
                 if(!error) {
-                    component.data[key] = actVal;    
+                    cmpData[key] = actVal;    
                 }
                 
             }
@@ -100,6 +108,19 @@ class Turbo extends Service {
 			}
             preDefObj.unbound = true;
             delete component.$node.querySelector;
+            if(component.$registry.constructor.lazyRegister && !constr.__isRegistered){
+                var sval = component.$registry.constructor.lazyScheduler.dequeueTask(componentName, compClass._registryClass.name);
+                if(sval && component.$registry.constructor.lazyScheduler.isGenerator(sval.handler)){
+                    var gnxt = sval.handler.next(), gval;
+                    while(gnxt.done == false){
+                        gval = gnxt.value;
+                        if(typeof gval == "function"){
+                            gval();
+                        }
+                        gnxt = sval.handler.next()
+                    }
+                }
+            }
         	return this.renderFast(compClass._dynamicNodes, compClass._sta, component, preDefObj, self);
         }
 		return "";
@@ -115,7 +136,8 @@ class Turbo extends Service {
             prevComp = self.component;
             self.component = comp;
         }
-        var compData = self.component.data;
+        // var compData = self.component.data;
+        var compData = _LC.getCmpData(self.component.data);
         var str = "";
         var dynamicCompile = arr;
         var dynamicCompileNodes = arr.cc;
@@ -129,14 +151,15 @@ class Turbo extends Service {
                     let locVal = _LC.getDD(compData, dynNode.newDynamicValue);
                     locVal = (locVal == undefined || locVal == null) ? "" : locVal; 
                     // str = str + ZSEC.Encoder.encodeForHTML(locVal);
-                    str = str + app.Security.escape(locVal);
+                    str = str + Turbo.Security.escape(locVal);
                 } else if(dynNode.helperInfo) {
                     _LC.ffr = true;
-                      let helperVal = self.processHelper(self, {name : dynNode.helperInfo.name, args : self.processArgs(self,dynNode, [], undefined, undefined, true)}, undefined);
+                    let processDetails = {};
+                      let helperVal = self.processHelper(self, {name : dynNode.helperInfo.name, args : self.processArgs(self,dynNode, [], undefined, undefined, undefined, true, undefined, undefined, processDetails)}, undefined);
                     _LC.ffr = false;
                      helperVal = (helperVal == undefined || helperVal == null) ? "" : helperVal;
                     //  str = str + ( (dynNode.helperInfo.name === "unescape") ? helperVal : ZSEC.Encoder.encodeForHTML(helperVal) );
-                    str = str + ((dynNode.helperInfo.name === "unescape") ? helperVal : app.Security.escape(helperVal));
+                    str = str + ((dynNode.helperInfo.name === "unescape") ? helperVal : Turbo.Security.escape(helperVal));
                 } else if(dynNode.t){
                     switch(dynNode.t) {
                         case "f" : {
@@ -145,7 +168,8 @@ class Turbo extends Service {
                             if(prevDynamic.dynamicValue) {      
                                 items = _LC.getDD(compData, prevDynamic.newDynamicValue);
                             } else if(prevDynamic.helperInfo) {
-                                items = self.processHelper(self, {name : prevDynamic.helperInfo.name, args : self.processArgs(self,prevDynamic, [], undefined, undefined, true)}, undefined);
+                                let processDetails = {};
+                                items = self.processHelper(self, {name : prevDynamic.helperInfo.name, args : self.processArgs(self,prevDynamic, [],undefined, undefined, undefined, true, undefined, undefined, processDetails)}, undefined);
                             }
                             var itemKey = dynNode._args.item || "item";
                             var indexKey = dynNode._args.index || "index";
@@ -171,7 +195,8 @@ class Turbo extends Service {
                             if(prevDynamic.dynamicValue) {
                                 object = _LC.getDD(compData, prevDynamic.newDynamicValue);
                             } else if(prevDynamic.helperInfo) {
-                                object = self.processHelper(self, {name : prevDynamic.helperInfo.name, args : self.processArgs(self,prevDynamic, [], undefined, undefined, true)}, undefined);
+                                let processDetails = {};
+                                object = self.processHelper(self, {name : prevDynamic.helperInfo.name, args : self.processArgs(self,prevDynamic, [], undefined, undefined, undefined, true, undefined, undefined, processDetails)}, undefined);
                             }
                             var valueKey = dynNode._args.value || "value";
                             var keyKey = dynNode._args.key || "key";
@@ -200,7 +225,8 @@ class Turbo extends Service {
                                 if(prevDynamic.dynamicValue) {
                                     value = _LC.getDD(compData, prevDynamic.newDynamicValue);
                                 } else if(prevDynamic.helperInfo) {
-                                    value = self.processHelper(self, {name : prevDynamic.helperInfo.name, args : self.processArgs(self,prevDynamic, [], undefined, undefined, true)}, undefined);
+                                    let processDetails = {};
+                                    value = self.processHelper(self, {name : prevDynamic.helperInfo.name, args : self.processArgs(self,prevDynamic, [], undefined, undefined, true, undefined, undefined, processDetails)}, undefined);
                                 }
                             }
                             var currentCaseName;
@@ -237,7 +263,8 @@ class Turbo extends Service {
                                         if(prevDynamic.dynamicValue) {
                                             value = _LC.getDD(compData, prevDynamic.newDynamicValue);
                                         } else if(prevDynamic.helperInfo) {
-                                            value = self.processHelper(self, {name : prevDynamic.helperInfo.name, args : self.processArgs(self,prevDynamic, [], undefined, undefined, true)}, undefined);
+                                            let processDetails = {};
+                                            value = self.processHelper(self, {name : prevDynamic.helperInfo.name, args : self.processArgs(self,prevDynamic, [], undefined, undefined, undefined, true, undefined, undefined, processDetails)}, undefined);
                                         }
                                         if(value){
                                             scope  = dynNode.c[caseName];
@@ -330,7 +357,8 @@ class Turbo extends Service {
                                             Lyte.warn("Deprecation warning. Action name " + actionName + " must be in quotes");
                                             boundName = actionName;
                                         }
-                                        let actArgs = self.processArgs(self, attr[key], [], "__lyteEvent__", "__lyteNode__");
+                                        let processDetails = {};
+                                        let actArgs = self.processArgs(self, attr[key], [], undefined, "__lyteEvent__", "__lyteNode__", undefined, undefined, undefined, processDetails);
                                         let actualAttrName = attr[key].globalEvent ? attr[key].name : (attr[key].name.indexOf("-") !== -1)? attr[key].name : attr[key].name.substr(2);
                                         actionObj[actualAttrName] = {"name" : boundName, "args" : attr[key].helperInfo.args, "actArgs" : actArgs, "globalEvent" : attr[key].globalEvent ? true : false, "skipArgProcessing" : true};
                                     }  else if (attr[key].helperInfo.name === "method") {
@@ -338,7 +366,8 @@ class Turbo extends Service {
                                         if(fastRenderProp) {
                                             let methods = fastRenderProp._methods = fastRenderProp._methods || {};
                                             let parentComp = compPreDef ? compPreDef.component : self.component;
-                                            let actArgs = self.processArgs(self, attr[key], [], "__lyteEvent__", "__lyteNode__");
+                                            let processDetails = {};
+                                            let actArgs = self.processArgs(self, attr[key], [], undefined, "__lyteEvent__", "__lyteNode__", undefined, undefined, undefined, processDetails);
                                             var methodFunc = function() { //eslint-disable-line no-loop-func
                                                 let node = self.$node;
                                                 let args = actArgs.slice(1);
@@ -350,7 +379,8 @@ class Turbo extends Service {
                                             methods[attr[key].camelCase] = methodFunc;
                                         }
                                     } else {
-                                        let nodeValue = self.processHelper(self, {name : attr[key].helperInfo.name, args : self.processArgs(self,attr[key], [], undefined, undefined, true)}, undefined);
+                                        let processDetails = {};
+                                        let nodeValue = self.processHelper(self, {name : attr[key].helperInfo.name, args : self.processArgs(self,attr[key], [],undefined, undefined, undefined, true, undefined, undefined, processDetails)}, undefined);
                                         if(fastRenderProp) {
                                             fastRenderProp.data[attr[key].camelCase] = nodeValue;
                                             if(typeof nodeValue == "string" && setAttr) {
@@ -416,13 +446,14 @@ class Turbo extends Service {
                                 }
                                 let contextSwitch = {};
                                 let contextSwitchArray = [];
+                                var psCmpData = _LC.getCmpData(parentScope.component.data);
                                 if(yieldObj._cx) {
                                     _LC.adCx(yieldObj, contextSwitchArray);
                                 }
                                 if(preDefObj) {
                                     for(var key in preDefObj.data) {
-                                        contextSwitch[key] = parentScope.component.data[key];
-                                        parentScope.component.data[key] = preDefObj.data[key];
+                                        contextSwitch[key] = psCmpData[key];
+                                        psCmpData[key] = preDefObj.data[key];
                                     }
                                 }
                                 var componentScope = parentScope.component;
@@ -434,7 +465,7 @@ class Turbo extends Service {
                                 // }
                                 str = str + this.renderFast(yieldObj.dN || yieldObj._dynamicNodes, yieldObj._sta, componentScope, yieldCallee, parentScope);
                                 for(let key in contextSwitch) {
-                                    parentScope.component.data[key] = contextSwitch[key];
+                                    psCmpData[key] = contextSwitch[key];
                                 }
                                 if(yieldObj._cx) {
                                     _LC.rmCx(yieldObj, contextSwitchArray); 
@@ -511,13 +542,13 @@ class Turbo extends Service {
         case "object" : 
             retVal = ((typeof Record != "undefined" && nodeValue instanceof Record) ? JSON.stringify(nodeValue.$.toJSON()) : JSON.stringify(nodeValue));
             // return key + "=" + (isSpecialAttr ? retVal : ZSEC.Encoder.encodeForHTMLAttribute(retVal));
-            return key + "=\"" + (isSpecialAttr ? retVal : app.Security.escape(retVal)) + "\"";
+            return key + "=\"" + (isSpecialAttr ? retVal : Turbo.Security.escape(retVal)) + "\"";
         case "undefined" : 
             return key
         default : 
             {
                 // return key + "=" + (isSpecialAttr ? nodeValue : ZSEC.Encoder.encodeForHTMLAttribute(nodeValue) );
-                return key + "=\"" + (isSpecialAttr ? nodeValue : app.Security.escape(nodeValue) ) + "\"";
+                return key + "=\"" + (isSpecialAttr ? nodeValue : Turbo.Security.escape(nodeValue) ) + "\"";
             }
         }
     }
@@ -662,6 +693,27 @@ class Turbo extends Service {
     }
 }
 Turbo.__lMod = "Turbo";
+Turbo.Security = {
+    "_eM" : {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+    }, 
+    "_eR" : /[&<>"'`=]/g,
+    "_eF" : function(str) {
+        return this._eM[str];
+    }, 
+    "escape" : function(string) {
+        if (typeof string !== 'string') {
+            string = '' + string;
+        }
+        return string.replace(this._eR, this._eF.bind(this));
+    }
+};
 Turbo.register();
 export default Turbo;
 //ignorei18n_end

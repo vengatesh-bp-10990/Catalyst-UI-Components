@@ -56,16 +56,16 @@ class Service {
                 writable : true, 
                 value : {"lookupMap" : new Map()}
             });
-            lookupMap = this.__lyte.lookupMap;
+            // lookupMap = this.__lyte.lookupMap;
             extendEventListeners(this.__lyte.lookupMap);
         }
-        else{
+        // else{
             if(this.$addon){
                 lookupMap = this.$addon.__lyte.lookupMap;
             }else if(this.$app){
                 lookupMap = this.$app.__lyte.lookupMap;
             }
-        }
+        // }
         if(func) {
             func(this);
         }
@@ -77,7 +77,7 @@ class Service {
         if(lookupMap.get(this.constructor)){
             lookupMap.set(this.constructor,this);
         }
-        else if(this.constructor.SINGLETON){
+        else if(this.constructor.singleTon){
             Lyte._singleTonLookupMap.set(this.constructor,this);
         }
 
@@ -202,7 +202,7 @@ function instantiateService(cls, app, curr, name) {
             __callOnLookup(lookupValue, curr);
         }
     } else {
-        if(cls.SINGLETON){
+        if(cls.singleTon){
             let singleTonclass = Lyte._singleTonLookupMap.get(cls)
             if(singleTonclass){
                 curr[name] = singleTonclass;

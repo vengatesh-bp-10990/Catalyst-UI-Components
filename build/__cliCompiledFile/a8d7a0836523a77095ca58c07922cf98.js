@@ -1,6 +1,8 @@
-import { _compareObj, _dotSerperator, _normalizeMatchedObj, _normalizeTransitionParams, _strPresence } from "@slyte/router/src/router-utils";
+import { _compareObj, _dotSerperator, _normalizeMatchedObj, _normalizeTransitionParams, _strPresence, _register } from "@slyte/router/src/router-utils";
 import { Service } from '@slyte/core/src/service';
 
+var routeStr = "route",
+objectStr = "object";
 /*convert to custom class*/
 class Route extends Service {
     constructor({ i, routeName, options, init})  {
@@ -22,11 +24,11 @@ class Route extends Service {
 					if(key == "toBeUsed") {
 						if(this.__lp.toBeUsed.length){
 							var self = this;
-							lyte.extendService({services : this.__lp.toBeUsed || [], type:"route", ins: this, callback : function(serv, key, aName, serName){
+							lyte.extendService({services : this.__lp.toBeUsed || [], type: routeStr, ins: this, callback : function(serv, key, aName, serName){
 								var obj = {};
 								obj.key = key;
 								obj.service = serName;
-								lyte.extendService({services : [obj], type:"route", ins: self});
+								lyte.extendService({services : [obj], type: routeStr, ins: self});
 							}});
 						}
 					}
@@ -58,6 +60,7 @@ class Route extends Service {
 		this.navigateTo = LR.navigateTo;
 		this.navigateForward = LR.navigateForward;
 		this.navigateBack = LR.navigateBack;
+		this.render = options.render;
 		this.refresh = function(obj) {
 			var refreshFrom = _dotSerperator(this.__lp.objPath).length-1,
 			trans = options.trans,
@@ -95,7 +98,7 @@ class Route extends Service {
 		};
 		this.setDynamicParam = function(value) {
 			if(value && this.__lp.param.dynamicParam && this.__lp.param.dynamicParam != value) {
-				var dynamicParams = Array.from(options.trans.matched.dynamicParams);
+				var dynamicParams = Array.from(Array.isArray(options.trans.matched.dynamicParams) ? Array.from(options.trans.matched.dynamicParams) : options.trans.matched.dynamicParams);
 				options.trans.matched.dpObj
 				dynamicParams.splice(this.__lp.objPath.split(".").length-1, 1, value);
 				return paramChangeTrans(options, cloneMatchedObj(options.trans.matched,{dynamicParams : dynamicParams}));
@@ -106,13 +109,13 @@ class Route extends Service {
 		this.setQueryParams = function(key,value,opts)  {
 			var obj = {},
 			refresh;
-			if(typeof key == "object") {
+			if(typeof key == objectStr) {
 				obj = key;
 				opts = value;
 			} else {
 				obj[key] = value;
 			}
-			if(typeof opts == "object") {
+			if(typeof opts == objectStr) {
 				refresh = opts.refresh;
 			}
 			refresh = opts;
@@ -131,6 +134,8 @@ class Route extends Service {
 }
 
 Route.__lMod = "Route";
+
+Route.register = _register;
 
 function paramChangeTrans(options, matched) {
 	var url = options.constructURLFromRoute(matched),

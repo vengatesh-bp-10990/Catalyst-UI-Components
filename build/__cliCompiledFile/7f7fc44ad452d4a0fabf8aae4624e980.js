@@ -1,5 +1,5 @@
 import { Service } from "@slyte/core/src/service"
-import { cbScp, cB, isEmpty, handleResponse, initCB, getSchemaObj, _defProp, dbModName , isDirty } from "./utils.js";
+import { cbScp, cB, isEmpty, handleResponse, initCB, getSchemaObj, _defProp, dbModName , isDirty , defPayArrUtls, defpayObjUtls,replaceCheck, gE ,PerfomanceLog } from "./utils.js";
 import { isEntity } from "@slyte/core/src/lyte-utils";
 
 /*convert to custom class*/
@@ -183,10 +183,18 @@ class Serializer extends Service {
         }
         var rels = schema.relations;
         if(!records && type != "normalizeEntity"){
-            records = db.cache.getEntity(schema.def, data.$.pK);
+            records = gE(db,schema.def, data.$.pK);
         }
         var result, 
         baseSerz = schema && schema.serializer ? schema.serializer.constructor : db.constructor.Serializer;
+        //@Slicer.developmentStart
+        PerfomanceLog(
+            db.lyte,
+            argsObj.__reqId__,
+            "["+(Array.isArray(data) ? data.length : 1 )+"]"+type,
+            argsObj?argsObj.schemaName:undefined
+        )
+        //@Slicer.developmentEnd
         if(Array.isArray(data)){
             result = [];
             for(var index1=0;index1<data.length;index1++){
@@ -206,22 +214,30 @@ class Serializer extends Service {
                 result = baseSerz.serializeSingleRecord(db,schema,data,records,urlObj,rels,type,customData,argsObj,partial)
             }
         }
+        //@Slicer.developmentStart
+        PerfomanceLog(
+            db.lyte,
+            argsObj.__reqId__,
+            "[" + (Array.isArray(data) ? data.length : 1 )+"]"+type,
+            argsObj?argsObj.schemaName:undefined
+        )
+        //@Slicer.developmentEnd
         return result;
     }
     static serializeSingleRecord(db,def,data,record,urlObj,rels,type,customData,argsObj,partial){
         var partObj;
-        type == "serializeRecord" && typeof data == "object" && data.$ == undefined ? store.$.defProp(data, "$", {}): data;
+        type == "serializeEntity" && typeof data == "object" && data.$ == undefined ? _defProp(data, "$", {}): data;
         if(typeof partial == "object" && record && record.$ && record.$.pK){
             partObj = partial.get ? partial.get(record.$.pK):partial;
             if(data.$ && data.$._partialObj){
                 var data$; 
                 data$ = Object.assign({}, data.$);
                 data = Object.assign({}, data);
-                store.$.defProp(data, "$", data$);
+                _defProp(data, "$", data$);
             }
-            var relDirty =  store.$.isDirty(record,record.$.schema.relations);
+            var relDirty =  isDirty(db,record,record.$.schema.relations);
             if(record.$.isModified || (Array.isArray(relDirty) && relDirty.length != 0)){
-                var dirtAttr = record.$.getDirtyAttributes();
+                var dirtAttr = record.$.getDirtyProps();
                 Array.isArray(relDirty) && dirtAttr.concat(relDirty);
                 var keys = Object.keys(data);
                 !partObj.hasOwnProperty("_removedAttr")?Object.defineProperties(partObj,{_removedAttr : {value : {} }}):undefined; 
@@ -231,6 +247,7 @@ class Serializer extends Service {
                     }
                 })
             }
+            var name = def && def._name ? def._name : def;
             Object.defineProperties(data.$,{
                 _partialObj:{
                     value:partObj
@@ -238,17 +255,16 @@ class Serializer extends Service {
                 _pkVal:{
                     value:record.$.pK
                 },
-                _model:{
-                    value:model_name
+                _schema:{
+                    value:name
                 },
                 _payloadObj:{
                     value:data
                 }
             })
         }
-        type == "serializeRecord" ? store.$.defpayObjUtls(data.$) : undefined;
-        var name = def && def._name ? def._name : def,
-        baseSerz = def && def.serializer ? def.serializer.constructor : db.constructor.Serializer, 
+        type == "serializeEntity" ? defpayObjUtls(db,data.$) : undefined;
+        var baseSerz = def && def.serializer ? def.serializer.constructor : db.constructor.Serializer, 
         scope = cbScp(db,def.serializer,type == "serializeEntity" ? baseSerz.SERIALIZEENTITY : baseSerz.NORMALIZEENTITY,"serializer");
         if(scope){
             var args;
@@ -280,6 +296,38 @@ class Serializer extends Service {
                                 val = [val];
                             }
                             var valLen = val.length, res = [];
+                            if(type == "serializeEntity"){
+								_defProp(res, "$", {});
+								defPayArrUtls(db,res.$);
+								if(partObj && partObj[field.relKey]){
+									Object.defineProperties(res.$,{
+										_key:{
+											value:field.relKey
+										},
+										_partialObj:{
+											value:partObj[field.relKey]
+										},
+										_schema:{
+											value:relTo._name
+										},
+										_payloadObj:{
+											value:res
+										},
+										replace:{
+											value:replaceCheck,
+											writable:true
+										},
+										partRecMap:{
+											value : new Map()
+										}
+									});
+									if(field.opts && field.opts.serialize){
+										Object.defineProperty(res.$,"_serialize",{
+											value:field.opts.serialize
+										});
+									}
+								}
+							}
                             for(var index1=0;index1<valLen;index1++){
                                 var _relTo = relTo;
                                 if(isPoly){
@@ -295,7 +343,11 @@ class Serializer extends Service {
                                         }
                                     }
                                 }	
-                                res.push(baseSerz.serializeRecords(db,relTo,val[index1],undefined,urlObj,type,customData,argsObj));
+                                if(type == "serializeEntity"){
+									var relPk = relTo._pK
+									res.$.partRecMap.set(val[index1][relPk],true);
+								}
+                                res.push(baseSerz.serializeRecords(db,relTo,val[index1],undefined,urlObj,type,customData,argsObj,partObj?partObj[field.relKey][index1]:undefined));
                             }
                             data[field.relKey] = res;
                         }
@@ -309,9 +361,40 @@ class Serializer extends Service {
                                     _relTo = isEntity(record[field.relKey]) ? record[field.relKey].$.schema._name : relTo;									
                                 }
                             }	
-                            data[field.relKey] = baseSerz.serializeRecords(db,_relTo,data[field.relKey],record ? record[field.relKey] : undefined,urlObj,type,customData,argsObj);
+                            data[field.relKey] = baseSerz.serializeRecords(db,_relTo,data[field.relKey],record ? record[field.relKey] : undefined,urlObj,type,customData,argsObj,partObj?partObj[field.relKey]:undefined);
                         }
-                    }	
+                    }
+                    else if	( type == "serializeEntity" && field.opts && field.opts.serialize && field.opts.serialize == "id" && field.type == "relation"){
+						if(field.relType == "hsaMany"){
+							_defProp(data[field.relKey], "$", {});
+							defPayArrUtls(db,data[field.relKey].$);
+							if(partObj && partObj[field.relKey]){
+								Object.defineProperties(data[field.relKey].$,{
+									_key:{
+										value:field.relKey
+									},
+									_partialObj:{
+										value:partObj[field.relKey]
+									},
+									_schema:{
+										value:relTo
+									},
+									_payloadObj:{
+										value:data[field.relKey]
+									},
+									replace:{
+										value:replaceCheck,
+										writable:true
+									}
+								});
+								if(field.opts && field.opts.serialize){
+									Object.defineProperty(res.$,"_serialize",{
+										value:field.opts.serialize
+									});
+								}
+							}
+						}
+					}	
                 }
             });
         }
@@ -343,6 +426,14 @@ class Serializer extends Service {
             recs = realData[name], changed = true;
             // Internal release
             var scope = cbScp(db, def.serializer, baseSerz.PROCESSENTITY, "serializer");
+            //@Slicer.developmentStart
+            PerfomanceLog(
+                db.lyte,
+                argsObj.__reqId__,
+                "["+(Array.isArray(recs) ? recs.length : 1) +"]"+"processEntity",
+                argsObj?argsObj.schemaName:undefined
+            )
+            //@Slicer.developmentEnd
             if(scope){
                 if(Array.isArray(recs)){
                     for(var i=0; i<recs.length; i++){
@@ -355,6 +446,14 @@ class Serializer extends Service {
                     recs = cB(scope, [argsObj]);
                 }
             }
+            //@Slicer.developmentStart
+            PerfomanceLog(
+                db.lyte,
+                argsObj.__reqId__,
+                +"["+(Array.isArray(recs) ? recs.length : "1") +"]"+"processEntity",
+                argsObj?argsObj.schemaName:undefined
+            )
+            //@Slicer.developmentEnd
             var flUrlObj = type != "pushPayload" ? {url:urlObj.url, method:urlObj.method, headers:urlObj.headers, type: type, qP : urlObj.qP, withCredentials: urlObj.withCredentials, schema :name} : undefined;
             recs = baseSerz.serializeRecords(db, def, recs, undefined, flUrlObj, baseSerz.NORMALIZEENTITY, customData, argsObj);
             realData[name] = recs;
@@ -385,22 +484,47 @@ class Serializer extends Service {
         var baseSerz = def && def.serializer ? def.serializer.constructor : db.constructor.Serializer;
         var scope = cbScp(db,def.serializer, baseSerz.PROCESSENTITY, "serializer");
         if(scope){
+            //@Slicer.developmentStart
+            PerfomanceLog(
+                db.lyte,
+                argsObj.__reqId__,
+                "["+(Array.isArray(realData) ? realData.length : 1) +"]"+"processEntity",
+                argsObj?argsObj.schemaName:undefined
+            )
+            //@Slicer.developmentEnd
             if(Array.isArray(realData)){
                 for(var i=0; i<realData.length; i++){
                     argsObj.entityData = realData[i];
-                    realData[i] = cB(scope, [argsObj]);
+                    realData[i] = cB(scope, [argsObj],db);
                 }
             }					
             else{
                 argsObj.entityData = realData;
-                realData = cB(scope, [argsObj]);
+                realData = cB(scope, [argsObj],db);
             }
+            //@Slicer.developmentStart
+            PerfomanceLog(
+                db.lyte,
+                argsObj.__reqId__,
+                "["+( Array.isArray(realData) ? realData.length : 1) +"]"+"processEntity",
+                argsObj?argsObj.schemaName:undefined
+            )
+            //@Slicer.developmentEnd
         }
         
         argsObj.payLoad = realData;
-        if(changed){
-            payLoad = {};
-            realData = baseSerz.serializeRecords(db, def, realData, undefined, {url:urlObj.url, method:urlObj.method, headers:urlObj.headers, type: type, qP : urlObj.qP, withCredentials: urlObj.withCredentials, schema :name}, "normalizeEntity", customData, argsObj)
+        if(changed && realData){
+            //payLoad = {};
+            realData = baseSerz.serializeRecords(
+                db,
+                def,
+                realData,
+                undefined,
+                {url:urlObj.url, method:urlObj.method, headers:urlObj.headers, type: type, qP : urlObj.qP, withCredentials: urlObj.withCredentials, schema :name},
+                "normalizeEntity",
+                customData,
+                argsObj
+            )
             payLoad[name] = realData;
         }
         argsObj.payLoad = payLoad;

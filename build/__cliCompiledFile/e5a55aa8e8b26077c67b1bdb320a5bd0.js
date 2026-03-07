@@ -1,24 +1,29 @@
-// debugger
-import { establishObjectBinding, isEntity, validateData, establishObserverBindings, cmpData, removeNestScp, nestScp, bindObj, deepCopyObject, checkNestedProp, prop , checkWatchPath,establishWatchScope} from "@slyte/core/src/lyte-utils";
-import { Lyte, LyteAddon } from "@slyte/core";
+import { establishObjectBinding, isEntity, validateData, establishObserverBindings, cmpData, removeNestScp, nestScp, bindObj, deepCopyObject, checkNestedProp, prop , checkWatchPath,establishWatchScope,__nestScp__,extendEventListeners} from "@slyte/core/src/lyte-utils";
+import { Lyte, LyteAddon,slyteImport } from "@slyte/core";
 import { Jwalk } from "@slyte/core/src/JsonPath.js"
 import Compile from './compiler/cli/lyte-base-compile.js';
-import './ZohoSecurity/lyte-component-security.js'; //slicer af
-import { ValidationError } from "@slyte/data/src/dberror.js"; //slicer store
+import { ValidationError } from "@slyte/data/src/ValidationError"; //slicer store
 import { Service } from "@slyte/core/src/service";
-import { deepValueChange, setData } from "@slyte/data/src/utils";
 import { Utils } from "@slyte/core/src/Utils.js";
-//@Slicer.developmentStart
+
+
+
 import { ComponentError, ApiError, RegistryError } from "./utils/lyte-errors.js";
-//@Slicer.developmentEnd
-if(!window.__lyteConfig){
-    window.__lyteConfig = {
-        _definedBeforeBridging : [],
-        _alreadyDefinedBeforeBridging : [],
-        v4 : true
-    }
-}
-window.__lyteConfig.v4 = true;
+// debugger
+// debugger 
+
+import "./compatibility/compatibility.js";
+import { IdleTaskScheduler } from "@slyte/core/src/IdleTaskScheduler.js";
+// if(!window.__lyteConfig){
+//     window.__lyteConfig = {
+//         _definedBeforeBridging : [],
+//         _alreadyDefinedBeforeBridging : [],
+//         v4 : true,
+//         _pendingV3Components : {},
+//         _firstRegisteredComp : {}
+//     }
+// }
+// window.__lyteConfig.v4 = true;
 let ltCf = window.__lyteConfig;
 if(!ltCf.customElementsDefine){
     ltCf.customElementsDefine = customElements.constructor.prototype.define; 
@@ -36,7 +41,7 @@ if(!ltCf.customElementsDefine){
 }
 /*convert to custom class*/
 class ComponentRegistry extends Service {
-    isComponentRegistry(){
+    isComponentRegistry() {
         return true;
     }
     getDirectiveObj(){
@@ -45,9 +50,12 @@ class ComponentRegistry extends Service {
         }
         return false;
     }
-    static getFastObj(){
-        return this.turbo ? this.turbo : false;
+    static getDirectiveIns(name){
+        return this[name] ? this[name] : false;
     }
+    // lookups(){
+    //     return [{lazyScheduler:new IdleTaskScheduler({delayInit: true})}];
+    // }
     constructor(opt){
         super(opt);
         var registryClass = this.constructor;
@@ -68,6 +76,7 @@ class ComponentRegistry extends Service {
             _LC.setDefaultRegistryIns(this)
         }
         registryClass._instanciated = true;
+        
         this.registeredComponents = {};
         this.registeredCeComponents = {}
         this._registeredComponents = {};
@@ -78,13 +87,18 @@ class ComponentRegistry extends Service {
         ComponentRegistry.registerAllComponent(registryClass._registeredComponentClass,this);
         ComponentRegistry.registerAllCeComponent(registryClass._registeredCeComponentClass,this);
         registryClass._instanceList.push(this);
-        _LC.setAddedRegistries(this,registryClass.name);
+        
+        // _LC.setAddedRegistries(this,registryClass.name);
         this.render = _LC.render;     
         // this.renderHTML = _LC.renderHTML;
         this.set = _LC.set;
         this.get = _LC.get;
         let currentAppOrAddon = _LC.getAppOrAddon(this);
         this.setDefaultDirectives(currentAppOrAddon);
+        for(let dName in registryClass._directivesList){
+            let dClass = registryClass._directivesList[dName];
+            dClass.actualRegistration(dName,dClass,this);
+        }
         _LC.updateDomApis(this);
         this.replaceWith = _LC.replaceWith;
         this.throwEvent = _LC.throwEvent;
@@ -99,9 +113,10 @@ class ComponentRegistry extends Service {
         this._getLyteComponent = function(){
             return _LC;
         }
+        this.__data = this.data ? this.data.apply(this) : {};
     }
     setDefaultDirectives(app){ 
-        let defaultDirectives = ["directive","shadow","shadow-style","shadow-supported","turbo","turbo-supported","unbound","view"];
+        let defaultDirectives = ["directive","shadow","shadow-style","shadow-supported","turbo","turbo-supported","unbound","view","elemental","save","hide-tag","hide-tag-supported"];
         let self = this;
         defaultDirectives.forEach(function(item){
             let directiveIns;
@@ -117,15 +132,20 @@ class ComponentRegistry extends Service {
     static register(options){
         if(options){
             if(options.app == true){
-                _LC.setDefaultRegistry(this);
+                if(!_LC.gotDefaultRegistryFrom){
+                    _LC.setDefaultRegistry(this);
+                    _LC.gotDefaultRegistryFrom = "cli";
+                }
             }
-            if(options.hash){
-                this._hash = options.hash;
-            }
-            if(options.refHash){
-                this._refHash = options.refHash;
-            }
+            _LC.map.registry.set(this, options);
         }
+        this.lazyScheduler = new IdleTaskScheduler({delayInit: true, perf: true});
+        extendEventListeners(this);
+        //@Slicer.idleTimeComponentRegisterStart
+        this.lazyScheduler.init();
+        //@Slicer.idleTimeComponentRegisterEnd
+        this._directivesList = {};
+        this._definedComponents = {};
         this._registeredComponentClass = Object.assign({},ComponentRegistry._defaultComponents);
         this._registeredCeComponentClass = Object.assign({},ComponentRegistry._defaultCeComponents);
         this._registered = true;
@@ -145,6 +165,8 @@ class ComponentRegistry extends Service {
         });
         if(Compile.needDummyComponentsDiv){
             _LC.setComponentsDiv(_LC.dummyLyteComponentsDiv,this.name);
+        }else{
+            Compile._registryNameList.$push(this.name);
         }
         _LC.setComponentsDiv(_LC.lyteComponentsDiv,this.name);
         if(registryClassDef.idePlugins){
@@ -171,10 +193,13 @@ class ComponentRegistry extends Service {
                 constructor(){
                     super();
                 }
-                static register(compName){
+                static register(compName, options){
                     compName = compName || _LC.String.dasherize(this.name);
                     this._registryClass = registryClassDef;
                     registryClassDef.registerComponent(compName, this);
+                    if(options){
+                        _LC.map.component.set(this, options);
+                    }
                 }
                 static unregisterComponent(){
                     _LC.unregisterComponent.apply(this,arguments);
@@ -214,6 +239,30 @@ class ComponentRegistry extends Service {
             }newCE._registryClass = registryClassDef;
             return newCE;
         })();
+        let pendingGroups = [{ list: Component._pendingComponents},{ list: Helper._pendingHelpers, useHelper: true},{ list: RawComponent._pendingComponents},{ list: _LC.directive._pendingDirectives}];
+        pendingGroups.forEach(({ list, useHelper }) => {
+            for (let i = 0; i < list.length; i++) {
+                let obj = list[i];
+                if (obj.options.refHash === options.hash) {
+                    if (useHelper) {
+                        obj.compClass.register(obj.compName, obj.helper, obj.options);
+                    } else {
+                        obj.compClass.register(obj.compName, obj.options);
+                    }
+                    list.splice(i, 1);
+                    break; // stop after first match
+                }
+            }
+        });
+    }
+    static getHash(){
+        return _LC.map.registry.get(this).hash;
+    }
+    static getRefHash(){
+        return _LC.map.registry.get(this).refHash;
+    }
+    static generateHash(){
+        return this.getHash() + "_Component_" + _LC.counter++;
     }
     static registerCeComponent(name,CompClass, options){
         var registry = this;
@@ -261,6 +310,29 @@ class ComponentRegistry extends Service {
             console.warn("Deprecated : Helper named - " + name + " is already registered");
         }
         //@Slicer.developmentEnd
+        if(this == ComponentRegistry){
+            //register helpe in global
+            //@Slicer.developmentStart
+            if(ComponentRegistry._defaultHelpers[name]){    
+                console.warn("Deprecated : Default helpers of Lyte can't be overrided - " + name + "");
+            }else{
+            //@Slicer.developmentEnd
+                ComponentRegistry._defaultHelpers[name] = helper;
+                //update in all reigstries
+                ComponentRegistry._registeredRegistries.forEach(function(obj){
+                    let _registryClass = obj.class;
+                    if(_registryClass._registered){
+                        _registryClass.prototype.registeredHelpers[name] = helper;
+                    }else if(_registryClass._beforeRegisteredHelpers){
+                        _registryClass._beforeRegisteredHelpers[name] = helper;
+                    }else{
+                        _registryClass._beforeRegisteredHelpers = {[name] : helper};
+                    }
+                })
+            //@Slicer.developmentStart
+            }
+            //@Slicer.developmentEnd
+        }
         if(this._registered){
             this.prototype.registeredHelpers[name] = helper;
         }else if(this._beforeRegisteredHelpers){
@@ -275,7 +347,7 @@ class ComponentRegistry extends Service {
 }
 ComponentRegistry.__lMod = "ComponentRegistry";
 ComponentRegistry._registeredRegistries = [];
-ComponentRegistry._definedComponents = {};
+// static _definedComponents = {};
 ComponentRegistry._definedCeComponents = {};
 ComponentRegistry._registeredCommonClass = {};
 ComponentRegistry._registeredCommonCeClass = {};
@@ -284,13 +356,18 @@ ComponentRegistry.customPropRegex = "";
 ComponentRegistry._defaultHelpers = {};
 ComponentRegistry._defaultComponents = {};
 ComponentRegistry._defaultCeComponents = {};
-ComponentRegistry.globalComponents = ["lyte-event-listener","import-shadow-style"];
+ComponentRegistry.globalComponents = ["lyte-event-listener", "import-shadow-style"];
 ComponentRegistry._unRegisteredComponents = [];
 ComponentRegistry._reRegisteredComponents = [];
-ComponentRegistry._directivesList = {};
+// static _directivesList = {};
 ComponentRegistry._registeredDirectivesClass = {};
 ComponentRegistry._lazyRegisterDirectives = {};
 ComponentRegistry._preLoadedDirectives = {};
+//@Slicer.lazyComponentRegisterStart
+ComponentRegistry.lazyRegister = true;
+//@Slicer.lazyComponentRegisterEnd
+ComponentRegistry.registerPerf = {};
+ComponentRegistry._observedAttributes = [];
 /*convert to custom class*/
 ComponentRegistry._componentApis = (function() {
     class apis extends Service {
@@ -300,35 +377,102 @@ ComponentRegistry._componentApis = (function() {
                 validate : function(){
                     return _LC.validate.apply(this, arguments);
                 },
+                getError : function(path){
+                    return _LC.getErrorStructure(this.ins,path)
+                },
                 _ins : this
             }
         }
         set(){
-            return _LC.componentSet.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd 
+                return _LC.componentSet.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                ApiError.error(this,err)
+            }
+            //@Slicer.catchAllErrorsEnd 
         }
         get(){
             return _LC.componentGet.apply(this, arguments);
         }
         throwEvent(){
-            return _LC.throwEvent.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd 
+                return _LC.throwEvent.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                ApiError.error(this,err)
+            }
+            //@Slicer.catchAllErrorsEnd
         }
         executeMethod(){
-            return _LC.executeMethod.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd
+                return _LC.executeMethod.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                ApiError.error(this,err);
+            }
+            //@Slicer.catchAllErrorsEnd
         }
         getData(){
-            return _LC.componentGetData.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd
+                return _LC.componentGetData.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                ApiError.error(this,err);
+            }
+            //@Slicer.catchAllErrorsEnd
         }
         setData(){
-            return _LC.componentSetData.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd 
+                return _LC.componentSetData.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                ApiError.error(this,err);
+            }
+            //@Slicer.catchAllErrorsEnd
         }
         getMethods(){
-            return _LC.componentGetMethods.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd
+                return _LC.componentGetMethods.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                ApiError.error(this,err);
+            }
+            //@Slicer.catchAllErrorsEnd
         }
         setMethods(){
-            return _LC.componentSetMethods.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd
+                return _LC.componentSetMethods.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                ApiError.error(this,err);
+            }
+            //@Slicer.catchAllErrorsEnd
         }
         hasAction(){
-            return _LC.componentHasAction.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd 
+                return _LC.componentHasAction.apply(this, arguments);
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                ApiError.error(this,err);
+            }
+            //@Slicer.catchAllErrorsEnd
         }
         getActions(){
             return _LC.componentGetActions.apply(this, arguments);
@@ -437,11 +581,20 @@ class Component extends ComponentRegistry._componentApis {
     static register(compName, options){
         var _registryClass = _LC.getRegistryClass(options);
         if(!_registryClass){
-            //@Slicer.developmentStart
-            RegistryError.error("LC004", "Component", compName)
-            //@Slicer.developmentEnd
-            return
+            Component._pendingComponents.push({
+                compClass : this,
+                compName : compName,
+                options : options
+            });
+            return;
+            // //@Slicer.developmentStart
+            // RegistryError.error("LC004","Component",compName)
+            // //@Slicer.developmentEnd
+            // return
         }
+        extendEventListeners(this)
+        _LC.map.component.set(this, options);
+        this._hash = options.hash;
         this._refHash = options.refHash
         compName = compName || _LC.String.dasherize(this.name);
         this._registryClass = _registryClass;
@@ -452,6 +605,7 @@ class Component extends ComponentRegistry._componentApis {
     }
 }
 Component.__lMod = "Component";
+Component._pendingComponents = [];
 Component._render = function(){
     return _LC._render.apply(this,arguments);
 };
@@ -464,10 +618,16 @@ class RawComponent extends Service {
     static register(compName, options){
         var _registryClass = _LC.getRegistryClass(options);
         if(!_registryClass){
-            //@Slicer.developmentStart
-            RegistryError.error("LC004", "Raw Component", compName)
-            //@Slicer.developmentEnd
+            RawComponent._pendingComponents.push({
+                compClass : this,
+                compName : compName,
+                options : options
+            });
             return;
+            // //@Slicer.developmentStart
+            // RegistryError.error("LC004","Raw Component",compName)
+            // //@Slicer.developmentEnd
+            // return;
         }
         this._refHash = options.refHash
         compName = compName || _LC.String.dasherize(this.name);
@@ -476,17 +636,24 @@ class RawComponent extends Service {
     }
 }
 RawComponent.__lMod = "RawComponent";
+RawComponent._pendingComponents = [];
 class Helper {
     static register(name, helper, options){
         var _registryClass = _LC.getRegistryClass(options);
         if(!_registryClass){
-            //@Slicer.developmentStart
-            RegistryError.error("LC004", "Helper", name)
-            //@Slicer.developmentEnd
+            Helper._pendingHelpers.push({
+                compClass : this,
+                compName : name,
+                helper : helper,
+                options : options
+            });
             return;
+            // //@Slicer.developmentStart
+            // RegistryError.error("LC004","Helper",name)
+            // //@Slicer.developmentEnd
+            // return;
         }
-        helper._hash = options.hash;
-        helper._refHash = options.refHash;
+        _LC.map.helper.set(this, options);
         //@Slicer.developmentStart
         if(ComponentRegistry._defaultHelpers[name]){    
             console.warn("Deprecated : Default helpers of Lyte can't be overrided - " + name + "");
@@ -504,6 +671,7 @@ class Helper {
     }
 }
 Helper.__lMod = "Helper";
+Helper._pendingHelpers = [];
 function arrayUtils(){
     return _LC.aF.apply(_LC, arguments);
 }
@@ -515,6 +683,13 @@ function set(){
 }
 ComponentRegistry._registeredComponentClass = {};
 ComponentRegistry._registeredCeComponentClass = {};
+Lyte.$ = {
+    assetsDiv : document.createElement("div"),
+    shadowDiv : document.createElement("div")
+}
+Lyte.$.assetsDiv.setAttribute("id", "lyteAssetsDiv");
+Lyte.$.shadowDiv.setAttribute("id", "lyteShadowDiv");
+
 // ComponentRegistry.Compile = Compile;
 let orgArrFns = ["push", "pop", "splice", "shift", "unshift", "concat"];
 for(let i=0; i<orgArrFns.length; i++){
@@ -526,7 +701,13 @@ for(let i=0; i<orgArrFns.length; i++){
     })
 }
 var _LC = {
-    validateRenderData : function(data){
+    "counter" : 0,
+    "_definedComponents" : {},
+    "registeredElementals" : {},
+    validateRenderData : function(data, _lyteOptions){
+        if(_lyteOptions && _lyteOptions.setInnerHTML){
+            return true
+        }
         //@Slicer.developmentStart
         if( !(data === undefined || data === null || (typeof data == "object" && !Array.isArray(data)) ) ){
             Lyte.warn("Invalid data passed to render the component from route.");
@@ -557,10 +738,11 @@ var _LC = {
                         ltCf.lyteV4 = oldLyteV4
                         return;
                     }
-                    let ele = registryInstance.render(compClass,data,outlet,options);
+                    options = options || {};
                     if(object._route){
-                        ele._route = object._route;
+                        options._route = object._route;
                     }
+                    let ele = registryInstance.render(compClass,data,outlet,options);
                     ltCf.fromV4Render = false;
                     ltCf.lyteV4 = oldLyteV4
                     return ele;
@@ -570,10 +752,11 @@ var _LC = {
                         // if(registryClass._instanceList.length > 1){
                         //     Lyte.error("Registry not instanced for ",compClass.name);
                         // }else{
-                            let ele = registryClass._instanceList[0].render(compClass, data, outlet, options);
+                            options = options || {};
                             if(object._route){
-                                ele._route = object._route;
+                                options._route = object._route;
                             }
+                            let ele = registryClass._instanceList[0].render(compClass,data,outlet,options);
                             ltCf.fromV4Render = false;
                             ltCf.lyteV4 = oldLyteV4
                             return ele;
@@ -593,140 +776,12 @@ var _LC = {
         }
         //@Slicer.developmentEnd
     },
-    Security : {
-        defaultTags : ["link-to"],
-        defaultAttr : ["yield-name","lt-prop-route", "lt-prop-dp", "lt-prop-fragment", "lt-prop-qp", "lt-prop", "lt-prop-class", "lt-prop-id", "lt-prop-rel", "lt-prop-title", "lt-prop-style", "lt-prop-target","lt-prop-td","lt-prop-custom","lt-prop-target","lt-prop-id","lt-prop-class","lt-prop-style","lt-prop-rel","lt-prop-title"],
-        sanitizeHTML : function(obj){
-            let clean;
-            let divEle = document.createElement("div");
-            let html = obj.html;
-            let instance = obj.instance;
-            // let options = obj.options;
-            let additionalObject = obj.additionalObject ? obj.additionalObject : {};
-            if(instance && Object.keys(instance).length){
-                if(additionalObject && Object.keys(additionalObject).length){
-                    clean = _LC.Security.sanitizeWithConfig(html ,additionalObject, instance);
-                }
-                else{
-                    clean = instance.sanitize(html);
-                }
-            }else{
-                //@Slicer.developmentStart
-                ApiError.error("LC009");
-                //@Slicer.developmentEnd
-                return;
-            }
-            divEle.innerHTML = clean;
-            return divEle;
-        },
-        createSanitizer : function (obb) {
-            _LC.Security.initializeConfig(obb);
-            _LC.Security.addConfig(obb);
-            _LC.Security.addLyteComponents(obb);
-            let instance = ZSEC.HTMLPurifier(obb);
-            instance._GLOBAL_TAGS = obb.GLOBAL_TAGS;
-            instance._GLOBAL_ATTRIBUTES = obb.GLOBAL_ATTRIBUTES;
-            instance._FORBID_TAGS = obb.FORBID_TAGS;
-            instance._FORBID_ATTR = obb.FORBID_ATTR;
-            return instance;
-        },
-        sanitizeWithConfig : function(html , additionalObject, instance){
-            _LC.Security.addGlobalObject(instance,additionalObject);
-            let clean = instance.sanitize(html);
-            _LC.Security.removeGlobalObject(instance,additionalObject);
-            return clean;
-        },
-        initializeConfig : function(obb){
-            if (!obb.GLOBAL_ATTRIBUTES) {
-                obb.GLOBAL_ATTRIBUTES = [];
-            }
-            if (!obb.FORBID_TAGS) {
-                obb.FORBID_TAGS = [];
-            }
-            if (!obb.FORBID_ATTR) {
-                obb.FORBID_ATTR = [];
-            }
-            if (!obb.GLOBAL_TAGS) {
-                obb.GLOBAL_TAGS = [];
-          }
-        },
-        addConfig : function(obb){
-            _LC.Security.defaultAttr.forEach(function(item){
-                obb.GLOBAL_ATTRIBUTES.$push(item);
-            })
-            _LC.Security.defaultTags.forEach(function(item){
-                obb.GLOBAL_TAGS.$push(item);
-            })
-        },
-        removeConfig : function(obb){
-            if(obb && Object.keys(obb) && Object.keys(obb).length > 0){
-                if(obb.GLOBAL_ATTRIBUTES && obb.GLOBAL_ATTRIBUTES.length > 0){
-                    _LC.Security.defaultAttr.forEach(function(item){
-                        var index = obb.GLOBAL_ATTRIBUTES.indexOf(item);
-                        if(index != -1){
-                            obb.GLOBAL_ATTRIBUTES.$splice(index,1);
-                        }
-                    })
-                }
-                if(obb.GLOBAL_TAGS && obb.GLOBAL_TAGS.length > 0){
-                    _LC.Security.defaultTags.forEach(function(item){
-                        var index = obb.GLOBAL_TAGS.indexOf(item);
-                        if(index != -1){
-                            obb.GLOBAL_TAGS.$splice(index,1);
-                        }
-                    })
-                }
-            }
-        },
-        addLyteComponents : function(obb){
-            var globalTagArr = Array.from(obb.GLOBAL_TAGS);
-            var attr = [];
-            for(var a=0; a<globalTagArr.length; a++){
-                let regComps = ComponentRegistry._registeredCommonClass;
-                if(regComps[globalTagArr[a]]){
-                    attr = regComps[globalTagArr[a]].observedAttributes;
-                }else if(Lyte.registeredCustomComponent[globalTagArr[a]]){
-                    if(Lyte.registeredCustomComponent[globalTagArr[a]].observedAttributes){
-                        attr = Lyte.registeredCustomComponent[globalTagArr[a]].observedAttributes;
-                    }
-                }
-                for(var i=0; i<attr.length; i++){
-                    if(obb.GLOBAL_ATTRIBUTES.indexOf(attr[i]) == -1){
-                        obb.GLOBAL_ATTRIBUTES.$push(attr[i]);
-                    }
-                }
-            }
-        },
-        addGlobalObject : function(instanceObj,additionalObj){
-            for (var property in additionalObj) {
-                    if(Array.isArray(additionalObj[property])){
-                        additionalObj[property].forEach(function(item){
-                            if(instanceObj["_"+property].indexOf(item) == -1){
-                                instanceObj["_"+property].$push(item);
-                            }
-                        });
-                }
-            }
-        },
-        removeGlobalObject : function(instanceObj,additionalObj){
-            for (var property in additionalObj) {
-                if(Array.isArray(additionalObj[property])){
-                    additionalObj[property].forEach(function(item){
-                        var index = instanceObj["_"+property].indexOf(item);
-                        if(index != -1){
-                            instanceObj["_"+property].$splice(index,1);
-                        }
-                    });
-            }
-            };
-        }
-    },
     toBeRegistered : [],
     getRegistryClass : function(options){
         let registryClass;
         ComponentRegistry._registeredRegistries.forEach(function(obj){
             let reg = obj.class;
-            if(reg._hash == options.refHash){
+            if(_LC.map.registry.get(reg).hash == options.refHash){
                 registryClass = reg;
                 return
             }
@@ -802,6 +857,7 @@ var _LC = {
         }
     },
     "getNearestParentApp" : function(node){
+        let app;
         if(!node){
             node = this;
         }
@@ -844,6 +900,7 @@ var _LC = {
                     },[])
                     regIns["_"+name] = directiveIns;
                     regIns._defaultDirectives.push(name);
+                    directiveIns.didConnect && directiveIns.didConnect.apply(directiveIns, [regIns])
                 })
             }
         })
@@ -869,10 +926,57 @@ var _LC = {
     "getComponentsDiv" : function(template,name){
         return template.querySelector("#"+name);
     },
-    "getCompRegistry" : function(obj,self){
+    "validateRegistryClass" : function(name, returnClass){
+        let regFound,regClass;
+        ComponentRegistry._registeredRegistries.forEach(function(regObj){
+            if(regObj.name == name){
+                regFound = true;
+                regClass = regObj.class;
+            }
+        })
+        return returnClass ? regClass : regFound;
+    },
+    "getRegFromAttr" : function(self, localName){
         var initProp = self._initProperties;
         if((initProp && initProp.lyteRegistry) || (self.hasAttribute("lyte-registry"))){
-            var reg = initProp.lyteRegistry || self.getAttribute("lyte-registry");
+            var reg = (initProp && initProp.lyteRegistry) || self.getAttribute("lyte-registry");
+            if(typeof reg == "function"){
+                if(_LC.validateRegistryClass(reg.name)){
+                    if(reg._instanceList.length){
+                        reg = reg._instanceList[0];
+                    }else{
+                        RegistryError.error("LC012", reg.name ,localName);    
+                    }
+                }else{
+                    RegistryError.error("LC011", reg.name, localName);
+                    return;
+                }
+            }else if(typeof reg == "string"){
+                let regClass = _LC.validateRegistryClass(reg,true)
+                if(regClass){
+                    if(regClass._instanceList.length){
+                        reg = regClass._instanceList[0];
+                    }else{
+                        RegistryError.error("LC014", reg, localName);    
+                    }
+                }else{
+                    RegistryError.error("LC013",reg, localName);
+                    return;
+                }
+            }
+            if(localName == "dynamicComponent" && !_LC.isValidReg(reg)){
+                let name =  reg ? reg.constructor ? reg.constructor.name : reg : reg ;
+                //@Slicer.developmentStart
+                RegistryError.error("LC015", name, localName);
+                //@Slicer.developmentEnd
+                return false;
+            }
+            return reg;
+        }
+    },
+    "getCompRegistry" : function(obj,self){
+        var reg = this.getRegFromAttr(self, self.localName);
+        if(reg){
             var registryMap = new WeakMap();
             if(this.checkInRegistry(reg,obj,registryMap)){
                 return;
@@ -887,8 +991,10 @@ var _LC = {
                 this.traverseRegistries([defRegIns],obj,self);    
             }else{
                 let defaultReg = _LC.getDefaultRegistry();
-                let defaultRegInsArr = defaultReg._instanceList;
-                this.traverseRegistries(defaultRegInsArr,obj,self);
+                if(defaultReg){
+                    let defaultRegInsArr = defaultReg._instanceList;
+                    this.traverseRegistries(defaultRegInsArr,obj,self);
+                }
             }
         }
     },
@@ -907,7 +1013,7 @@ var _LC = {
             return false;
         }else if(registryMap.get(reg)){
             //@Slicer.developmentStart
-            RegistryError.error("LC007", reg.constructor.name);
+            // RegistryError.error("LC007", reg.constructor.name);
             //@Slicer.developmentEnd
             return false;
         }
@@ -916,7 +1022,7 @@ var _LC = {
     },
     "checkInRegistry" : function(registry,obj,registryMap){
         if(this.isValidateLyteReg(registry,registryMap)){
-            obj.compClass = obj.type == "component" ? registry.constructor._registeredComponentClass[obj.compName] : registry.constructor._registeredCeComponentClass[obj.compName];
+            obj.compClass = obj.type == "component" ? registry.constructor._registeredComponentClass[obj.compName] : obj.type == "helper" ? registry.registeredHelpers[obj.compName] : registry.constructor._registeredCeComponentClass[obj.compName];
             if(obj.compClass){
                 obj.regIns = registry;
                 obj.lIns = registry.$app ? registry.$app : registry.$addon;
@@ -1037,6 +1143,7 @@ var _LC = {
             customCrmComponent._depthTemp = document.createElement("template");//af check
             customCrmComponent.prototype.throwAction = this.throwAction;
             customCrmComponent._compName = componentName;
+            
             Object.defineProperty(customCrmComponent.prototype, "setData", {
                 configurable : true, 
                 writable : true,
@@ -1080,35 +1187,31 @@ var _LC = {
         }
         componentClass._v4 = true;
         customCrmComponent.component = Component;
+        componentClass._depthTemp = document.createElement("template");
         customCrmComponent._observedAttributes = componentClass._observedAttributes || [];
         customCrmComponent._deepWatchProperties = componentClass._deepWatchProperties || {};
         // if(!componentClass._registered){
-            customCrmComponent._registerComponent(
-                componentName,
-                customCrmComponent,
-                componentClass,
-                registry,
-                registryInstance
-            );
+        var currRegClass = registryInstance.constructor;
+        if(currRegClass && !currRegClass.lazyRegister){
+            customCrmComponent._registerComponent(componentName,customCrmComponent,componentClass,registry,registryInstance);
+        }
+        else{
+            if(currRegClass.lazyScheduler.tasks.get(componentName, registryName)){
+                currRegClass.lazyScheduler.deleteTask(componentName, registryName);
+            }
+            currRegClass.lazyScheduler.enqueueTask(customCrmComponent._registerComponentFn(componentName,customCrmComponent,componentClass,registry,registryInstance), [], componentName, registryName);
+        }
         // }
         customCrmComponent._bindsIds = [];
-        if(!ComponentRegistry._definedComponents[componentName]) {
-            if (document.readyState === "complete" || document.readyState === "interactive") {     
+        if(!_LC._definedComponents[componentName]) {
+            if (document.readyState === "complete" || document.readyState === "interactive"  || window.preLoadLyteComponents) {     
                 customElements.define(componentName, customCrmComponent, undefined, {v4 : true});
             }
             else{
                 _LC.toBeRegistered.$push({name:componentName, def: customCrmComponent, _lyteOptions : {v4 : true}});
             }
         }
-        ComponentRegistry._definedComponents[componentName] = customCrmComponent;
-        let depthTemp = customCrmComponent._depthTemp;
-        if(depthTemp && depthTemp.content.childNodes.length) { //removed _ie
-            depthTemp.setAttribute("data-id", "depthTemp_" + componentName);
-            let lyteComponentsDiv = _LC.getComponentsDiv(_LC.lyteComponentsDiv,registry.name);
-            lyteComponentsDiv.appendChild(depthTemp);
-        } else {
-            delete customCrmComponent._depthTemp;
-        }
+        _LC._definedComponents[componentName] = customCrmComponent;
         componentClass._instanciated = true;
         componentClass._registered = true;
         ComponentRegistry._registeredCommonClass[componentName] = customCrmComponent;
@@ -1147,7 +1250,97 @@ var _LC = {
             return wrapper.firstChild;
         },
     },
+    "deep" : {
+        "set" : function(properties, deepTriggerObj, childTriggerObj){
+            if(deepTriggerObj){
+                properties["*"] = deepTriggerObj;
+            }
+            if(childTriggerObj){
+                properties["{}"] = childTriggerObj;
+            }
+        },
+        "delete" : function(comp, node, dynArr, pathName, deepNodeArr){
+            if(node._deepValues){
+                dynArr.forEach(function(dynVal,indd){ //do the same for helpernodes too
+                    deepNodeArr.$push(undefined);
+                    if(dynVal != pathName && (node._deepValues.indexOf(dynVal) != -1)){
+                        var prop = comp.getProperty(dynVal);
+                        let nodes = prop._dynamicNodes;
+                        let index = nodes.indexOf(node);
+                        deepNodeArr.$push(index);
+                        if(nodes && nodes.length){
+                            nodes.$splice(index, 1);
+                        }
+                    }
+                });
+            }
+        },
+        "add" : function(comp, node, dynArr, pathName, multipleDeepNodeArr){
+            if(node._deepValues){
+                dynArr.forEach(function(dynVal,indd){ //do the same for helpernodes too
+                    if(dynVal != pathName && (node._deepValues.indexOf(dynVal) != -1)){
+                        var prop = comp.getProperty(dynVal);
+                        makeArray(prop, "_dynamicNodes");
+                        if(prop._dynamicNodes.indexOf(node) == -1){
+                            let index = multipleDeepNodeArr[indd];
+                            prop._dynamicNodes.$splice(index,0,node);
+                        }
+                    }
+                });
+            }
+        },
+        "getAllKeys" : function(loopDeep ,actualData, arr, prevPath, sourceReferences, deepValues){
+            if(typeof actualData == "object"){
+                for(let key in actualData){
+                    let actData = actualData[key];
+                    if(sourceReferences.indexOf(actData) == -1){
+                        let newPath = prevPath + "." + key;
+                        arr.push(newPath);
+                        deepValues.push(newPath);
+                        if(typeof actData == "object"){
+                            sourceReferences.push(actData);
+                        }
+                        if(loopDeep){
+                            this.getAllKeys(loopDeep, actData, arr, newPath, sourceReferences, deepValues);
+                        }
+                    }
+                }
+            }
+        },
+        "replace" : function(val){
+            val = val.replace('.{}','____lyteinternalobj____');
+            val = val.replace('.*','____lyteinternalstar____');
+            return val;
+        },
+        "replaceBack" : function(val){
+            val = val.replace('____lyteinternalobj____','.{}');
+            val = val.replace('____lyteinternalstar____','.*');
+            return val;
+        },
+        "data" : function(argStr, observer, scpData){
+            let result;
+            let item = argStr.slice(0,-2);
+            if(observer && observer.path.startsWith(item)){
+                result = observer;
+                observer.item = item;
+                observer.data = _LC.get(scpData,item);
+                observer.type = "deepChange";
+            }else{
+                let dta = _LC.get(scpData,item);
+                result = {
+                    newValue : dta,
+                    data : dta,
+                    oldValue : null,
+                    type : "deepChange",
+                    item : item
+                }
+            }
+            return result;
+        }
+    },
     "directive" : {
+        "_pendingDirectives" : [],
+        
         setTagDirectives : function(compClass,comp){
             if(compClass._lyteOptions && compClass._lyteOptions.attributes && compClass._lyteOptions.attributes.length){
                 let attr = compClass._lyteOptions.attributes;
@@ -1204,7 +1397,7 @@ var _LC = {
                 }
             }
         },
-        getTransitionArg : function(node,directiveName){
+        getTransitionArg : function(node,directiveName,returnAttr){
             let transitionArg;
             if(node.component && node.component.constructor._options){
                 this.setAttrFromRender(node);
@@ -1213,7 +1406,7 @@ var _LC = {
             if(node._specialAttributeDetails){
                 node._specialAttributeDetails.forEach(function(attr){
                     if(directiveName == attr.hookName){
-                        transitionArg = self.getActualTransitionArg(attr,node);
+                        transitionArg = returnAttr ? attr : self.getActualTransitionArg(attr,node);
                         return;
                     }
                 })
@@ -1264,7 +1457,77 @@ var _LC = {
             }
             node.ownerElement._transitionArgs[actNodeName] = nodeValue;
             node.ownerElement.setAttribute("lyte-directive-" + actNodeName,"");
-        }
+        },
+        infoA : function(comp,info,dynamicN,helperNode,attr,yieldComp,options,isDefaultDirective){
+            this.setSpecialNodes(comp,helperNode,dynamicN,info,options);
+            if(dynamicN._specialAttributeDetails && dynamicN._specialAttributeDetails.length){
+                dynamicN._specialAttributeDetails.push(attr);
+            }else{
+                dynamicN._specialAttributeDetails = [attr];
+            }
+            if(!isDefaultDirective){
+                if(yieldComp){
+                    yieldComp._transitionAppend.$push(dynamicN);
+                }
+                else if(comp._transitionAppend.indexOf(dynamicN)==-1 && dynamicN && dynamicN.getAttribute("is") != "component"){
+                    comp._transitionAppend.$push(dynamicN);
+                }
+            }
+        },
+        setSpecialNodes : function(comp,helperNode,dynamicN,info,options){
+            if (helperNode && (helperNode._hooksPresent || helperNode._defaultSetSpecialNode || dynamicN.hasAttribute("lyte-directive-prop") || dynamicN.hasAttribute("lyte-directive-node") || dynamicN.hasAttribute("lyte-directive-data"))) {
+                if(helperNode._specialNodes){
+                    if(helperNode.getAttribute("is") == "for"){
+                        helperNode._specialNodes[options.itemIndex][info.in] = dynamicN;
+                    }else if(helperNode.getAttribute("is") == "forIn"){
+                        helperNode._specialNodes[options.itemIndex][info.in] = dynamicN;
+                    }
+                    else if(helperNode && /if|switch/g.test(helperNode.getAttribute("is"))){
+                        helperNode._specialNodes[info.in] = dynamicN;  
+                    }
+                    else if(helperNode && helperNode.tagName == "LYTE-YIELD"){
+                        helperNode._specialNodes[info.in] = dynamicN;
+                    }
+                }
+            }else if(dynamicN && dynamicN._hooksPresent && comp._specialNodes){
+                comp._specialNodes[info.in] = dynamicN;
+                comp._hooksPresent = true;
+                comp.hc = true;
+            }else if(dynamicN && dynamicN._defaultSetSpecialNode && comp._specialNodes){
+                comp._specialNodes[info.in] = dynamicN;
+                comp._defaultSetSpecialNode = true;
+            }
+            if(info){
+                if(info.chld){
+                    dynamicN._chld = info.chld;
+                }
+                if(info.dc){
+                    dynamicN.dc = info.dc;
+                    dynamicN.hc = info.hc;
+                }
+                if(info.sibl){
+                    dynamicN._sibl = info.sibl;
+                }
+            }
+        },
+        getExactTransitionArg : function(attr,node){
+            if(attr.hasOwnProperty("dynamicValue") || attr.hasOwnProperty("helperInfo")){
+                if(node.hasOwnProperty("_transitionArgs")){
+                    if(node._transitionArgs.hasOwnProperty(attr.hookName)){
+                        return node._transitionArgs[attr.hookName];
+                    }
+                }
+            }else if(attr.hasOwnProperty("stringValue")){
+                if(attr.hasOwnProperty("stringValue")){
+                    if(attr.stringValue === ""){
+                        if(node.id){
+                            attr.stringValue = node.id;
+                        }
+                    }
+                    return attr.stringValue;
+                }
+            }
+        },
     },
     "fRP" : {},
     "fRC" : 0,
@@ -1287,6 +1550,9 @@ var _LC = {
     "_registeredComponents" : {},
     // "_reRegisteredComponents" : [],
     // "toBeRegistered" : [],
+    "getCmpData":function(data){
+        return data && data.__target__ ? data.__target__ : data;
+    },
     "updateCustomCrmComponent" : function(componentClass){
         var def = componentClass.__observers;
         for(let key in def) {
@@ -1348,6 +1614,7 @@ var _LC = {
     //this and scope reference should be either a node or a route.
     "throwAction" : function(scope,eventName,actObj,isCustom,customArgs, node, event, hasHandled, fromEv){
         let actionsObj;
+        let stopBubble = false;
         let app = _LC.getNearestParentApp(this.component);
         if(this._route && isCustom) {
             // scope = Lyte.Router.getRouteInstance(this._route);
@@ -1360,7 +1627,12 @@ var _LC = {
             if(parentRoute) {
                 if(parentRoute.component && parentRoute.component.component) {
                     scope = parentRoute.component;
-                    actionsObj = scope.component.constructor._actions; 
+                    if(scope.component){
+                        actionsObj = scope.component.constructor._actions; 
+                    }else{
+                        scope = app.$.modules.router[0].getRouteInstance(scope._route);
+                        actionsObj = scope.actions || (scope.actions = {});
+                    }
                 } else {
                     scope = parentRoute;
                     // actionsObj =  scope.actions || (scope.actions = {});            
@@ -1369,7 +1641,11 @@ var _LC = {
                 }
             }
         } else if(scope){
+            if(scope.component && !scope._didDestroyCalled){
                 actionsObj = scope.component.constructor._actions
+            }else{
+                return;
+            }
         }
         if(!scope) {
             //Only warning is thrown because, we can have a eventListener for the dom directly. 
@@ -1387,6 +1663,7 @@ var _LC = {
         actObj = (actObj) ? actObj : this._actions && this._actions[dasherizedEventName]? this._actions[dasherizedEventName].processAction : void 0;     
         */
         let args = customArgs ? customArgs : [];
+        let processDetails = {};
         if(actObj){
             var contextSwitchArray = [];
             if(node) {
@@ -1406,7 +1683,7 @@ var _LC = {
                 // }
                 concatArgs = actObj.args;
             } else {
-                concatArgs = this.processArgs(scope,{"helperInfo" : actObj}, undefined, event, node);
+                concatArgs = this.processArgs(scope,{"helperInfo" : actObj}, undefined, undefined, event, node, undefined, undefined, undefined , processDetails);
             }
             args.$splice.apply(args, [0,0].$concat(concatArgs) );
             if(node) {
@@ -1415,13 +1692,28 @@ var _LC = {
             if(actionsObj[actObj.name]){
                 if(!isCustom){  
                     //args.$unshift(window.event);
-                    let parent = node.parentNode;
-                    let val = actionsObj[actObj.name].apply(this.component,args);
+                    let parent = node.parentNode,val;
+                     //@Slicer.developmentStart
+                     _LC.debugPerf(app, this.__renderId, "Action "+actObj.name, this.constructor._compName);
+                     //@Slicer.developmentEnd
+                    //@Slicer.catchAllErrorsStart
+                     try{
+                    //@Slicer.catchAllErrorsEnd 
+                        val = actionsObj[actObj.name].apply(this.component, args);
+                    //@Slicer.catchAllErrorsStart
+                     }catch(err){
+                        app.appError?app.appError.error(this.component,err):ComponentError.error(this.component,err);
+                     }
+                     //@Slicer.catchAllErrorsEnd
+                     //@Slicer.developmentStart
+                     _LC.debugPerf(app, this.__renderId, "Action "+actObj.name, this.constructor._compName);
+                     //@Slicer.developmentEnd
                     if(event.currentTarget !== document.body && !_LCSD.getHostElement(event.currentTarget) && !fromEv) {
                         val = false;
                     }
                     hasHandled = true;
-                    if(val !== false && !event.cancelBubble){
+                    
+                    if(val !== false && !event.cancelBubble && !stopBubble){
                         if(actObj.from && node.getAttribute(event.type) && node._boundEvents && node._boundEvents[event.type]) {
                             let actions = node._callee.component.constructor._actions;
                             let actObj = node._boundEvents[event.type];
@@ -1440,9 +1732,12 @@ var _LC = {
                             if(_LC.isCustomElement(node)){
                                 scope = parent;
                             }
-                            if(parent){
+                            if(parent  &&  !(event.currentTarget !== document.body && !_LCSD.getHostElement(event.currentTarget))){
                                 let eventStopped;
                                 while(parent && !_LCSD.getHostElement(parent) && (!parent.getAttribute(eventName) || parent.hasAttribute("disabled") ) && parent.tagName != "BODY"){
+                                    if(parent._hiddenBoundEvents && parent._hiddenBoundEvents[eventName]){
+                                        break;
+                                     }
                                     if(_LC.hasLyteEvents(parent, eventName)) {
                                         eventStopped = _LC.handleLyteEvents(parent, event);
                                         if(eventStopped) {
@@ -1470,19 +1765,34 @@ var _LC = {
                                        _LC.skipArgProcessing(cloneActObj, event, parent);
                                        _LC.throwAction.call(parent._callee,parent._callee,eventName,cloneActObj,undefined,undefined,parent,event, hasHandled);  
                                    }
+                                   
                                 }
                             }
                         }
                     }
                 }            
                 else{                
-                    actionsObj[actObj.name].apply(this._callee.component,args);
-                    hasHandled = true;                                             
+                    //@Slicer.developmentStart  
+                    _LC.debugPerf(app, this.__renderId, "Action "+actObj.name, this.constructor._compName);
+                    //@Slicer.developmentEnd 
+                    //@Slicer.catchAllErrorsStart
+                    try{
+                    //@Slicer.catchAllErrorsEnd
+                        actionsObj[actObj.name].apply(this._callee.component, args);
+                    //@Slicer.catchAllErrorsStart
+                    }catch(err){
+                        app.appError ? app.appError.error(this.component,err) : ComponentError.error(this._callee.component,err);
+                    }
+                    //@Slicer.catchAllErrorsEnd     
+                    //@Slicer.developmentStart
+                    _LC.debugPerf(app, this.__renderId, "Action "+actObj.name, this.constructor._compName);
+                    //@Slicer.developmentEnd
+                    hasHandled = true;                                           
                 } 
             }
             //@Slicer.developmentStart
             else{
-                ComponentError.error(app, "LC004" , actObj.name);
+                ComponentError.error(this, "LC004" , actObj.name);
             }
             //@Slicer.developmentEnd
         } else if(isCustom) {
@@ -1519,8 +1829,9 @@ var _LC = {
             //@Slicer.developmentEnd
             return;
         }
+        
         //temporary fix
-        _LC.set(this.data, key, value, options, undefined, fromParent);
+        return _LC.set(this.data, key, value, options, undefined, fromParent);
     },
     "componentGet" : function(key) {
         return key ? _LC.get(this.data, key) : this.data;
@@ -1620,6 +1931,7 @@ var _LC = {
     },
     "handleValidation" : function(object, property, value, component ,init) {
         let error = validateData(object, property, value, component ,this._lyteInstance ,init);
+        let cmpData = _LC.getCmpData(component.data);
         if(error) {
             _LC.set(component.data.errors, property, error);
             if(component.$node.callback) {
@@ -1645,7 +1957,7 @@ var _LC = {
         comp.__h[id] = node;
         node.__lyteId = id;
     },
-    "update":function(object, property, value, options, fromStore,oldValue,setterScope, actualProperty, fromParent ,FromUtils, storeRecord){
+    "update":function(object, property, value, options, fromStore,oldValue,setterScope, actualProperty, fromParent ,FromUtils, storeRecord, fromAttr){
         let fromComponent = object.__component__;
         let updateAttr = true;
         let dataType, dataDef, estObjBind = false;
@@ -1653,29 +1965,36 @@ var _LC = {
             oldValue = object[property];
             if(fromComponent && fromComponent.tagName !== "LYTE-YIELD") {
                 dataDef = fromComponent.component.__data[property];
-                if(dataDef && (dataType = dataDef.type)) {
-                    updateAttr = !dataDef.hideAttr;
-                    if(dataType !== _LC.getDataType(value) && (value !== undefined || dataType === "boolean")) {
-                        value = _LC.typeCast(value, dataType);
+                if(!options || (typeof options == "object" && options.skipValidation != true)){
+                    if(dataDef && (dataType = dataDef.type)) {
+                        updateAttr = !dataDef.hideAttr;
+                        if(dataType !== _LC.getDataType(value) && (value !== undefined || dataType === "boolean")) {
+                            value = _LC.typeCast(value, dataType);
+                        }
                     }
                 }
-                if(value === oldValue) {
+                if(value === oldValue && (!options || !options.force)) {
                     _LC.clearError(object, property);
                     return;
                 }
                 if(!options || (typeof options == "object" && options.skipValidation != true)){
                     let error = _LC.handleValidation(object, property, value, fromComponent.component);
+
                     if(error) {
+                        // //@Slicer.developmentStart
                         // if(fromComponent.component.data.errors && Object.keys(fromComponent.component.data).length){
-                        //     Lyte.error("Error in data passed to component '"+fromComponent.component.$node.localName+"' for the properties - "+Object.keys(fromComponent.component.data.errors).toString());
+                        //     ComponentError.error("Error in data passed to component '"+fromComponent.component.$node.localName+"' for the property - "+property);
                         // }
-                        return;
+                        // //@Slicer.developmentEnd
+                        return false;
                     }
                 }
         }
             //object[property] = value;
             if(!object.hasOwnProperty(property) && !(Array.isArray(object))) {
                 _LC.oF(object, "add", property, value, true )
+            }else if(_LC.freeze && _LC.freeze.prop(object.__component__, property)){
+                return;
             } else {
                 object[property] = value;
             }
@@ -1695,8 +2014,19 @@ var _LC = {
                      let jsonString;
                      try{
                         jsonString = JSON.stringify(value);
-                        fromComponent.attributes.getNamedItem(dasherizedAttr).__lyteIgnore = true;
-                        fromComponent.setAttribute(dasherizedAttr, jsonString);
+                        // fromComponent.attributes.getNamedItem(dasherizedAttr).__lyteIgnore = true;
+                        // fromComponent.setAttribute(dasherizedAttr, jsonString);
+                        // fromComponent.attributes.getNamedItem(dasherizedAttr).__lyteIgnore = false;
+                        let attrNode1 = fromComponent.attributes.getNamedItem(dasherizedAttr);
+                        attrNode1.__lyteIgnore = true;
+                        if(!fromComponent._connectedCalled && fromComponent.hasAttribute(dasherizedAttr)){
+                            fromComponent.setAttribute(dasherizedAttr, jsonString);
+                            attrNode1.__lyteIgnore = false;
+                            return;
+                        }else{
+                            fromComponent.setAttribute(dasherizedAttr, jsonString);
+                            attrNode1.__lyteIgnore = false;
+                        }
                      } catch(e) {
 
                      }
@@ -1709,6 +2039,9 @@ var _LC = {
                          }
                          attributeString = attributeString || "";
                          fromComponent.setAttribute(dasherizedAttr, attributeString);
+                         if(detAttr) {
+                            detAttr.__lyteIgnore = false;
+                         }
                      }
                  }
              }
@@ -1726,11 +2059,12 @@ var _LC = {
                         configurable: true
                     });
                 }
+                let fcmpData = fromComponent ? (_LC.getCmpData(fromComponent.component.data)) : undefined;
                 //for changing only child component
-                if(fromComponent && fromComponent.component.data === object && property.indexOf('.')=== -1) {
+                if(fromComponent && fcmpData === object && property.indexOf('.')=== -1) {
                     let bindings = fromComponent.getProperty(property);
                     this.removeSelectedBindingDeep(bindings, oldValue);
-                    addBindings(value._bindings,bindings);
+                    addBindings(value,bindings);
                     this.establishBindings(bindings, value);
                     //For removing binding in the object due to forIn Helper ( actual object binding and not the _dynamicNodes binding).
                     if(bindings._forHelpers) {
@@ -1745,7 +2079,7 @@ var _LC = {
                         }
                     }
                     let stack = [];
-                    this.affectChanges(bindings,undefined,oldValue,setterScope,object[property],stack);
+                    this.affectChanges(bindings,undefined,oldValue,setterScope,object[property],stack,undefined,undefined,undefined,undefined,undefined,options);
                     this.executeObserver(stack);
                 } else {
                     //To change only the bindings present in the object and not all the bindings present in the oldValue.
@@ -1755,7 +2089,7 @@ var _LC = {
                             let item = oldbind[i][property];
                             if(item) {
                                 this.removeSelectedBindingDeep(item, oldValue);
-                                addBindings(value._bindings,item);
+                                addBindings(value,item);
                                 this.establishBindings(item, value);
                                 //For removing binding in the object due to forIn Helper ( actual object binding and not the _dynamicNodes binding).
                                 if(item._forHelpers) {
@@ -1768,7 +2102,7 @@ var _LC = {
                                     }
                                 }
                                 let stack = [];
-                                this.affectChanges(item,undefined,oldValue,setterScope,object[property],stack);
+                                this.affectChanges(item,undefined,oldValue,setterScope,object[property],stack,undefined,undefined,undefined,undefined,undefined,options);
                                 this.executeObserver(stack);
                             }
                         }
@@ -1784,11 +2118,18 @@ var _LC = {
                     for(let i=0;i<objbind.length;i++){
                         let item = objbind[i];
                         if(item[property]) {
-                            addBindings(value._bindings,item[property]);
+                            addBindings(value,item[property]);
                             this.establishBindings(item[property], value);
                             let stack = [];
-                            this.affectChanges(item[property],undefined,oldValue,setterScope,object[property],stack);
+                            this.affectChanges(item[property],undefined,oldValue,setterScope,object[property],stack,undefined,undefined,undefined,undefined,undefined,options);
                             this.executeObserver(stack);
+                        }else{
+                            if(item["{}"]){
+                                this.affectChanges(item["{}"],undefined,oldValue,setterScope,object[property],undefined,undefined,undefined,undefined,true,undefined,options);
+                            }
+                            if(item["*"]){
+                                this.affectChanges(item["*"],undefined,oldValue,setterScope,object[property],undefined,undefined,undefined,undefined,true,undefined,options);
+                            }  
                         }
                     }
                 }
@@ -1832,8 +2173,18 @@ var _LC = {
                     let item = objbind[i];
                     if(item[property]) {
                         let stack = [];
-                        this.affectChanges(item[property],undefined,oldValue,setterScope,object[property],stack);
+                        this.affectChanges(item[property],undefined,oldValue,setterScope,object[property],stack,undefined,undefined,undefined,undefined,undefined,options);
                         this.executeObserver(stack);
+                    }else{
+                        if(item["{}"]){
+                            this.affectChanges(item["{}"],undefined,oldValue,setterScope,object[property],undefined,undefined,undefined,undefined,true,undefined,options);
+                        }
+                        if(item["*"]){
+                            this.affectChanges(item["*"],undefined,oldValue,setterScope,object[property],undefined,undefined,undefined,undefined,true,undefined,options);
+                        }
+                    }
+                    if(item["$data"]){
+                        this.affectChanges(item["$data"],undefined,oldValue,setterScope,object[property],undefined,undefined,undefined,undefined,undefined,property,options);
                     }
                 }
             }
@@ -1872,7 +2223,12 @@ var _LC = {
         if (!FromUtils) {
             _LC.callObjectObservers(object, { type: "change", "oldValue": oldValue, "newValue": value, item: property });
         }
-        if(estObjBind){
+        var customDtype = false;
+        if(dataDef && dataDef.type instanceof Function){
+            dataDef = dataDef.type;
+            customDtype = true;
+        }
+        if(estObjBind || customDtype){
             // establishObjectBinding(object, property, fromStore, true);
             establishObjectBinding(
                 object,
@@ -1887,6 +2243,14 @@ var _LC = {
             //let syntaxValue = fromComponent.getAttributeNode(property).syntaxValue;
             let attrDetail = fromComponent._attributeDetails[_LC.String.dasherize(property)];
             let syntaxValue;
+            if(!attrDetail && fromComponent._attributeDetails["$data"]){
+                let obj = {};
+                _LC.$unbound(fromComponent._attributeDetails["$data"].helperInfo, obj);
+                if(!obj.unbound){
+                    attrDetail = fromComponent._attributeDetails["$data"];
+                    syntaxValue = property;
+                }
+            }
             if(attrDetail && attrDetail.isLbind) {
                 syntaxValue = attrDetail.dynamicValue;
             }
@@ -1896,12 +2260,13 @@ var _LC = {
                     contextSwitchArray = [];
                     _LC.changeContext(fromComponent._cx.node, contextSwitchArray, fromComponent._cx )
                 }
-                let obj = _LC.getNew(fromComponent._callee.component.data, syntaxValue);
+                let fclData = _LC.getCmpData(fromComponent._callee.component.data);
+                let obj = _LC.getNew(fclData, syntaxValue);
                 if(!obj.context){
                     return;
                 }
                 let exec = false;
-                if(obj.context === fromComponent._callee.component.data) {
+                if(obj.context === fclData) {
                     if(fromComponent._callee._properties[obj.lastKey] && fromComponent._callee._properties[obj.lastKey].__fromComponent) {
                         exec = true;
                     }
@@ -1912,7 +2277,10 @@ var _LC = {
                 if(exec) {
                     let lastKeyIndex = +obj.lastKey;
                     if(Array.isArray(obj.context) && typeof lastKeyIndex == "number") {
-                        _LC.aF(obj.context, lastKeyIndex < obj.context.length ? "replaceAt" : "insertAt", lastKeyIndex, value);
+                        let callReplaceAt = lastKeyIndex < obj.context.length;
+                        if(obj.context[lastKeyIndex] !== value || !callReplaceAt){
+                            _LC.aF(obj.context, callReplaceAt ? "replaceAt" : "insertAt", lastKeyIndex, value);
+                        }
                     } else {
                         _LC.set(obj.context, obj.lastKey, value, options);
                     }
@@ -1971,7 +2339,7 @@ var _LC = {
         }
         return ((self ===  callee) ? undefined : callee);
     },
-    "set" : function(object, property, value, options, fromStore, fromParent, FromUtils) {
+    "set" : function(object, property, value, options, fromStore, fromParent, FromUtils, skipTypeError) {
         let lastIndex = -1;
         var s_rec,check={},recDottedProp;
         if(isEntity(object) && fromStore){
@@ -1988,7 +2356,14 @@ var _LC = {
             object = _LC.get(object, outerPropertyPath);
             recDottedProp = true;
         }
-        if(typeof property === "string" && object[property] === value) {
+        if(object && object.__ltPrx__){
+            object = object.__target__;
+            // object[property] = value;
+            // return;
+        }
+        let val1 = object[property] && object[property].__target__ ? object[property].__target__ : object[property];
+        let val2 = value && value.__target__ ? value.__target__ : value;
+        if(typeof property === "string" && val1 === val2 && (!options || !options.force)) {
             if(object.__component__) {
                 _LC.clearError(object, property);
             } else if(isEntity(object)) {
@@ -2033,12 +2408,11 @@ var _LC = {
                 }
                 wobj.attr = attr;
                 wobj.data = recObj.data;
-                wobj.dtype=recObj.dtype||undefined;
-                wobj.key=recObj.key||undefined;
-                wobj.Error=recObj.Error||undefined;
+                wobj.PropsInfo = recObj.PropsInfo||undefined;
                 var db = recObj.db;
                 if(recObj.model){
                     var mMap = recObj.model;
+                    wobj.Error = recObj.Error;
                     var mKeys = Array.from(recObj.model.keys());
                     for(var i=0; i<mKeys.length; i++){
                         var mName = mKeys[i];
@@ -2063,13 +2437,13 @@ var _LC = {
                                     if(mRec){
                                         model = mRec.$.schema ? mRec.$.schema : mRec.$.model;
                                         field = model.fieldList[mAttr];
-                                        if(field && field.watch == true){
+                                        if((field && field.watch == true) || field.type instanceof Function){
                                             mObj.data = deepCopyObject(mRec[mAttr]);
                                             mObj.rec = mRec;
                                             mObj.isRec = true;
                                             mObj.attr = mAttr;
                                             mObj.dtype = model.fieldList[mAttr];
-                                            mObj.Error=mRec.$.error;
+                                            mObj._cmpErr=mRec.$.error;
                                         }
                                         watch.$push(mObj);
                                     }
@@ -2083,21 +2457,38 @@ var _LC = {
                 }         
             });
             watch.forEach(function(val){
-                if((!options || (typeof options == "object" && options.skipValidation != true)) && (val.dtype || val.rec) ){
-                    var id = val.id,path=val.path.split("."),dtype=val.dtype;
-                    checkNestedProp(id,path,dtype,val,object,property,value,check);
-                    if(object.$ && Object.values(object.$.error).length==0){
-                        delete object.$
-                    };
+                if((!options || (typeof options == "object" && options.skipValidation != true)) ){
+                    var id = val.id,path=val.path.split("."),dtype=val.dtype,errs;
+                    if(val.isRec){
+                        // path.shift();
+                        // path = path.length == 1 && path[0] == property ? []:path;
+                        check.Prop = dtype;
+                        checkNestedProp(id,path,dtype,val,object,property,value,check,fromStore); 
+                    }
+                    if(val.PropsInfo){
+                        val.PropsInfo.forEach(function(props){
+                            props.path = val.path;
+                            props.attr = val.attr;
+                            dtype = props.dtype;
+                            check.Prop = dtype;
+                            checkNestedProp(id,path,dtype,props,object,property,value,check,fromStore);
+                        })
+                    }
                 }
             })
-            if(check.value && check.value.code){
-                return;
+            //@Slicer.developmentStart
+            if (check.value && check.value.code) {
+                ComponentError.error("LC019", check.Prop.type.name);
+                return { code: "LC019", message: ComponentError.getErrorMessage("LC019", check.Prop.type.name)};
             }
+            //@Slicer.developmentEnd
         }
         actualProperty = actualProperty === property ? actualProperty : undefined;
         var shareObj = {};
         if(typeof property === "object"){
+            if(value && value.hasOwnProperty("skipTypeError")){
+                skipTypeError = value.skipTypeError;
+            }
             if(isEntity(object) && !fromStore && !object.$.isCloned) {
                     // for(let key in property){
                     //     if(Array.isArray(object[key])){
@@ -2115,23 +2506,47 @@ var _LC = {
                             property[key] = _LC.typeCast(locValue, dataType);
                         }
                     }
-                    let record = setData(object.$, property, undefined, options, undefined, undefined, shareObj);
-                    if(record.$.isError){
-                        return record;
+                    var db = object.$.db;
+                    let record;
+                    if(db){
+                        record = db.$.__sD(object.$, property, undefined, options, undefined, undefined, shareObj);
                     }
+                    // if(record.$.isError){
+                    //     return record;
+                    // }
                     // for(let i=0; i<oldValues.length; i++){
                     //     _LC.update(object,oldValues[i].key,object[oldValues[i].key],fromStore,(oldValues[i].oldValue === undefined)?null:oldValues[i].oldValue ,setterScope, actualProperty, fromParent);
                     // }
             } else {
                 //object[property] =  value;
+                var errAttr = [];
                 for(let key in property){
                     //_LC.update(object,key,property[key],fromStore,undefined,setterScope, actualProperty, fromParent);
                     //value is option here
-                    _LC.set(object, key, property[key], value, fromStore, fromParent);
+                    var ret = _LC.set(object, key, property[key], value, fromStore, fromParent, undefined, true);
+                    if(ret && ret.code){
+                        errAttr.push(property);
+                    }
+                }
+                if(!skipTypeError && errAttr.length){
+                    var fromComponent = object.__component__;
+                    //@Slicer.developmentStart
+                    if(fromComponent && fromComponent.component.data.errors && Object.keys(fromComponent.component.data.errors).length){
+                        var eKeys = Object.keys(fromComponent.component.data.errors), kStr;
+                        if(eKeys.length){
+                            kStr = eKeys.toString();
+                            ComponentError.error("LC006", fromComponent.component.$node.localName, kStr);
+                        }
+                        return { code: "LC006", message: ComponentError.getErrorMessage("LC006", fromComponent.component.$node.localName, kStr), properties:kStr};
+                    }
+                    //@Slicer.developmentEnd
                 }
             }
         }
         else{
+            if(options && options.hasOwnProperty("skipTypeError")){
+                skipTypeError = options.skipTypeError;
+            }
             if(isEntity(object) && (!fromStore || (fromStore && recDottedProp)) && !object.$.isCloned) {
                 let old = object[property];
                 let dataType = object.$.schema ? object.$.schema.fieldList[property] : object.$.model.fieldList[property];
@@ -2139,23 +2554,44 @@ var _LC = {
                 if(dataType && (value !== undefined || dataType === "boolean") && dataType !== _LC.getDataType(value)) {
                     value = _LC.typeCast(value, dataType);
                 }
-                let record = setData(object.$, property,value, options, undefined, undefined, shareObj);
-                if(record.$.isError){
-                    return record;
+                var db = object.$.db;
+                let record;
+                if(db){
+                    record = db.__sD(object.$, property,value, options, undefined, undefined, shareObj);
                 }
+                // if(record.$.isError){
+                //     return record;
+                // }
                 //Commented because update will happend when "set" is called from setData of store. 
                 //_LC.update(object,property,value,fromStore,(old === undefined) ? null : old,setterScope , actualProperty);    
             } else {
-                _LC.update(object,property,value,options,fromStore,undefined,setterScope,actualProperty, fromParent, FromUtils, s_rec);
+                var ret = _LC.update(object,property,value,options,fromStore,undefined,setterScope,actualProperty, fromParent, FromUtils, s_rec);
+                if(ret == false){
+                    var fromComponent = object.__component__;
+                    //@Slicer.developmentStart
+                    if( !skipTypeError && fromComponent && fromComponent.component.data.errors && Object.keys(fromComponent.component.data.errors).length){
+                        var eKeys = Object.keys(fromComponent.component.data.errors);
+                        if(eKeys.length){
+                            ComponentError.error("LC006", fromComponent.component.$node.localName,property);
+                        }
+                    }
+                    //@Slicer.developmentEnd
+                    return {code: "LC006", message: ComponentError.getErrorMessage("LC006", fromComponent.component.$node.localName, property)};                 
+                }
+                 
             }
         }
         if(watch && watch.length){
             watch.forEach(function(obj){
                 if(obj.isRec){
-                    deepValueChange(obj.rec, obj.attr, obj.rec[obj.attr], obj);
+                  var db = obj.rec.$.db;
+                  if(db){
+                      db.__dVC(obj.rec, obj.attr, obj.rec[obj.attr], obj);
+                  }
                 }
             });
         }
+        // return true;
     },
     "adCx" : function(node, contextSwitchArray) {
         let isYield = node.tagName === "LYTE-YIELD";
@@ -2206,40 +2642,47 @@ var _LC = {
                 }
             }
             let callee = node._callee;
-            let initialItemValue = callee.component.data[itemValue];
-            let initialIndexValue = callee.component.data[indexValue];
+            let cmpData = _LC.getCmpData(callee.component.data);
+            let initialItemValue = cmpData[itemValue];
+            let initialIndexValue = cmpData[indexValue];
             let initialItemProp = callee._properties[itemValue];
             let initialIndexProp = callee._properties[indexValue];
-             let items = contextSwitchInfo.type === "for" ? node._currentItems : node._currentObject;
-            callee.component.data[itemValue] = items[contextSwitchInfo.itemIndex];
-            callee.component.data[indexValue] = contextSwitchInfo.itemIndex;
+            let initialPropDetails = {};
+            
+            let items = contextSwitchInfo.type === "for" ? node._currentItems : node._currentObject;
+            cmpData[itemValue] = items[contextSwitchInfo.itemIndex];
+            cmpData[indexValue] = contextSwitchInfo.itemIndex;
             callee._properties[itemValue] = node._items[contextSwitchInfo.itemIndex].itemProperty;
             callee._properties[indexValue] = node._items[contextSwitchInfo.itemIndex].indexProperty;
-            let dummyObject = {"initialItemValue" : initialItemValue , "initialIndexValue" : initialIndexValue, "initialItemProp" : initialItemProp, "initialIndexProp" : initialIndexProp};
+            let dummyObject = {"initialItemValue" : initialItemValue , "initialIndexValue" : initialIndexValue, "initialItemProp" : initialItemProp, "initialIndexProp" : initialIndexProp, "initialPropDetails" : initialPropDetails};
             contextSwitchArray.$push(dummyObject);
         } else {
             //handling for yield
             let dummyObject = {};
             let callee = node._registerYield._callee;
+            let cmpData = _LC.getCmpData(callee.component.data);
             Object.keys(contextSwitchInfo.node._properties).forEach(function(key) {
                 dummyObject[key] = {};
-                dummyObject[key].value = callee.component.data[key];
+                dummyObject[key].value = cmpData[key];
                 dummyObject[key].property = callee._properties[key];
                 callee._properties[key] = contextSwitchInfo.node._properties[key];
-                callee.component.data[key] = contextSwitchInfo.node.component.data[key];
+                let ctxtData = _LC.getCmpData(contextSwitchInfo.node.component.data);
+                cmpData[key] = ctxtData[key];
             }); 
             contextSwitchArray.$push(dummyObject);
         }
     },
-    "removeContext" : function(node, contextSwitchArray, contextSwitchInfo, proceedFurther) {
+    "removeContext" : function(node, contextSwitchArray, contextSwitchInfo, proceedFurther, oneLevel) {
         if(!contextSwitchInfo) {
             return;
         }
         let isYield = node.tagName === "LYTE-YIELD";
-        if(node._cx && (!isYield || node._cx.node.tagName !== "LYTE-YIELD")) {
-            _LC.removeContext(node._cx.node, contextSwitchArray, node._cx, node.tagName === "LYTE-YIELD" || proceedFurther);
-        } else if((node.tagName === "LYTE-YIELD" || proceedFurther) && node._callee && node._callee._cx) {
-            _LC.removeContext(node._callee._cx.node, contextSwitchArray, node._callee._cx)
+        if(!oneLevel) {
+            if(node._cx && (!isYield || node._cx.node.tagName !== "LYTE-YIELD")) {
+                _LC.removeContext(node._cx.node, contextSwitchArray, node._cx, node.tagName === "LYTE-YIELD" || proceedFurther);
+            } else if((node.tagName === "LYTE-YIELD" || proceedFurther) && node._callee && node._callee._cx) {
+                _LC.removeContext(node._callee._cx.node, contextSwitchArray, node._callee._cx)
+            }
         }
         if(isYield) {
             let insertYield = node._registerYield;
@@ -2265,16 +2708,24 @@ var _LC = {
             }
             let callee = node._callee;
             let items = node._attributes.items;
-            let removedObject = contextSwitchArray.$shift();
-            callee.component.data[itemValue] = removedObject.initialItemValue;
-            callee.component.data[indexValue] = removedObject.initialIndexValue;
+            let removedObject;
+            let cmpData = _LC.getCmpData(callee.component.data);
+            if(contextSwitchInfo.__prop){
+                removedObject = contextSwitchArray.$pop();
+            }else{
+                removedObject = contextSwitchArray.$shift();
+            }
+            
+            cmpData[itemValue] = removedObject.initialItemValue;
+            cmpData[indexValue] = removedObject.initialIndexValue;
             callee._properties[itemValue] = removedObject.initialItemProp;
             callee._properties[indexValue] = removedObject.initialIndexProp;
         } else {
             let callee = node._registerYield._callee;
             let removedObject = contextSwitchArray.$shift();
+            let cmpData = _LC.getCmpData(callee.component.data);
             Object.keys(contextSwitchInfo.node._properties).forEach(function(key) {
-                callee.component.data[key] = removedObject[key].value;
+                cmpData[key] = removedObject[key].value;
                 callee._properties[key] = removedObject[key].property;
             });
         }
@@ -2284,31 +2735,38 @@ var _LC = {
     },
     "sortCommands" : function(array1, arrayB) {
         var retVal = {};
+        if(array1 && array1.__target__){
+            array1 = array1.__target__;
+        }
         var arrayA = array1.slice();
         retVal.origianlArray = array1;
         var commands = [];
         
         for (let i = 0; i < arrayB.length; i++) {
             // var targetIndex = arrayA.findIndex((element) => element === arrayB[i]);
-            var targetIndex = arrayA.indexOf(arrayB[i]);
+            let arrBi = arrayB[i];
+            if(arrayB[i] && arrayB[i].__target__){
+                arrBi = arrayB[i].__target__;
+            }
+            var targetIndex = arrayA.indexOf(arrBi);
         
             if (targetIndex === -1) {
             commands.push({
                 type: 'Add',
-                element: arrayB[i], 
+                element: arrBi, 
                 toIndex : i
             });
-            arrayA.splice(i, 0, arrayB[i]);
+            arrayA.splice(i, 0, arrBi);
             } else {
             if (targetIndex !== i) {
                 commands.push({
                 type: 'Move',
-                element: arrayB[i],
+                element: arrBi,
                 fromIndex: targetIndex,
                 toIndex: i
                 });
                 arrayA.splice(targetIndex, 1);
-                arrayA.splice(i, 0, arrayB[i]);
+                arrayA.splice(i, 0, arrBi);
             }
             }
         }
@@ -2325,13 +2783,22 @@ var _LC = {
         return retVal;
     },
     "oF" : function() {
+        //@Slicer.catchAllErrorsStart 
+        try{
+        //@Slicer.catchAllErrorsEnd 
         let object = arguments[0];
+        if(object && object.__target__){
+            object = object.__target__;
+        }
         let functionName = arguments[1];
         let property = arguments[2];
         let newValue = arguments[3];
+        if(newValue && newValue.__target__){
+            newValue = newValue.__target__;
+        }
         let fromComponent = arguments[4];
         let fromStore = arguments[5];
-        if(functionName === "add" && !fromComponent) {
+        if(functionName === "add" && !fromComponent && !object._propNodes) {
             let obj = {type:"change","oldValue":object[property],"newValue":newValue,"item":property};
             _LC.set(object, property, newValue,undefined, fromStore,undefined,true);
             _LC.callObjectObservers(object,obj);
@@ -2377,6 +2844,7 @@ var _LC = {
                         if(functionName === "add") {
                             _LC.rmCx(forHelper, contextSwitchArray);
                         }
+                        
                     }
                 }
             }
@@ -2384,11 +2852,19 @@ var _LC = {
         if(functionName === "delete") {
             delete object[property];
         }
+        //@Slicer.catchAllErrorsStart
+        }catch(err){
+            ComponentError.error(err)
+        }
+        //@Slicer.catchAllErrorsEnd 
     },
     "arrayUtils" : function(){
         return _LC.aF.apply(_LC, arguments);
     },
     "aF" : function() {
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd 
         var argumentsArr = Array.from(arguments);
         var fromOverride = false;
         if(argumentsArr[0] && typeof argumentsArr[0] == "object" && argumentsArr[0].fromOverride){
@@ -2396,10 +2872,16 @@ var _LC = {
             fromOverride = true;
         }
         let array = argumentsArr[0];
+        if(array && array.__target__){
+            array = array.__target__;
+        }
         let initialArrLength = array.length;
         let callLengthObserver = true;
         let functionName = argumentsArr[1];
         let value = arguments[3],check={};
+        if(value && value.__target__){
+            value = value.__target__;
+        }
         if(/^(replaceAt|removeAt|shift)$/.test(functionName) && !array.length) {
             //@Slicer.developmentStart
             Lyte.warn(functionName + " operation cannot be performed on empty array");
@@ -2437,6 +2919,9 @@ var _LC = {
             commands = this.sortCommands(originalArray, dummyArray).commands;
         }
         let commArgs = arguments[2], oldVal, obsObj, watch = [];
+        if(commArgs && commArgs.__target__){
+            commArgs = commArgs.__target__;
+        } 
         if(array._scp && /^(replaceAt|splice|removeAt|remove|insertAt)$/.test(functionName)){
             array._scp.forEach(function(_obj, id){
                 var rec, attr, wobj = {};
@@ -2457,12 +2942,11 @@ var _LC = {
                 wobj.attr = attr;
                 wobj.data = recObj.data;
                 wobj.reInit = isEntity(recObj.data) || (Array.isArray(recObj.data) && (recObj.data.schema || recObj.data.model) && recObj.data.add);
-                wobj.dtype=recObj.dtype||undefined;
-                wobj.key=recObj.key||undefined;
-                wobj.Error=recObj.Error||undefined;
+                wobj.PropsInfo = recObj.PropsInfo || undefined;
                 wobj.index=commArgs;
                 if(recObj.model){
                     var mMap = recObj.model;
+                    wobj.Error = recObj.Error;
                     var mKeys = Array.from(recObj.model.keys());
                     for(var i=0; i<mKeys.length; i++){
                         var mName = mKeys[i];
@@ -2493,7 +2977,7 @@ var _LC = {
                                             mObj.isRec = true;
                                             mObj.attr = mAttr;
                                             mObj.dtype = model.fieldList[mAttr];
-                                            mObj.Error=mRec.$.error;
+                                            mObj._cmpErr=mRec.$.error;
                                             mObj.key=mAttr;
                                         }
                                         // mObj.reInit = true;
@@ -2510,15 +2994,31 @@ var _LC = {
                 }
             });
             watch.forEach(function(val){
-                if((val.dtype || val.rec) ){
-                    var id = val.id,path=val.path.split("."),dtype=val.dtype;
-                    checkNestedProp(id,path,dtype,val,array,path,commArgs,check);
-                    if(array.$ && Object.values(array.$.error).length==0){
-                        delete array.$
-                    };
+                var id = val.id,
+                path=val.path == "" ? [] : val.path.split("."),
+                dtype=val.dtype || undefined;
+                if(val.isRec){
+                    // path.shift();
+                    // path = path.length == 1 && path[0] == property ? []:path;
+                    check.Prop = dtype;
+                    checkNestedProp(id,path,dtype,val,array,path,value,check);
                 }
-            });
-            if(check.value && check.value.code){return;}
+                if(val.PropsInfo){
+                    val.PropsInfo.forEach(function(props){
+                        props.path = val.path ;
+                        dtype = props.dtype;
+                        props.index = val.index;
+                        check.Prop = dtype;
+                        checkNestedProp(id,path,dtype,props,array,path,value,check);
+                    })
+                }
+            })
+            //@Slicer.developmentStart
+            if (check.value && check.value.code) {
+                ComponentError.error("LC019", check.Prop.type.name);
+                // return { code:"LC019", message: ComponentError.getErrorMessage("LC019", check.Prop.type.name) };
+            }
+            //@Slicer.developmentEnd
         }  
         switch(functionName) {
         case "replaceAt" : 
@@ -2566,6 +3066,7 @@ var _LC = {
                             _LC.adCx(helper, contextSwitchArray);
                             helper._callee.updateForHelper(helper, options);
                             _LC.rmCx(helper, contextSwitchArray);
+                            
                         }
                     }
                     for(let key in item) {
@@ -2660,6 +3161,7 @@ var _LC = {
                             _LC.adCx(helper, contextSwitchArray);
                             helper._callee.updateForHelper(helper, options);
                             _LC.rmCx(helper, contextSwitchArray);
+                            
                         }
                     }
                     for(let key in item) {
@@ -2756,6 +3258,7 @@ var _LC = {
                             _LC.adCx(helper, contextSwitchArray);
                             helper._callee.updateForHelper(helper, options);
                             _LC.rmCx(helper, contextSwitchArray);
+                            
                         }
                        }
                         for(let key in item) {
@@ -2808,7 +3311,11 @@ var _LC = {
                 commArgs = Array.from(commArgs);// both array are same instance so cloning
             }
             for(var i=0;i<commArgs.length;i++) {
-                let inde = array.indexOf(commArgs[i]);
+                var indVal = commArgs[i];
+                if(indVal && indVal.__target__){
+                    indVal = indVal.__target__;
+                }
+                let inde = array.indexOf(indVal);
                 if(inde !== -1) {
                    _LC.aF(array, 'removeAt', inde);                         
                 }
@@ -2867,6 +3374,7 @@ var _LC = {
                             _LC.adCx(helper, contextSwitchArray);
                             helper._callee.updateForHelper(helper, options);
                             _LC.rmCx(helper, contextSwitchArray);
+                            
                         }
                     }
                     for(let key in item) {
@@ -2954,6 +3462,7 @@ var _LC = {
                                 helper._callee.updateForHelper(helper, optionItem);
                             }
                             _LC.rmCx(helper, contextSwitchArray);
+                            
                         }
                     }
 //                         for(let key in item) {
@@ -2979,6 +3488,15 @@ var _LC = {
 //                             }
 //                         }
                 }
+                if(Array.isArray(arguments[3]) && arguments[3].length) {
+                    obsObj = {type:"array",insertedItems:arguments[3]};
+                    var indices = [];
+                    arguments[3].forEach(function(item) {
+                        indices.push(array.indexOf(item));
+                    });
+                    obsObj.indices = indices;
+                    _LC.callArrayObservers(array,obsObj,callLengthObserver ,initialArrLength);
+                }
             }
             break;
         default: 
@@ -2988,6 +3506,11 @@ var _LC = {
             return;
         }
         return array;
+    //@Slicer.catchAllErrorsStart
+    }catch(err){
+        ComponentError.error(err);
+    }
+    //@Slicer.catchAllErrorsEnd 
     },
     "callDeepObservers" : function (data, args, property ,callLengthObserver){
         var self = this;
@@ -3133,7 +3656,7 @@ var _LC = {
                     }
                 }
                 if (!callLengthObserver && type == "array" && binding.length) {
-                    this.affectChanges(binding.length,undefined,initialArrLength,undefined,array.length,callLengthObserver);
+                    this.affectChanges(binding.length,undefined,initialArrLength,undefined,array.length,undefined,callLengthObserver);
                 }
             }
         }
@@ -3188,7 +3711,7 @@ var _LC = {
                     let binding = objbind[i];
                     let path = objbind[i]._path;
                     if(binding["{}"]){
-                        this.affectChanges(binding["{}"]);
+                        this.affectObservers(binding["{}"])
                     }
                     if(binding._objectObservers && binding._observers) {
                         let obsbind = binding._observers.toArrayLyte();
@@ -3214,7 +3737,10 @@ var _LC = {
         if(watch && watch.length){
             watch.forEach(function(wObj){
                 if(wObj.isRec){
-                    deepValueChange(wObj.rec, wObj.attr, data, wObj);
+                    var db = wObj.rec.$.db;
+                    if(db){
+                        db.__dVC(wObj.rec, wObj.attr, data, wObj);
+                    }
                 }
                 if(remItems){
                     remItems.forEach(function(itm){
@@ -3232,7 +3758,7 @@ var _LC = {
                 }
                 if(pos !== undefined){
                     var nestObj = nestScp[wObj.id];
-                    if(nestObj.cyclic){
+                    if(nestObj && nestObj.cyclic){
                         removeNestScp(nestObj._data, wObj.id);
                         bindObj(nestObj._data, undefined, wObj.id, [], undefined, undefined, true);
                     }
@@ -3259,8 +3785,7 @@ var _LC = {
         for(let i=0;i<objbind.length;i++){
             let item = objbind[i];
             if(item[property]) {
-                makeSet(actualData, "_bindings");
-                addBindings(actualData._bindings,item[property]);
+                addBindings(actualData,item[property]);
                 this.establishBindings(item[property], actualData);
             }
 
@@ -3278,13 +3803,12 @@ var _LC = {
             if(!currentValue || typeof currentValue !== "object") {
                 break;
             } 
-            makeSet(currentValue, "_bindings");
-                addBindings(currentValue._bindings,currentProp);
+                addBindings(currentValue,currentProp);
                 currentProp = currentProp[props[i+1]];
                 currentValue = currentValue[props[i+1]];
         }
     },
-    "establishBindings": function(properties, actualData) {
+    "establishBindings": function(properties, actualData, deepTriggerObj) {
         if(properties._helperNodes) {
             let path = properties._path;
             let arr = properties._helperNodes.toArrayLyte();
@@ -3302,7 +3826,7 @@ var _LC = {
                                     let item = helper.getAttribute("item");
                                     if(data) {
                                         if(typeof helper._items[i] === "object") {
-                                            this.establishBindings(helper._items[i].itemProperty, {[item] : data});
+                                            this.establishBindings(helper._items[i].itemProperty, {[item] : data}, deepTriggerObj);
                                         }
                                     }
                                 }
@@ -3312,20 +3836,25 @@ var _LC = {
                 }
             }
         }
+        let childTriggerObj;
         for(let i in properties) {
             let actData = actualData[i];
+            if(i == "*"){
+                deepTriggerObj =  properties["*"];
+                continue;
+            }
+            else if(i == "{}"){
+                childTriggerObj =  properties["{}"];
+                continue;
+            }
             if(!actData || typeof actData === "string" || typeof actData === "number" || typeof actData === "boolean") {
-                if(!actualData._bindings) {
-                    makeSet(actualData, "_bindings");
-                }
-                addBindings(actualData._bindings,properties);
+                addBindings(actualData,properties);
+                this.deep.set(properties, deepTriggerObj, childTriggerObj); // handles new value addition
             } else {
-                if(!actData._bindings) {
-                    makeSet(actData, "_bindings");
-                }
-                addBindings(actData._bindings,properties[i]);
+                addBindings(actData,properties[i]);
+                this.deep.set(properties, deepTriggerObj, childTriggerObj); // handles new value addition
                 if(typeof properties[i] === "object") {
-                    this.establishBindings(properties[i], actData);
+                    this.establishBindings(properties[i], actData, deepTriggerObj);
                 }
             }
         }
@@ -3397,87 +3926,7 @@ var _LC = {
             }
         }
     },
-    "affectChanges" : function(item, contextAlreadySwitched,oldValue,setterScope,newValue,stack,callLengthObserver) {
-        if(item._dynamicNodes) {
-            for(let i=0;i<item._dynamicNodes.length;i++) {
-                item._dynamicNodes[i]._callee.updateNode(item._dynamicNodes[i], item._path);
-            }
-        }
-        let propPath = item._path;
-        if(item._helperNodes) {
-            let nodes = [],itemHelperNodes = item._helperNodes.toArrayLyte();
-            for(let s=0;s<itemHelperNodes.length;s++){
-                if(!item._helperNodes.has(itemHelperNodes[s])) {
-                    continue;
-                }
-                if(itemHelperNodes[s].getAttribute("is") === "for" && itemHelperNodes[s]._items) {
-                    let innerContextSwitchArray = [];
-                    _LC.adCx(itemHelperNodes[s], innerContextSwitchArray);
-                    let  indexValue = itemHelperNodes[s].getAttribute("index");
-                    let itemValue = itemHelperNodes[s].getAttribute("item");
-                    let callee = itemHelperNodes[s]._callee;
-                    let initialItemValue = callee.component.data[itemValue];
-                    let initialIndexValue = callee.component.data[indexValue];
-                    let initialItemProp = callee._properties[itemValue];
-                    let initialIndexProp = callee._properties[indexValue];
-                    let items = itemHelperNodes[s]._attributes.items;
-                    for(let i=0;i<itemHelperNodes[s]._items.length;i++) {
-                        callee.component.data[itemValue] = items[i];
-                        callee.component.data[indexValue] = i;
-                        callee._properties[itemValue] = itemHelperNodes[s]._items[i].itemProperty;
-                        if(itemHelperNodes[s]._items[i]._dynamicProperty[propPath]) {
-                            nodes = itemHelperNodes[s]._items[i]._dynamicProperty[propPath];
-                            for(let i=0;i<nodes.length;i++) {
-                                nodes[i]._callee.updateNode(nodes[i], propPath);
-                            }
-                        }
-                    }
-                    callee.component.data[itemValue] = initialItemValue;
-                    callee.component.data[indexValue] = initialIndexValue;
-                    callee._properties[itemValue] = initialItemProp;
-                    callee._properties[indexValue] = initialIndexProp;
-                    _LC.rmCx(itemHelperNodes[s], innerContextSwitchArray);                                    
-                } else if(itemHelperNodes[s].getAttribute("is") === "forIn" && itemHelperNodes[s]._items) {
-                    let innerContextSwitchArray = [];
-                    _LC.adCx(itemHelperNodes[s], innerContextSwitchArray);
-                    let  indexValue = itemHelperNodes[s].getAttribute("key");
-                    let itemValue = itemHelperNodes[s].getAttribute("value");
-                    let callee = itemHelperNodes[s]._callee;
-                    let initialItemValue = callee.component.data[itemValue];
-                    let initialIndexValue = callee.component.data[indexValue];
-                    let initialItemProp = callee._properties[itemValue];
-                    let initialIndexProp = callee._properties[indexValue];
-                    let object = itemHelperNodes[s]._attributes.object;
-                    for(let key in itemHelperNodes[s]._items) {
-                        callee.component.data[itemValue] = object[key];
-                        callee.component.data[indexValue] = key;
-                        callee._properties[itemValue] = itemHelperNodes[s]._items[key].itemProperty;
-                        if(itemHelperNodes[s]._items[key]._dynamicProperty[propPath]) {
-                            nodes = itemHelperNodes[s]._items[key]._dynamicProperty[propPath];
-                            for(let i=0;i<nodes.length;i++) {
-                                nodes[i]._callee.updateNode(nodes[i], propPath);
-                            }
-                        }
-                    }
-                    callee.component.data[itemValue] = initialItemValue;
-                    callee.component.data[indexValue] = initialIndexValue;
-                    callee._properties[itemValue] = initialItemProp;
-                    callee._properties[indexValue] = initialIndexProp;
-                    _LC.rmCx(itemHelperNodes[s], innerContextSwitchArray);    
-                } else {
-                    nodes = itemHelperNodes[s]._dynamicProperty[item._path] || [];
-                    let contextSwitchArray = [];
-                    if(nodes.length) {
-                        _LC.adCx(itemHelperNodes[s], contextSwitchArray);
-                        for(let i=0;i<nodes.length;i++) {
-                            nodes[i]._callee.updateNode(nodes[i], item._path);
-                        }
-                        _LC.rmCx(itemHelperNodes[s], contextSwitchArray);    
-                    }
-                    
-                }
-            }
-        }
+    "affectObservers" : function(item, contextAlreadySwitched,oldValue,setterScope,newValue,stack,callLengthObserver,additionalInfo, fromChildBindings){
         if(item._observers) {
             let objbind = item._observers.toArrayLyte();
             let cond = callLengthObserver == false ? false : oldValue != undefined || newValue != undefined;
@@ -3509,10 +3958,110 @@ var _LC = {
                 }
             }
         }
+    },
+    "affectChanges" : function(item, contextAlreadySwitched,oldValue,setterScope,newValue,stack,callLengthObserver,additionalInfo, fromChildBindings, dontCallObserver, exactProp, options) {
+        if(item._dynamicNodes) {
+            for(let i=0;i<item._dynamicNodes.length;i++) {
+                let node = item._dynamicNodes[i];
+                if(node._deepValues && fromChildBindings && node._deepValues.indexOf(item._path) != -1){
+                    continue;
+                }
+                item._dynamicNodes[i]._callee.updateNode(item._dynamicNodes[i], item._path, oldValue, newValue, exactProp, options);
+            }
+        }
+        let propPath = item._path;
+        if(item._helperNodes) {
+            let nodes = [],itemHelperNodes = item._helperNodes.toArrayLyte();
+            for(let s=0;s<itemHelperNodes.length;s++){
+                let node = itemHelperNodes[s];
+                let callee = node._callee;
+                if(node.getAttribute("is") == "case"){
+                    callee = node._parentSwitch._callee;
+                }
+                let _LCSV = callee.getDirectiveIns("save");
+                if(!item._helperNodes.has(node) || (fromChildBindings && node._deepValues && node._deepValues.indexOf(item._path) != -1)) {
+                    continue;
+                }
+                if(itemHelperNodes[s].getAttribute("is") === "for" && itemHelperNodes[s]._items) {
+                    let innerContextSwitchArray = [];
+                    _LC.adCx(itemHelperNodes[s], innerContextSwitchArray);
+                    let  indexValue = itemHelperNodes[s].getAttribute("index");
+                    let itemValue = itemHelperNodes[s].getAttribute("item");
+                    let callee = itemHelperNodes[s]._callee;
+                    let cmpData = _LC.getCmpData(callee.component.data);
+                    let initialItemValue = cmpData[itemValue];
+                    let initialIndexValue = cmpData[indexValue];
+                    let initialItemProp = callee._properties[itemValue];
+                    let initialIndexProp = callee._properties[indexValue];
+                    let items = itemHelperNodes[s]._attributes.items;
+                    
+                    for(let i=0;i<itemHelperNodes[s]._items.length;i++) {
+                        cmpData[itemValue] = items[i];
+                        cmpData[indexValue] = i;
+                        callee._properties[itemValue] = itemHelperNodes[s]._items[i].itemProperty;
+                        if(itemHelperNodes[s]._items[i]._dynamicProperty[propPath]) {
+                            nodes = itemHelperNodes[s]._items[i]._dynamicProperty[propPath];
+                            for(let i=0;i<nodes.length;i++) {
+                                nodes[i]._callee.updateNode(nodes[i], propPath, oldValue, newValue, exactProp, options);
+                            }
+                        }
+                    }
+                    cmpData[itemValue] = initialItemValue;
+                    cmpData[indexValue] = initialIndexValue;
+                    callee._properties[itemValue] = initialItemProp;
+                    callee._properties[indexValue] = initialIndexProp;
+                    
+                    _LC.rmCx(itemHelperNodes[s], innerContextSwitchArray);                                    
+                } else if(itemHelperNodes[s].getAttribute("is") === "forIn" && itemHelperNodes[s]._items) {
+                    let innerContextSwitchArray = [];
+                    _LC.adCx(itemHelperNodes[s], innerContextSwitchArray);
+                    let  indexValue = itemHelperNodes[s].getAttribute("key");
+                    let itemValue = itemHelperNodes[s].getAttribute("value");
+                    let callee = itemHelperNodes[s]._callee;
+                    let cmpData = _LC.getCmpData(callee.component.data);
+                    let initialItemValue = cmpData[itemValue];
+                    let initialIndexValue = cmpData[indexValue];
+                    let initialItemProp = callee._properties[itemValue];
+                    let initialIndexProp = callee._properties[indexValue];
+                    let object = itemHelperNodes[s]._attributes.object;
+                    for(let key in itemHelperNodes[s]._items) {
+                        cmpData[itemValue] = object[key];
+                        cmpData[indexValue] = key;
+                        callee._properties[itemValue] = itemHelperNodes[s]._items[key].itemProperty;
+                        if(itemHelperNodes[s]._items[key]._dynamicProperty[propPath]) {
+                            nodes = itemHelperNodes[s]._items[key]._dynamicProperty[propPath];
+                            for(let i=0;i<nodes.length;i++) {
+                                nodes[i]._callee.updateNode(nodes[i], propPath, oldValue, newValue, exactProp, options);
+                            }
+                        }
+                    }
+                    cmpData[itemValue] = initialItemValue;
+                    cmpData[indexValue] = initialIndexValue;
+                    callee._properties[itemValue] = initialItemProp;
+                    callee._properties[indexValue] = initialIndexProp;
+                    _LC.rmCx(itemHelperNodes[s], innerContextSwitchArray);    
+                } else {
+                    nodes = itemHelperNodes[s]._dynamicProperty[item._path] || [];
+                    let contextSwitchArray = [];
+                    if(nodes.length) {
+                        _LC.adCx(itemHelperNodes[s], contextSwitchArray);
+                        for(let i=0;i<nodes.length;i++) {
+                            nodes[i]._callee.updateNode(nodes[i], item._path, oldValue, newValue, exactProp, options);
+                        }
+                        _LC.rmCx(itemHelperNodes[s], contextSwitchArray);    
+                    }
+                    
+                }
+                
+            }
+        }
+        if(!dontCallObserver){
+            this.affectObservers(item, contextAlreadySwitched,oldValue,setterScope,newValue,stack,callLengthObserver,additionalInfo, fromChildBindings, dontCallObserver);
+        }
         if(Array.isArray(item)){
             for(var i=0;i<item.length;i++){
                 for(let key in item[i]) {
-                    this.affectChanges(item[i][key], true,oldValue?(oldValue[i]?oldValue[i][key]:oldValue[i]):oldValue,setterScope,newValue?(newValue[i]?newValue[i][key]:newValue[i]):newValue);
+                    this.affectChanges(item[i][key], true,oldValue?(oldValue[i]?oldValue[i][key]:oldValue[i]):oldValue,setterScope,newValue?(newValue[i]?newValue[i][key]:newValue[i]):newValue, undefined, undefined, undefined, true);
                 }
             }
         }
@@ -3523,7 +4072,7 @@ var _LC = {
                     oldV = oldValue;
                     newV = newValue
                 }
-                this.affectChanges(item[key], true, oldV, setterScope, newV,stack);
+                this.affectChanges(item[key], true, oldV, setterScope, newV,stack, undefined, undefined, true);
             }
         }
     },
@@ -3766,12 +4315,14 @@ var _LC = {
     },
     "getCtxVal" : function(context,val){
         if(context != undefined){
+            
             return context[val];
         }else{
             return undefined;
         }
     },
-    "get" : function(context, path, ac,cache) {
+    
+    "get" : function(context, path, ac,cache, deepValues) {
         if(!ac) {
             ac = [];
         }
@@ -3789,11 +4340,19 @@ var _LC = {
             if(path.search(/^\$\./g)!=-1){
                 return Jwalk(context,path);
             }
+            // else if(path == "$data"){
+            //     return context;
+            // }
             let arr = path.match(/([^[\]]+|\[\])/g);
             let initialContext = context;
             ac.$push(arr[0]);
             let locArr = arr[0].split('.'); 
             for(let k=0;k<locArr.length;k++) {
+                if(locArr[k] == "*" || locArr[k] == "{}"){
+                    let prevPath = path.slice(0, locArr[k] == "*" ? -2 : -3);
+                    deepValues.push(path);
+                    _LC.deep.getAllKeys(locArr[k] == "*" ? true : false, context, ac, prevPath, [], deepValues);
+                }
                 context = _LC.getCtxVal(context,locArr[k])
             }
             for(let i=1;i<arr.length;i++) {
@@ -3819,7 +4378,7 @@ var _LC = {
                     } 
                 } else {
                     let length = ac.length;
-                    let val = _LC.get(initialContext, locVal, ac);
+                    let val = _LC.get(initialContext, locVal, ac, deepValues);
                     ac[0] = ac[0] + "." + val;
                     context = _LC.getCtxVal(context,val)
                 }
@@ -3896,13 +4455,33 @@ var _LC = {
         }
     },
     "componentSetData" : function(arg0, arg1 ,options) {
+        var arr = [];
         if(typeof arg0 === "string") {
-            this.set(arg0, arg1 ,options);
+            options = options || {}
+            var ret = this.set(arg0, arg1 ,Object.assign(options,{skipTypeError:true}));
+            if(ret && ret.code){
+                arr.push(arg0);
+            }
         } else if(typeof arg0 === "object") {
+            var ret, arr=[];
+            arg1 = arg1 || {};
             for(let key in arg0) {
-                this.set(key, arg0[key],arg1);
+                ret = this.set(key, arg0[key],Object.assign(arg1,{skipTypeError:true}));
+                if(ret && ret.code){
+                    arr.push(key);
+                }
             }
         }
+        if(arr.length){
+            //@Slicer.developmentStart
+            ComponentError.error(this, "LC006", this.$node.localName, arr.toString());
+            //@Slicer.developmentEnd
+            return {code:"LC006", message:ComponentError.getErrorMessage("LC006", this.$node.localName, arr.toString())};
+        }
+        return true;
+    },
+    "componentToggleData" : function(dataName) {
+        this.set(dataName,!this.get(dataName));
     },
     "componentGetMethods" : function(key) {
         if(key) {
@@ -3970,20 +4549,20 @@ var _LC = {
         }
     },
     "appendChild" : function(outlet, component) {
-        _LC.ignoreDisconnect = Lyte.ignoreDisconnect = true;
+        _LC.setIgnoreDisconnect(true);
         outlet.appendChild(component);
-        _LC.ignoreDisconnect = Lyte.ignoreDisconnect = false;
+        _LC.setIgnoreDisconnect(false);
     },
     "replaceWith" : function() {
         var argumentsArr = Array.from(arguments);
         var oldNode = argumentsArr.$shift();
-        _LC.ignoreDisconnect = true;
+        _LC.setIgnoreDisconnect(true);
         var parentNode = oldNode.parentNode;
         for(var i=0,node;node=argumentsArr[i];i++) {
             _LC.insertBeforeNative(parentNode, node, oldNode);
         }
         oldNode.remove();
-        _LC.ignoreDisconnect = false;
+        _LC.setIgnoreDisconnect(false);
     },	
     // "removeIfCaseContent" : function(comp,node,direct){
     //     if(!direct){
@@ -4003,35 +4582,35 @@ var _LC = {
         parent.insertBefore(newNode, refNode);
     },
     "insertBefore" : function(referenceNode, newNode, parentNode) {
-        _LC.ignoreDisconnect = true;
+        _LC.setIgnoreDisconnect(true);
         if(!parentNode) {
             if(!referenceNode) {
                 //@Slicer.developmentStart
                 ApiError.error("LC005");
                 //@Slicer.developmentEnd
-                _LC.ignoreDisconnect = false;
+                _LC.setIgnoreDisconnect(false);
                 return;
             } else {
                 parentNode = referenceNode.parentNode;
             }
         }
         _LC.insertBeforeNative(parentNode , newNode, referenceNode ? referenceNode : null);
-        _LC.ignoreDisconnect = false;
+        _LC.setIgnoreDisconnect(false);
     },
     "insertAfter" : function() {
         var argumentsArr = Array.from(arguments);
         var referenceNode = argumentsArr.shift();
-        _LC.ignoreDisconnect = true;
+        _LC.setIgnoreDisconnect(true);
         referenceNode.after.apply(referenceNode, argumentsArr);
-        _LC.ignoreDisconnect = false;
+        _LC.setIgnoreDisconnect(false);
     },
     "executeMethod" : function() {
         let args = Array.prototype.slice.call(arguments, 1);
         var methodName = _LC.String.toCamelCase(arguments[0]);
         if(!this._methods[methodName]) {
             //@Slicer.developmentStart
-            let app = _LC.getNearestParentApp(this.component);
-            ComponentError.error(app, "LC005", methodName, this.$node.tagName);
+            let app = _LC.getNearestParentApp(this);
+            ComponentError.error(this, "LC005", methodName, this.$node.tagName);
             //@Slicer.developmentEnd
             return;
         }
@@ -4119,22 +4698,41 @@ var _LC = {
         var component;
         ltCf.fromV4Render = true;
         let oldLyteV4 = ltCf.lyteV4;
-        if(_LC.validateRenderData(data)) {
+        let setInnerHTML = false;
+        let registryScope = this.isComponentRegistry && this.isComponentRegistry();
+        if(_LC.validateRenderData(data,_lyteOptions)) {
             var currentReg = _LC.getCurrentRegistryIns();
             var currentRegClass = _LC.getCurrentRegistryIns();
-            _LC.setCurrentRegistryIns(_lyteOptions && _lyteOptions.registryInstance ? _lyteOptions.registryInstance : this);
-            _LC.setCurrentRegistry(_lyteOptions && _lyteOptions.registry ? _lyteOptions.registry : undefined);
+            _LC.setCurrentRegistryIns(_lyteOptions && _lyteOptions.registryInstance ? _lyteOptions.registryInstance : registryScope ? this : undefined);
+            _LC.setCurrentRegistry(_lyteOptions && _lyteOptions.registry ? _lyteOptions.registry : registryScope ? this.constructor : undefined);
             if(data && data.lyteV4){
                 ltCf.lyteV4 = true;
             }
             if(componentName && typeof componentName == "string") {
-                //@Slicer.developmentStart
-                if(!this._registeredComponents[componentName]){
-                    Lyte.warn("Invalid Lyte Component name : '" + componentName + "'. It is not registered with Lyte.");
+                if(_lyteOptions && _lyteOptions.setInnerHTML){
+                    setInnerHTML = true;
+                    if(outlet) {
+                        let actOutlet;
+                        if(typeof outlet == "string"){
+                            actOutlet = document.querySelector(outlet);
+                        }else{
+                            actOutlet = outlet;
+                        }
+                        if(actOutlet) {
+                            actOutlet.innerHTML = componentName;
+                        } else {
+                            Lyte.error("LC008", outlet);
+                        }
+                    }
+                }else{
+                    //@Slicer.developmentStart
+                    if(registryScope && !this._registeredComponents[componentName]){
+                        Lyte.warn("Invalid Lyte Component name : '" + componentName + "'. It is not registered with Lyte.");
+                    }
+                    Lyte.warn("Passing component name '" +componentName+ "' as string is depricated.");
+                    //@Slicer.developmentEnd
+                    component = createElement(componentName);
                 }
-                Lyte.warn("Passing component name '" +componentName+ "' as string is depricated.");
-                //@Slicer.developmentEnd
-                component = createElement(componentName);
             } else if(componentName && componentName._compName) {
                 componentName._lyteOptions = _lyteOptions;
                 component = createElement(componentName._compName);
@@ -4169,13 +4767,33 @@ var _LC = {
             return;
         }
         
-        if(data){ 
+        if(data && !setInnerHTML){ 
             component.setData(data);
         }
-        if(_lyteOptions && _lyteOptions.methods){
+        if(!setInnerHTML && _lyteOptions && _lyteOptions.methods){
             component.setMethods(_lyteOptions.methods);
         }
-        if(outlet) {
+        if(_lyteOptions && _lyteOptions.attributes){
+            _lyteOptions.attributes.forEach(function(attr){
+                if(typeof attr == "object"){
+                    component.setAttribute(attr.name,attr.value);
+                }else{
+                    component.setAttribute(attr,"");
+                }
+            })
+        }
+        if(_lyteOptions && _lyteOptions._route){
+            component._route = _lyteOptions._route;
+        }
+        let initialDelayAll = _LC.getDelayDidConnect();
+        let delayAll;
+        if(Lyte.Compatibility.vue){
+            delayAll = Lyte.Compatibility.vue.renderYield(_lyteOptions, component);
+            if(delayAll){
+                _LC.setDelayDidConnect(delayAll);
+            }
+        }
+        if(!setInnerHTML && outlet) {
             let actOutlet;
             if(typeof outlet == "string"){
                 actOutlet = document.querySelector(outlet);
@@ -4186,7 +4804,7 @@ var _LC = {
                 if(_lyteOptions && _lyteOptions.clearOutlet){
                     actOutlet.innerHTML = "";    
                 }
-                actOutlet.appendChild(component);
+                Lyte._renderPosition(actOutlet, component, _lyteOptions);
                 component._callee = component.getCallee ? component.getCallee(actOutlet) : undefined;
             } 
             //@Slicer.developmentStart
@@ -4199,6 +4817,9 @@ var _LC = {
         _LC.setCurrentRegistry(currentRegClass);
         ltCf.fromV4Render = false;
         ltCf.lyteV4 = oldLyteV4
+        if(delayAll){
+            _LC.setDelayDidConnect(initialDelayAll);
+        }
         return component;
     },
     // "renderHTML" : function(string,outlet,options){
@@ -4277,38 +4898,263 @@ var _LC = {
     "appendInDom" : function(comp,content){
         comp.appendChild(content);
     },
-    "instantiateSecurity" : function(lyteIns){
-        lyteIns.Security = {
-            "_ourSanitizerInstance_" :{},
-            "_userSanitizerInstance_":{}, 
-            "_eM" : {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#x27;',
-                '`': '&#x60;',
-                '=': '&#x3D;'
-              }, 
-            "_eR" : /[&<>"'`=]/g,
-            "_eF" : function(str) {
-                return this._eM[str];
-            }, 
-            "escape" : function(string) {
-                if (typeof string !== 'string') {
-                    string = '' + string;
-                }
-                return string.replace(this._eR, this._eF.bind(this));
-            }
-        };
-        var sec = {};
-        lyteIns.Security._ourSanitizerInstance_ = _LC.Security.createSanitizer(sec);
-        lyteIns.Security.createSanitizer = function (obb) {
-            return _LC.Security.createSanitizer(obb);
-        };
-    },
     "setAttribute" : function(node,name,val){
         node.setAttribute(name,val);
+    },
+    "getErrorStructure": function (componentIns, key) {
+        var cmpData = componentIns.data, data_Error = componentIns.data.errors;
+        if (key.includes("$")) {
+            key = key.replace("$.", "")
+        }
+        var cmpDataKey = key.split(".")
+        var keyData = cmpData[cmpDataKey[0]];
+        var _scpId = __nestScp__.get(keyData);
+        if (_scpId) {
+            var cmpDataIns = nestScp[_scpId];
+            var propInfo = cmpDataIns.PropsInfo || undefined;
+            if (propInfo) {
+                for (var i_err = 0; i_err < propInfo.length; i_err++) {
+                    var _cp = propInfo[i_err];
+                    if (_cp._cmpErr == data_Error && _cp.key == cmpDataKey[0]) {
+                        if (_cp.Error[_cp.key] && _cp.Error[_cp.key].nested && cmpDataKey.length > 1) {
+                            key = key.replaceAll("[", ".").replaceAll("]", "");
+                            var errorPath = ""
+                            cmpDataKey.splice(0, 1)
+                            errorPath = cmpDataKey.join(".")
+                            return _LC.get(_cp.Error[_cp.key].nested, errorPath)
+                        }
+                        else if (data_Error[cmpDataKey[0]]) {
+                            return data_Error[cmpDataKey[0]]
+                        }
+                    }
+                }
+            }
+        }
+        // if(data_Error.hasOwnProperty(key)){
+        //     var errorData=data_Error[key];
+        //     if(errorData.hasOwnProperty("nested")){
+        //         var nestedArrayError = [];
+        //         _LC.collectErrorMessage(errorData.nested,nestedArrayError,key,"");
+        //         return nestedArrayError;
+        //     }else{
+        //         return data_Error[key]
+        //     }
+        // }else{
+        //     return;
+        // }
+    },
+   "addLink" : function(comp,outlet,style,options,nearByApp){
+        if(style.localName == "link"){
+            let app = nearByApp || _LC.getNearestParentApp(comp.component);
+            if(app.addLink){
+                app.addLink.apply(app,[outlet,style,options]);
+                return;
+            }
+        }
+        Lyte._renderPosition(outlet, style);
+    },
+    "getBoundValue" : function(dataName){
+        let ind = dataName.search(/\W/);
+        let boundValue;
+        if(ind !== -1) {
+            boundValue = dataName.substring(0, ind);
+        } else {
+            boundValue = dataName;
+        }
+        return boundValue;
+    },
+    "map" : {
+        "component" : new WeakMap(),
+        "helper" : new WeakMap(),
+        "registry" : new WeakMap(),
+    },
+    "iterator" : function(isType, data, def){
+        if(isType == "for"){
+            data.forEach(function(item , index){
+                def.apply(this,[item,index]);
+            })
+        }else if(isType == "forIn"){
+            for(let index in data){
+                let item = data[index];
+                def.apply(this,[item,index]);
+            }
+        }
+    },
+    "array" : {
+        initalize : function(data, key){
+            if(!data[key]){
+                data[key] = [];
+            }
+        },
+        checkAndPush : function(arr, val){
+            if(arr.indexOf(val) == -1){
+                arr.push(val);
+            }
+        }
+    },
+    "object" : {
+        initalize : function(data, key){
+            if(!data[key]){
+                data[key] = {};
+            }
+        }
+    },
+    "nextTick" : function(callback){
+        if(Lyte.Compatibility.vue){
+            setTimeout(function(){
+                callback.apply(this);
+            },0)
+        }else{
+            callback.apply(this);
+        }
+    },
+    "getYieldName" : function(node){
+        if(node.getAttribute("yield-name")){
+            return node.getAttribute("yield-name");
+        }else if(node._attributes && node._attributes["yield-name"]){
+            return node._attributes["yield-name"];
+        }else if(node._initProperties){
+            let yd = node._initProperties.yield;
+            if(yd){
+                if(yd.getAttribute("yield-name")){
+                    return yd.getAttribute("yield-name");
+                }else if(yd._attributes["yield-name"]){
+                    return yd._attributes["yield-name"];
+                }
+            }
+        }
+    },
+    "debugPerf" : function( app , id , cBname , cmpName ){
+        
+        if(typeof id == "object" ){
+            var scope = _LC.getNearestParentApp(app.component);
+            if(scope.config && (scope.config.performance || scope.config.debug)){
+                if( id.render == 1 ){
+                    var _id = Math.floor(Math.random() * 900000000).toString();
+                    app.__renderId = _id;
+                    app.setAttribute("__renderId__" , _id);
+                    scope.log("Component - "+app.localName + " (" +app.$registry.constructor.name+ ") ->  " + app.__renderId  , "color:CornflowerBlue")
+                    if(scope.config && scope.config.performance){
+                        scope.time("["+app.__renderId + "] renderTime for " +app.localName);
+                    }            
+                }
+                else if (id.render == 0){
+                    if(scope.config && scope.config.performance){
+                        scope.time("["+app.__renderId + "] renderTime for " +app.localName);
+                    }
+                }
+            }
+            return;
+        }
+        else if(app.config && app.config.performance){
+            app.time("[" + id +"] " + cBname + " of " + cmpName +" component");
+        }
+        else if (app.config && app.config.debug){
+            app.log("[" + id +"] " + cBname + " of " + cmpName +" component");
+        }
+    },
+    "$variables" : function(comp){
+        let initProperties = comp._initProperties;
+        comp._initMethods = comp._initMethods || {};
+        var $supportObj = {
+            "$methods" : comp._initMethods,
+            "$yields" : comp._yields,
+            "$data" : comp._initProperties
+        };
+        for(let $name in $supportObj){
+            let wholeObj = initProperties[$name];
+            if(wholeObj){
+                if(typeof wholeObj === "object") {
+                    switch($name){
+                        case "$methods" : {
+                            let initPropArr = Object.keys(comp._initProperties);
+                            let $methodIndex = initPropArr.indexOf($name);
+                            for(let key in wholeObj) {
+                                let itemIndex = initPropArr.indexOf(key);
+                                if($methodIndex > itemIndex){
+                                    let callee = comp._callee;
+                                    if(callee){
+                                        let newFunc = function(){
+                                            var _meth = wholeObj[key].apply(callee.component,arguments);
+                                            return _meth;
+                                        }
+                                        $supportObj[$name][key] = newFunc;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                        case "$yields":{
+                            for(let key in wholeObj) {
+                                $supportObj[$name][key] = wholeObj[key];
+                            }
+                        }
+                        break;
+                        case "$data":{
+                            for(let key in wholeObj) {
+                                if(key != "$methods" && key != "$yields"){
+                                    $supportObj[$name][key] = wholeObj[key];
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    ComponentError.error(comp,"LC018", comp.localName, $name);
+                }
+                delete initProperties[$name];
+            }
+        }
+    },
+    "$unbound" :function(attrObj, obj){
+        if(attrObj){
+            if(attrObj.name == "unbound"){
+                obj.unbound = true;
+            }else{
+                attrObj.value.args.forEach(function(arg){
+                    if(typeof arg == "object"){
+                        _LC.$unbound(arg.value, obj);
+                    }
+                })
+            }
+        }
+    }
+    
+}
+// let _LCHD = _LC.directive.hide;
+
+Lyte._renderPosition = function(outlet, newNode, options) {
+    if(options && options.position){
+        switch(options.position){
+            case "before" : {
+                if(options.hasOwnProperty('refNode')){
+                    outlet.insertBefore(newNode, options.refNode);
+                }else{
+                    outlet.parentNode.insertBefore(newNode, outlet);
+                }
+            }
+            break;
+            case "after" : {
+                outlet.after(newNode);
+            }
+            break;
+            case "append" : {
+                outlet.appendChild(newNode);
+            }
+            break;
+            case "prepend" : {
+                outlet.prepend(newNode);
+            }
+            break;
+            case "replace" : {
+                outlet.replaceWith(newNode);
+            }
+            break;
+            case "default" : {
+                outlet.appendChild(newNode);
+            }
+        }
+    }else{
+        outlet.appendChild(newNode);
     }
 }
 _LC.setData = function(arg0, arg1) {
@@ -4341,27 +5187,60 @@ Lyte.$.shadowDiv._lessDiv = div;
 div._impNames = [];
 
 Lyte._component.init = function(lyteIns){
-    _LC.instantiateSecurity(lyteIns);
     lyteIns.addEventListener("afterRouteTransition", function() {
         _LC.chromeBugFix();
     });
 }
-LyteAddon._component.init = function(addOnIns){
-    _LC.instantiateSecurity(addOnIns);
-}
 Lyte._component.didConnect = function(lyteIns){
     //will be called after afterlookups
     if(lyteIns.getDefaultRegistry){
-        let regIns = lyteIns.getDefaultRegistry();
-        if(!_LC.isValidReg(regIns)){
-            let name =  regIns ? regIns.constructor ? regIns.constructor.name : regIns : regIns ;
+        let reg = lyteIns.getDefaultRegistry();
+        if(typeof reg == "function"){
+            if(_LC.validateRegistryClass(reg.name)){
+                if(reg._instanceList.length){
+                    reg = reg._instanceList[0];
+                }else{
+                    RegistryError.error("LC012", reg.name ,localName);    
+                    return;
+                }
+            }else{
+                RegistryError.error("LC011", reg.name, localName);
+                return;
+            }
+        }else if(typeof reg == "string"){
+            let regClass = _LC.validateRegistryClass(reg,true)
+            if(regClass){
+                if(regClass._instanceList.length){
+                    reg = regClass._instanceList[0];
+                }else{
+                    RegistryError.error("LC014", reg, localName);    
+                    return;
+                }
+            }else{
+                RegistryError.error("LC013",reg, localName);
+                return;
+            }
+        }
+        else if(!_LC.isValidReg(reg)){
+            let name =  reg ? reg.constructor ? reg.constructor.name : reg : reg ;
             //@Slicer.developmentStart
             RegistryError.error("LC008", name, name);
             //@Slicer.developmentEnd
-            return false;
+            return;
         }
-        _LC.setDefaultRegistryIns(regIns);
+        _LC.setDefaultRegistryIns(reg);
+        _LC.setDefaultRegistry(reg.constructor);
+        _LC.gotDefaultRegistryFrom = "user";
     }
+    ComponentRegistry._registeredRegistries.forEach(function(obj){
+        let regClass = obj.class;
+        let name = obj.name;
+        if(regClass._instanceList){
+            regClass._instanceList.forEach(function(regIns){
+                _LC.setAddedRegistries(regIns,regClass.name);
+            })
+        }
+    })
 }
 //var toArrayLyte = "toArrayLyte";
 //var bindStr = "_bindings";
@@ -4414,8 +5293,16 @@ function makeSet(obj, key) {
 		})
 	}
 }
-function addBindings(bindings, property) {
-    bindings.add(property);
+
+function addBindings(obj, property) {
+    if(property){
+        let bindings = obj._bindings;
+        if(!bindings){
+            makeSet(obj, "_bindings");
+            bindings = obj._bindings;    
+        }
+        bindings.add(property);
+    }
 }
 
 function makeArray(obj, key) {
@@ -4542,17 +5429,19 @@ _LC.errorNodeDetails = function(node) {
 function noop() {
 
 }
+_LC.customPropHandlersList = {};
 _LC.registerCustomPropHandler = function(propName) {
     let dasherized = _LC.String.dasherize(propName);
     propName = _LC.String.toCamelCase(propName);
     if(this.customPropHandlers.indexOf(propName) === -1) {
         this.customPropHandlers.$push(propName);
-        customElementPrototype.prototype[propName] = function() {
+        _LC.customPropHandlers.$push(propName);
+        let customPropHanlderFn = customElementPrototype.prototype[propName] = function() {
             _LC.customPropRegex = this.component._registryClass.customPropRegex;
             let argsLength = arguments.length;
             let arg0 = arguments[0];
             let options = arguments[2];
-            let compData = this.component.data;
+            let compData = _LC.getCmpData(this.component.data);
             if(!arg0) {
                 //Read all the values
                 let obj = {};
@@ -4583,11 +5472,18 @@ _LC.registerCustomPropHandler = function(propName) {
             }
             _LC.customPropRegex  = "";
         }
+        _LC.customPropHandlersList[propName] = customPropHanlderFn;
         this.customPropRegex = new RegExp("^(" + this.customPropHandlers.join("|")+ ")");
     }
 }
 _LC.unregisterComponent = function(componentName) {//af check
-    if(this._registeredComponentClass[componentName]) {
+    if(typeof componentName != "string"){
+        componentName = componentName._compName;
+        if(!componentName){
+            return;
+        }
+    }
+    if(componentName && this._registeredComponentClass[componentName]) {
         var compClass = this._registeredComponentClass[componentName];
         var commonClass = this._registeredCommonClass[componentName];
         if(compClass.activeInstances > 0) {
@@ -4679,6 +5575,11 @@ var elementPrototype = typeof HTMLElement !== "undefined" ? HTMLElement : Elemen
 Lyte.$.appendTemplateDiv = function() {
     document.body.appendChild(_LC.tDiv);
     document.body.appendChild(_LC.h1Div);
+    document.body.appendChild(_LC.hiddenComponentsDiv);
+    document.body.appendChild(_LC.hiddenYieldsDiv);
+}
+Lyte.$.getAllHiddenComponents=function(){
+    return _LC.hiddenComponentsDiv.content.childNodes;
 }
 
 function onDomContentForLyte() {
@@ -4718,9 +5619,10 @@ var changeEventhandler = function(event) {
 		attributeName = "checked";
 	}
 	let contextSwitchArray = [];
-	var attrNode ;
+	var attrNode, saveAttr ;
 	var attrDetail = target._attributeDetails[attributeName]
-	if(!attrDetail || !attrDetail.isLbind) {
+    
+	if(!attrDetail || !attrDetail.isLbind && !saveAttr) {
 		return;
 	}
 	//attrNode = (attributeName === "checked") ? target._attributeDetails[attributeName].bindedNode : target.getAttributeNode(attributeName);
@@ -4740,6 +5642,7 @@ var changeEventhandler = function(event) {
 		}
 	}
 	let self = target._callee;
+    
 	if(target) {
 		_LC.adCx(target, contextSwitchArray);
 	}
@@ -4749,7 +5652,10 @@ var changeEventhandler = function(event) {
     }
     let lastKeyIndex = +obj.lastKey;
     if(Array.isArray(obj.context) && typeof lastKeyIndex == "number") {
-        _LC.aF(obj.context, lastKeyIndex < obj.context.length ? "replaceAt" : "insertAt", lastKeyIndex, target[attributeName]);
+        let callReplaceAt = lastKeyIndex < obj.context.length;
+        if(obj.context[lastKeyIndex] !== target[attributeName] || !callReplaceAt){
+            _LC.aF(obj.context, callReplaceAt ? "replaceAt" : "insertAt", lastKeyIndex, target[attributeName]);
+        }
     } else {
         _LC.set(obj.context, obj.lastKey, target[attributeName]);
     }
@@ -4777,7 +5683,7 @@ var globalEventHandler = function(ev){
 		window.event = ev;
 	}
     let eventStopped = false;
-    while(target && target.getAttribute && (!target.getAttribute(evnt) || (target.hasAttribute("disabled") && evnt != "blur")) && target.tagName != "BODY"){
+    while(target && target.getAttribute && (!target.getAttribute(evnt) || (!['mouseenter', 'mousemove', 'mouseover', 'mouseout', 'mouseleave'].includes(ev.type) && target.hasAttribute("disabled") && evnt != "blur")) && target.tagName != "BODY"){
 		if(_LC.hasLyteEvents(target, evnt)) {
             eventStopped = _LC.handleLyteEvents(target, ev);
             if(eventStopped) {
@@ -4828,6 +5734,7 @@ var globalEventHandler = function(ev){
 		_LC.skipArgProcessing(cloneActObj, ev, target);
 		_LC.throwAction.call(target._callee,target._callee,evnt,cloneActObj, undefined, undefined, target, ev);
 	}
+    
 	if(target.tagName === "LABEL"){
 		var input = target.querySelector("input");
 		if(input && input.getAttribute(evnt)){
@@ -4855,7 +5762,8 @@ class LyteYield extends HTMLElement {
             let foundInV3List = V3Registry.allList.v3[this.localName]
             let foundInV4List = V3Registry.allList.v4[this.localName]
             if(foundInV3List){
-                if(!foundInV4List || (!this.hasAttribute("lyte-v4") && !ltCf.lyteV4 && !ltCf.v4Render && (ltCf.fromV3Render || _LC.getCurrentRegistry() == V3Registry || foundInV3List))){
+                let _callee = this._callee || _LC.getCallee(this.parentNode, this);
+                if(!foundInV4List || (!(this.hasAttribute("lyte-v4") || this.hasAttribute("lyte-registry") || (_callee && _callee.__v4)) && !ltCf.lyteV4 && !ltCf.v4Render && (ltCf.fromV3Render || _LC.getCurrentRegistry() == V3Registry || foundInV3List))){
                     //v3
                     let v3CompClass = foundInV3List;
                     let self = this;
@@ -4871,9 +5779,10 @@ class LyteYield extends HTMLElement {
     }
     _connectedCallback() {
         this._callee = this._callee || _LC.getCallee(this.parentNode, this);
+        
         let registry,shadowObj,directiveObj;
         if(this._callee){
-            registry = this._callee.$component;
+            registry = this._callee.$registry;
            if(registry){
             shadowObj = registry._shadow;
             directiveObj = registry._directive;
@@ -4886,11 +5795,14 @@ class LyteYield extends HTMLElement {
             shadowObj.insertInLessDiv(this._shadowParent,this._lessDiv)
             shadowObj.updateLessDiv(this._lessDiv,this.shadowRoot._compList);
         }
+        var yieldName = _LC.getYieldName(this);
+        if(!this.hasAttribute("yield-name")){
+            this.setAttribute("yield-name", yieldName);
+        }
         if(!this._registerYield && this._callee) {
-            var yieldName;
             if(this._callee._fR && this._callee._fR._yieldCallee) {
                 this._registerYield = {"_callee" : this._callee._fR._yieldCallee.component.$node};
-            } else if(this._callee._yields &&  (yieldName=this.attributes["yield-name"]) && (yieldName = yieldName.nodeValue) && this._callee._yields[yieldName]) {
+            } else if(this._callee._yields && yieldName && this._callee._yields[yieldName]) {
                 this._registerYield = {"_callee" : this._callee._yields[yieldName]._callee};
             }
         }
@@ -4898,27 +5810,38 @@ class LyteYield extends HTMLElement {
     disconnectedCallback(){
         this._disconnectedCallback();
     }
+    getData(){
+        return this.component.data;
+    }
     _disconnectedCallback(){
-        if(_LC.ignoreDisconnect || this._deleted) {
+        if(_LC.shouldIgnoreDisconnect() || this._deleted || this._ignoreDisconnect) {
             return;
         }
-        let shadowObj = this._callee.getShadowObj();
+        
+        let shadowObj = this._callee.getDirectiveIns("shadow");
         shadowObj && shadowObj.destroyRef(this);
-        let registry = this._callee.$component;
+        let registry = this._callee.$registry;
         let directiveObj = registry._directive;
         this._deleted = true;
+        let yieldName = this.getAttribute("yield-name");
+        let callee = this._callee
+        if(Lyte.Compatibility.vue){
+            Lyte.Compatibility.vue.yieldDisconnectedCallback(this, callee);
+        }
         if(!this._properties) {
             return;
         }
         var nodeContextSwitchArray = [];
+        let cmpData = _LC.getCmpData(this.component.data);
         _LC.adCx(this, nodeContextSwitchArray);
-        _LC.removeSelectedBindingDeep(this._properties, this.component.data, true);
+        _LC.removeSelectedBindingDeep(this._properties, cmpData, true);
         let node = this._registerYield;
         if(!node) {
         _LC.rmCx(this, nodeContextSwitchArray);
         return;
         }
         var toAppendContextSwitchArray = [];
+        this._parentHelper = null;
         //newContext not needed
         var del = "delete";//for ie 11.0
         _LC.adCx(node, toAppendContextSwitchArray);
@@ -4936,6 +5859,7 @@ class LyteYield extends HTMLElement {
         for(let i=0;i<this._helpers.length;i++) {
             node._callee.removeHelpers(this._helpers[i]);
         }
+        
         this._helpers = [];
         _LC.rmCx(node, toAppendContextSwitchArray);
         _LC.rmCx(this, nodeContextSwitchArray);
@@ -4984,7 +5908,8 @@ class LyteCustomElement extends HTMLElement {
             let foundInV3List = V3Registry.allList.v3raw[this.localName];
             let foundInV4List = V3Registry.allList.v4raw[this.localName];
             if(foundInV3List){
-                if(!foundInV4List || (!this.hasAttribute("lyte-v4") && !ltCf.lyteV4 && !ltCf.fromV4Render && (ltCf.fromV3Render || _LC.getDecidedRegistry() == V3Registry || foundInV3List))){
+                let _callee = this._callee || _LC.getCallee(this.parentNode, this);
+                if(!foundInV4List || (!(this.hasAttribute("lyte-v4") || this.hasAttribute("lyte-registry") || (_callee && _callee.__v4)) && !ltCf.lyteV4 && !ltCf.fromV4Render && (ltCf.fromV3Render || _LC.getDecidedRegistry() == V3Registry || foundInV3List))){
                     //v3
                     let v3CompClass = V3Registry.allList.v3raw[this.localName];
                     let self = this;
@@ -5007,7 +5932,7 @@ class LyteCustomElement extends HTMLElement {
               attrNode._lyte = {cloned : true,userCloned : true, name : attrNode.nodeName ,value : attrNode.nodeValue};
             }
         }
-        if(!_LC.getDefaultRegistry()){
+        if(!_LC.getDefaultRegistry() && !_LC.getCurrentRegistry()){
             //@Slicer.developmentStart
             RegistryError.error("LC009");
             //@Slicer.developmentEnd
@@ -5026,8 +5951,29 @@ class LyteCustomElement extends HTMLElement {
         lIns.scopedInstance(compClass,[this],function(ins){
             compInstance = ins;
         },[regIns])
-        this.$component = this.$registry = regIns;
-        compInstance.$component = compInstance.$registry = regIns;
+        if(!compInstance.$component){
+            // they have not passed component in lookups  
+            Object.defineProperty(compInstance, "$component", {
+                get : function() {
+                    //@Slicer.developmentStart
+                    Lyte.warn(
+                        "Accessing $component from component instance is deprecated. Use $registry instead."
+                    );
+                    //@Slicer.developmentEnd
+                    return regIns;
+                }
+            })
+            Object.defineProperty(this, "$component", {
+                get : function() {
+                    //@Slicer.developmentStart
+                    Lyte.warn("Accessing $component from node is deprecated. Use $registry instead.");
+                    //@Slicer.developmentEnd
+                    return regIns;
+                }
+            })
+        }
+        this.$registry = regIns;
+        compInstance.$registry = regIns;
         compInstance._registryClass = compClass._registryClass;
         this._registryClass = compClass._registryClass;
         _LC.setAddedRegistries(compInstance,this.localName);
@@ -5080,7 +6026,7 @@ class LyteCustomElement extends HTMLElement {
         this._connectedCallback();
     }
     _connectedCallback(){
-        if(_LC.ignoreDisconnect || Lyte.ignoreDisconnect){
+        if(_LC.shouldIgnoreDisconnect() || this.__lyteIgnore){
             if(this._reconnectedCallback){
                 this.executeLyteCallbacks(this._reconnectedCallback,arguments);
             }
@@ -5134,9 +6080,10 @@ class LyteCustomElement extends HTMLElement {
         this._disconnectedCallback();
     }
     _disconnectedCallback(){
-        if(_LC.ignoreDisconnect || Lyte.ignoreDisconnect){
+        if(_LC.shouldIgnoreDisconnect() || this.__lyteIgnore){
             if(this._removedCallback){
                 this.executeLyteCallbacks(this._removedCallback,arguments);
+                this._parentHelper = null;
             }
             return;
         }
@@ -5162,7 +6109,8 @@ class customElementPrototype extends elementPrototype {
             let foundInV3List = V3Registry.allList.v3[this.localName]
             let foundInV4List = V3Registry.allList.v4[this.localName]
             if(foundInV3List){
-                if((!foundInV4List) || (!this.hasAttribute("lyte-v4") && !ltCf.lyteV4 && !ltCf.fromV4Render && (ltCf.fromV3Render || _LC.getDecidedRegistry() == V3Registry || foundInV3List ))){
+                let _callee = this._callee || _LC.getCallee(this.parentNode, this);
+                if((!foundInV4List) || (!(this.hasAttribute("lyte-v4") || this.hasAttribute("lyte-registry") || (_callee && _callee.__v4)) && !ltCf.lyteV4 && !ltCf.fromV4Render && (ltCf.fromV3Render || _LC.getDecidedRegistry() == V3Registry || foundInV3List ))){
                     //v3
                     let v3CompClass = foundInV3List;
                     customElementPrototype._V3InsApi.forEach(function(apiName){
@@ -5186,6 +6134,70 @@ class customElementPrototype extends elementPrototype {
         //v4 
         this.actualConstructor();
     }
+    doRegistration(componentName,customCrmComponent,componentClass, registryClass, registryInstance){
+        if(!this.constructor.componentClass.__isRegistered){
+            var registryName = registryClass.name, idleScheduler = registryClass.lazyScheduler, perf = registryInstance.$app && registryInstance.$app.config.performance;
+            if(idleScheduler.tasks.get(componentName, registryName) || (idleScheduler.currentTask && idleScheduler.currentTask.id === registryName+"$"+componentName)){
+                // console.log("idleScheduler task handling in component ", componentName);
+                if(idleScheduler.currentTask && idleScheduler.currentTask.id !== registryName+"$"+componentName){
+                //   console.log("idleScheduler pending task handling in component ",idleScheduler.currentTask.id);
+                  if(perf){
+                    var _p1 = performance.now();
+                  }
+                  var sval = idleScheduler.tasks.get(idleScheduler.currentTask.id, registryName);
+                    if(sval && idleScheduler.isGenerator(sval.handler)){
+                        var gnxt = sval.handler.next(), gval;
+                        while(gnxt.done == false){
+                            gval = gnxt.value;
+                            if(typeof gval == "function"){
+                                gval();
+                            }
+                            gnxt = sval.handler.next()
+                        }
+                        idleScheduler.dequeueTask(idleScheduler.currentTask.id, registryName);
+                    }
+                    if(perf){
+                        var _p2 = performance.now();
+                        var oldPerf = registryClass.registerPerf[idleScheduler.currentTask.id];
+                        registryClass.registerPerf[idleScheduler.currentTask.id] = (oldPerf ? oldPerf : 0) + (_p2 - _p1);
+                    }                        
+                }
+                if(perf){
+                    var p1 = performance.now();
+                }
+                var obj = idleScheduler.dequeueTask(componentName, registryName);
+                var gen = obj.handler;
+                if(idleScheduler.isGenerator(gen)){
+                    var gnxt = gen.next(), gval;
+                    while(gnxt.done == false){
+                        gval = gnxt.value;
+                        if(typeof gval == "function"){
+                            gval();
+                        }
+                        gnxt = gen.next()
+                    }
+                }
+                if(perf){
+                    var p2 = performance.now();
+                    var oldPerf = registryClass.registerPerf[componentName];
+                    registryClass.registerPerf[componentName] = (oldPerf ? oldPerf : 0) + (p2 - p1);
+                }
+            }
+            else{
+                if(perf){
+                    var p1 = performance.now();
+                }
+                customCrmComponent._registerComponent(componentName,customCrmComponent,componentClass, registryClass, registryInstance);
+                // _LC.postRegistration(componentName,customCrmComponent);
+                idleScheduler.dequeueTask(componentName, registryName);
+                if(perf){
+                    var p2 = performance.now();
+                    var oldPerf = registryClass.registerPerf[componentName];
+                    registryClass.registerPerf[componentName] = (oldPerf ? oldPerf : 0) + (p2 - p1);
+                }
+            }
+        }
+    }
     actualConstructor() {
         // this.setData = _LC.setData;
         // this.setMethods = _LC.setMethods;
@@ -5199,12 +6211,14 @@ class customElementPrototype extends elementPrototype {
             origClass._pendingComponents.push(this);
             return;
         }
-        if(!_LC.getDefaultRegistry()){
+        if(!_LC.getDefaultRegistry() && !_LC.getCurrentRegistry()){
             //@Slicer.developmentStart
             RegistryError.error("LC009");
             //@Slicer.developmentEnd
             return;
         }
+        this.__v4 = true;
+        
         let fastRenderIndex;
         let lytePropAttr = this.attributes._lyteprop;
         lytePropAttr = lytePropAttr ? lytePropAttr.nodeValue : undefined;
@@ -5224,20 +6238,47 @@ class customElementPrototype extends elementPrototype {
             lIns.scopedInstance(compClass,[],function(ins){
                 compInstance = self.component = ins
             },[regIns])
-            this.$component = this.$registry = regIns;
-            compInstance.$component = compInstance.$registry = regIns;
+            if(!compInstance.$component){
+                // they have not passed component in lookups  
+                Object.defineProperty(compInstance, "$component", {
+                    get : function() {
+                        //@Slicer.developmentStart
+                        // Lyte.warn("Accessing $component from instance is deprecated. Use $registry instead.");
+                        //@Slicer.developmentEnd
+                        return regIns;
+                    }
+                })
+                Object.defineProperty(this, "$component", {
+                    get : function() {
+                        //@Slicer.developmentStart
+                        // Lyte.warn("Accessing $component from node is deprecated. Use $registry instead.");
+                        //@Slicer.developmentEnd
+                        return regIns;
+                    }
+                })
+            }
+            this.$registry = regIns;
+            compInstance.$registry = regIns;
             compInstance._registryClass = compClass._registryClass;
             this._registryClass = compClass._registryClass;
             _LC.setAddedRegistries(compInstance,this.localName);
+            
         }else{
             compInstance = self.component = fastRenderedProp.component;
             var compClass = this.constructor.component.list[0];
-            this.$component = this.$registry = compInstance.$component;
+            this.$registry = compInstance.$registry;
             this._registryClass = compInstance._registryClass;
         }
+        if(this.constructor.componentClass._registryClass.lazyRegister){
+            this.doRegistration(this.localName, this.constructor, this.constructor.componentClass, this.$registry.constructor, this.$registry);
+        }
+        
         this._properties = {};
         this._compClass = compClass;
         this._tagDirectives = [];
+        for(let propName in _LC.customPropHandlersList){
+            this[propName] = _LC.customPropHandlersList[propName];
+        }
         _LC.directive.setTagDirectives(compClass,this);
         _LC.directive.setAttrFromRender(this,this._tagDirectives);
         compInstance._methods = {};
@@ -5263,6 +6304,15 @@ class customElementPrototype extends elementPrototype {
         compClass.activeInstances++; 
         let compData;
         
+        if(compInstance.$node) {    
+            for(var key in compInstance.$node) {
+                if(key != "localName"){
+                    this[key] = compInstance.$node[key];
+                }
+            }
+        }
+        compInstance.$node = this;
+        this._yields = {};
         if(!fastRenderedProp) {
             compData = compInstance.data = {};
             let data = compClass._data ? compClass._data.apply(compInstance) : {};
@@ -5275,28 +6325,83 @@ class customElementPrototype extends elementPrototype {
             });
             compInstance.__data = data;
             compData.errors = {};
+            this._hideAttr = {};
+            let globalRegdata = this.$registry.__data;
+            for(let key in globalRegdata) { 
+                if(!data.hasOwnProperty(key)) {
+                    data[key] = globalRegdata[key];
+                }
+            }
+            let isFreezedComp = _LC.freeze ? _LC.freeze.component(compInstance.constructor) : false;
             for(let key in data) {
                 var obj = data[key];
                 compData[key] = obj[def];
-                if(/^(object|array)$/.test(obj.type) && (obj.watch || (obj.hasOwnProperty("items") || obj.hasOwnProperty("properties")) )){
+                var customDtype = false;
+                if(typeof obj.type == "function"){
+                    var customDatatype = obj.type;
+                    if(/^(object|array)$/.test(customDatatype.type) && (customDatatype.hasOwnProperty("properties") || customDatatype.hasOwnProperty("items") ) ){
+                        customDtype = true;
+                    }
+                }
+                if(isFreezedComp){
+                    _LC.object.freezeData(data, obj);
+                    continue;
+                }
+                if((/^(object|array)$/.test(obj.type) && (obj.watch || (obj.hasOwnProperty("items") || obj.hasOwnProperty("properties")) ) || customDtype)){
                     establishObjectBinding(compData, key, false,undefined,undefined,obj.watch?true:undefined);
                 }
+                if(obj.hasOwnProperty("hideAttr")){
+                    this._hideAttr[key] = obj.hideAttr;
+                }
+            }
+            this.$data=compData;
+            if(this._initMethods){
+                let arr=Object.keys(this._initMethods);
+                compData.$methodAttributes = arr.reduce((obj, key) => {
+                    obj[key] = true;
+                    return obj;
+                  }, {});
+            }
+            if(this._initProperties){
+                let arr=Object.keys(this._initProperties).filter((ele)=>{
+                    if(!compData.$methodAttributes){return true};
+                 return !compData.$methodAttributes[ele];
+                });
+                compData.$dataAttributes=arr.reduce((obj, key) => {
+                    obj[key] = true;
+                    return obj;
+                  }, {});
+            }
+            let observed_attributes=this.component.constructor._observedAttributes;
+            if(observed_attributes && this.attributes){
+                Object.values(this.attributes).forEach(value => {
+                    if(observed_attributes.includes(_LC.String.toCamelCase(value.name))){
+                        compData.$dataAttributes=compData.$dataAttributes?compData.$dataAttributes:[];
+                        compData.$dataAttributes[_LC.String.toCamelCase(value.name)]=true;
+                    }
+                });
+            }
+            observed_attributes=[];
+            compInstance.$dataAttributes=compData.$dataAttributes;
+            compInstance.$methodAttributes=compData.$methodAttributes;
+            if(compInstance.$dataAttributes){
+                Object.freeze(compInstance.$dataAttributes);
+                Object.freeze(compData.$dataAttributes);
+            }
+            if(compInstance.$methodAttributes){
+                Object.freeze(compInstance.$methodAttributes);
+                Object.freeze(compData.$methodAttributes);
             }
             compData.errors = {};
             compInstance.__data = data;
+            compData.$data = compData;
+            compData.$methods = compInstance._methods;
+            compData.$yields = this._yields;
         }
         
         for(let key in compClass._methods) {
             compInstance._methods[key] = compClass._methods[key];
         }
-        if(compInstance.$node) {    
-            for(var key in compInstance.$node) {
-                if(key != "localName"){
-                    this[key] = compInstance.$node[key];
-                }
-            }
-        }
-        compInstance.$node = this;
         let _overrides;
         let _config_flag;
         if(compInstance._ssr && compInstance._ssr.config){
@@ -5323,6 +6428,7 @@ class customElementPrototype extends elementPrototype {
             //checking lyte.attr ytpe and given default value type
             for (var key in compData) {
                 var field = compData.__component__.component.__data[key];
+                
                 var error = _LC.handleValidation(compData, key, compData[key], compInstance ,true);
                 if (error) {
                     compData[key] = undefined;
@@ -5346,6 +6452,15 @@ class customElementPrototype extends elementPrototype {
             return false;
         }
         return _LC.directive;
+    }
+    getDirectiveIns(name){
+        return this.$registry["_"+name];
+    }
+    getDrObj(name){
+        if(this.$registry["_" + name]){
+            return this.$registry["_" + name];
+        }
+        return false;
     }
     getShadowObj(){
         if(this.$registry._shadow){
@@ -5394,6 +6509,10 @@ class customElementPrototype extends elementPrototype {
     }
     afterConnected(fastRenderProp,ssrBind) {
         let constr = this.component.constructor;
+        var appScp = this.$app || this.$registry.$app || this.$registry.$addon;
+        if((appScp && appScp.$mutate)|| (appScp && appScp.$mutate)){
+            this.component.data = appScp.$mutate.create(this.component.data);
+        }
         //initProperties is used because, we may have cases where the component wouldn't have been registered but 
         //it would be in dom already with some attributes. In those cases we can store the data in _initProperties as key, value.
         //These properties would then be applied to the component, once it gets instantiated. 
@@ -5406,6 +6525,9 @@ class customElementPrototype extends elementPrototype {
         let obsattr = this.constructor._observedAttributes;
         for(let i=0;i<obsattr.length;i++){
             let key = obsattr[i];
+            if(_LC.freeze && this.component.__data[key].freeze){
+                continue;
+            }
             let prop = this.getProperty(key);
             defProp(prop, '__fromComponent', {
             	value : true,
@@ -5421,9 +6543,8 @@ class customElementPrototype extends elementPrototype {
         this.component.constructor.prototype.$lg = $lg;
         if(this._initProperties) {
             let initProperties = this._initProperties;
-            // if(initProperties["lyteUnbound"] && _LC.migratedv2(app)){ //devmode
-            //     Lyte.error("lyteUnbound is moved to directive. so please make use of @unbound");
-            // }
+            _LC.$variables(this);
+            var eKeys = [];
             for(let key in initProperties) {
                 let actVal;
                 let field = compInstance.__data[key]; 
@@ -5434,19 +6555,29 @@ class customElementPrototype extends elementPrototype {
                 }
                 let error = _LC.handleValidation(compData, key, actVal, compInstance ,true);
                 if(!error) {
-                    compData[key] = actVal;    
-                    if(field && /^(object|array)$/.test(field.type) && (field.watch || (field.hasOwnProperty("items") || field.hasOwnProperty("properties")))){
-                        establishObjectBinding(compData, key, undefined,undefined,undefined,field.watch?true:undefined);
+                    compData[key] = actVal; 
+                    var customDtype = false;
+                    if(field && typeof field.type == "function"){
+                        var customDatatype = field.type;
+                        if(/^(object|array)$/.test(customDatatype.type) && (customDatatype.hasOwnProperty("properties") || customDatatype.hasOwnProperty("items"))){
+                            customDtype = true;
+                        }
+                    }   
+                    if((field && /^(object|array)$/.test(field.type) && (field.watch || (field.hasOwnProperty("items") || field.hasOwnProperty("properties"))) )|| customDtype){
+                        establishObjectBinding(compData, key, undefined,undefined,undefined,field.watch ? true : undefined);
                     }
+                }
+                else{
+                    eKeys.push(key);
                 }
             }
             this._initProperties = undefined;
+            //@Slicer.developmentStart
+            if(eKeys.length){
+                ComponentError.error(this,"LC006",this.component.$node.localName,eKeys.toString())
+            }
+            //@Slicer.developmentEnd
         }
-        //@Slicer.developmentStart
-        if(compData.errors && Object.keys(compData.errors).length){
-            ComponentError.error("LC006",this.component.$node.localName,+Object.keys(this.component.data.errors).toString())
-        }
-        //@Slicer.developmentEnd
         if(this._initMethods) {
             let initMethods = this._initMethods;
             for(let key in initMethods) {
@@ -5454,6 +6585,7 @@ class customElementPrototype extends elementPrototype {
             }
             this._initMethods = undefined;
         }
+        
         let _config_flag;
         if( compInstance._ssr && compInstance._ssr.config ){
             if( compInstance._ssr.config.clientLifeCycleHooks != undefined ){
@@ -5547,11 +6679,13 @@ class customElementPrototype extends elementPrototype {
                         }
                         //@Slicer.developmentStart
                         else if(key.startsWith("@")){
-                            ComponentError.error("LC007")
+                            ComponentError.error(this,"LC007")
                         }
                         //@Slicer.developmentEnd
                         else{
+                            this.__lyteIgnore = true;
                             this.setAttribute(templateAttributes.a[key].name, "{{dummy}}");
+                            this.__lyteIgnore = false;
 							this.bindNode(this.attributes.getNamedItem(templateAttributes.a[key].name), [], undefined, {}, templateAttributes.a[key], undefined, undefined, true );
                         }
                     }
@@ -5559,6 +6693,7 @@ class customElementPrototype extends elementPrototype {
         		}
         	}
         }
+        // this._yields = this._yields || {};
         this.registerYields();
         let dumFlg;
         if(compData.lyteUnbound && !_LC.migratedv2(app)) {
@@ -5581,13 +6716,13 @@ class customElementPrototype extends elementPrototype {
             fastRenderSupported = _LC.directive.getTransitionArg(this,"unbound-supported") || _LC.directive.getTransitionArg(this,"turbo-supported");
             if(!fastRenderSupported){
                 //@Slicer.developmentStart
-                ComponentError.error("LC008", this.localName)
+                ComponentError.error(this, "LC008", this.localName)
                 //@Slicer.developmentEnd
                 this.component.data.lyteFastRender = false;
             }
         }
         
-        let fastObj = this.getFastObj();
+        let fastObj = this.getDirectiveIns("turbo");
         if((unboundBeta && !(_LC.migratedv2(app))) || (fastRender && fastRenderSupported && fastObj)){
             content = fastObj.renderFast(constr._dynamicNodes, constr._sta, compInstance, undefined, this);
             requestAnimationFrame(function() {
@@ -5597,13 +6732,13 @@ class customElementPrototype extends elementPrototype {
             });
         }
         else {
-            content = this.renderNodes(constr._template, constr._dynamicNodes,undefined,undefined, undefined, undefined, this.component.constructor._tC);
+            content = this.renderNodes(constr._template, constr._dynamicNodes,undefined,undefined, undefined, undefined, this.component.constructor._tC,undefined,true);
         }
         return content;
     }
 
     //RN
-    renderNodes(toAppend, dynamicNodes, helperNode, options, establishBindings, returnVal, templateContent ,yieldComp) {
+    renderNodes(toAppend, dynamicNodes, helperNode, options, establishBindings, returnVal, templateContent ,yieldComp, initialRender, _yields) {
         options = options || {};
         let content;
         let constr = this.constructor;
@@ -5622,48 +6757,53 @@ class customElementPrototype extends elementPrototype {
             templateDepthHandlingNeeded = true;
             content = _LC.getContentForIE(templateContent , constr);
         } else if(toAppend.hasAttribute("depth")) {
-        	templateDepthHandlingNeeded = true;
-        	content = _LC.getContentForIE(toAppend , constr);
+            templateDepthHandlingNeeded = true;
+            content = _LC.getContentForIE(toAppend , constr);
         } else {
             content = toAppend.content.cloneNode(true, "lyte");
         }
         let updateHelpers = [],processLast = [],helperFunc,stoppedNode;
+        let cmpData = _LC.getCmpData(this.component.data);
         
         let toBeInsMap = new Map();
         for(let i=0;i<dynamicNodes.length;i++) {
             let info = dynamicNodes[i], type = info.t, pos = info.p, dynamicN = content, helperInfo;
             dynamicN = getDynamicNode(dynamicN,pos);
-            if(directiveObj && info.trans){
+            if(info.trans){
                 dynamicN._hooksPresent = true;
             }
             if(!dynamicNodes._cache){
                 dynamicNodes._cache = {};
             }
             if(type ===  "cD") {
-            	if(options.node) {
-            		dynamicN._cx = options;
-            	} else if(helperNode) {
-            		dynamicN._cx	= helperNode._cx;
-            	}
+                if(helperNode){
+                    dynamicN._parentHelper = helperNode;
+                }
+                if(options.node) {
+                    dynamicN._cx = options;
+                } else if(helperNode) {
+                    dynamicN._cx	= helperNode._cx;
+                }
                   
                 if(directiveObj){
                     directiveObj.infoCD(this,info,dynamicN,helperNode,options);
                 }
+                
                 // dynamicN._callee = this//af check
             } 
             else if(type === "tX"){
                  this.bindNode(dynamicN, undefined, helperNode, options, dynamicNodes[i], processLast, establishBindings,undefined,dynamicNodes._cache,type,undefined,toBeInsMap);
             }
             else if(type === "a"){
-            	dynamicN._attributeDetails = info.a;            	
+                dynamicN._attributeDetails = info.a;            	
                 if(dynamicN.nodeName === "LYTE-YIELD") {
                     dynamicN._callee = this;
                     dynamicN.component = {}
                     dynamicN.component.data = {};
                     defProp(dynamicN.component.data, "__component__", {
-                    	value : dynamicN,
-                    	configurable : true,
-                    	writable : true,
+                        value : dynamicN,
+                        configurable : true,
+                        writable : true,
                         enumerable : false
                     });
                     dynamicN._properties = {};
@@ -5675,10 +6815,12 @@ class customElementPrototype extends elementPrototype {
                     }
                 }
                 let toBeRemoved = [];
-				for(let key in info.a) {
-                	let attr = info.a[key];
-                	attr._depthTemp = info._depthTemp;
-                	let attrName = key;
+                let processDirectiveLazy = [];
+                for(let key in info.a) {
+                    let attr = info.a[key];
+                    attr._depthTemp = info._depthTemp;
+                    let attrName = key;
+                    let node;
                     if(attr && (attr.dynamicValue || attr.helperInfo)) {
                         if(options.node) {
                                 dynamicN._cx = options;
@@ -5702,37 +6844,54 @@ class customElementPrototype extends elementPrototype {
                             let id;
                                
                         }            
-			            if(!attr.globalEvent) {
+                        if(!attr.globalEvent) {
                             /*this.bindNode(dynamicN.getAttributeNode(attrName), toBeRemoved, helperNode, options, attr, undefined, establishBindings);
                              */
                             if(!dynamicN.hasAttribute(attrName)) {
                                 dynamicN.setAttribute(attrName, "{{dummy}}");
                             }
-                        	var node = this.bindNode(dynamicN.attributes.getNamedItem(attrName), toBeRemoved, helperNode, options, attr, undefined, establishBindings,undefined,dynamicNodes._cache,type,i);
+                            node = this.bindNode(dynamicN.attributes.getNamedItem(attrName), toBeRemoved, helperNode, options, attr, undefined, establishBindings,undefined,dynamicNodes._cache,type,i);
                             if(node !== dynamicN.attributes.getNamedItem(attrName)) {
-                            	dynamicN._removedAttributes = dynamicN._removedAttributes || {};
-                            	dynamicN._removedAttributes[attrName] = node;
+                                dynamicN._removedAttributes = dynamicN._removedAttributes || {};
+                                dynamicN._removedAttributes[attrName] = node;
                             }
                         }
                     }
-                    if(directiveObj && attr.hookNode){
-                        directiveObj.infoA(this,info,dynamicN,helperNode,attr,yieldComp,options);
+                    if(attr.hookNode){
+                        if(attr.hookName == "unbound" || attr.hookName == "turbo" || attr.hookName == "shadow" || attr.hookName == "shadow-style" || attr.hookName == "shadow-deep" || attr.hookName =="hide-tag"){
+                            if(!dynamicN._transitionAppend){
+                                dynamicN._transitionAppend = []
+                            }
+                            if(yieldComp && !yieldComp._transitionAppend){
+                                yieldComp._transitionAppend = []
+                            }
+                            if(this && !this._transitionAppend){
+                                this._transitionAppend = []
+                            }
+                            _LC.directive.infoA(this,info,dynamicN,helperNode,attr,yieldComp,options);
+                        }
+                        
+                        else if(directiveObj){
+                            directiveObj.infoA(this,info,dynamicN,helperNode,attr,yieldComp,options);
+                        }
                     }
                 }
+                
                 //Added now
                 if(info.a && Object.keys(info.a).length) {
-                	dynamicN._callee = this;
+                    dynamicN._callee = this;
                 }
                 for(let d=0;d<toBeRemoved.length;d++) {
                     dynamicN.removeAttribute(toBeRemoved[d]);
                 }
             }
-            else if(/^(f|fI|cM)$/.test(type)){
-            	if(options.node) {
-            		dynamicN._cx = options;
-            	} else if(helperNode) {
-            		dynamicN._cx	= helperNode._cx;
-            	}
+            else if(/^(f|fI|cM|eM)$/.test(type)){
+                dynamicN._cases = info.c;
+                if(options.node) {
+                    dynamicN._cx = options;
+                } else if(helperNode) {
+                    dynamicN._cx	= helperNode._cx;
+                }
                 if(directiveObj){
                     directiveObj.infoF(this,info,dynamicN,helperNode,type,options);
                 }
@@ -5743,21 +6902,26 @@ class customElementPrototype extends elementPrototype {
                 if(info.actualTemplate) {
                     dynamicN._tC = info.actualTemplate;
                 }
+                if(!dynamicN._hiddenTemplate){
+                    dynamicN._hiddenTemplate = [];
+                 }
                 let returnVal;
                 switch(type) {
                 case "f" : 
                     dynamicN._ht = info._ht;
-                	returnVal = this.updateForHelper(dynamicN,{"type" : "default"} , options.node? options : undefined, establishBindings, info._sta ,yieldComp);
+                	returnVal = this.updateForHelper(dynamicN,{"type" : "default"} , options.node? options : undefined, establishBindings, info._sta ,yieldComp, initialRender, _yields);
                 	break;
                 case "fI" : 
                     dynamicN._ht = info._ht;
-                	returnVal = this.updateForInHelper(dynamicN,{"type" : "default"} , options.node? options : undefined, establishBindings ,yieldComp);
+                	returnVal = this.updateForInHelper(dynamicN,{"type" : "default"} , options.node? options : undefined, establishBindings ,yieldComp, initialRender, _yields);
                 	break;
                 case "cM" : 
-                	returnVal = this.updateDynamicComponent(dynamicN, false, options.node ? options : undefined, establishBindings ,yieldComp);
+                	returnVal = this.updateDynamicComponent(dynamicN, false, options.node ? options : undefined, establishBindings ,yieldComp, initialRender, _yields);
+                    break;
+                
                 }
                 if(returnVal) {
-                	updateHelpers.$push(returnVal);
+                    updateHelpers.$push(returnVal);
                 }
             }
             else if(/^(e|s)$/.test(type)){
@@ -5768,33 +6932,36 @@ class customElementPrototype extends elementPrototype {
                 dynamicN._default = info.d;
                 dynamicN._ht = info._ht;
                 if(options.node) {
-            		dynamicN._cx = options;
-            	} else if(helperNode) {
-            		dynamicN._cx	= helperNode._cx;
-            	}
+                    dynamicN._cx = options;
+                } else if(helperNode) {
+                    dynamicN._cx	= helperNode._cx;
+                }
                 if(directiveObj){
                     directiveObj.infoE(this,helperNode,dynamicN,info,options);
                 }
                 if(info.actualTemplate) {
                     dynamicN._tC = info.actualTemplate;
                     if(!dynamicN._origTemplate) {
-                    	// if(Lyte._ie) {
-                    	// 	dynamicN._origTemplate = createElement("template")
-                    	// } else {
-        	            	dynamicN._origTemplate = info._depthTemp.cloneNode(true);
-                    	// }
-                    	if(dynamicN.hasAttribute("value")) {
-                    		dynamicN._origTemplate.setAttribute("value", dynamicN.getAttribute("value"));
-                    	}
+                        // if(Lyte._ie) {
+                        // 	dynamicN._origTemplate = createElement("template")
+                        // } else {
+                            dynamicN._origTemplate = info._depthTemp.cloneNode(true);
+                        // }
+                        if(dynamicN.hasAttribute("value")) {
+                            dynamicN._origTemplate.setAttribute("value", dynamicN.getAttribute("value"));
+                        }
                         if(dynamicN.hasAttribute("l-c")) {
-                    		dynamicN._origTemplate.setAttribute("l-c", dynamicN.getAttribute("l-c"));
-                    	}
+                            dynamicN._origTemplate.setAttribute("l-c", dynamicN.getAttribute("l-c"));
+                        }
                     }
+                }
+                if(!dynamicN._hiddenTemplate){
+                    dynamicN._hiddenTemplate = [];
                 }
                 let id,obj;
                 
                 
-                let returnVal = this.updateSwitchHelper(type, dynamicN, options.node ? options : undefined, undefined, establishBindings ,yieldComp,undefined,helperNode,id,i);
+                let returnVal = this.updateSwitchHelper(type, dynamicN, options.node ? options : undefined, undefined, establishBindings ,yieldComp, _yields ,undefined,helperNode,id,i);
                 if( !_LC.unbound && ( this._ssrBind || ( this._callee && this._callee._ssrBind ) )){
                     // delete obj.node;
                     // obj.case = dynamicN._currentCase || dynamicN._currentScope; 
@@ -5807,21 +6974,21 @@ class customElementPrototype extends elementPrototype {
                     }
                 }
                 if(returnVal) {
-                	updateHelpers.$push(returnVal);
-                	let isBreak = returnVal.toAppendMain.querySelector("template[is=break]");
-                	if(isBreak) {
-                		dynamicN._isStopped = "break";
-                		content = Compile.getTrimmedContent(content, info.p,undefined);
-                		stoppedNode = info.p;
-                		break;
-                	}
-                	let isContinue = returnVal.toAppendMain.querySelector("template[is=continue]");
-                	if(isContinue) {
-                		dynamicN._isStopped = "continue";
-                		content = Compile.getTrimmedContent(content, info.p,undefined);
+                    updateHelpers.$push(returnVal);
+                    let isBreak = returnVal.toAppendMain.querySelector("template[is=break]");
+                    if(isBreak) {
+                        dynamicN._isStopped = "break";
+                        content = Compile.getTrimmedContent(content, info.p,undefined);
+                        stoppedNode = info.p;
+                        break;
+                    }
+                    let isContinue = returnVal.toAppendMain.querySelector("template[is=continue]");
+                    if(isContinue) {
+                        dynamicN._isStopped = "continue";
+                        content = Compile.getTrimmedContent(content, info.p,undefined);
 //                		stoppedNode = info.position;
-                		break;
-                	}
+                        break;
+                    }
                 }
             } else if(type === "r") {
                 dynamicN._childPromise = [];
@@ -5846,17 +7013,24 @@ class customElementPrototype extends elementPrototype {
                 //Added now                
                 dynamicN._callee = this;
             } else if(type === "i") {
-            	if(options.node) {
-            		dynamicN._cx = options;
-            	} else if(helperNode) {
-            		dynamicN._cx	= helperNode._cx;
-            	}
+                if(helperNode){
+                    dynamicN._parentHelper = helperNode;
+                }
+                if(options.node) {
+                    dynamicN._cx = options;
+                } else if(helperNode) {
+                    dynamicN._cx	= helperNode._cx;
+                }
+                if(!dynamicN._hiddenTemplate){
+                    dynamicN._hiddenTemplate = [];
+                }
                 
                 dynamicN.component = dynamicN.component || {"data" : {}};
                 dynamicN._properties = dynamicN._properties || {};
                 if(directiveObj){
                     directiveObj.infoI(this,info,dynamicN,helperNode,options);
                 }
+                let dData = _LC.getCmpData(dynamicN.component.data);  
                 for(let x=0; x<dynamicN.attributes.length; x++) {
                     let attrObj = dynamicN.attributes[x];
                     let attrName = attrObj.name;
@@ -5866,11 +7040,11 @@ class customElementPrototype extends elementPrototype {
                             dynamicN._properties[attrName] = {};
                         }
                         if(dynamicN._attributeDetails && !dynamicN._attributeDetails[attrName]){
-                            dynamicN.component.data[attrName] = attrValue;
+                            dData[attrName] = attrValue;
                         }
                     }
                 }
-                this.updateYield(dynamicN, false, options.node? options : undefined,helperNode);
+                this.updateYield(dynamicN, false, options.node? options : undefined,helperNode, _yields);
                 if(info.chld){
                     dynamicN._chld = info.chld;
                 }
@@ -5891,12 +7065,12 @@ class customElementPrototype extends elementPrototype {
                  }
                  let startingNode = nodeValue.childNodes[0];
                  if(processNode.parentNode.nodeName === "#document-fragment") {
-                 	while(nodeValue.childNodes.length) {
-                 		_LC.insertBeforeNative(processNode.parentNode, nodeValue.childNodes[0], processNode);
+                    while(nodeValue.childNodes.length) {
+                        _LC.insertBeforeNative(processNode.parentNode, nodeValue.childNodes[0], processNode);
                     }
-                 	processNode.remove();
+                    processNode.remove();
                  } else {
-                	 processNode.replaceWith.apply(processNode,nodeValue.childNodes);
+                     processNode.replaceWith.apply(processNode,nodeValue.childNodes);
                  }
                  processLast[i].dynamicPositions = {startingNode : startingNode, length: childLen}
         }
@@ -5912,8 +7086,8 @@ class customElementPrototype extends elementPrototype {
             })
         }  
         if(stoppedNode) {
-        	returnVal = returnVal || {};
-        	returnVal.stop = true;
+            returnVal = returnVal || {};
+            returnVal.stop = true;
         }
         if(helperNode) {
             if(options.type) {
@@ -6002,6 +7176,9 @@ class customElementPrototype extends elementPrototype {
             }
             let customPropHandlers;
             if(this.componentClass){
+                this.componentClass._registryClass._observedAttributes.forEach(function(name){
+                    newArr.push(_LC.String.dasherize(name));
+                })
                 customPropHandlers = this.componentClass._registryClass.customPropHandlers
             }else{
                 customPropHandlers = _LC.customPropHandlers;
@@ -6039,7 +7216,7 @@ class customElementPrototype extends elementPrototype {
                     }
                 } catch (e) {
                     //@Slicer.developmentStart
-                    ComponentError.error("LC001", attr, this.localName);
+                    ComponentError.error(this, "LC001", attr, this.localName);
                     //@Slicer.developmentEnd
                 }
             }
@@ -6082,15 +7259,18 @@ class customElementPrototype extends elementPrototype {
     }
 
     //Used to remove helpers of specific index in a for helper. 
-    removeHelpersSpecificIndex(node, index,totalProms,fakeRemove,previousPromise) {
+    removeHelpersSpecificIndex(node, index,totalProms,fakeRemove, previousPromise,destroyChild, type) {
+        let isType = node.getAttribute("is");
         if(node.hc){
             fakeRemove = true;
         }
         if(node._helpers[index]) {
             for(let j=0;j<node._helpers[index].length;j++) {
-                    this.removeHelpers(node._helpers[index][j],undefined,undefined,totalProms,fakeRemove,previousPromise);
+                    this.removeHelpers(node._helpers[index][j],undefined,undefined,totalProms,fakeRemove,previousPromise, index, node, type);
             }
         }
+        
+                
         let directiveObj = this.getDirectiveObj();
         if(directiveObj && node.hc && node._forContent[index] && node._specialNodes){
             directiveObj.removeForIndexContent(this,node,totalProms,previousPromise,index);
@@ -6118,12 +7298,12 @@ class customElementPrototype extends elementPrototype {
                     }
                 }
             });
-            node._items[index] = {"_dynamicProperty" : {}, "itemProperty" : {}, "indexProperty": {}};
+            node._items[index] = {"_dynamicProperty" : {}, "itemProperty" : {}, "indexProperty": {}, "propProperty" : {},"propPropertyDyn" : {}, "propNodes" : {}};
         }
     }
     //Used to remove all the helpers within an helper. 
-    removeHelpers(node, update, direct,totalProms,fakeRemove,previousPromise) {
-        
+    removeHelpers(node, update, direct,totalProms,fakeRemove,previousPromise,updateIndex, parentNode, type) {
+        let isType = node.getAttribute("is");
         if(!direct) {
             node.remove();
             var helpersObj = node.getAttribute("is") === "component" ? this.__dc : this.__h;
@@ -6133,25 +7313,32 @@ class customElementPrototype extends elementPrototype {
         if(direct && node.hc){
             fakeRemove = true;
         }
+
+              
         var del = "delete";
         let parent;
         var contextSwitchArray = [];
         let directiveObj = this.getDirectiveObj();
+        
         _LC.adCx(node, contextSwitchArray);
         if(node._forContent) {
             if(node.getAttribute("is") === "for") {
-        	if(node._helpers) {
+            if(node._helpers) {
                 for(let i=0;i<node._helpers.length;i++) {
                     for(let j=0;j<node._helpers[i].length;j++) {
-                            this.removeHelpers(node._helpers[i][j],undefined,undefined,totalProms,fakeRemove,previousPromise);
+                            this.removeHelpers(node._helpers[i][j],undefined,undefined,totalProms,fakeRemove,previousPromise, updateIndex, parentNode, type);
                     }
                     directiveObj && directiveObj.checkFakeForAndRemove(fakeRemove,node,i);
                 }
             }
-            if(directiveObj){
+            
+            
+            if(directiveObj && node.hc && node._specialNodes && node._specialNodes.length){
                 directiveObj.removeForContent(this,direct,fakeRemove,node,totalProms);
             }else{
-                _LC.removeForContent(node);
+                if(!fakeRemove){
+                    _LC.removeForContent(node);
+                }
             }
             let key = node.getAttribute("item");
             if(node._items.length) {
@@ -6172,8 +7359,8 @@ class customElementPrototype extends elementPrototype {
                 }
             }
             if(!update) {
-            	if(node._actualBinding) {
-            		if(node._attributes.items && node._attributes.items._bindings && node._actualBinding._createdBinding) {
+                if(node._actualBinding) {
+                    if(node._attributes.items && node._attributes.items._bindings && node._actualBinding._createdBinding) {
                         node._attributes.items._bindings[del](node._actualBinding);
                     } 
                     if(node._actualBinding._forHelpers) {
@@ -6181,25 +7368,30 @@ class customElementPrototype extends elementPrototype {
                     }
                     var multiplePrpty = node._removedAttributes.items._multipleProperty;
                     if(node._removedAttributes && node._removedAttributes.items && !node._removedAttributes.items.helperValue && multiplePrpty && multiplePrpty[0].actProp._forHelpers) {
-                    	multiplePrpty[0].actProp._forHelpers[del](node);
+                        multiplePrpty[0].actProp._forHelpers[del](node);
                     }
-            	}
+                }
             }
             node._items = [];
         } else {
-        	if(node._helpers) {
+            if(node._helpers) {
                 let keys = Object.keys(node._helpers);
                 for(let i=0;i<keys.length;i++) {
                     for(let j=0;j<node._helpers[keys[i]].length;j++) {
-                        this.removeHelpers(node._helpers[keys[i]][j],undefined,undefined, totalProms, fakeRemove, previousPromise);
+                        this.removeHelpers(node._helpers[keys[i]][j],undefined,undefined, totalProms, fakeRemove, previousPromise, updateIndex, parentNode, type);
                     }
                     directiveObj && directiveObj.checkFakeForAndRemove(fakeRemove,node,keys[i]);
                 }
             }
-            if(directiveObj){
+
+            
+            
+            if(directiveObj && node.hc && node._specialNodes && Object.keys(node._specialNodes).length){
                 directiveObj.removeForInContent(this,direct,fakeRemove,node,totalProms);
             }else{
-                _LC.removeForInContent(node);
+                if(!fakeRemove){
+                    _LC.removeForInContent(node);
+                }
             }
             let items = node._items;
             let key = node.getAttribute("key");
@@ -6237,13 +7429,17 @@ class customElementPrototype extends elementPrototype {
             }
             node._items= {};
           }
+          
+          
         } else if(node._caseContent || node._yieldContent) {
-        	if(node._helpers) {
+            if(node._helpers) {
                 for(let j=0;j<node._helpers.length;j++) {
                     this.removeHelpers(node._helpers[j],undefined,undefined, totalProms, fakeRemove, previousPromise);
                 }
                 directiveObj && directiveObj.checkFakeIfAndRemove(fakeRemove,node);
             }
+            
+            
             if(directiveObj){
                 directiveObj.removeIfContent(this,direct,fakeRemove,node,totalProms,previousPromise,this);
             }else{
@@ -6267,8 +7463,9 @@ class customElementPrototype extends elementPrototype {
                     }
                 }
             }
+            
             node._dynamicProperty = {};
-            let viewObj = this.getViewObj()
+            let viewObj = this.getDirectiveIns("view")
             if(viewObj){
                 viewObj.rmCaseContent(node)
             }
@@ -6290,12 +7487,14 @@ class customElementPrototype extends elementPrototype {
           _LC.rmCx(node, contextSwitchArray);
           if(!fakeRemove){
             node._helpers = [];
+            
           }
     }
-    updateYield(node, update, contextSwitchInfo,helperNode) {
-        let shadowObj = this.getShadowObj();
+    updateYield(node, update, contextSwitchInfo,helperNode, _yields) {
+        let shadowObj = this.getDirectiveIns("shadow");
         let directiveObj = this.getDirectiveObj();
         let app = this.component.getAppOrAddon();
+        
         if(directiveObj){
             node._childPromise = [];
             node._specialNodes = [];
@@ -6304,9 +7503,13 @@ class customElementPrototype extends elementPrototype {
         if(!node._callee) {
             node._callee = this;
         }        
-        let toAppend = node._callee._yields[this.getYieldName(node)];
+        let actYields = _yields || node._callee._yields;
+        let toAppend = actYields[_LC.getYieldName(node)];
         if(!toAppend) {
-        	return;
+            if(Lyte.Compatibility.vue){
+                Lyte.Compatibility.vue.updateYield(this, node);
+            }
+            return;
         }
         node._registerYield = toAppend;
         //ADded now
@@ -6340,19 +7543,21 @@ class customElementPrototype extends elementPrototype {
             node._helpers = [];
             return;
         }    
-	    if(!toAppend._callee) {
-    		toAppend._callee = parentScope;
-    	} 
+        if(!toAppend._callee) {
+            toAppend._callee = parentScope;
+        } 
         node._dynamicProperty = node._dynamicProperty || {};
         //set values from child component. 
         let obj = {},contextSwitchingArray = {},self = this,contextSwitchArray = [];
         _LC.adCx(toAppend, contextSwitchArray);
+        var cmpData = _LC.getCmpData(parentScope.component.data);
         Object.keys(node._properties).forEach(function(key) {
             contextSwitchingArray[key] = {};
-            contextSwitchingArray[key].value = parentScope.component.data[key];
+            contextSwitchingArray[key].value = cmpData[key];
             contextSwitchingArray[key].property = parentScope._properties[key];
             parentScope._properties[key] = node._properties[key];
-            parentScope.component.data[key] = node.component.data[key];
+            let nData = _LC.getCmpData(node.component.data);
+            cmpData[key] = nData[key];
         }); 
         // htA -> helpertemplateApplied
         if(toAppend._ht && !toAppend._htA) {
@@ -6360,16 +7565,18 @@ class customElementPrototype extends elementPrototype {
             toAppend.content.append(toAppend._ht.content.cloneNode(true));
         }
         let yieldComp = node._callee;
-        let content = parentScope.renderNodes(toAppend, toAppend._dynamicNodes || [], node, {"node" : node}, true, undefined, toAppend._tC , yieldComp);
+        let content = parentScope.renderNodes(toAppend, toAppend._dynamicNodes || [], node, {"node" : node}, true, undefined, toAppend._tC , yieldComp, _yields);
         directiveObj && directiveObj.updateSpecialNodeRef(this,node,toAppend,helperNode);
         if(!_LC.directive.getTransitionArg(node,"unbound")) {
-        	_LC.establishBindings(node._properties, node.component.data);
-        }else if(!node.component.data.lyteUnbound && !_LC.migratedv2(app)) {        	
-        	_LC.establishBindings(node._properties, node.component.data);
+            let nData = _LC.getCmpData(node.component.data);  
+            _LC.establishBindings(node._properties, nData);
+        }else if(!node.component.data.lyteUnbound && !_LC.migratedv2(app)) {     
+            let nData = _LC.getCmpData(node.component.data);     	
+            _LC.establishBindings(node._properties, nData);
         }
         parentScope.executeBlockHelpers(node._helpers);
         Object.keys(node._properties).forEach(function(key) {
-            parentScope.component.data[key] = contextSwitchingArray[key].value;
+            cmpData[key] = contextSwitchingArray[key].value;
             parentScope._properties[key] = contextSwitchingArray[key].property;
         });
         _LC.rmCx(toAppend, contextSwitchArray); 
@@ -6383,12 +7590,30 @@ class customElementPrototype extends elementPrototype {
         }
     }
     //upddc
-    updateDynamicComponent(node, update, contextSwitchInfo, establishBindings) {
-    	let returnVal;
+    updateDynamicComponent(node, update, contextSwitchInfo, establishBindings,idx,helperNode) {
+        if(!node._specialNodes){
+            node._specialNodes = [];
+        }
+        let returnVal;
         // let registryClass = this._registryClass;
         let directiveObj = this.getDirectiveObj();
         node._callee = this;
         let keepAlive = node.hasAttribute("lyte-keep-alive");
+        if(!node._placeHolder){
+            let emptyTextNode = document.createTextNode("");
+            _LC.replaceWithPf(node, emptyTextNode);
+            node._placeHolder = emptyTextNode;
+            emptyTextNode._helper = node;
+            // node._placeHolder.__lytehelper = node._placeHolder._helper;
+            node._placeHolder._actTemplate = node;
+            _LC.tDiv.content.appendChild(node);
+            if(this._removedTemplate){
+                this._removedTemplate.push(node);
+            }else{
+                this._removedTemplate=[];
+                this._removedTemplate.push(node);
+            }
+        }
         if(!node._renderedComponent) {
             node._renderedComponent = {};
             let id = _LC.createLyteId(this);
@@ -6400,7 +7625,8 @@ class customElementPrototype extends elementPrototype {
         node._dynamicProperty = node._dynamicProperty || {};
         let componentName = node.getAttribute("component-name") || (node._attributes ? node._attributes["component-name"] : undefined);
         let componentClass =  node._attributes ? node._attributes["component-class"] : undefined;
-        let registryInstance = (node._initProperties ? node._initProperties.lyteRegistry : undefined) || (node._attributes ? node._attributes["lyte-registry"] : undefined);
+        // let registryInstance = (node._initProperties ? node._initProperties.lyteRegistry : undefined) || (node._attributes ? node._attributes["lyte-registry"] : undefined);
+        let registryInstance = _LC.getRegFromAttr(node, "dynamicComponent");
         let regClass;
         if(!componentName && !componentClass) {
             return;
@@ -6421,9 +7647,9 @@ class customElementPrototype extends elementPrototype {
         }
         let component,newComponent = false;
         if(update) {
-        	if(keepAlive) {
-        		_LC.ignoreDisconnect = true;
-        	}
+            if(keepAlive) {
+                _LC.setIgnoreDisconnect(true);
+            }
             if(node._renderedComponent[node._currentComponent]) {
                 var activeComponent = node._renderedComponent[node._currentComponent];
                 if(activeComponent){
@@ -6439,7 +7665,7 @@ class customElementPrototype extends elementPrototype {
                     }
                 }
             }
-            _LC.ignoreDisconnect = false;
+            _LC.setIgnoreDisconnect(false);
             if(!keepAlive) {
                 node._dynamicProperty = {};
             }
@@ -6488,14 +7714,14 @@ class customElementPrototype extends elementPrototype {
             }
 //          componentData = component._attributes;
             if(node._attributes) {
+                _LC.$variables(node);
                 for(var key in node._attributes) {
-                    // if(key == "component-data"){
-                    //     component.setData(node._attributes[key]);
-                    // }
-                	// else 
-                    if(key!== "component-name" && key!== "component-class") {
-                		component.setData(_LC.String.toCamelCase(key), node._attributes[key]);
-                	}
+                    if(key == "$data"){
+                        component.setData(node._attributes[key]);
+                    }
+                    else if(key!== "component-name" && key!== "component-class") {
+                        component.setData(_LC.String.toCamelCase(key), node._attributes[key]);
+                    }
                 }
             }
             let toAppend = this.renderNodes(node, node._dynamicNodes, node, undefined, establishBindings, undefined, node._tC);
@@ -6506,22 +7732,35 @@ class customElementPrototype extends elementPrototype {
             component._toRegEvnts = node._toRegEvnts;
         }
         if(directiveObj){
-            returnVal = directiveObj.updateDynamicComp(this,update,component,activeComponent,node,newComponent);
+            let placeHolder,placeHolderParent;
+            if(!node._placeHolder){
+                placeHolder = node;
+                placeHolderParent = node.parentNode;
+            }else{
+                placeHolder = node._placeHolder;
+                placeHolderParent = node._placeHolder.parentNode;
+
+            } 
+            returnVal = directiveObj.updateDynamicComp(this,update,component,activeComponent,node,newComponent,placeHolder,placeHolderParent);
         }else{
             if(!update) {
                 returnVal = {"toAppendMain" : component, "lastNode" : node};
             } else {
-                _LC.ignoreDisconnect = true;
-                _LC.insertBeforeNative(node.parentNode,component, node);
-                _LC.ignoreDisconnect = false;
+                _LC.setIgnoreDisconnect(true);
+                if(!node._placeHolder){
+                    _LC.insertBeforeNative(node.parentNode,component, node);
+                }else{
+                    _LC.insertBeforeNative(node._placeHolder.parentNode,component, node._placeHolder); 
+                } 
+                _LC.setIgnoreDisconnect(false);
             }
         }
         component._dynComp = true;
         node._renderedComponent[componentName] = component;
         node._currentComponent = componentName;
-	    component._callee = this;
+        component._callee = this;
         
-	    component._actions = node._actions;
+        component._actions = node._actions;
         component.setMethods(node._initMethods);
         component._attributeDetails = node._attributeDetails;
         component._boundEvents = node._boundEvents;
@@ -6529,9 +7768,11 @@ class customElementPrototype extends elementPrototype {
         return returnVal;
     }
     // It constructs/updates the for helper. 
-    updateForHelper(node, options, contextSwitchInfo, establishBindings, staticTempArr,yieldComp) {
+    updateForHelper(node, options, contextSwitchInfo, establishBindings, staticTempArr,yieldComp, initialRender, _yields) {
+        
         let directiveObj = this.getDirectiveObj();
         directiveObj && directiveObj.instanciateForPromises(node);
+        
         let app = this.component.getAppOrAddon();
         if(node.tagName !== "TEMPLATE") {
             Object.keys(node).forEach(function(item) {
@@ -6579,7 +7820,7 @@ class customElementPrototype extends elementPrototype {
         let callee = this;
         node._callee = this;
         node._attributes = node._attributes || {};
-        if(options.type === "update" && node._currentItems === node._attributes.items) {
+        if(options.type === "update" && node._currentItems === node._attributes.items && (!options || !options.force)) {
             return {};
         }
         node._cx = contextSwitchInfo || node._cx;
@@ -6593,7 +7834,9 @@ class customElementPrototype extends elementPrototype {
             node.setAttribute("item", "item");
             itemValue = "item";
         }
-        let initialItemValue = callee.component.data[itemValue],initialIndexValue = callee.component.data[indexValue];
+        
+        let cmpData = _LC.getCmpData(callee.component.data);
+        let initialItemValue = cmpData[itemValue],initialIndexValue = cmpData[indexValue];
         let initialItemProp = callee._properties[itemValue],initialIndexProp = callee._properties[indexValue];
         callee._properties[itemValue] = callee._properties[indexValue] = {};
         let items = node._attributes.items,content = node.content,dynamicNodes = node._dynamicNodes,lastNode = node;
@@ -6620,6 +7863,7 @@ class customElementPrototype extends elementPrototype {
                     directiveObj && directiveObj.onGoingForPromise(node,ind)
                     this.removeHelpersSpecificIndex(node, ind, totalProms, undefined,totalProms && totalProms.length ? totalProms[totalProms.length-1] : undefined);
                 }
+                
                 //ln
                 /*for(let i=(firstIndex)?firstIndex-secondIndex:firstIndex;i<node._items.length;i++) {
                     let forItem = node._items[i].itemProperty;
@@ -6635,6 +7879,8 @@ class customElementPrototype extends elementPrototype {
                 }
                 node._items.$splice(firstIndex, secondIndex);
                 node._helpers.$splice(firstIndex, secondIndex);
+                
+                
                 node._forContent.$splice(firstIndex, secondIndex);
                 node._specialNodes && node._specialNodes.$splice(firstIndex, secondIndex);
                 break;
@@ -6646,14 +7892,18 @@ class customElementPrototype extends elementPrototype {
                 if(node._forContent[firstIndex]) {
                     lastNode = node._forContent[firstIndex][0];
                 }
-                let newArr = [], newObj = [], newArr1 = [];
+                let newArr = [], newObj = [], newArr1 = [], newPropObj = [];
                 for(let v=secondIndex, k=firstIndex;v>0;v--, k++) {
                     newArr.$push([]);
                     newObj.$push({});
                     newArr1.$push([]);
+                    newPropObj.push({__dummy : true});
                 }
+                
                 node._helpers.$splice.apply(node._helpers, [firstIndex, 0].$concat(newArr));
+                
                 node._items.$splice.apply(node._items, [firstIndex, 0].$concat(newObj));
+                
                 //ln
 //                  for(let i=firstIndex + secondIndex;i<node._items.length;i++) {
 //                      let forItem = node._items[i].itemProperty;
@@ -6679,14 +7929,18 @@ class customElementPrototype extends elementPrototype {
                 if(node._forContent[firstIndex+1]) {
                     lastNode = node._forContent[firstIndex+1][0];
                 }
-                let newArr = [], newObj = [], newArr1 = [];
+                let newArr = [], newObj = [], newArr1 = [], newPropObj = [];
                 for(let v=secondIndex, k=firstIndex;v>0;v--, k++) {
                     newArr.$push([]);
                     newArr1.$push([]);
                     newObj.$push({});
+                    newPropObj.push({__dummy : true});
                 }
+                
                 node._helpers.$splice.apply(node._helpers,[firstIndex, 1].$concat(newArr));
+                
                 node._items.$splice.apply(node._items, [firstIndex, 1].$concat(newObj));
+                
 //                  for(let i=firstIndex + secondIndex;i<node._items.length;i++) {
 //                      let forItem = node._items[i].itemProperty._forItem;
 //                      forItem.itemIndex = forItem.itemIndex + secondIndex - 1 ;
@@ -6705,24 +7959,28 @@ class customElementPrototype extends elementPrototype {
                 firstIndexForIteration = firstIndex;
                 lastIndexForIteration = secondIndex;
                 indexPropertyStartIndex = firstIndex + secondIndex;
+                let newArr = [], newObj = [], newArr1 = [], newPropObj = [];
+                for(let v=secondIndex, k=firstIndex;v>0;v--, k++) {
+                    newArr.$push([]);
+                    newArr1.$push([]);
+                    newObj.$push({});
+                    newPropObj.push({__dummy : true});
+                }
                 let totalProms = node._totalPromise;
                 for(let i=thirdIndex;i>0;i--) {
                     let ind = i + firstIndex-1;
                     directiveObj && directiveObj.onGoingForPromise(node,ind)
                     this.removeHelpersSpecificIndex(node, ind, totalProms, undefined, totalProms && totalProms.length ? totalProms[totalProms.length-1] : undefined);
                 }
+                
                 let toAppendMain = createDocFragment();
                 if(node._forContent[firstIndex+thirdIndex]) {
                     lastNode = node._forContent[firstIndex+thirdIndex][0];
                 }
-                let newArr = [], newObj = [], newArr1 = [];
-                for(let v=secondIndex, k=firstIndex;v>0;v--, k++) {
-                    newArr.$push([]);
-                    newArr1.$push([]);
-                    newObj.$push({});
-                }
                 node._helpers.$splice.apply(node._helpers,[firstIndex, thirdIndex].$concat(newArr));
+                
                 node._items.$splice.apply(node._items, [firstIndex, thirdIndex].$concat(newObj));
+                
 //                  for(let i=firstIndex + secondIndex;i<node._items.length;i++) {
 //                      let forItem = node._items[i].itemProperty._forItem;
 //                      forItem.itemIndex = forItem.itemIndex + secondIndex - 1 ;
@@ -6746,6 +8004,7 @@ class customElementPrototype extends elementPrototype {
                 for(let i=node._items.length-1;i>=0;i--) {
                     directiveObj && directiveObj.onGoingForPromise(node,i)
                     this.removeHelpersSpecificIndex(node, i, totalProms, undefined,totalProms && totalProms.length ? totalProms[totalProms.length-1] : undefined);
+                    
                 }
 //                  if(node._attributes.items) {
 //                      for(let i=0;i<node._attributes.items.length && node._items[i];i++) {
@@ -6760,7 +8019,9 @@ class customElementPrototype extends elementPrototype {
                 if(directiveObj){
                     node._specialNodes = [];
                 }
+                node._propNodes = {};
                 node._helpers = [];
+                
                 firstIndexForIteration = 0;
                 lastIndexForIteration = items? items.length : 0 ;
                 indexPropertyStartIndex = items? items.length : 0 ;
@@ -6768,7 +8029,7 @@ class customElementPrototype extends elementPrototype {
             //@Slicer.developmentStart
             break;
             default: 
-                ComponentError.error("LC009","updateForHelper")
+                ComponentError.error(node,"LC009","updateForHelper")
             //@Slicer.developmentEnd
             }
         }
@@ -6792,7 +8053,7 @@ class customElementPrototype extends elementPrototype {
         if(unboundDirective){
             if(unboundDirective == "lyteFastRender"){
                 //@Slicer.developmentStart
-                ComponentError.error("LC010", _LC.errorNodeDetails(node))
+                ComponentError.error(node, "LC010", _LC.errorNodeDetails(node))
                 //@Slicer.developmentEnd
             }else{ // if(unboundDirective !== "false")
                 localUnbound = true;
@@ -6808,24 +8069,31 @@ class customElementPrototype extends elementPrototype {
             }
         }
         node._currentItems = items;        
-        if((lastIndexForIteration - firstIndexForIteration) > 0) {
+        if((lastIndexForIteration - firstIndexForIteration) > 0 || items instanceof Promise) {
             if(node._ht && !node._htA) {
                 node.content.append(node._ht.content.cloneNode(true));
                 node._htA = true;
             }
         }
+        let currentCaseName;
+        
+        let trueNode = node;
         if(options.type !== "remove") {
             var totalString = "";
             var domArr = [];
             var toAppendMain = createDocFragment();
+            
+            
             for(let k = firstIndexForIteration,v=lastIndexForIteration;v>0; k++, v--) {
                 node._helpers[k] = [];
+                
                 if(directiveObj){
                     node._specialNodes[k] = [];
                 }
-                node._items[k] = {"_dynamicProperty" : {}, "itemProperty" : {}, "indexProperty": {}};
-                callee.component.data[itemValue] = items[k];
-                callee.component.data[indexValue] = k;
+                
+                node._items[k] = {"_dynamicProperty" : {}, "itemProperty" : {}, "indexProperty": {}, "propProperty" : {},"propPropertyDyn" : {}, "propNodes" : {}};
+                cmpData[itemValue] = items[k];
+                cmpData[indexValue] = k;
                 var cacheData = {};
                 cacheData[itemValue]={}
                 cacheData[itemValue]._data = items[k];
@@ -6846,7 +8114,7 @@ class customElementPrototype extends elementPrototype {
                 let breakCheck = {};
                 let toAppend;
                 if(node._fRender) {
-                    let fastObj = this.getFastObj();
+                    let fastObj = this.getDirectiveIns("turbo");
                     let str = fastObj.renderFast(dynamicNodes, node._sta, this.component, undefined, this);
                     totalString = totalString + str;
                     // var template = document.createElement("template");
@@ -6854,7 +8122,7 @@ class customElementPrototype extends elementPrototype {
                     // toAppend = template.content;
                 } else {
                     dynamicNodes._cache = cacheData;
-                    toAppend = this.renderNodes(node.hasAttribute("depth") ? node._depthTemp : node, dynamicNodes, node, optns, establishBindings, breakCheck, node._tC,yieldComp);
+                    toAppend = this.renderNodes(trueNode.hasAttribute("depth") ? trueNode._depthTemp : trueNode, dynamicNodes, node, optns, establishBindings, breakCheck, node._tC,yieldComp,_yields);
                 }
                 //to bind in ssr components
                 
@@ -6937,18 +8205,22 @@ class customElementPrototype extends elementPrototype {
                 }
             }
         }
-        callee.component.data[itemValue] = initialItemValue;
-        callee.component.data[indexValue] = initialIndexValue;
+        cmpData[itemValue] = initialItemValue;
+        cmpData[indexValue] = initialIndexValue;
         callee._properties[itemValue] = initialItemProp;
         callee._properties[indexValue] = initialIndexProp;
+        
         node._currentItems = items;
         return returnVal;
     }
+
     //It constructs/updates forIn Helper.
     //updFIH
-    updateForInHelper(node, options, contextSwitchInfo, establishBindings,yieldComp) {
+    updateForInHelper(node, options, contextSwitchInfo, establishBindings,yieldComp,initialRender,_yields) {
+        
         let directiveObj = this.getDirectiveObj();
         directiveObj && directiveObj.instanciateForPromises(node);
+        
         let app = this.component.getAppOrAddon();
         if(node.tagName !== "TEMPLATE") {
             Object.keys(node).forEach(function(item) {
@@ -6973,6 +8245,7 @@ class customElementPrototype extends elementPrototype {
                 node._origTemplate.setAttribute("unbound", "true");
             }
             
+            
             //node.replaceWith(node._origTemplate._placeHolder);
             _LC.replaceWithPf(node, node._origTemplate._placeHolder)
             // node = _LC.replaceWithOrigTemplate(node)
@@ -6994,7 +8267,7 @@ class customElementPrototype extends elementPrototype {
         let callee = this;
         node._callee = this;
         node._attributes = node._attributes || {};
-        if(options.type === "update" && node._currentObject === node._attributes.object) {
+        if(options.type === "update" && node._currentObject === node._attributes.object && (!options || !options.force)) {
             return {};
         }
         contextSwitchInfo = contextSwitchInfo ? contextSwitchInfo : node._cx;
@@ -7009,8 +8282,10 @@ class customElementPrototype extends elementPrototype {
             value = "value";
             node.setAttribute("value", "value");
         }
-        let initialKeyValue = callee.component.data[key];
-        let initialValueValue = callee.component.data[value];
+        
+        let cmpData = _LC.getCmpData(callee.component.data);
+        let initialKeyValue = cmpData[key];
+        let initialValueValue = cmpData[value];
         let initialKeyProp = callee._properties[key];
         let initialValueProp = callee._properties[value];
         callee._properties[key] = callee._properties[value] = {};
@@ -7028,7 +8303,8 @@ class customElementPrototype extends elementPrototype {
             case "delete"  :{
                 let totalProms = node._totalPromise;
                 directiveObj && directiveObj.onGoingForPromise(node,options.property)
-                this.removeHelpersSpecificIndex(node, options.property, totalProms, undefined,totalProms && totalProms.length ? totalProms[totalProms.length-1] : undefined);
+                this.removeHelpersSpecificIndex(node, options.property, totalProms, undefined,totalProms && totalProms.length ? totalProms[totalProms.length-1] : undefined, undefined, options.type);
+                
                 var delIndex = node._keysArray.indexOf(options.property);
                 if(delIndex > -1) {
                   node._keysArray.$splice(delIndex,1);
@@ -7036,12 +8312,18 @@ class customElementPrototype extends elementPrototype {
                 if(node._helpers) {
                     delete node._helpers[options.property];    
                 }
+                
                 delete node._propBindingObject[options.property];
+                node._forContent[options.property] = null;
+                delete node._forContent[options.property];
             }
             break;
             case "add" : {
+                let replace = false;
                 keysArray = [options.property];
-                node._keysArray.$push(options.property);
+                replace = node._keysArray.indexOf(options.property) != -1 ? true : false;
+                !replace && node._keysArray.push(options.property);
+                
             }
             break;
             case "update" : 
@@ -7050,21 +8332,25 @@ class customElementPrototype extends elementPrototype {
                 let keyObjArr = node._keysArray;
                 for(let i=keyObjArr.length-1; i>=0; i--){
                     directiveObj && directiveObj.onGoingForPromise(node,keyObjArr[i])
-                    this.removeHelpersSpecificIndex(node, keyObjArr[i], totalProms, undefined,totalProms && totalProms.length ? totalProms[totalProms.length-1] : undefined);
+                    this.removeHelpersSpecificIndex(node, keyObjArr[i], totalProms, undefined,totalProms && totalProms.length ? totalProms[totalProms.length-1] : undefined, undefined, options.type);
                 }
+                
                 node._keysArray = keysArray = object ? Object.keys(object) : [];
                 node._helpers = {};
+                
                 node._items = {};
                 node._propBindingObject = {};
             }
-            break;
+            // break;
             case "default" : 
             {
                 node._forContent = {};
                 if(directiveObj){
                     node._specialNodes = {};
                 }
+                node._propNodes = {};
                 node._helpers = {};
+                
                 node._keysArray = keysArray = object? Object.keys(object) : [];
 //                  keysArray = Object.keys(object);
 
@@ -7072,7 +8358,7 @@ class customElementPrototype extends elementPrototype {
             //@Slicer.developmentStart
             break;
             default: 
-                ComponentError.error("LC009","updateForInHelper")
+                ComponentError.error(node,"LC009","updateForInHelper")
             //@Slicer.developmentEnd
 
             }
@@ -7098,21 +8384,29 @@ class customElementPrototype extends elementPrototype {
             _LC.unbound = true;
         }
         node._currentObject = object;
-        if(keysArray.length && node._ht && !node._htA) {
+        if((keysArray.length ||  object instanceof Promise) && node._ht && !node._htA) {
             node.content.append(node._ht.content.cloneNode(true));
             node._htA = true;
         }
+        let currentCaseName;
+        let trueNode = node;
+        
         if(object && options.type !== "remove") {
             var toAppendMain = createDocFragment();
             node._propBindingObject = node._propBindingObject || {};
+            
+            
             keysArray.forEach(function(itemKey, index, array) {
                 node._helpers[itemKey] = [];
+                node._items[itemKey] = {"_dynamicProperty" : {}, "itemProperty" : {}, "propProperty" : {}, "propPropertyDyn" : {}, "propNodes" : {}};
+                
                 if(directiveObj){
                     node._specialNodes[itemKey] = [];
                 }
-                node._items[itemKey] = {"_dynamicProperty" : {}, "itemProperty" : {}};
-                callee.component.data[key] = itemKey;
-                callee.component.data[value] = object[itemKey];
+                
+                // node._items[itemKey] = {"_dynamicProperty" : {}, "itemProperty" : {}};
+                cmpData[key] = itemKey;
+                cmpData[value] = object[itemKey];
                 callee._properties[key] = {};
                 callee._properties[value] = {};
                 var cacheData = {};
@@ -7125,7 +8419,7 @@ class customElementPrototype extends elementPrototype {
                 let optns = {"itemIndex" : itemKey, "itemValue" : value, "keyValue" : key, "type" : "forIn", "node" : node};
                 node._items[itemKey]._cx = optns;
                 dynamicNodes._cache = cacheData;
-                let toAppend = this.renderNodes(node.hasAttribute("depth") ? node._depthTemp : node, dynamicNodes, node, optns, establishBindings, undefined, node._tC,yieldComp);
+                let toAppend = this.renderNodes(trueNode.hasAttribute("depth") ? trueNode._depthTemp : trueNode, dynamicNodes, node, optns, establishBindings, undefined, node._tC,yieldComp,_yields);
                 Object.keys(node._items[itemKey]._dynamicProperty).forEach(function(key) {
                     node._dynProps[key] ? node._dynProps[key]++ : (node._dynProps[key] = 1);    
                 })
@@ -7140,8 +8434,7 @@ class customElementPrototype extends elementPrototype {
             }, this); 
 //              if(options.type !== "update") {
                 if(!_LC.unbound && typeof node._attributes.object =='object' && !Array.isArray(node._attributes.object)) {
-            		makeSet(node._attributes.object, "_bindings");
-                    addBindings(node._attributes.object._bindings,node._propBindingObject);
+                    addBindings(node._attributes.object,node._propBindingObject);
                     _LC.establishBindings(node._propBindingObject, node._attributes.object);
             	}
 //              }
@@ -7160,10 +8453,11 @@ class customElementPrototype extends elementPrototype {
 
         }
         _LC.unbound = initialUnbound; 
-        callee.component.data[key] = initialKeyValue;
-        callee.component.data[value] = initialValueValue;
+        cmpData[key] = initialKeyValue;
+        cmpData[value] = initialValueValue;
         callee._properties[key] = initialKeyProp;
         callee._properties[value] = initialValueProp;
+        
         node._currentObject = object;
         return returnVal;
     }
@@ -7201,6 +8495,7 @@ class customElementPrototype extends elementPrototype {
         let val = templateCaseNode._attributes.case;
         var currentInd = casesList.indexOf(node._currentScope);
         var scope;
+        
         if(node._currentScope != "default"){
             if(templInd == currentInd){
                 if(val){
@@ -7296,6 +8591,7 @@ class customElementPrototype extends elementPrototype {
                         }if(dummyTemp._attributes) {
                             val = dummyTemp._attributes.case;
                         }
+                        
                         if((lyteConvertedSwitch && val) || (!lyteConvertedSwitch && val == switchValue)){
                             scope  = node._cases[caseName];
                             scope.cn = caseName;
@@ -7320,12 +8616,16 @@ class customElementPrototype extends elementPrototype {
         return scope;
     }
     //updSH
-    updateSwitchHelper(type,node, contextSwitchInfo, update, establishBindings,yieldComp,templateCaseNode,helperNode,id,idx){
+    updateSwitchHelper(type,node, contextSwitchInfo, update, establishBindings,yieldComp, _yields,templateCaseNode,helperNode,id,idx){
          var lyteConvertedSwitch = node.getAttribute("l-c");
          let directiveObj = this.getDirectiveObj();
+         
          if(directiveObj){
              directiveObj.checkOngoingPromises(node);
              directiveObj.instanciateForPromises(node);//af
+         }
+         if(!node._specialNodes){
+             node._specialNodes = [];
          }
          if(node._ht && !node._htA) {
              node.content.append(node._ht.content.cloneNode(true));
@@ -7383,26 +8683,28 @@ class customElementPrototype extends elementPrototype {
              switchValue = node._attributes.value;
          }
          if(!lyteConvertedSwitch && !node._hd){
-             if(switchValue) {
-                 switchValue = switchValue.toString();
-             } else {
-                 switch(switchValue) {
-                     case undefined : 
-                         switchValue = "undefined";
-                         break;
-                     case null : 
-                         switchValue = "null";
-                         break;
-                     case false: 
-                         switchValue = "false";
-                         break;
-                     case "": 
-                         switchValue = '""';
-                         break;
-                     case 0 : 
-                         switchValue = '0';
+             
+                 if(switchValue) {
+                     switchValue = switchValue.toString();
+                 } else {
+                     switch(switchValue) {
+                         case undefined : 
+                             switchValue = "undefined";
+                             break;
+                         case null : 
+                             switchValue = "null";
+                             break;
+                         case false: 
+                             switchValue = "false";
+                             break;
+                         case "": 
+                             switchValue = '""';
+                             break;
+                         case 0 : 
+                             switchValue = '0';
+                     }
                  }
-             }
+             
          }
          if((!lyteConvertedSwitch && !node._hd) && switchValue === node._currentCase) {
              return;
@@ -7515,7 +8817,7 @@ class customElementPrototype extends elementPrototype {
                      tempNode._parentSwitch = node;
                  }
              }
-             let processedContent = this.renderNodes(template, dynamicNodes, node, undefined, establishBindings, undefined, dummyScope.templateContent,yieldComp);
+             let processedContent = this.renderNodes(template, dynamicNodes, node, undefined, establishBindings, undefined, dummyScope.templateContent,yieldComp,_yields);
              
              contentArr.$push(processedContent);
              if(dummyScope.additional) {
@@ -7625,12 +8927,21 @@ class customElementPrototype extends elementPrototype {
         }
     	return frag;
     }
-    static seperateStyle(componentClass,componentsDiv){
+    static seperateStyle(componentClass,componentsDiv,nearByApp){
         componentClass._template.replace(/\\'/g,"'");
         let div = createElement("div");
         div.innerHTML = componentClass._template;
         while(div.firstChild){
-            if(div.firstChild.nodeName === "STYLE") {
+            if(div.firstChild.nodeName === "STYLE" || div.firstChild.nodeName === "LINK") {
+                // if(div.firstChild.nodeName === "LINK" && nearByApp && nearByApp.processLinkTag){
+                //     nearByApp.processLinkTag(div.firstChild);
+                // }
+                if(div.firstChild.nodeName == "LINK" && nearByApp.constructor._preloadLInkTag){
+                    let preloadLinkTag = div.firstChild.cloneNode(true);
+                    preloadLinkTag.setAttribute("rel","preload");
+                    preloadLinkTag.setAttribute("as","style");
+                    _LC.addLink(undefined, Lyte.$.assetsDiv, preloadLinkTag, undefined, nearByApp);
+                }
                 componentClass._style = div.firstChild.outerHTML;
                 div.firstChild.remove();
             } else {
@@ -7639,106 +8950,130 @@ class customElementPrototype extends elementPrototype {
             }
         }
     }
-    static _registerComponent(a,b,componentClass,registry,registryInstance) {
+    static* _registerComponentFn(a,b,componentClass,registry,registryInstance) {
         let componentsDiv = _LC.getComponentsDiv(_LC.lyteComponentsDiv ,registry.name);
         let origTemplateValue = componentClass._template;
         let app = _LC.getAppOrAddon(registryInstance);
-        var clonedDummyTemp;
-        if(componentClass._template && typeof componentClass._template === "string"){
-            this.seperateStyle(componentClass,componentsDiv);
-        }else if(componentClass.template && typeof componentClass.template === "object"){
-            componentClass._template = componentClass.template._template;
-            componentClass._dynamicNodes = componentClass.template._dynamicNodes;
-            componentClass.template = undefined;
-            this.seperateStyle(componentClass,componentsDiv);
-        }
-        componentClass._template = componentsDiv.querySelector("template[tag-name='"+a+"']");
-        componentClass._helperTemplate = document.createElement("template");
-        componentClass._helperTemplate.setAttribute("_lyteht", a );
-        _LC.h1Div.content.appendChild(componentClass._helperTemplate);
-        if(!componentClass._template) {
-            //@Slicer.developmentStart
-            console.error("Template not found for the component : '"+a+"'");
-            //@Slicer.developmentEnd
-        	return;
-        }
-        if(Compile.needDummyComponentsDiv) {
-            // if(Lyte._ie) {
-            //     let temp = Compile.getTemplateFromString(origTemplateValue);
-            //     // let dummyLyteComponentsDiv = _LC.setComponentsDiv(_LC.dummyLyteComponentsDiv,registry.name);
-            //     _LC.getComponentsDiv(_LC.dummyLyteComponentsDiv,registry.name)
-            //     dummyLyteComponentsDiv.appendChild(temp);
-            // } else {
-                clonedDummyTemp = componentClass._template.cloneNode(true);   
-            // }
-        }
-        if(componentClass._template && !componentClass._template.content){
-//            var frag = document.createDocumentFragment();
-//            let childNodes = this._template.cloneNode(true,"lyte").childNodes;
-//            //let childNodes = this._template.childNodes;
-//            let len = childNodes.length;
-//            for(let i=0; i<len; i++){
-//                frag.appendChild(childNodes[0]);
-//            }
-//            this._template.content = frag;
-        }
-        // var s = Lyte._ie ? componentClass._template : componentClass._template.content;//)?this._template.content:document.createDocumentFragment(this._template);
-        var s = componentClass._template.content; //)?this._template.content:document.createDocumentFragment(this._template);
-        //This is used to split text nodes which contain multiple dynamic values 
-        //Eg." Name is {{name}} and age is {{age}} "
-        //This is used to find the dynamicNodes and helper nodes for the given component. 
-        if(!componentClass._dynamicNodes){
-            if(Compile.getDynamicNodes) {
-                var returnVal = Compile.getDynamicNodes(a);
-                if(returnVal.errors){
-                    //@Slicer.developmentStart
-                    console.error("Error in the component", returnVal.componentName, returnVal.errors);
-                    //@Slicer.developmentEnd
-                    return false;
-                }else{
-                    componentClass._dynamicNodes = returnVal.dynamicNodes;
-                    if(componentClass._dynamicNodes && componentClass._dynamicNodes.length && componentClass._dynamicNodes[componentClass._dynamicNodes.length-1].type == "dc"){
-                        b.dc = componentClass._dynamicNodes.$pop();
-                    }
+        let nearByApp = _LC.getNearestParentApp(registryInstance);
+        var clonedDummyTemp, s, hasUnbound, fastRenderClass, newCompile;
+        var returnRegister = false;
+        yield () => {
+            if(registry._reRegisteredComponents.indexOf(a) != -1){
+                if(b.componentClass._template.startsWith('"')){
+                    b.componentClass._template = JSON.parse(b.componentClass._template);
+                    // if(registry.lazyRegister){
+                        registry._reRegisteredComponents.splice(registry._reRegisteredComponents.indexOf(a), 1);
+                    // }
                 }
-            } 
-            //@Slicer.developmentStart
-            else {
-                ComponentError.error("LC002", a);  
             }
-            //@Slicer.developmentEnd
-	    } 
-        if(componentClass._dynamicNodes) {
-            this.setTemplateAttributes(a, componentClass, clonedDummyTemp);
-            var hasUnbound = this.getFastRenderSupported(componentClass._templateAttributes);
-            let fastRenderClass = registry.getFastObj();
-            // var hasUnbound = b._observedAttributes.indexOf("lyteUnbound") !== -1;
-            if(!hasUnbound && !_LC.migratedv2(app)){
-                hasUnbound = b._observedAttributes.indexOf("lyteUnbound") !== -1;
+        }
+        yield () => {
+            if(componentClass._template && typeof componentClass._template === "string"){
+                this.seperateStyle(componentClass,componentsDiv,nearByApp);
+            }else if(componentClass.template && typeof componentClass.template === "object"){
+                componentClass._template = componentClass.template._template;
+                componentClass._dynamicNodes = componentClass.template._dynamicNodes;
+                componentClass.template = undefined;
+                this.seperateStyle(componentClass,componentsDiv,nearByApp);
             }
-            var newCompile;
-            if(hasUnbound) {
-                if(fastRenderClass){
-                    newCompile = fastRenderClass.getNewCompile(componentClass);
-                }
+            componentClass._template = componentsDiv.querySelector("template[tag-name='"+a+"']");
+            componentClass._helperTemplate = document.createElement("template");
+            componentClass._helperTemplate.setAttribute("_lyteht", a );
+            _LC.h1Div.content.appendChild(componentClass._helperTemplate);
+            if(!componentClass._template) {
                 //@Slicer.developmentStart
-                else{
-                    ComponentError.error("LC011")
-                }
+                console.error("Template not found for the component : '"+a+"'");
                 //@Slicer.developmentEnd
+                // return;
+                returnRegister = true;
+                return;
+            }
+            if(Compile.needDummyComponentsDiv) {
                 // if(Lyte._ie) {
-                //     newCompile = document.createElement("div");
-                //     newCompile.innerHTML = componentClass._template.outerHTML;
-                //     newCompile = newCompile.childNodes[0];
+                //     let temp = Compile.getTemplateFromString(origTemplateValue);
+                //     // let dummyLyteComponentsDiv = _LC.setComponentsDiv(_LC.dummyLyteComponentsDiv,registry.name);
+                //     _LC.getComponentsDiv(_LC.dummyLyteComponentsDiv,registry.name)
+                //     dummyLyteComponentsDiv.appendChild(temp);
                 // } else {
-                //     newCompile = componentClass._template.cloneNode(true);
+                    clonedDummyTemp = componentClass._template.cloneNode(true);   
                 // }
             }
-            this.splitTextNodes(s);
-            if(hasUnbound && fastRenderClass) {
-                this.splitTextNodes(newCompile);
+            if(componentClass._template && !componentClass._template.content){
+    //            var frag = document.createDocumentFragment();
+    //            let childNodes = this._template.cloneNode(true,"lyte").childNodes;
+    //            //let childNodes = this._template.childNodes;
+    //            let len = childNodes.length;
+    //            for(let i=0; i<len; i++){
+    //                frag.appendChild(childNodes[0]);
+    //            }
+    //            this._template.content = frag;
             }
-            doCompile(s, componentClass._dynamicNodes, a, b, newCompile ? newCompile.content : undefined, componentClass, fastRenderClass);
+            // var s = Lyte._ie ? componentClass._template : componentClass._template.content;//)?this._template.content:document.createDocumentFragment(this._template);
+            s = componentClass._template.content; //)?this._template.content:document.createDocumentFragment(this._template);
+            //This is used to split text nodes which contain multiple dynamic values 
+            //Eg." Name is {{name}} and age is {{age}} "
+            //This is used to find the dynamicNodes and helper nodes for the given component. 
+        }
+        if(returnRegister){
+            return;
+        }
+        if(!componentClass._dynamicNodes){
+            yield () => {
+                if(Compile.getDynamicNodes) {
+                    var returnVal = Compile.getDynamicNodes(a);
+                    if(returnVal.errors){
+                        //@Slicer.developmentStart
+                        console.error("Error in the component", returnVal.componentName, returnVal.errors);
+                        //@Slicer.developmentEnd
+                        return false;
+                    }else{
+                        componentClass._dynamicNodes = returnVal.dynamicNodes;
+                        if(componentClass._dynamicNodes && componentClass._dynamicNodes.length && componentClass._dynamicNodes[componentClass._dynamicNodes.length-1].type == "dc"){
+                            b.dc = componentClass._dynamicNodes.$pop();
+                        }
+                    }
+                } 
+                //@Slicer.developmentStart
+                else {
+                    ComponentError.error("LC002", a);  
+                }
+                //@Slicer.developmentEnd
+            }
+	    } 
+        if(componentClass._dynamicNodes) {
+            yield () => {
+                this.setTemplateAttributes(a, componentClass, clonedDummyTemp);
+                hasUnbound = this.getFastRenderSupported(componentClass._templateAttributes);
+                fastRenderClass = registry.getDirectiveIns("turbo");
+                // var hasUnbound = b._observedAttributes.indexOf("lyteUnbound") !== -1;
+                if(!hasUnbound && !_LC.migratedv2(app)){
+                    hasUnbound = b._observedAttributes.indexOf("lyteUnbound") !== -1;
+                }
+                if(hasUnbound) {
+                    if(fastRenderClass){
+                        newCompile = fastRenderClass.getNewCompile(componentClass);
+                    }
+                    //@Slicer.developmentStart
+                    // else{
+                    //     ComponentError.error("LC011")
+                    // }
+                    //@Slicer.developmentEnd
+                    // if(Lyte._ie) {
+                    //     newCompile = document.createElement("div");
+                    //     newCompile.innerHTML = componentClass._template.outerHTML;
+                    //     newCompile = newCompile.childNodes[0];
+                    // } else {
+                    //     newCompile = componentClass._template.cloneNode(true);
+                    // }
+                }
+            }
+            yield () => {
+                this.splitTextNodes(s);
+                if(hasUnbound && fastRenderClass) {
+                    this.splitTextNodes(newCompile);
+                }
+            }   
+            yield* doCompile(s, componentClass._dynamicNodes, a, b, newCompile ? newCompile.content : undefined, componentClass, fastRenderClass);
             // if(Lyte._ed) { 
             //     componentClass._tC = componentClass._template.outerHTML;
             // } 
@@ -7746,8 +9081,48 @@ class customElementPrototype extends elementPrototype {
             //     componentClass._tC = s.outerHTML;
             // }
         }
-        clonedDummyTemp && _LC.getComponentsDiv(_LC.dummyLyteComponentsDiv,registry.name).appendChild(clonedDummyTemp);
-        componentClass._sta = newCompile ? _LC.processStatic(newCompile) : undefined;
+        yield () => {
+            if(clonedDummyTemp){
+                let dummyRegDiv = _LC.getComponentsDiv(_LC.dummyLyteComponentsDiv,registry.name);
+                if(!dummyRegDiv){
+                    Compile._registryNameList.forEach(function(regName){
+                        let div = document.createElement("div");
+                        div.setAttribute("id",regName);
+                        _LC.dummyLyteComponentsDiv.appendChild(div);
+                        if(regName == registry.name){
+                            dummyRegDiv = div;            
+                        }
+                    })
+                    Compile._registryNameList = [];
+                }
+                dummyRegDiv.appendChild(clonedDummyTemp);
+            }
+            componentClass._sta = newCompile ? _LC.processStatic(newCompile) : undefined;
+        } 
+
+        yield () => {
+            this.componentClass.__isRegistered = true;
+            let depthTemp = componentClass._depthTemp;
+            if(depthTemp && depthTemp.content.childNodes.length) { //removed _ie
+                depthTemp.setAttribute("data-id", "depthTemp_" + a);
+                let lyteComponentsDiv = _LC.getComponentsDiv(_LC.lyteComponentsDiv,registry.name);
+                lyteComponentsDiv.appendChild(depthTemp);
+            } else {
+                delete componentClass._depthTemp;
+            }
+            // _LC.postRegistration(a, b);
+        }
+    }
+    static _registerComponent(a,b, componentClass,registry,registryInstance) {
+        var gen = this._registerComponentFn(a,b, componentClass,registry,registryInstance);
+        var gnxt = gen.next(), gval;
+        while(gnxt.done == false){
+            gval = gnxt.value;
+            if(typeof gval == "function"){
+                gval();
+            }
+            gnxt = gen.next()
+        }
     }
     static getFastRenderSupported(templateAttributes){
         if(templateAttributes && templateAttributes.a){
@@ -7762,7 +9137,15 @@ class customElementPrototype extends elementPrototype {
     static setTemplateAttributes(a, componentClass,clonedDummyTemp){
         componentClass._templateAttributes = {t : "a", "a" : {}, p: []};
         var ta = [componentClass._templateAttributes];
-        doCompile(componentClass._template, ta, a, this, undefined, componentClass);
+        let gen = doCompile(componentClass._template, ta, a, this, undefined, componentClass);
+        let gnxt = gen.next(), gval;
+        while(gnxt.done == false){
+            gval = gnxt.value;
+            if(typeof gval == "function"){
+                gval();
+            }
+            gnxt = gen.next()
+        }
         componentClass._templateAttributes = ta[0];
         if(componentClass._templateAttributes && componentClass._templateAttributes.a) {
             var attributesT = componentClass._template.attributes;
@@ -7837,11 +9220,15 @@ class customElementPrototype extends elementPrototype {
         let forType = options.type;
         let indexValue = options.indexValue;
         let dynamicValue = nodeInfo.dynamicValue;
+        let directiveValue = nodeInfo.directiveValue;
         let helperFunc = nodeInfo.helperInfo;
         let nodeValue, ownerElement = node.ownerElement;
         let dynamicValuesArray = [];
+        let cmpData = _LC.getCmpData(this.component.data);
+        let processDetails = {};
         let isDirectiveNode;
         let directiveObj = this.getDirectiveObj();
+        
 //        if(node.nodeType === 2 && _LC.isCustomElement(node.ownerElement,true) ) {
 //          node = {nodeName : node.nodeName, ownerElement: ownerElement, nodeType : 2, nodeValue : node.nodeValue};
 //        }
@@ -7855,6 +9242,7 @@ class customElementPrototype extends elementPrototype {
         
         node._callee = this;
         let isHelper = false;
+        let deepValues = [];
         if(helperFunc && Object.keys(helperFunc).length) {
             isHelper = true;
             if(helperFunc._t){
@@ -7885,14 +9273,14 @@ class customElementPrototype extends elementPrototype {
                     helperArgs = helperFunc.args;
                          
                 } else {  
-                    helperArgs = this.processArgs(this,{"helperInfo" : helperFunc} ,dynamicValuesArray,undefined,node,false,helperFunc._t ?undefined:cache);
+                    helperArgs = this.processArgs(this,{"helperInfo" : helperFunc} ,dynamicValuesArray, deepValues,undefined,node,false,helperFunc._t ?undefined:cache, undefined, processDetails);
                 }
             }
             if(helperFunc._t == "sq"){
-                nodeValue = this.processArray(this,{"name" : helperFunc.name, "args" : helperArgs},dynamicValuesArray,helperFunc.extra,event, node, undefined);
+                nodeValue = this.processArray(this,{"name" : helperFunc.name, "args" : helperArgs},dynamicValuesArray,deepValues,helperFunc.extra,event, node, undefined, processDetails);
             }
             else{
-                nodeValue = this.processHelper(this, {"name" : helperFunc.name, "args" : helperArgs}, node);
+                nodeValue = this.processHelper(this, {"name" : helperFunc.name, "args" : helperArgs}, node, processDetails);
             }
             if(helperFunc.name === "unescape"){
 //              let test = node.replaceWith.apply(node,nodeValue.childNodes);
@@ -7906,9 +9294,10 @@ class customElementPrototype extends elementPrototype {
             }
         } else {
             helperFunc = {};
+            
             node.syntaxValue = dynamicValue;
             let dynamicValues = [];
-            nodeValue = _LC.get(this.component.data, dynamicValue, dynamicValues,cache);
+            nodeValue = _LC.get(cmpData, dynamicValue, dynamicValues,cache);
             dynamicValuesArray.$push(dynamicValues);
         }
         //if(node.nodeType === 2 && ( (typeof nodeValue !== "string" && (_LC.isCustomElement(node.ownerElement,true) || typeof nodeValue === "boolean") ) || _LC.isControlHelper(node.ownerElement) )) {
@@ -7936,8 +9325,13 @@ class customElementPrototype extends elementPrototype {
         //	node.ownerElement._attributeDetails[node.nodeName].bindedNode = node;
         //}
         }
+        // let estuh = false;
+        let estuhObj = {
+            doHp : undefined,
+            estuh : false
+        };
         let actMultiProp; 
-        if(helperFunc.name !== "unbound" && !_LC.unbound) {
+        if(!_LC.unbound) {
             let dynamicProp;
             if(helperNode) {
                 dynamicProp = forType? helperNode._items[forIndex]._dynamicProperty : helperNode._dynamicProperty;
@@ -7946,20 +9340,45 @@ class customElementPrototype extends elementPrototype {
             for(let d=0;d<dynamicValuesArray.length;d++) {
             	let dynamicValues = dynamicValuesArray[d];
                 
+                
+                let firstBoundValue, nodeFreezed;
             	for(let v=0;v<dynamicValues.length;v++) {
                     //to get binding in ssr components
+                    if(nodeFreezed){
+                        continue;
+                    }
                     var _nes = false;
                     
+                    if(node.__lq){
+                        if(!processDetails.lqDyn[d][0]){
+                            continue;
+                        }
+                    }
+                    let ind = dynamicValues[v].search(/\W/);
+                    if(dynamicValues[v].startsWith('$dataAttributes') || dynamicValues[v].startsWith('$methodAttributes')){
+                        nodeFreezed=true;
+                        continue;
+                    }
+                    let boundValue;
+                    if(ind !== -1) {
+                        boundValue = dynamicValues[v].substring(0, ind);
+                    } else {
+                        boundValue = dynamicValues[v];
+                    }
+                    if(v == 0){
+                        firstBoundValue = boundValue
+                    }
+                    if(_LC.freeze && _LC.freeze.prop(this, boundValue)){
+                        nodeFreezed = true;
+                        continue;
+                    }
             		let actProperty = this.getProperty(dynamicValues[v]);
+                    
             		if(helperNode) {
-            			let ind = dynamicValues[v].search(/\W/);
-            			let boundValue;
-            			if(ind !== -1) {
-            				boundValue = dynamicValues[v].substring(0, ind);
-            			} else {
-            				boundValue = dynamicValues[v];
-            			}
-            			if(boundValue !== itemValue && boundValue !== indexValue && (!options.node || !options.node._properties || !options.node._properties[boundValue])) {
+                        estuhObj.doHp = true;
+                        
+                        helperNode._deepValues = deepValues;
+                        if( estuhObj.doHp && boundValue !== itemValue && boundValue !== indexValue && (!options.node || !options.node._properties || !options.node._properties[boundValue])) {
             				//to bind for in ssr
                             
                             makeSet(actProperty, "_helperNodes");
@@ -7969,6 +9388,7 @@ class customElementPrototype extends elementPrototype {
             				dynamicProp[dynamicValues[v]] ? dynamicProp[dynamicValues[v]].$push(node): (dynamicProp[dynamicValues[v]] = []).$push(node);
             			} 
             			else {
+                            node._deepValues = deepValues;
             				node._cx = options;
 //            				if(!actProperty._dynamicNodes) {
 //            					actProperty._dynamicNodes = [];
@@ -7996,6 +9416,7 @@ class customElementPrototype extends elementPrototype {
 //            					configurable: true
 //            				});
 //            			}
+                        node._deepValues = deepValues;
             			makeArray(actProperty, "_dynamicNodes");
                         if(actProperty._dynamicNodes.indexOf(node) == -1){
             			    actProperty._dynamicNodes.$push(node);
@@ -8014,22 +9435,26 @@ class customElementPrototype extends elementPrototype {
             			}
             		}
             		if(establishBindings) {
-            			_LC.establishSelectedBinding(actProperty, this.component.data, this );
+            			_LC.establishSelectedBinding(actProperty, cmpData, this );
             		}
+                    
                     //to get ssr bindings 
                      
             	}
                 
-                if(dynamicValues.length > 1 || helperFunc._t) {
+                if((dynamicValues.length > 1 || helperFunc._t) && !nodeFreezed &&!(_LC.freeze && this.component.__data[firstBoundValue] && this.component.__data[firstBoundValue].freeze )) {
             		node._multipleProperty = node._multipleProperty || [];
             		node._multipleProperty.$push({"dynamicProp" : actMultiProp ? undefined : dynamicProp, "actProp" : this.getProperty(dynamicValues[0]), "helperNode" : helperNode, "dynamicValues" : dynamicValues, index:d});
             	}
+                
                 
             }
         }
         nodeValue = !typeof nodeValue === "boolean" && !typeof nodeValue === "number" ? (nodeValue? nodeValue : ""): nodeValue;
         if(isDirectiveNode){
-            _LC.directive.setNodeArgs(node,nodeValue);
+            if(!directiveValue){ //af check
+                _LC.directive.setNodeArgs(node, nodeValue, this);
+            }
         }
         else if(node.nodeType === 2) {
             let parentNode = node._parentNode? node._parentNode : node.ownerElement;
@@ -8037,6 +9462,7 @@ class customElementPrototype extends elementPrototype {
                 let is = parentNode.getAttribute("is");
             }
             let isCustomElement = _LC.isCustomElement(parentNode,true);
+            
             if(isCustomElement && !isDirectiveNode) {
                  if(parentNode.set) {
                     parentNode.set(_LC.String.toCamelCase(node.nodeName), nodeValue);
@@ -8063,14 +9489,14 @@ class customElementPrototype extends elementPrototype {
                             "_createdBinding" : true
                         };
                         if(nodeValue && typeof nodeValue !== "number"){
-                            makeSet(nodeValue, "_bindings");
-                            addBindings(nodeValue._bindings,node.ownerElement._actualBinding);
+                            addBindings(nodeValue,node.ownerElement._actualBinding);
                         }
                     }
                 }
                 toBeRemoved.$push(node.nodeName);
             }
             else {
+                
                 if(typeof nodeValue === "boolean") {
                     parentNode._attributes = node.ownerElement._attributes || {};
                     parentNode._attributes[node.nodeName] = nodeValue;
@@ -8093,6 +9519,7 @@ class customElementPrototype extends elementPrototype {
                             catch(exp){
                                 //@Slicer.developmentStart
                                 ComponentError.error(
+                                    node,
                                     "LC013",
                                     node.nodeName,
                                     node.ownerElement.nodeName.toLocaleLowerCase(),
@@ -8126,7 +9553,8 @@ class customElementPrototype extends elementPrototype {
                 }
             }
             if(parentNode.tagName === "LYTE-YIELD" /*parentNode.getAttribute("is") === "insertYield"*/) {
-                parentNode.component.data[_LC.String.toCamelCase(node.nodeName)] = origNodeValue;
+                let pData = _LC.getCmpData(parentNode.component.data);
+                pData[_LC.String.toCamelCase(node.nodeName)] = origNodeValue;
             }
             if (/^(INPUT|TEXTAREA|SELECT)$/.test(parentNode.nodeName)) {
                         if (node.nodeName === "value") {
@@ -8182,25 +9610,29 @@ class customElementPrototype extends elementPrototype {
         return property;
     }
     //updN
-    updateNode(node, updatePath) {
+    updateNode(node, updatePath, oldValue, newValue, exactProp, options) {
         let compInstance = this.component;
+        
         var del = "delete";
         let multiplePropNode = [];
+        let multipleDeepNode = [];
         let multipleProp;
         let nodeHasHelperNode;
         let isDirectiveNode;
+        let processDetails = {}
         if(node.nodeType == 2){
             isDirectiveNode = _LC.directive.isDirectiveNode(node)
         }
+        
         if(node._multipleProperty) {
         	for(var i=0;i<node._multipleProperty.length;i++) {
-        		if(node._multipleProperty[i]  && node._multipleProperty[i].dynamicValues.lastIndexOf(updatePath) > 0 ) {
-                    var dynStartIndex = node._sq ? node._multipleProperty[i].dynamicValues.lastIndexOf(updatePath) : 1;
-                    multiplePropNode[i] = false;
+        		if(node._multipleProperty[i]  && (node._multipleProperty[i].dynamicValues.lastIndexOf(updatePath) > 0 || node.__lq)) {
+                    var dynStartIndex = node.__lq ? node._multipleProperty[i].dynamicValues.length : node._sq ? node._multipleProperty[i].dynamicValues.lastIndexOf(updatePath) : 1;
+                    multiplePropNode[i] = multipleDeepNode[i] = false;
                     multipleProp = node._multipleProperty[i];
 		            let nodes;
                     for(var j=0;j<dynStartIndex;j++){
-                        var pathName = node._sq ? multipleProp.dynamicValues[j] : multipleProp.actProp._path;
+                        var pathName = node.__lq || node._sq ? multipleProp.dynamicValues[j] : multipleProp.actProp._path;
                         if(multipleProp.dynamicProp){
                             nodeHasHelperNode = true;
                             if(!node._sq || multipleProp.dynamicProp[multipleProp.dynamicValues[j]]){
@@ -8237,22 +9669,26 @@ class customElementPrototype extends elementPrototype {
                             }
                         }
                         if(!nodeHasHelperNode) {
+                            let deepNodeArr = [];
                             if(multiplePropNode[i] == false){
                                 multiplePropNode[i] = ["dynamicNodes"];
+                                multipleDeepNode[i] = [deepNodeArr];
                             }else{
                                 multiplePropNode[i].$push("dynamicNodes");
+                                multipleDeepNode[i].$push(deepNodeArr);
                             }
                             var prop = this.getProperty(pathName);
-                            nodes = prop._dynamicNodes;
+                            nodes = multipleProp.actProp._dynamicNodes;
                             if(nodes) {
                                 let index = nodes.indexOf(node);
                                 if(index != -1 && pathName!=updatePath && pathName.indexOf('.') != -1){
                                     nodes.$splice(index, 1);
                                     if(!nodes.length) {
-                                        delete prop._dynamicNodes;
+                                        delete multipleProp.actProp._dynamicNodes;
                                     }
                                 }
                             }
+                            _LC.deep.delete(this, node, multipleProp.dynamicValues, pathName, deepNodeArr);
                         }else{
                             nodeHasHelperNode=false; 
                         }
@@ -8277,6 +9713,7 @@ class customElementPrototype extends elementPrototype {
         }
         let nodeValue;
         let dynamicValues = [];
+        let deepValues = [];
         var isHelper = false;
         let helperRetVal;
         if(node.helperValue){
@@ -8286,11 +9723,11 @@ class customElementPrototype extends elementPrototype {
                     if(helperFunc._t){
                         node._sq = true;
                     }
-                    let helperArgs = this.processArgs(this,{"helperInfo" : helperFunc} ,dynamicValues,undefined,node);    
+                    let helperArgs = this.processArgs(this,{"helperInfo" : helperFunc} ,dynamicValues, deepValues,undefined,node, undefined,undefined,undefined,processDetails, {oldValue : oldValue, newValue : newValue, path : updatePath});    
                     if(helperFunc._t == "sq"){
-                        helperRetVal = this.processArray(this,{"name" : helperFunc.name, "args" : helperArgs},dynamicValues,helperFunc.extra,undefined, node, undefined);
+                        helperRetVal = this.processArray(this,{"name" : helperFunc.name, "args" : helperArgs},dynamicValues, deepValues,helperFunc.extra,undefined, node, undefined, processDetails);
                     }else{
-                        helperRetVal = this.processHelper(this,{"name" : helperFunc.name, "args" : helperArgs}, node);
+                        helperRetVal = this.processHelper(this,{"name" : helperFunc.name, "args" : helperArgs}, node, processDetails);
                     }
                     nodeValue = helperRetVal;
                     if(helperFunc.name === "unescape") {
@@ -8321,7 +9758,8 @@ class customElementPrototype extends elementPrototype {
                 path = boundValue;
                 boundValue = boundValue.substring(0,boundValue.indexOf('.'));
             }
-            let value = path ? _LC.get(compInstance.data, path, dynamicValues) : compInstance.data[boundValue]; 
+            let cmpData = _LC.getCmpData(compInstance.data);
+            let value = path ? _LC.get(cmpData, path, dynamicValues) : cmpData[boundValue]; 
             nodeValue = !typeof value === "boolean" && !typeof value === "number" ? (value? value : ""): value;
         }
         let origNodeValue = nodeValue;
@@ -8332,21 +9770,30 @@ class customElementPrototype extends elementPrototype {
         if(multiplePropNode) {
         	for(var i=0;i<multiplePropNode.length;i++) {
         		if(multiplePropNode[i]) {
-                    var ind = node._sq ? node._multipleProperty[i].dynamicValues.lastIndexOf(updatePath) : 1;
+                    var ind = node.__lq ? node._multipleProperty[i].dynamicValues.length : node._sq ? node._multipleProperty[i].dynamicValues.lastIndexOf(updatePath) : 1;
 					let multipleProp = node._multipleProperty[i];
                     let dynamicValIndex = node._multipleProperty[i].index;
                     for(var j=0;j<ind;j++){
+                        if(node.__lq){
+                            let processDynVal = processDetails.lqDyn[dynamicValIndex][0];
+                            if(!processDynVal){
+                                continue;
+                            }
+                        }
                         if(node._sq && dynamicValues[dynamicValIndex][j].indexOf('.') == -1){
                             continue;
                         }
+                        
                         let prop = this.getProperty(dynamicValues[dynamicValIndex][j]);
-                        let totalProp = this.getProperty(dynamicValues[dynamicValIndex][j].substring(0, dynamicValues[dynamicValIndex][j].indexOf('.')));
+                        let totalProp = this.getProperty(node.__lq ? dynamicValues[dynamicValIndex][j] : dynamicValues[dynamicValIndex][j].substring(0, dynamicValues[dynamicValIndex][j].indexOf('.')));
                         var value = this.getData(dynamicValues[dynamicValIndex][j].substring(0, dynamicValues[dynamicValIndex][j].indexOf('.')));                            
-                        if(Array.isArray(multiplePropNode) && multiplePropNode[dynamicValIndex] && multiplePropNode[dynamicValIndex][j] && (multiplePropNode[dynamicValIndex][j] === "dynamicNodes")) {
+                        if(Array.isArray(multiplePropNode) && multiplePropNode[i] && multiplePropNode[i][j] && (multiplePropNode[i][j] === "dynamicNodes")) {
                             makeArray(prop, "_dynamicNodes");
                             if(prop._dynamicNodes.indexOf(node) == -1){
                                 prop._dynamicNodes.$push(node);
                             }
+                            node._deepValues = deepValues;
+                            _LC.deep.add(this, node, dynamicValues[dynamicValIndex], pathName, multipleDeepNode[i][j]);
                         } else {
                             makeSet(prop, "_helperNodes");
                             prop._helperNodes.add(
@@ -8354,9 +9801,7 @@ class customElementPrototype extends elementPrototype {
                             );
                             let dynamicProp = multipleProp.dynamicProp;
                             dynamicProp[prop._path] ? dynamicProp[prop._path].$push(node): (dynamicProp[prop._path] = []).$push(node);
-                        }
-                        if(value != undefined){
-                            _LC.establishBindings(totalProp, value);
+                            multipleProp.helperNode._deepValues = deepValues;
                         }
                         if(j==0){
                             if(node.ownerElement && (node.ownerElement.hasAttribute("lyte-for") || node.ownerElement.hasAttribute("lyte-if") || node.ownerElement.hasAttribute("lyte-switch") || node.ownerElement.hasAttribute("lyte-forIn")) || node.ownerElement && node.ownerElement.tagName === "TEMPLATE" && /^(for|forIn)$/.test(node.ownerElement.getAttribute("is")) && !isHelper) {
@@ -8375,6 +9820,11 @@ class customElementPrototype extends elementPrototype {
                                     prop._forHelpers.add(node.ownerElement);
                                 }
                             }
+                            if(value != undefined){
+                                _LC.establishBindings(totalProp, value);
+                                
+                            }
+                            
                             node._multipleProperty[i].actProp = prop;
                             node._multipleProperty[i].dynamicValues = dynamicValues[dynamicValIndex];
                         }
@@ -8384,6 +9834,23 @@ class customElementPrototype extends elementPrototype {
 		}
         if(isDirectiveNode){
             _LC.directive.setNodeArgs(node,origNodeValue);
+            let dirIns = node.ownerElement._directiveIns;
+            if(dirIns && dirIns.onConfigChange){
+                let obj = {
+                    type : "change",
+                    oldValue : dirIns.config,
+                    newValue : origNodeValue
+                }
+                dirIns.config = origNodeValue;
+                node.ownerElement._directiveIns.onConfigChange.apply(node.ownerElement._directiveIns,[obj]);
+            }
+            if(node.ownerElement.hasAttribute("comp-in-parent")){
+                Lyte.Component.set(node.ownerElement.$data, _LC.String.toCamelCase(node.nodeName), nodeValue);
+            }
+            
+            if(node.ownerElement._initialClassValue){
+                _LC.directive.class.updateValue(node.ownerElement);
+            }
         }
         else if(node.nodeType === 2) {
         	let parentNodes = [];
@@ -8404,63 +9871,78 @@ class customElementPrototype extends elementPrototype {
             parentNodes.$push(pN);
             for(let i=0;i<parentNodes.length;i++) {
             	let parentNode = parentNodes[i];
+                let nodeName = node.nodeName;
+                let $data = nodeName == "$data" ? true : false;
+                if($data && exactProp){
+                    nodeValue = nodeValue[exactProp];
+                    nodeName = exactProp;
+                }
             	if(parentNode.set) {
                     // if(parentNode._dynComp && node.nodeName == "component-data"){
                     //     parentNode.set(nodeValue , undefined, undefined,true);    
                     // }else{
-                        parentNode.set(_LC.String.toCamelCase(node.nodeName), nodeValue, undefined, true);
+                        // parentNode.set(_LC.String.toCamelCase(node.nodeName), nodeValue, undefined,true);
                     // }
+                        if(nodeName == "$data"){
+                            for(let key in nodeValue){
+                                parentNode.set(_LC.String.toCamelCase(key), nodeValue[key], undefined,true);
+                            }
+                        }else{
+                            parentNode.set(_LC.String.toCamelCase(nodeName), nodeValue, undefined,true);   
+                        }
                     } else {
                         parentNode._initProperties = parentNode._initProperties || {};
-                        parentNode._initProperties[_LC.String.toCamelCase(node.nodeName)] = nodeValue;
+                        parentNode._initProperties[_LC.String.toCamelCase(nodeName)] = nodeValue;
                     }
-                    if(parentNode.tagName === "LYTE-YIELD" && parentNode.component.data && node.nodeName && parentNode.component.data[node.nodeName] !== nodeValue /*parentNode.getAttribute("is") === "insertYield"*/) {
-                        _LC.set(parentNode.component.data, _LC.String.toCamelCase(node.nodeName), nodeValue,undefined , undefined, parentNode);
+                    let pData = parentNode && parentNode.tagName === "LYTE-YIELD" ? (_LC.getCmpData(parentNode.component.data)) : undefined;
+                    if(parentNode.tagName === "LYTE-YIELD" && pData && nodeName && pData[nodeName] !== nodeValue /*parentNode.getAttribute("is") === "insertYield"*/) {
+                        _LC.set(pData, _LC.String.toCamelCase(nodeName), nodeValue,undefined , undefined, parentNode);
                     }
                     parentNode._attributes = parentNode._attributes || {};
                     //!== "string"
-                    if(_LC.isCustomElement(parentNode,true) && typeof nodeValue !== "string") {
+                    let isCustomElement = _LC.isCustomElement(parentNode, true)
+                    
+                    if(isCustomElement && typeof nodeValue !== "string") {
                         if(node.ownerElement.nodeName === "TEMPLATE") {
                             if(node.helperValue) {
-                            	if((node.ownerElement.getAttribute("is") ===  "for" && node.nodeName === "items") || (node.ownerElement.getAttribute("is") ===  "forIn" && node.nodeName === "object")) {
-                            		let oldValue = node.ownerElement._attributes[node.nodeName];
+                            	if((node.ownerElement.getAttribute("is") ===  "for" && nodeName === "items") || (node.ownerElement.getAttribute("is") ===  "forIn" && nodeName === "object")) {
+                            		let oldValue = node.ownerElement._attributes[nodeName];
                             		let newValue = nodeValue;
                             		_LC.removeSelectedBindingDeep(node.ownerElement._actualBinding, oldValue);
                             		if(newValue  && typeof newValue !== "number") {
-                            			makeSet(newValue, "_bindings");
-                                        addBindings(newValue._bindings,node.ownerElement._actualBinding);
+                                        addBindings(newValue,node.ownerElement._actualBinding);
                             			_LC.establishBindings(node.ownerElement._actualBinding, newValue);
                             		}
-                            		if(node.nodeName === "object") {
+                            		if(nodeName === "object") {
                             			_LC.removeSelectedBindingDeep(node.ownerElement._propBindingObject, oldValue);
                             		}
                             		//console.log("old Value ", oldValue, " new Value ", newValue);
                             	}
                             }else{
-                                if((node.ownerElement.getAttribute("is") ===  "for" && node.nodeName === "items") || (node.ownerElement.getAttribute("is") ===  "forIn" && node.nodeName === "object")) {
-                            		let oldValue = node.ownerElement._attributes[node.nodeName];
-                            		if(node.nodeName === "object") {
+                                if((node.ownerElement.getAttribute("is") ===  "for" && nodeName === "items") || (node.ownerElement.getAttribute("is") ===  "forIn" && nodeName === "object")) {
+                            		let oldValue = node.ownerElement._attributes[nodeName];
+                            		if(nodeName === "object") {
                             			_LC.removeSelectedBindingDeep(node.ownerElement._propBindingObject, oldValue);
                             		}
                             	}
                             }
-                            parentNode["__"+node.nodeName] = true;
-                            if(node.nodeName != "case"){
-                                parentNode.removeAttribute(node.nodeName);
+                            parentNode["__"+nodeName] = true;
+                            if(nodeName != "case"){
+                                parentNode.removeAttribute(nodeName);
                             }
                         } else {
                             //Needs revisiting
-                            //parentNode.removeAttribute(node.nodeName);
+                            //parentNode.removeAttribute(nodeName);
                         }
 
                     } else {
                         if(typeof nodeValue === "boolean") {
                             parentNode._attributes = parentNode._attributes || {};
-                            parentNode._attributes[node.nodeName] = nodeValue;
+                            parentNode._attributes[nodeName] = nodeValue;
                             if(!nodeValue) {
-                                parentNode.removeAttribute(node.nodeName);
+                                parentNode.removeAttribute(nodeName);
                             } else {
-                                parentNode.setAttribute(node.nodeName, "");
+                                parentNode.setAttribute(nodeName, "");
                             }
                         } else {
                             if(nodeValue && typeof nodeValue === "object"){
@@ -8475,8 +9957,9 @@ class customElementPrototype extends elementPrototype {
                                     catch(exp){
                                         //@Slicer.developmentStart
                                         ComponentError.error(
+                                            node,
                                             "LC013",
-                                            node.nodeName,
+                                            nodeName,
                                             node.ownerElement.nodeName.toLocaleLowerCase(),
                                             node.ownerElement.nodeName.toLocaleLowerCase()
                                         )
@@ -8492,7 +9975,7 @@ class customElementPrototype extends elementPrototype {
                             }
                             nodeValue = res;
                             let locNodeVal = nodeValue === undefined ? "" : nodeValue;
-                            // if(node.nodeName === "style") {
+                            // if(nodeName === "style") {
                             //     node.ownerElement.setAttribute("style",locNodeVal);
                             // } else {
                             //     node.nodeValue = locNodeVal;
@@ -8501,49 +9984,57 @@ class customElementPrototype extends elementPrototype {
                             // if(node instanceof Node) {
                             //Check safari issue once
                             let oE = node.ownerElement;
-                            if(oE.hasAttribute(node.nodeName)) {
-                                if(oE.tagName != "INPUT" || node.nodeName != "value" || !oE.validity.badInput) {
-                                    oE.setAttribute(node.nodeName, locNodeVal);
+                            if(oE.hasAttribute(nodeName)) {
+                                if(oE.tagName != "INPUT" || nodeName != "value" || !oE.validity.badInput) {
+                                    oE.setAttribute(nodeName, locNodeVal);
                                 }
                             } else {
                                 node.nodeValue = locNodeVal;                              
                             }
                         }
                     }
-                    parentNode._attributes[node.nodeName] = nodeValue;
+                    parentNode._attributes[nodeName] = nodeValue;
                     if(/^(INPUT|TEXTAREA|SELECT)$/.test(parentNode.nodeName)) {
-                        if(node.nodeName === "value") {
+                        if(nodeName === "value") {
                              let val = (nodeValue === undefined) ? "" : nodeValue;
                              if(parentNode.value !== val) {
                                 parentNode.value = val;
                              } 
-                        } else if(node.nodeName === "checked") {
+                        } else if(nodeName === "checked") {
                             parentNode.checked = nodeValue;
                         }
                     }
-                    if(!nodeValue && _LC.booleanAttrList.indexOf(node.nodeName) !== -1) {
-                        parentNode.removeAttribute(node.nodeName);
+                    if(!nodeValue && _LC.booleanAttrList.indexOf(nodeName) !== -1) {
+                        parentNode.removeAttribute(nodeName);
                     }
                     let isStopped = parentNode._isStopped;
                     let result;
                     switch(parentNode.getAttribute("is")) {
                         case "for" :
-                            this.updateForHelper(parentNode, {"type" : "update"});
-                            break;
+                            if(!options){
+                                options = {"type" : "update"}
+                            }else{
+                                options.type = "update"
+                            }
+                            this.updateForHelper(parentNode, options);                            break;
                         case "if" : 
                             result = this.updateSwitchHelper("e",parentNode, undefined, true, true);
                             break;
                         case "case" : 
-                            result = this.updateSwitchHelper("s",parentNode._parentSwitch, undefined, true, true,undefined,parentNode);
+                            result = this.updateSwitchHelper("s",parentNode._parentSwitch, undefined, true, true,undefined,undefined,parentNode);
                             break;
                         case "forIn" : 
-                            this.updateForInHelper(parentNode , {"type" : "update"});
-                            break;
+                            if(!options){
+                                options = {"type" : "update"}
+                            }else{
+                                options.type = "update"
+                            }
+                            this.updateForInHelper(parentNode , options);                            break;
                         case "switch" :
                             this.updateSwitchHelper("s",parentNode, undefined, true, true);
                             break;
                         case "component" : 
-                            if(node.nodeName === "component-name" || node.nodeName === "component-class") {
+                            if(nodeName === "component-name" || nodeName === "component-class") {
                                 this.updateDynamicComponent(parentNode, "update");    
                             }
                             break;
@@ -8583,6 +10074,7 @@ class customElementPrototype extends elementPrototype {
         else {
             node.nodeValue = nodeValue === undefined ? '' : nodeValue;
         }
+        
         if(contextSwitchInfo) {
             _LC.removeContext(contextSwitchInfo.node, contextSwitchArray, contextSwitchInfo, isYieldContext);
         }
@@ -8626,25 +10118,76 @@ class customElementPrototype extends elementPrototype {
     isEmptyString(str){
         return (!(typeof str === "string") || str === "" );
     }
-
-    processArgs(scope,dynN,dynamicValues,event, node, newCompile,cache,parentSq){
+    setLyteSequence(){
+        let registryIns = this.$registry;
+        let appAddonIns = this.component.getAppOrAddon();
+        if(registryIns.constructor.lyteSequence || appAddonIns.constructor.lyteSequence || this.component.constructor.lyteSequence){
+            this.__lq = true;
+        }
+    }
+    processArgs(scope,dynN,dynamicValues,deepValues,event, node, newCompile,cache,parentSq,processDetails,observer,unboundFlag){
+        unboundFlag=dynN.helperInfo.name=='unbound'?true:unboundFlag;
         let args = dynN.newHelperInfo && newCompile ? dynN.newHelperInfo.args : dynN.helperInfo.args;
         if(dynN.helperInfo && dynN.helperInfo._t == "sq")   {
             parentSq = true;
         }
         dynamicValues = dynamicValues || [];
+        processDetails.lqDyn = processDetails.lqDyn || [];
+        let lqDyn = processDetails.lqDyn;
+        let previousArg;
+        let tempSkipIndex;
+        let skipAll = dynN.helperInfo.skipAll;
+        let scpData = _LC.getCmpData(scope.component.data);
         args = (Array.isArray(args)) ? Array.from(args) : args;
         for(let i=0; i<args.length; i++){
             if(args[i] && args[i].type){
+                let addSkipAll = false
+                if(node && node.__lq && (skipAll || tempSkipIndex == i)){
+                    args[i].value.skipAll = true;
+                    addSkipAll = true;
+                }
                 if(args[i].type == "sq"){
-                    this.internalArray(scope, args, i, dynamicValues, event, node, newCompile,parentSq);
+                    this.internalArray(scope, args, i, dynamicValues, deepValues, event, node, newCompile,parentSq, processDetails);
                 }else{
-                    this.internalHelpers(scope, args, i, dynamicValues, event, node, newCompile,cache,parentSq);
+                    this.internalHelpers(scope, args, i, dynamicValues, deepValues, event, node, newCompile,cache,parentSq, processDetails,unboundFlag);
+                }
+                if(addSkipAll){
+                    dynN.helperInfo.args[i].value.skipAll = false;
                 }
             } else {
                 if(!this.isEmptyString(args[i])) {
                     if(args[i].startsWith("'") && args[i].endsWith("'")){
-                        args[i] = args[i].substr(1,args[i].length-2);       
+                        args[i] = args[i].substr(1,args[i].length-2);   
+                        if(this.__lq){
+                            if(!node.__lq){
+                                processDetails.lqDyn = deepCopyObject(dynamicValues);
+                                node.__lq = true;
+                            }
+                            switch(args[i]){
+                                case "||" : {
+                                    if(previousArg){
+                                        processDetails.skipHelper = true;
+                                        tempSkipIndex = i+1;
+                                    }
+                                }
+                                break;
+                                case "&&" : {
+                                    if(!previousArg){
+                                        processDetails.skipHelper = true;
+                                        tempSkipIndex = i+1;
+                                    }
+                                }
+                                break;
+                                case "?:" : {
+                                    if(previousArg){
+                                        tempSkipIndex = i+2;
+                                    }else{
+                                        tempSkipIndex = i+1;
+                                    }
+                                    processDetails.skipHelper = true;
+                                }
+                            }
+                        }
                     } else {
                         args[i] = args[i].trim();
                         if(args[i] === "event" && event) {
@@ -8653,51 +10196,76 @@ class customElementPrototype extends elementPrototype {
                             args[i] = node.nodeType === 2 ? node.ownerElement : node;
                         } else {
                             let dynamicVals = [];
-                            args[i] = _LC.get(scope.component.data,args[i],dynamicVals,cache);
+                            let argStr = args[i];
+                            args[i] = _LC.get(scpData,args[i],dynamicVals,cache,deepValues);
+                            if(argStr.endsWith(".*")){
+                                args[i] = _LC.deep.data(argStr, observer, scpData);
+                            }
                             if(!parentSq || dynamicValues.length == 0){
-                                dynamicValues.$push(dynamicVals);
+                                if(unboundFlag!==true){
+                                    dynamicValues.$push(dynamicVals);
+                                    if(node && node.__lq && lqDyn){
+                                        lqDyn.$push(skipAll || tempSkipIndex == i ? [false] : dynamicVals);
+                                    }
+                                }  
                             }else{
                                 if(dynamicVals.length > 1){
                                     for(let s=0; s<dynamicVals.length; s++){
-                                        dynamicValues[dynamicValues.length-1].$push(dynamicVals[s]);
+                                        if(unboundFlag!==true){
+                                            dynamicValues[dynamicValues.length-1].$push(dynamicVals[s]);
+                                            if(node && node.__lq && lqDyn){
+                                                lqDyn[lqDyn.length-1].$push(skipAll || tempSkipIndex == i ? false : dynamicVals[s]);
+                                            }
+                                        }
                                     }
                                 }else{
-                                    dynamicValues[dynamicValues.length-1].$push(dynamicVals[0]);
+                                    if(unboundFlag!==true){
+                                        dynamicValues[dynamicValues.length-1].$push(dynamicVals[0]);
+                                        if(node && node.__lq && lqDyn){
+                                            lqDyn[lqDyn.length-1].$push(skipAll || tempSkipIndex == i ? false : dynamicVals[0]);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 } else if(newCompile) {
                     if(args[i] instanceof Array) {
-                        args[i] = _LC.getDD(scope.component.data, args[i]);
+                        args[i] = _LC.getDD(scpData.data, args[i]);
                     }
                 }
             }
-            
+            previousArg = args[i];
         }
         return args;
     }
 
-    internalHelpers(scope,args,i,dynamicValues, event, node, newCompile,cache,parentSq){
+    internalHelpers(scope,args,i,dynamicValues, deepValues, event, node, newCompile,cache,parentSq, processDetails,unboundFlag){
         let helperFunc = args[i].value;
-        var helperVal =  this.processHelper(scope,{"name" : helperFunc.name, "args" : this.processArgs(scope,{"helperInfo" : helperFunc},dynamicValues, event, node, newCompile,cache,parentSq)});
+        var helperVal =  this.processHelper(scope,{"name" : helperFunc.name, "args" : this.processArgs(scope,{"helperInfo" : helperFunc},dynamicValues, deepValues, event, node, newCompile,cache,parentSq, processDetails,undefined,unboundFlag)},undefined, processDetails);
         args[i] = helperVal;
     }
-    internalArray(scope, args, i, dynamicValues, event, node, newCompile,parentSq) {
+    internalArray(scope, args, i, dynamicValues, deepValues, event, node, newCompile,parentSq, processDetails) {
         var helperFunc = args[i].value;
         if(!parentSq){
             dynamicValues.$push([]);
+            let lqDyn = processDetails.lqDyn
+            if(node && node.__lq && lqDyn){
+                lqDyn.$push([]);
+            }
         }
-        var helperVal =  this.processArray(this,{"name" : helperFunc.name, "args" : this.processArgs(scope,{"helperInfo" : helperFunc},dynamicValues, event, node, newCompile,undefined,true)},dynamicValues, helperFunc.extra ? Array.from(helperFunc.extra):undefined,event, node, newCompile);
+        var helperVal =  this.processArray(this,{"name" : helperFunc.name, "args" : this.processArgs(scope,{"helperInfo" : helperFunc},dynamicValues, deepValues, event, node, newCompile,undefined,true, processDetails)},dynamicValues, deepValues, helperFunc.extra ? Array.from(helperFunc.extra):undefined,event, node, newCompile, processDetails);
         args[i] = helperVal;
     }
-    processArray(scope,helperFunc,dynamicValues,extra,event, node, newCompile){
+    processArray(scope,helperFunc,dynamicValues, deepValues ,extra,event, node, newCompile, processDetails){
         var arrVal;
         dynamicValues = dynamicValues || [];
         var dynVal = [];
         var arr = helperFunc.name;
         var len = helperFunc.args.length;
         var str="";
+        let skipAll = helperFunc.skipAll;
+        let lqDyn = processDetails.lqDyn;
         for(var i=0; i<len; i++){
             str = str + "['"+ helperFunc.args[i] + "']"
         }
@@ -8709,9 +10277,9 @@ class customElementPrototype extends elementPrototype {
                 }else{
                     if (extra[i] && extra[i].type) {
                         if (extra[i].type == "sq") {
-                            this.internalArray(scope, extra, i, dynamicValues, event, node, newCompile, true);
+                            this.internalArray(scope, extra, i, dynamicValues, deepValues, event, node, newCompile, true, processDetails);
                         } else {
-                            this.internalHelpers(scope, extra, i, dynamicValues, event, node, newCompile, undefined, true);
+                            this.internalHelpers(scope, extra, i, dynamicValues, deepValues, event, node, newCompile, undefined, true, processDetails);
                         }
                         fullData += extra[i];
                     } 
@@ -8719,11 +10287,18 @@ class customElementPrototype extends elementPrototype {
             }
         }
         if(!helperFunc.name.startsWith('.')){
-            arrVal = _LC.get(scope.component.data, fullData, dynVal);
+            arrVal = _LC.get(scope.component.data, fullData, dynVal, deepValues);
             if(dynamicValues.length == 0){
                 dynamicValues.$push(dynVal);
+                if(node && node.__lq && lqDyn){
+                    lqDyn.$push(skipAll ? [false] : dynVal);
+                }
+
             }else{
                 dynamicValues[dynamicValues.length-1].$unshift(dynVal[0]);
+                if(node && node.__lq && lqDyn){
+                    lqDyn[lqDyn.length-1].$unshift(skipAll ? false : dynVal[0]);
+                }
             }
             return arrVal;
         }else{
@@ -8731,15 +10306,25 @@ class customElementPrototype extends elementPrototype {
         }
         
     }
-    processHelper(scope,helperFunc, node){
+    processHelper(scope,helperFunc, node, processDetails){
+        if(processDetails && processDetails.skipHelper){
+            return;
+        }
         let args = [];
         let helperName = helperFunc.name;
-        if(!scope.$component.registeredHelpers[helperName]){
-            //@Slicer.developmentStart
-            let app = _LC.getNearestParentApp(this.component);
-            ComponentError.error(app, "LC003" , helperFunc.name);
-            //@Slicer.developmentEnd
-            return;
+        let helperObj = {compClass : scope.$registry.registeredHelpers[helperName]};
+        if(!helperObj.compClass){
+            let obj = {compName : helperName, type : "helper"};
+            // _LC.getCompRegistry(obj,this);
+            _LC.traverseRegistries([scope.$registry], obj, this);
+            if(!_LC.verifyDetails(obj)){
+                //@Slicer.developmentStart
+                RegistryError.error("LC010", "Helper", helperName);
+                //@Slicer.developmentEnd
+                return;
+            }else{
+                helperObj.compClass = obj.compClass;
+            }
 	    }
         switch(helperFunc.name){
             case "method" : 
@@ -8758,7 +10343,7 @@ class customElementPrototype extends elementPrototype {
                     return true;
                 }
         }
-        return scope.$component.registeredHelpers[helperFunc.name].apply(scope.component,args.$concat(helperFunc.args));
+        return helperObj.compClass.apply(scope.component,args.$concat(helperFunc.args));
         // return _LyteComponent.registeredHelpers[helperFunc.name].apply(this,args.$concat(helperFunc.args));
     }
 
@@ -8789,7 +10374,7 @@ class customElementPrototype extends elementPrototype {
             let infoAttr = actionType.substr(2);
             let infoAttrVal = node.getAttribute(infoAttr);
             // var evntListener = function(event) {
-        	// 	var toRemove;
+            // 	var toRemove;
             //     if(!window.event) {
             //         window.event = event;
             //         toRemove = true;
@@ -8800,20 +10385,19 @@ class customElementPrototype extends elementPrototype {
             //     }
             // };
             if ((ComponentRegistry._registeredCommonClass[node.localName] && !node.component) || (node.tagName === "TEMPLATE" && node.getAttribute("is") === "component")) {
-            	node._toRegEvnts = node._toRegEvnts || {};
-            	node._toRegEvnts[actionType.substr(2)] = {"listener" : globalEventHandler , "attrVal" : this.tagName.toLowerCase()+" => "+actObj.name};
+                node._toRegEvnts = node._toRegEvnts || {};
+                node._toRegEvnts[actionType.substr(2)] = {"listener" : globalEventHandler , "attrVal" : this.tagName.toLowerCase()+" => "+actObj.name};
             } else {
-            	node.setAttribute(infoAttr, this.tagName.toLowerCase()+" => "+actObj.name);
-            	//Event is not in capture phase because, in capture phase, multiple event listeners in hierarchy are called from parent to child (since registration is done in that order)
-            	node.addEventListener(actionType.substr(2), globalEventHandler);
+                node.setAttribute(infoAttr, this.tagName.toLowerCase()+" => "+actObj.name);
+                //Event is not in capture phase because, in capture phase, multiple event listeners in hierarchy are called from parent to child (since registration is done in that order)
+                node.addEventListener(actionType.substr(2), globalEventHandler);
             }
             if(node.hasAttribute(actionType)){
-            	node[actionType] = undefined;
+                node[actionType] = undefined;
             }
             node.removeAttribute(actionType);
         }
     }
-
     registerParentYield(yieldName){
         let locYield,parentYield = this._callee._yields[yieldName];
         if(parentYield){
@@ -8832,24 +10416,23 @@ class customElementPrototype extends elementPrototype {
         }
     }
 
-    getYieldName(node){
-        if(node.getAttribute("yield-name")){
-            return node.getAttribute("yield-name");
-        }else if(node._attributes && node._attributes["yield-name"]){
-            return node._attributes["yield-name"];
-        }
-    }
-
     registerYields() {
-        this._yields = {};
+        // this._yields = {};
         let yields = this.querySelectorAll('template[is=registerYield],template[is=yield]');
         let lazyYields = [];
         for(let i=0;i<yields.length;i++) {
             while(yields[i].hasChildNodes()) {
                 yields[i].content.appendChild(yields[i].childNodes[0]);
             }
-            let yieldName = this.getYieldName(yields[i]);
+            let yieldName = _LC.getYieldName(yields[i]);
+            let def = yields[i].hasAttribute("default");
+            if(def && this._yields[yieldName]){
+                continue;
+            }
             if(yields[i].hasAttribute("from-parent") && this._callee) {
+                if(Lyte.Compatibility.vue){
+                    Lyte.Compatibility.vue.addDynamicYield(this, this._callee, yieldName);
+                }
                 if(this._callee._yields){
                     this.registerParentYield(yieldName);
                 }
@@ -8859,6 +10442,7 @@ class customElementPrototype extends elementPrototype {
             } else {
                 this._yields[yieldName] = yields[i];
             }
+            
         }
         if(lazyYields.length && this._callee){
             var self = this;
@@ -8866,7 +10450,7 @@ class customElementPrototype extends elementPrototype {
                 if(self._callee){
                     for(let j=0;j<lazyYields.length;j++){
                         let lYield = lazyYields[j];
-                        self.registerParentYield(this.getYieldName(lYield));
+                        self.registerParentYield(_LC.getYieldName(lYield));
                     }
                     self._callee.removeEventListener("onReady", self.lazyYield);
                     delete self.lazyYield;
@@ -8891,6 +10475,9 @@ class customElementPrototype extends elementPrototype {
         this.__counter = 0;
         this.__dc = {};
         if(fastRenderProp) {
+            if(_LC.shouldIgnoreDisconnect()){
+                return;
+            }
             let methods = fastRenderProp._methods;
             if(methods) {
                 this.setMethods(methods);
@@ -8900,24 +10487,33 @@ class customElementPrototype extends elementPrototype {
         } else {
             this.actualConnectedCallback();
         }
-        let viewObj = this.getViewObj()
+        let viewObj = this.getDirectiveIns("view")
         if(viewObj){
             viewObj.connectedCallback(this)
         }
     }
     cmpBind(fastRenderProp){
-        let compData = this.component.data;
+        let compData = _LC.getCmpData(this.component.data);
         if(!_LC.unbound && !fastRenderProp && !compData.lyteFastRender) {
-            establishObserverBindings.call(this,this.component.constructor._observers,undefined,undefined,undefined,Lyte);
+            establishObserverBindings.call(this,this.component.constructor._observers,undefined,undefined,undefined,Lyte,_LC);
             establishWatchScope.call(this,this.constructor._deepWatchProperties)
             //this.establishObserverBindings();
-            makeSet(compData, "_bindings");
-            addBindings(compData._bindings,this._properties);
+            addBindings(compData, this._properties);
             _LC.establishBindings(this._properties, compData);
         }
     }
     actualConnectedCallback(){
-        let compData = this.component.data;
+        this._transitionHelperNodes = [];
+        this._specialNodes = [];
+        this._propProperty = {};
+        this._propList = [];
+        this._propNodes = {};
+        this._hiddenTemplate = [];
+        //@Slicer.developmentStart
+        _LC.debugPerf(this, { render : 1 });
+        //@Slicer.developmentEnd
+        this._connectedCalled = true;
+        let compData = _LC.getCmpData(this.component.data);
         if(this.component.constructor.dc){
             this.dc = this.component.constructor.dc.p;
         }
@@ -8928,12 +10524,12 @@ class customElementPrototype extends elementPrototype {
             this._callee = this._callee || this.getCallee(this.parentNode);
         }
         for(let key in this._toRegEvnts) {
-        	this.addEventListener(key, this._toRegEvnts[key].listener);
-        	if(this.hasAttribute(key)) {
-        		this.setAttribute(key, this.getAttribute(key) + " ; "+ this._toRegEvnts[key].attrVal);
-        	} else {
-        		this.setAttribute(key, this._toRegEvnts[key].attrVal);
-        	}
+            this.addEventListener(key, this._toRegEvnts[key].listener);
+            if(this.hasAttribute(key)) {
+                this.setAttribute(key, this.getAttribute(key) + " ; "+ this._toRegEvnts[key].attrVal);
+            } else {
+                this.setAttribute(key, this._toRegEvnts[key].attrVal);
+            }
         }
         this._toRegEvnts = {};
         let initialUnbound = _LC.unbound;
@@ -8942,6 +10538,7 @@ class customElementPrototype extends elementPrototype {
             this.bindServerData();
             this.removeAttribute("ssrbindservernode");
         }
+        this.setLyteSequence();
         let content =  this.afterConnected(fastRenderProp,ssrBind);
         !ssrBind && this.cmpBind(fastRenderProp);
 
@@ -8963,11 +10560,11 @@ class customElementPrototype extends elementPrototype {
             _LC.processAction(this);
         }
         else{
-            let viewObj = this.getViewObj()
+            let viewObj = this.getDirectiveIns("view")
             if(viewObj){
                 viewObj.actualConnectedCallback(this,content)
             }
-            let shadowObj = this.getShadowObj();
+            let shadowObj = this.getDirectiveIns("shadow");
             let shadowDeep,shadowMode,shadowParent;
             var shadowSupported = _LC.directive.getTransitionArg(this,"shadow-supported")
             if(shadowObj){
@@ -8993,7 +10590,7 @@ class customElementPrototype extends elementPrototype {
                 }
                 //@Slicer.developmentStart
                 else{
-                    ComponentError.error("LC017",this.localName)
+                    ComponentError.error(this,"LC017",this.localName)
                 }
                 //@Slicer.developmentEnd
             }
@@ -9021,7 +10618,11 @@ class customElementPrototype extends elementPrototype {
                     if(this._ssrBind){
                         style.setAttribute("from-ssrComponent",tagName);
                     }
-                    Lyte.$.assetsDiv.appendChild(style);
+                    // if(style.tagName=="LINK"){
+                    //     window.dispatchEvent(new CustomEvent("__onBeforeInject__",{detail:{link:style}}))
+                    // }
+                    // Lyte.$.assetsDiv.appendChild(style);
+                    _LC.addLink(this, Lyte.$.assetsDiv, style);
                     Lyte.$.assetsDiv._duplicateStyle.$push(tagName);
                 }
                 if(Lyte.$.shadowDiv._compList.indexOf(tagName) == -1){
@@ -9029,9 +10630,10 @@ class customElementPrototype extends elementPrototype {
                 }
                 if(directiveObj){
                     directiveObj.appendInDom(this,content,true,true,dependentPromises);
-                }else{
-                    _LC.appendInDom(this,content);
                 }
+                
+                    _LC.appendInDom(this,content);
+                
             }
         }
         if(directiveObj){
@@ -9046,8 +10648,17 @@ class customElementPrototype extends elementPrototype {
             this.removeAttribute(attributes[i].nodeName);
             }
         }
+        for(let dataName in this._hideAttr){
+            let attrName = _LC.String.dasherize(dataName);
+            let dataVal = this._hideAttr[dataName];
+            if(dataVal == false){
+                if(this.getAttribute(attrName) != this.component.data[dataName]){
+                    this.setAttribute(attrName, this.component.data[dataName])
+                }
+            }
+        }
         this.__lyteIgnore = false;
-	    if( this._callee && this._callee.serverCall ){
+        if( this._callee && this._callee.serverCall ){
             this.serverCall = true;
         }
         //to bind in ssr
@@ -9058,7 +10669,7 @@ class customElementPrototype extends elementPrototype {
         }
         if( !this.hasAttribute( "server-rendered" ) )
         {        
-	        this.setAttribute("lyte-rendered", "");
+            this.setAttribute("lyte-rendered", "");
         }
         
         if(!fastRenderProp && !Lyte._ignoreOnReady) {
@@ -9071,22 +10682,34 @@ class customElementPrototype extends elementPrototype {
                 _config_flag = this.component._ssr.config.clientLifeCycleHooks == true || ( typeof this.component._ssr.config.clientLifeCycleHooks == 'object' ? this.component._ssr.config.clientLifeCycleHooks.includes('didConnect') : false );
             }
         }
+        
         let _overrides = this.component._ssr ? this.component._ssr.overrides : undefined;
         if( !this.hasAttribute( "server-rendered" ) || this.serverCall ||  _config_flag ){
             if( _overrides && _overrides.didConnect && this.serverCall ){
                 _overrides.didConnect.apply( this.component );
-            }else{        
-                this.callback("didConnect");
+            }else{
+                if(Lyte.Compatibility.vue && (this.__delayDidConnect || _LC.getDelayDidConnect())){
+                    Lyte.Compatibility.vue.delayDidConnect(this, this.callback);
+                }else{
+                    this.callback("didConnect");
+                }
             }
-            this.onCallBack("didConnect");
+            if(Lyte.Compatibility.vue && (this.__delayDidConnect || _LC.getDelayDidConnect())){
+                Lyte.Compatibility.vue.delayDidConnect(this, this.onCallBack);
+            }else{
+                this.onCallBack("didConnect");
+            }
         }
-    
+
         if( this.serverCall == undefined ){
             this.callback( "didRender" );
         }            
         if(fastRenderProp) {
             this.removeAttribute("_lyteprop");
         }
+        //@Slicer.developmentStart
+        _LC.debugPerf(this, { render : 0 });
+        //@Slicer.developmentEnd
     }
     onCallBack(name){
         let callbacks = this.component.constructor._callBacks[name];
@@ -9096,7 +10719,7 @@ class customElementPrototype extends elementPrototype {
                     callbacks[i].value.call(this.component);    
                 } catch(e) {
                     //@Slicer.developmentStart
-                    ComponentError.error(e);
+                    ComponentError.error(this.component, e);
                     //@Slicer.developmentEnd
                 }
                 
@@ -9107,6 +10730,11 @@ class customElementPrototype extends elementPrototype {
         var func = this.component[name];
         var args;
         if(func){
+            //@Slicer.developmentStart
+            var __cmpId = this.__renderId || undefined;
+            var app = _LC.getNearestParentApp(this.component);
+            _LC.debugPerf(app, __cmpId , name , this.constructor._compName);
+            //@Slicer.developmentEnd
             if(arguments.length > 1) {
                 args = Array.from(arguments);
                 args.$splice(0,1)
@@ -9115,9 +10743,12 @@ class customElementPrototype extends elementPrototype {
                 func.apply(this.component, args || []);    
             } catch(e) {
                 //@Slicer.developmentStart
-                ComponentError.error(e);
+                ComponentError.error(this.component, e);
                 //@Slicer.developmentEnd
             }
+            //@Slicer.developmentStart
+            _LC.debugPerf(app, __cmpId, name, this.constructor._compName);
+            //@Slicer.developmentEnd
         }
     }
     establishObserverBindings() {
@@ -9155,55 +10786,79 @@ class customElementPrototype extends elementPrototype {
         }
     }
     actualDisconnected() {
-        var self = this;
-        if(!self.component) {
-            return;
-        }
-        self._cx = null;
-        self._callee = null;
-        self.component.$node = null;
-        self.component.__data = null;
-        self.component.data.__component__ = null;
-        self.component.data = null;
-        self.component = null;
-        self.__dc = self.__dc || {};
-        self.__h =  self.__h || {};
-        for (key in self.__dc) {
-            var helper = self.__dc[key];
-            //helper.remove();
-            if(helper.hasAttribute("lyte-keep-alive")) {
-                var objKeys = Object.keys(helper._renderedComponent);
-                for(var j=0;j<objKeys.length;j++) {
-                    let key = objKeys[j];
-                    if(key !== helper._currentComponent) {
-                        // Will remove from hDiv.
-                        helper._renderedComponent[key].remove();
+        try{
+            var self = this;
+            if(!self.component) {
+                return;
+            }
+            self._cx = null;
+            self._callee = null;
+            self.component.$node = null;
+            self.component.__data = null;
+            if(self.component.data.__target__){
+                self.component.data.__target__.__component__ = null;
+            }
+            else{
+                self.component.data.__component__ = null;
+            }
+            self.component.data = null;
+            self.component = null;
+            self.__dc = self.__dc || {};
+            self.__h =  self.__h || {};
+            for (key in self.__dc) {
+                var helper = self.__dc[key];
+                //helper.remove();
+                if(helper.hasAttribute("lyte-keep-alive")) {
+                    var objKeys = Object.keys(helper._renderedComponent);
+                    for(var j=0;j<objKeys.length;j++) {
+                        let key = objKeys[j];
+                        if(key !== helper._currentComponent) {
+                            // Will remove from hDiv.
+                            let comp = helper._renderedComponent[key];
+                            comp.constructor.prototype._disconnectedCallback.call(comp);
+                            comp.remove();
+                        }
                     }
                 }
             }
+            for (key in self.__h) {
+                self.__h[key].remove();
+            }
+            self.__h = {};
+            self.__dc = {};
+            let yields = self._yields;
+            for(var key in yields) {
+                yields[key]._callee = null;
+            }
+            self = null;
         }
-        for (key in self.__h) {
-            self.__h[key].remove();
+        catch(ex){
+            console.error("Errorrrr",ex);
         }
-        self.__h = {};
-        self.__dc = {};
-        let yields = self._yields;
-        for(var key in yields) {
-            yields[key]._callee = null;
-        }
-        self = null;
     }
     disconnectedCallback() {
         this._disconnectedCallback();
     }
     _disconnectedCallback(){
-        if(_LC.ignoreDisconnect || !this.component) {
-	       return;
+        if(_LC.shouldIgnoreDisconnect() || !this.component || this.__lyteIgnore || this._ignoreDisconnect) {
+            return;
         }
-        let shadowObj = this.getShadowObj();
+        if(Array.from(_LC.hiddenComponentsDiv.content.childNodes).indexOf(this)!=-1){
+            _LC.hiddenComponentsDiv.content.removeChild(this)
+        }
+        
+        if(this._removedTemplate){
+            this._removedTemplate.forEach(el=>{
+                if(_LC.tDiv.content.contains(el)){
+                    _LC.tDiv.content.removeChild(el);
+                }
+            })
+            this._removedTemplate=[];
+        }
+        let shadowObj = this.getDirectiveIns("shadow");
         let directiveObj = this.getDirectiveObj();
         shadowObj && shadowObj.destroyRef(this);
-        let viewObj = this.getViewObj()
+        let viewObj = this.getDirectiveIns("view")
         if(viewObj){
             viewObj.disconnectedCallback(this)
         }
@@ -9218,24 +10873,26 @@ class customElementPrototype extends elementPrototype {
             delete this.__toRemoveLazy;
         }
         this.component._bindings = null;
+        this._parentHelper = null;
         var scpObj = this.__scpObj;
+        let cmpData = _LC.getCmpData(this.component.data);
         if(scpObj){
             for(var key in scpObj){
-                var propData = this.component.data[key], id = scpObj[key], idArr = id.split("_");
+                var propData = cmpData[key], id = scpObj[key], idArr = id.split("_");
                 if(propData){
-                    removeNestScp(this.component.data[key], idArr[0], idArr[1], undefined, this);
+                    removeNestScp(cmpData[key], idArr[0], idArr[1], undefined, this);
                 }
             }
         }
         if(!this._fR) {
-            _LC.removeSelectedBindingDeep(this._properties, this.component.data, true);
+            _LC.removeSelectedBindingDeep(this._properties, cmpData, true);
         }
         if(directiveObj){
             directiveObj.destroyHelperPromises([this.__dc,this.__h]);
         }
         var h = this.__h;
         for (key in h) {
-            if(h[key]._actualBinding){
+            if(h[key]._actualBinding || (h[key]._hiddenTemplate && h[key]._hiddenTemplate.length)){
                 this.removeHelpers(h[key]);
             }
         }
@@ -9243,8 +10900,12 @@ class customElementPrototype extends elementPrototype {
         for(key in this._properties) {
             this._properties[key] = {};
         }
+        
+        this._specialNodes = null;        
+        
         this.callback('didDestroy');
         this.onCallBack('didDestroy');
+        this._didDestroyCalled = true;
         this.component.constructor.activeInstances--;
         if(!_LC.dcc) {
             _LC.dcc = [];
@@ -9277,7 +10938,7 @@ class customElementPrototype extends elementPrototype {
         // this.constructor.activeInstances--;
     }
 }
-customElementPrototype._V3InsApi = ["cmpBind","component","actualConstructor","_connectedCallback","actualConnectedCallback", "getMethods","hasAction", "setActions", "setMethods", "getCallee", "afterConnected", "renderComponent", "renderFast", "formatValue", "renderNodes", "executeBlockHelpers", "updateBlockHelpers", "_attributeChangedCallback" , "removeHelpersSpecificIndex", "removeHelpers", "updateYield", "updateDynamicComponent","updateForHelper", "updateForInHelper", "updateSwitchHelper", "callObservers","bindNode","debounce", "getProperty", "updateNode", "handleBreak", "createCustomEvent", "isEmptyString", "processArgs", "internalHelpers", "processHelper", "getActionProperty", "hasInternalBindings", "getArgValues", "createEventListeners", "registerParentYield", "registerYields", "onCallBack", "callback", "establishObserverBindings", "removeBindings", "actualDisconnected" ,"_disconnectedCallback","throwAction","get","set","initializeMethod"];
+customElementPrototype._V3InsApi = ["getData","cmpBind","component","actualConstructor","_connectedCallback","actualConnectedCallback", "getMethods","hasAction", "setActions", "setMethods", "getCallee", "afterConnected", "renderComponent", "renderFast", "formatValue", "renderNodes", "executeBlockHelpers", "updateBlockHelpers", "_attributeChangedCallback" , "removeHelpersSpecificIndex", "removeHelpers", "updateYield", "updateDynamicComponent","updateForHelper", "updateForInHelper", "updateSwitchHelper", "callObservers","bindNode","debounce", "getProperty", "updateNode", "handleBreak", "createCustomEvent", "isEmptyString", "processArgs", "internalHelpers", "processHelper", "getActionProperty", "hasInternalBindings", "getArgValues", "createEventListeners", "registerParentYield", "registerYields", "onCallBack", "callback", "establishObserverBindings", "removeBindings", "actualDisconnected" ,"_disconnectedCallback","throwAction","get","set","initializeMethod"];
 customElementPrototype._V3StaticApi = ["_observers","_callBacks","_properties","activeInstances","_depthTemp","_bindsIds","_ssr","_config","_mixins","_serviceToBeUsed","_actions","_template","_dynamicNodes","_templateAttributes","_observedAttributes","_observedMethodAttributes","_data","_methods","_pendingComponents","splitTextNodes" ,"_registerComponent", "createDocFragment1" , "updateValue"];
 customElementPrototype._v4RegClassApi = ["_reg","_compName","componentClass","_observedAttributes"]; //component
 customElementPrototype._v4RegProtoApi = ["setData", "getData", "setMethods", "get", "set", "_pendingComponents"];
@@ -9330,6 +10991,11 @@ _LC.chromeBugFix = function() {
             document.querySelectorAll("[lyte-keep-alive]").forEach(function(item,index){
                 for(var key in item._renderedComponent) {
                     keepAliveInputs.$push.apply(keepAliveInputs, Array.from(item._renderedComponent[key].querySelectorAll("input")));
+                }
+            });
+            _LC.tDiv.content.querySelectorAll("[lyte-keep-alive]").forEach(function(item,index){
+                for(var key in item._renderedComponent) {
+                    keepAliveInputs.push.apply(keepAliveInputs, Array.from(item._renderedComponent[key].querySelectorAll("input")));
                 }
             });
             for(var i= tagsL-1, item;item=tags[i];i--) {
@@ -9398,12 +11064,22 @@ _LC.dummyLyteComponentsDiv = document.createElement("div");
 _LC.dummyLyteComponentsDiv.setAttribute("id", "dummy-lyte-components-div");
 _LC.setComponentsDiv(_LC.dummyLyteComponentsDiv,ComponentRegistry.name);
 
+_LC.hiddenComponentsDiv=createElement("template");
+_LC.hiddenComponentsDiv.setAttribute("id","hidden-component-div");
+
+_LC.hiddenYieldsDiv=createElement("template");
+_LC.hiddenYieldsDiv.setAttribute("id","hidden-yields-div");
+
 // if(!Lyte._ie) {
 if (document.readyState === "complete" || document.readyState === "interactive") {     
     document.body.appendChild(_LC.dummyLyteComponentsDiv);  
+    document.head.appendChild(Lyte.$.assetsDiv);
+    document.head.appendChild(Lyte.$.shadowDiv);
 }else{
     document.addEventListener("DOMContentLoaded", function(){
         document.body.appendChild(_LC.dummyLyteComponentsDiv);  
+        document.head.appendChild(Lyte.$.assetsDiv);
+        document.head.appendChild(Lyte.$.shadowDiv);
     },true);
 }
 // }
@@ -9476,9 +11152,9 @@ function createDepth(actualTemplate,type){
     depthTemp.innerHTML = actualTemplate.innerHTML;
     return depthTemp;
 }
-function appendDepth(depthTemp,constr){
+function appendDepth(depthTemp,constr,componentClass){
     constr.splitTextNodes(depthTemp);
-    constr._depthTemp.content.appendChild(depthTemp);
+    componentClass._depthTemp.content.appendChild(depthTemp);
 }
 function setHT(dynN,info,dynNewCompile,constr){
     var flag  = true;
@@ -9497,394 +11173,523 @@ function setHT(dynN,info,dynNewCompile,constr){
         }
     }
 }
-function doCompile(dynamicN, dynamicNodes, componentName, constr, newCompile, componentClass, fastRenderClass) {
-    for(let j=0;j<dynamicNodes.length;j++) {
-        let info = dynamicNodes[j], type = info.t, pos = info.p, helperInfo;
-        let dynN = getDynamicNode(dynamicN,pos);
-        let dynNewCompile;
-        if(newCompile && fastRenderClass) {
-            dynNewCompile = fastRenderClass.getDynNewCompile(newCompile,pos);
+function* doCompileHandling(dynamicN, dynamicNodes, componentName, constr, newCompile, componentClass, fastRenderClass, j, Q, callback, qInd, nestedQ, postQ, c_dynN) {
+    let info = dynamicNodes[j], type = info.t, pos = info.p, helperInfo;
+    let dynN = getDynamicNode(dynamicN,pos);
+    let dynNewCompile;
+    if(newCompile && fastRenderClass) {
+        dynNewCompile = fastRenderClass.getDynNewCompile(newCompile,pos);
+    }
+    switch(type) {
+    case "tX" : {
+        dynN.nodeValue = _LC.deep.replace(dynN.nodeValue);
+        var syn = Compile.syntaxCheckWorkerNew(dynN.nodeValue);
+        let mustache = Compile.getMustache(dynN.nodeValue,syn);
+        if(mustache){
+            mustache = _LC.deep.replaceBack(mustache);
+            actObj = Compile.getArray(mustache);  
         }
-        switch(type) {
-        case "tX" : {
-            dynN.nodeValue = dynN.nodeValue.replace('.{}','____lyteinternal____');
-            var syn = Compile.syntaxCheckWorkerNew(dynN.nodeValue);
-            let mustache = Compile.getMustache(dynN.nodeValue,syn);
-            if(mustache){
-                mustache = mustache.replace('____lyteinternal____','.{}');
-                actObj = Compile.getArray(mustache);  
+        if(!actObj && mustache){
+            actObj = Compile.getHelper(mustache);  
+        }
+        dynN.nodeValue = _LC.deep.replaceBack(dynN.nodeValue);
+        let dynamic = mustache;
+        if(actObj){
+            info.helperInfo = actObj;
+            dynNewCompile && fastRenderClass.caseTx(dynNewCompile,mustache,info,j);
+       }
+        else if(dynamic){
+            //deepNodes.$push({type: "text", position:deepN.slice(), dynamicValue: dynamic});
+            info.dynamicValue = dynamic;
+            info.newDynamicValue = Compile.getDV(dynamic);
+            if(dynNewCompile) {
+                fastRenderClass.replaceWithPf(dynNewCompile,j)
             }
-            if(!actObj && mustache){
-                actObj = Compile.getHelper(mustache);  
-            }
-            dynN.nodeValue = dynN.nodeValue.replace('____lyteinternal____','.{}');
-            let dynamic = mustache;
-            if(actObj){
-                info.helperInfo = actObj;
-                dynNewCompile && fastRenderClass.caseTx(dynNewCompile,mustache,info,j);
-           }
-            else if(dynamic){
-                //deepNodes.$push({type: "text", position:deepN.slice(), dynamicValue: dynamic});
-                info.dynamicValue = dynamic;
-                info.newDynamicValue = Compile.getDV(dynamic);
-                if(dynNewCompile) {
-                    fastRenderClass.replaceWithPf(dynNewCompile,j)
-                }
 //              LN to do
 //              deepNodes.$push({type: "text", position:deepN.slice(), dynamicValue: getDV(dynamic)});                    
-            }
         }
-        break;
-        case "i" : {
-            dynNewCompile && fastRenderClass.caseI(dynNewCompile,info,j);
-        }
-        break;
-        case "cD" : {
-            dynNewCompile && fastRenderClass.caseCD(dynNewCompile,info,j);
-        }
-        break;
-        case "a" : {
-            let add = false, toBeRemoved = [],toBeAdded = [];
-            let node = dynN;
-            let attr = info.a = info.a || {};
-            for(let i=0;i<node.attributes.length;i++) {
-                if(node.attributes[i].nodeValue.indexOf("{{") !== -1) {
-                    node.attributes[i].nodeValue = node.attributes[i].nodeValue.replace('.{}','____lyteinternal____');
-                    var val = node.attributes[i].nodeValue;
-                    var syn = Compile.syntaxCheckWorkerNew(val);
-                    var actObj,actValue,multipleAttr=false;
-                    var splittedMus = val.split("{{");
-                    var splittedMusLen = splittedMus.length;
-                    if(syn.mustache >0){
-                        splittedMusLen = splittedMusLen - syn.mustache;
+    }
+    break;
+    case "i" : {
+        dynNewCompile && fastRenderClass.caseI(dynNewCompile,info,j);
+    }
+    break;
+    case "cD" : {
+        dynNewCompile && fastRenderClass.caseCD(dynNewCompile,info,j);
+    }
+    break;
+    case "a" : {
+        let add = false, toBeRemoved = [],toBeAdded = [];
+        let node = dynN;
+        let attr = info.a = info.a || {};
+        for(let i=0;i<node.attributes.length;i++) {
+            if(node.attributes[i].nodeValue.indexOf("{{") !== -1) {
+                node.attributes[i].nodeValue = _LC.deep.replace(node.attributes[i].nodeValue);
+                var val = node.attributes[i].nodeValue;
+                var syn = Compile.syntaxCheckWorkerNew(val);
+                var actObj,actValue,multipleAttr=false;
+                var splittedMus = val.split("{{");
+                var splittedMusLen = splittedMus.length;
+                if(syn.mustache >0){
+                    splittedMusLen = splittedMusLen - syn.mustache;
+                }
+                if((splittedMusLen > 2 || !/^{{/.test(val) || !/}}$/.test(val)) && /{{.*}}/.test(val) && !/\\{{.*}}/.test(val)){
+                    actObj = Compile.splitMixedText(val);
+                    multipleAttr = true;
+                }
+                else{
+                    actValue = Compile.getMustache(val,syn);
+                    if(actValue){
+                        actValue = _LC.deep.replaceBack(actValue);
+                        actObj = Compile.getArray(actValue);  
                     }
-                    if((splittedMusLen > 2 || !/^{{/.test(val) || !/}}$/.test(val)) && /{{.*}}/.test(val) && !/\\{{.*}}/.test(val)){
-                        actObj = Compile.splitMixedText(val);
-                        multipleAttr = true;
+                    if(!actObj && actValue){
+                        actObj = Compile.getHelper(actValue);  
                     }
-                    else{
-                        actValue = Compile.getMustache(val,syn);
+                }
+                node.attributes[i].nodeValue = _LC.deep.replace(node.attributes[i].nodeValue);
+                if( actObj && (actObj.name === "action" || actObj.name === "method") && /^(onfocus|onfocusin|onfocusout|onresize|onscroll|onclick|ondblclick|onmousedown|onmouseup|onmousemove|onmouseover|onmouseout|onchange|onselect|onsubmit|onkeydown|onkeypress|onkeyup|oncontextmenu|__focus|__focusin|__focusout|__resize|__scroll|__click|__dblclick|__mousedown|__mouseup|__mousemove|__mouseover|__mouseout|__change|__select|__submit|__keydown|__keypress|__keyup|__contextmenu)$/.test(node.attributes[i].name)){
+                        var newActObj;
                         if(actValue){
-                            actValue = actValue.replace('____lyteinternal____','.{}');
-                            actObj = Compile.getArray(actValue);  
+                            newActObj = Compile.getArray(actValue);  
                         }
-                        if(!actObj && actValue){
-                            actObj = Compile.getHelper(actValue);  
+                        if(!newActObj && actValue){
+                            newActObj = Compile.getHelper(actValue,true);  
                         }
-                    }
-                    node.attributes[i].nodeValue = node.attributes[i].nodeValue.replace('____lyteinternal____','.{}');
-                    if( actObj && (actObj.name === "action" || actObj.name === "method") && /^(onfocus|onfocusin|onfocusout|onresize|onscroll|onclick|ondblclick|onmousedown|onmouseup|onmousemove|onmouseover|onmouseout|onchange|onselect|onsubmit|onkeydown|onkeypress|onkeyup|oncontextmenu|__focus|__focusin|__focusout|__resize|__scroll|__click|__dblclick|__mousedown|__mouseup|__mousemove|__mouseover|__mouseout|__change|__select|__submit|__keydown|__keypress|__keyup|__contextmenu)$/.test(node.attributes[i].name)){
-                            var newActObj;
-                            if(actValue){
-                                newActObj = Compile.getArray(actValue);  
+                        attr[node.attributes[i].name.substr(2)] = {
+                            name:node.attributes[i].name.substr(2),
+                            camelCase : _LC.String.toCamelCase(node.attributes[i].name.substr(2)),
+                            helperInfo: actObj,
+                            newHelperInfo : newActObj,
+                            globalEvent: true
+                        };
+                        let actArgs = deepCopyObject(actObj.args);
+                        let actName = actArgs.$splice(0,1)[0];
+                        actName = actName.startsWith("'")? actName.replace(/'/g,''):  actName;
+                        let actString = getArgString(actName, actArgs);
+                        node.setAttribute(node.attributes[i].name.substr(2),componentName+" => "+ actString);
+                        if(dynNewCompile) {
+                            fastRenderClass.setAttribute(dynNewCompile, node.attributes[i].name.substr(2),componentName+" => "+ actString)
+                        }
+                        toBeRemoved.$push(node.attributes[i].name);                            
+                }
+                else{
+                    if(actObj || actValue) {
+                        let attrToPush = {};
+                        if(node.attributes[i].name.startsWith("lbind:")) {
+                            toBeRemoved.$push(node.attributes[i].name);
+                            toBeAdded.$push({"name" : node.attributes[i].name.substring(6), "value": node.attributes[i].nodeValue});
+                            attrToPush.isLbind = true;
+                            attrToPush.name = node.attributes[i].name.substring(6);
+                            attrToPush.camelCase = _LC.String.toCamelCase(attrToPush.name);
+                        }
+                        else {
+                            attrToPush.name = node.attributes[i].name;
+                            attrToPush.camelCase = _LC.String.toCamelCase(attrToPush.name);
+                        }
+                        if(actObj) {
+                            if(actObj.name === "lbind") {
+                                attrToPush.dynamicValue = actObj.args[0];
+                                attrToPush.newDynamicValue = Compile.getDV(actObj.args[0]);
+                                attrToPush.isLbind = true;
                             }
-                            if(!newActObj && actValue){
-                                newActObj = Compile.getHelper(actValue,true);  
+                            else {
+                                attrToPush.helperInfo = actObj;
+                                var newActObj;
+                                if(multipleAttr){
+                                    newActObj = Compile.splitMixedText(val);
+                                }
+                                else{
+                                    if(actValue){
+                                        newActObj = Compile.getArray(actValue);  
+                                    }
+                                    if(!newActObj && actValue){
+                                        newActObj = Compile.getHelper(actValue,true);  
+                                    }
+                                }
+                                attrToPush.newHelperInfo = newActObj;
                             }
-                            attr[node.attributes[i].name.substr(2)] = {
-                                name:node.attributes[i].name.substr(2),
-                                camelCase : _LC.String.toCamelCase(node.attributes[i].name.substr(2)),
-                                helperInfo: actObj,
-                                newHelperInfo : newActObj,
-                                globalEvent: true
-                            };
-                            let actArgs = deepCopyObject(actObj.args);
-                            let actName = actArgs.$splice(0,1)[0];
-                            actName = actName.startsWith("'")? actName.replace(/'/g,''):  actName;
-                            let actString = getArgString(actName, actArgs);
-                            node.setAttribute(node.attributes[i].name.substr(2),componentName+" => "+ actString);
-                            if(dynNewCompile) {
-                                fastRenderClass.setAttribute(dynNewCompile, node.attributes[i].name.substr(2),componentName+" => "+ actString)
+                        } 
+                        else {
+                            attrToPush.dynamicValue = actValue;
+//                              LN to do
+                            attrToPush.newDynamicValue = Compile.getDV(actValue);
+                        }
+                        add = true;
+                        attr[attrToPush.name] = attrToPush;
+                    }                  
+                }
+            }
+            if(node.attributes[i].name.startsWith("@")){
+                let specialAttr;
+                add = true;
+                node._special = true;
+                let attrToPush = {};
+                attrToPush.name = node.attributes[i].name;
+                if(attr[attrToPush.name] && attr[attrToPush.name].dynamicValue){
+                    attrToPush.dynamicValue = attr[attrToPush.name].dynamicValue;
+                }else if(attr[attrToPush.name] && attr[attrToPush.name].helperInfo){
+                    attrToPush.helperInfo = attr[attrToPush.name].helperInfo;
+                }else{
+                    attrToPush.stringValue = node.attributes[i].nodeValue;
+                    let ndName = node.attributes[i].nodeName
+                    toBeRemoved.push(ndName);
+                    toBeAdded.push({name : "lyte-directive-" + ndName.slice(1,ndName.length), value : ""});
+                }
+                attr[attrToPush.name] = attrToPush;
+                attrToPush.hookNode  = true;
+                let hookName = node.attributes[i].name.slice(1,node.attributes[i].name.length);
+                attrToPush.hookName = hookName;
+                specialAttr = true;
+            }
+        }
+        if(toBeRemoved.length){
+            for(let i=0; i<toBeRemoved.length;i++){
+                node.removeAttribute(toBeRemoved[i]);
+            }
+        }
+        if(dynNewCompile) {
+            fastRenderClass.removeAttributeArr(dynNewCompile, toBeRemoved);
+            fastRenderClass.removeAttributeObj(dynNewCompile, attr, j)
+        }
+        if(toBeAdded.length) {
+            for(let i=0;i<toBeAdded.length;i++) {
+                node.setAttribute(toBeAdded[i].name, toBeAdded[i].value);
+            }
+        }
+    } 
+    break;
+    case "f" : 
+    case "fI" : 
+    case "r" : 
+        setHT(dynN,info,dynNewCompile,constr);
+    case "eM":    
+    case "cM" : {
+        let actualTemplate = dynN.content;
+        if(!dynNewCompile && (type == "r" || dynN.hasAttribute("unbound"))) { //af check
+            if(fastRenderClass){
+                dynNewCompile = fastRenderClass.cMBefore(dynN, info);
+            }
+        }
+        let depthTemp;
+        let dnNode;
+        let actualTemplateNewCompile = dynNewCompile ? fastRenderClass.cMBefore2(dynNewCompile, info, constr) : undefined; 
+        if(info.actualTemplate) {
+            actualTemplate = _LC.getContentForIE(info.actualTemplate, constr, undefined, Lyte._ms? info : undefined);
+        }
+        let _lastInd = false;
+        if(dynN.hasAttribute("has-child")){
+            let casesArr = Object.keys(info.c);
+            if(casesArr.length){
+                casesArr.forEach(function(key){
+                    let contentNewCompile;
+                    var content = _LC.getContentForIE(actualTemplate.querySelector("[case='"+_LC.cssEscape(key)+ "']"), undefined, true);
+                    setHT(content,info.c[key],contentNewCompile,constr);
+                    var casesDn = info.c[key].dN;
+                    if(casesDn.length){
+                        _lastInd = key;
+                        for(let i =0; i<casesDn.length; i++){
+                            if(i == casesDn.length-1){
+                                nestedQ.push( { dynN: dynN,  __case__:"1_1", __from__: qInd,__isInternal__:true, arguments:[content.tagName === "TEMPLATE" ? content.content : content, info.c[key].dN,componentName, constr, contentNewCompile, componentClass, fastRenderClass], __idx__: i, __callback__: (dynN) => {
+                                    if(info.c[key]._ht) {
+                                        info.c[key]._ht = content.cloneNode(true);
+                                        componentClass._helperTemplate.content.append(info.c[key]._ht)
+                                        content.innerHTML = "";
+                                        postQ.push(content);
+                                    }
+                                    if(_lastInd === key){
+                                        postForCompile(dynN, info, constr, j, type, dynamicNodes, dynNewCompile, actualTemplateNewCompile, actualTemplate,componentClass, fastRenderClass);
+                                    }
+                                }});
                             }
-                            toBeRemoved.$push(node.attributes[i].name);                            
+                            else{
+                                nestedQ.push( { dynN: dynN,  __case__:"1_2", __from__: qInd,__isInternal__:true, arguments:[content.tagName === "TEMPLATE" ? content.content : content, info.c[key].dN,componentName, constr, contentNewCompile, componentClass, fastRenderClass], __idx__: i});
+                            }
+                        };
                     }
                     else{
-                        if(actObj || actValue) {
-                            let attrToPush = {};
-                            // if(actObj && actObj.name === "method"){
-                            //     let actArgs = deepCopyObject(actObj.args);
-                            //     let actName = actArgs.$splice(0,1)[0];
-                            //     actName = actName.startsWith("'")? actName.replace(/'/g,''):  actName;
-                            //     let actString = getArgString(actName, actArgs);
-                            //     node.setAttribute(node.attributes[i].name,componentName+" => "+ actString);
-                            // }
-                            if(node.attributes[i].name.startsWith("lbind:")) {
-                                toBeRemoved.$push(node.attributes[i].name);
-                                toBeAdded.$push({"name" : node.attributes[i].name.substring(6), "value": node.attributes[i].nodeValue});
-                                attrToPush.isLbind = true;
-                                attrToPush.name = node.attributes[i].name.substring(6);
-                                attrToPush.camelCase = _LC.String.toCamelCase(attrToPush.name);
-                            }
-                            else {
-                                attrToPush.name = node.attributes[i].name;
-                                attrToPush.camelCase = _LC.String.toCamelCase(attrToPush.name);
-                            }
-                            if(actObj) {
-                                if(actObj.name === "lbind") {
-                                    attrToPush.dynamicValue = actObj.args[0];
-                                    attrToPush.newDynamicValue = Compile.getDV(actObj.args[0]);
-                                    attrToPush.isLbind = true;
-                                }
-                                else {
-                                    attrToPush.helperInfo = actObj;
-                                    var newActObj;
-                                    if(multipleAttr){
-                                        newActObj = Compile.splitMixedText(val);
-                                    }
-                                    else{
-                                        if(actValue){
-                                            newActObj = Compile.getArray(actValue);  
-                                        }
-                                        if(!newActObj && actValue){
-                                            newActObj = Compile.getHelper(actValue,true);  
-                                        }
-                                    }
-                                    attrToPush.newHelperInfo = newActObj;
-                                }
-                            } 
-                            else {
-                                attrToPush.dynamicValue = actValue;
-//                              LN to do
-                                attrToPush.newDynamicValue = Compile.getDV(actValue);
-                            }
-                            add = true;
-                            attr[attrToPush.name] = attrToPush;
-                        }                  
+                        postSwitchCaseCompile(info, constr, j, key, contentNewCompile, content, actualTemplateNewCompile,componentClass);  
+                    }
+                });
+            }
+            else{
+                
+                if(dynNewCompile) {
+                    info._args = {};
+                    if(type === "registerYield") {
+                        _LC.replaceWithPf(dynNewCompile, document.createTextNode("__**--Lyte"+j+"__**"));
+                    } else if(type === "component") {
+                        _LC.replaceWithPf(dynNewCompile, document.createTextNode((dynNewCompile.hasAttribute("_lyteattr") ? dynNewCompile.getAttribute("_lyteattr"): "" )+ "__**--Lyte"+j+"__**"));
+                    } else {
+                        //dynNewCompile.replaceWith(document.createTextNode("__**--Lyte"+j+"__**"))
+                        _LC.replaceWithPf(dynNewCompile, document.createTextNode("__**--Lyte"+j+"__**"));
+                    }
+                    Array.from(dynNewCompile.attributes).forEach(function(item) { //eslint-disable-line no-loop-func
+                        info._args[item.nodeName] = item.nodeValue;
+                    });
+                }
+                if(info.actualTemplate) {
+                    depthTemp = type;
+                        if(info.svg){
+                            depthTemp = createSvgDepth(actualTemplate,type)
+                        }else{
+                            depthTemp = createDepth(actualTemplate,type)
+                        }
+                        appendDepth(depthTemp, constr, componentClass);
+                    if(dynamicNodes[j-1] && (dynamicNodes[j-1].p.toString() === dynamicNodes[j].p.toString())) {
+                        dnNode = dynamicNodes[j-1];
+                    } else {
+                        dnNode = dynamicNodes[j];
+                    }
+                    dnNode._depthTemp = depthTemp;
+                }
+                if(info._ht) {
+                    info._ht = dynN.cloneNode(true);
+                    componentClass._helperTemplate.content.append(info._ht)
+                    dynN.innerHTML = "";
+                }
+            }
+        }else{
+            var dN = info.dN;
+            if(dN.length){
+                _lastInd = true;
+                for(let i =0; i<dN.length; i++){
+                    if(i == dN.length-1){
+                        nestedQ.push( { dynN: dynN,  /*__case__:"2_1", __from__: qInd,*/__isInternal__:true, arguments:[actualTemplate, info.dN, componentName, constr, actualTemplateNewCompile, componentClass, fastRenderClass], __idx__: i, __callback__:(dynN) => {
+                            postForCompile(dynN, info, constr, j, type, dynamicNodes, dynNewCompile, actualTemplateNewCompile, actualTemplate,componentClass, fastRenderClass);
+                        }});
+                    }
+                    else{
+                        nestedQ.push( { dynN: dynN, /*__case__:"2_2", __from__: qInd,*/__isInternal__:true, arguments:[actualTemplate, info.dN, componentName, constr, actualTemplateNewCompile, componentClass, fastRenderClass], __idx__: i});
+                    }
+                };
+            }   
+        }
+        if(_lastInd == false){
+            postForCompile(dynN, info, constr, j, type, dynamicNodes, dynNewCompile, actualTemplateNewCompile, actualTemplate, componentClass, fastRenderClass);
+        }
+    }
+    break;
+    case "e" : 
+    case "s" : {
+        
+        setHT(dynN,info,dynNewCompile,constr);
+        let depthTemp;
+        let actualTemplateNewCompile;
+        if(info.actualTemplate) {
+            dynN = _LC.getContentForIE(info.actualTemplate, constr, undefined);
+        }
+        if(dynNewCompile){
+            actualTemplateNewCompile = fastRenderClass.caseES(dynNewCompile, info, constr);
+        }
+        var asyncCompile = false, def = "default";
+            var dynNContent = dynN.content || dynN,  casesArr = Object.keys(info.c), _lastInd = false;
+            if(info.d.dN) {
+                let contentNewCompile;
+                if(actualTemplateNewCompile) {
+                    contentNewCompile = _LC.getContentForIE(actualTemplateNewCompile.querySelector("[default]"));
+                }
+                let content = _LC.getContentForIE(dynNContent.querySelector("[default]"), undefined, true);
+                setHT(content,info.d,contentNewCompile,constr);
+                let dN = info.d.dN;
+                if(dN && dN.length){
+                    for(let i =0; i<dN.length; i++){
+                        if(i == dN.length-1){
+                            nestedQ.push( { dynN: dynN,  /*__case__:"7_1", __from__: qInd,*/ __isInternal__:true, arguments:[content.tagName === "TEMPLATE" ? content.content : content, info.d.dN,componentName, constr, contentNewCompile, componentClass, fastRenderClass], __idx__: i, __callback__:(dynN) => {
+                                postSwitchDefCompile(info, constr, contentNewCompile, content, actualTemplateNewCompile, def,componentClass);                                                           
+                            }});
+                        }
+                        else{
+                            nestedQ.push( { dynN: dynN,  /*__case__:"7_2", __from__: qInd,*/ __isInternal__:true, arguments:[content.tagName === "TEMPLATE" ? content.content : content, info.d.dN,componentName, constr, contentNewCompile, componentClass, fastRenderClass], __idx__: i});
+                        }
                     }
                 }
-                if(node.attributes[i].name.startsWith("@")){
-                    let specialAttr;
-                    add = true;
-                    node._special = true;
-                    let attrToPush = {};
-                    attrToPush.name = node.attributes[i].name;
-                    if(attr[attrToPush.name] && attr[attrToPush.name].dynamicValue){
-                        attrToPush.dynamicValue = attr[attrToPush.name].dynamicValue;
-                    }else if(attr[attrToPush.name] && attr[attrToPush.name].helperInfo){
-                        attrToPush.helperInfo = attr[attrToPush.name].helperInfo;
-                    }else{
-                        attrToPush.stringValue = node.attributes[i].nodeValue;
-                        let ndName = node.attributes[i].nodeName
-                        toBeRemoved.push(ndName);
-                        toBeAdded.push({name : "lyte-directive-" + ndName.slice(1,ndName.length), value : ""});
-                    }
-                    attr[attrToPush.name] = attrToPush;
-                    attrToPush.hookNode  = true;
-                    let hookName = node.attributes[i].name.slice(1,node.attributes[i].name.length);
-                    attrToPush.hookName = hookName;
-                    specialAttr = true;
+                else{
+                    postSwitchDefCompile(info, constr, contentNewCompile, content, actualTemplateNewCompile, def,componentClass); 
                 }
             }
-            if(toBeRemoved.length){
-                for(let i=0; i<toBeRemoved.length;i++){
-                    node.removeAttribute(toBeRemoved[i]);
-                }
-            }
-            if(dynNewCompile) {
-                fastRenderClass.removeAttributeArr(dynNewCompile, toBeRemoved);
-                fastRenderClass.removeAttributeObj(dynNewCompile, attr, j)
-            }
-            if(toBeAdded.length) {
-                for(let i=0;i<toBeAdded.length;i++) {
-                    node.setAttribute(toBeAdded[i].name, toBeAdded[i].value);
-                }
-            }
-        } 
-        break;
-        case "f" : 
-        case "fI" : 
-        case "r" : 
-            setHT(dynN,info,dynNewCompile,constr);
-        case "cM" : {
-            var actualTemplate = dynN.content;
-            if(!dynNewCompile && (type == "r" || dynN.hasAttribute("unbound"))) { //af check
-                if(fastRenderClass){
-                    dynNewCompile = fastRenderClass.cMBefore(dynN, info);
-                }
-            }
-            let depthTemp;
-            let dnNode;
-            let actualTemplateNewCompile = dynNewCompile ? fastRenderClass.cMBefore2(dynNewCompile, info, constr) : undefined;
-            if(info.actualTemplate) {
-                actualTemplate = _LC.getContentForIE(info.actualTemplate, constr, undefined, Lyte._ms? info : undefined);
-            }
-            doCompile(actualTemplate, info.dN, componentName, constr, actualTemplateNewCompile, componentClass, fastRenderClass);
-            if(dynNewCompile){
-                fastRenderClass.cMAfter(actualTemplateNewCompile, info, type, j, dynNewCompile);
-            }
-            // if(Lyte._ms) {
-            //     if(info.actualTemplate) {
-            //         info.templateContent = actualTemplate.outerHTML;
-            //         if(info._content) {
-            //             info.actualTemplate = info._content.innerHTML;
-            //             delete info._content;
-            //         }
-            //     } else {
-            //         info.templateContent = dynN.outerHTML;
-            //     }
-            //     dynN.innerHTML = "";  
-            // }
-            if(info.actualTemplate) {
-                depthTemp = type;
-                // if(!Lyte._ie ) {
-                    if(info.svg){
-                        depthTemp = createSvgDepth(actualTemplate,type)
-                    }else{
-                        depthTemp = createDepth(actualTemplate,type)
-                    }
-                    appendDepth(depthTemp,constr);
-                // }
-                if(dynamicNodes[j-1] && (dynamicNodes[j-1].p.toString() === dynamicNodes[j].p.toString())) {
-                    dnNode = dynamicNodes[j-1];
-                } else {
-                    dnNode = dynamicNodes[j];
-                }
-                dnNode._depthTemp = depthTemp;
-            }
-            if(info._ht) {
-                info._ht = dynN.cloneNode(true);
-                componentClass._helperTemplate.content.append(info._ht)
-                dynN.innerHTML = "";
-            }
-                //  When a registerYield is present inside another registerYield, in fastRender, we will not be able to get the template using the positions and parentComponent alone, since the insertYield is present inside the insertYield of the parent component. 
-                // info.actYield = dynN;
-              }
-        break;
-        case "e" : 
-        case "s" : {
-            let caseStr;
-            setHT(dynN,info,dynNewCompile,constr);
-            let depthTemp;
-            let actualTemplateNewCompile;
-            if(info.actualTemplate) {
-                dynN = _LC.getContentForIE(info.actualTemplate, constr, undefined);
-            }
-            if(dynNewCompile){
-                actualTemplateNewCompile = fastRenderClass.caseES(dynNewCompile, info, constr);
-            }
-            var def = "default";
-            // if(Lyte._ms) {
-            // 	var cases = {};
-            //     var defCase;
-            //     var dynNchildNodes = dynN.childNodes;
-            //     var lyteCaseName = info.hd ? "lc-id" : "case";
-            //     for(var i=0;i<dynNchildNodes.length;i++) {
-            //       if(dynNchildNodes[i].tagName === "TEMPLATE"){
-            //         if(dynNchildNodes[i].getAttribute(lyteCaseName)) {
-            //             cases[dynNchildNodes[i].getAttribute(lyteCaseName)] = dynNchildNodes[i];
-            //         } else if(dynNchildNodes[i].hasAttribute("default")) {
-            //     		  defCase = dynNchildNodes[i];
-            //     	  }
-            //       }
-            //     }
-            //     for (let key in info.c) {
-            //         if(info.c[key].dcn){
-            //             doCompile(dynN, [info.c[key].cdp], componentName, constr ,undefined ,componentClass, fastRenderClass);
-            //         }
-            //     }
-            //     for (let key in info.c) {
-            //         let contentNewCompile;
-            //         caseStr = info.c[key].dcn ? "[lc-id='" : "[case='";                    
-            //         content = _LC.getContentForIE(cases[key], undefined, true);
-            //         if(actualTemplateNewCompile) {
-            //             contentNewCompile = _LC.getContentForIE(actualTemplateNewCompile.querySelector(caseStr+_LC.cssEscape(key)+ "']"));
-            //         }
-            //         setHT(content,info.c[key],contentNewCompile,constr);
-
-            //         doCompile(content, info.c[key].dN, componentName, constr, contentNewCompile ? _LC.getContentForIE(contentNewCompile) : undefined, componentClass, fastRenderClass);
-
-            //         cases[key].remove();
-            //         if(actualTemplateNewCompile) {
-            //             info.c[key]._sta = _LC.processStatic(contentNewCompile);
-            //         }
-            //         info.c[key].templateContent = cases[key].outerHTML;
-            //     }
-            //     if (info.d.dN) {
-            //         let contentNewCompile;
-            //         content = _LC.getContentForIE(defCase, undefined, true);
-            //         if(actualTemplateNewCompile) {
-            //             contentNewCompile = actualTemplateNewCompile.querySelector("[default]");
-            //         }
-            //         setHT(content,info.d,contentNewCompile,constr);
-            //         doCompile(content, info.d.dN, componentName, constr, contentNewCompile? _LC.getContentForIE(contentNewCompile) : undefined, componentClass, fastRenderClass);
-
-            //         defCase.remove();
-            //         info.d.templateContent = defCase.outerHTML;
-            //         if(actualTemplateNewCompile) {
-            //             info.d._sta = _LC.processStatic(contentNewCompile);
-            //         }
-            //     }
-            // } else {
-                var dynNContent = dynN.content || dynN;
-            	for(let key in info.c) {
-                    caseStr = info.c[key].dcn ? "[lc-id='" : "[case='";
+            if(casesArr.length){
+                casesArr.forEach(function(key){
+                   let caseStr = info.c[key].dcn ? "[lc-id='" : "[case='";
                     let contentNewCompile;
                     if(actualTemplateNewCompile) {
                         contentNewCompile = _LC.getContentForIE(actualTemplateNewCompile.querySelector(caseStr+_LC.cssEscape(key)+ "']"));
                     }
                     var content = _LC.getContentForIE(dynNContent.querySelector(caseStr+_LC.cssEscape(key)+ "']"), undefined, true);
                     setHT(content,info.c[key],contentNewCompile,constr);
-            		if(info.c[key].dcn){
-                        doCompile(dynNContent, [info.c[key].cdp], componentName, constr ,undefined ,componentClass);
+                    let dN = info.c[key].dN;
+                    if(info.c[key].dcn){
+                        let ndN=[info.c[key].cdp];
+                        if(ndN && ndN.length){
+                            asyncCompile = true;
+                            _lastInd = key;
+                            for(let i =0; i<ndN.length; i++){
+                                if(i == ndN.length-1){
+                                    nestedQ.push( { dynN: dynN, /*__case__:"5_1", __from__: qInd,*/ __isInternal__:true, arguments:[dynNContent, [info.c[key].cdp], componentName, constr, undefined,componentClass, fastRenderClass], __idx__: i, __callback__:(dynN) => {
+                                        if(!dN.length){
+                                            // var content = _LC.getContentForIE(dynNContent.querySelector(caseStr+_LC.cssEscape(key)+ "']"), undefined, true);
+                                            // postSwitchCaseCompile(info, constr, j, key, contentNewCompile, content, actualTemplateNewCompile,componentClass);
+                                            if(_lastInd == key){
+                                                postSwitchCompile(dynN, info, constr, j, type, dynamicNodes, dynNewCompile,componentClass,fastRenderClass);
+                                            }
+                                        }
+                                    }});
+                                }
+                                else{
+                                    nestedQ.push( { dynN: dynN,  /*__case__:"6_2", __from__: qInd,*/ __isInternal__:true, arguments:[dynNContent, [info.c[key].cdp], componentName, constr, contentNewCompile? _LC.getContentForIE(contentNewCompile) : undefined,componentClass, fastRenderClass], __idx__: i});
+                                }
+                            };
+                        }
                     }
-                    doCompile(content.tagName === "TEMPLATE" ? content.content : content, info.c[key].dN,componentName, constr, contentNewCompile, componentClass, fastRenderClass);
-                    if(actualTemplateNewCompile) {
-                      info.c[key]._sta = _LC.processStatic(contentNewCompile);
+                    if(dN && dN.length){
+                        asyncCompile = true;
+                        _lastInd = key;
+                        for(let i =0; i<dN.length; i++){
+                            if(i == dN.length-1){
+                                nestedQ.push( { dynN: dynN, /*__case__:"5_1", __from__: qInd,*/ __isInternal__:true, arguments:[content.tagName === "TEMPLATE" ? content.content : content, info.c[key].dN, componentName, constr, contentNewCompile? _LC.getContentForIE(contentNewCompile) : undefined,componentClass, fastRenderClass], __idx__: i, __callback__:(dynN) => {
+                                    var content = _LC.getContentForIE(dynNContent.querySelector(caseStr+_LC.cssEscape(key)+ "']"), undefined, true);
+                                    postSwitchCaseCompile(info, constr, j, key, contentNewCompile, content, actualTemplateNewCompile,componentClass);
+                                    if(_lastInd == key){
+                                        postSwitchCompile(dynN, info, constr, j, type, dynamicNodes, dynNewCompile,componentClass,fastRenderClass);
+                                    }
+                                }});
+                            }
+                            else{
+                                nestedQ.push( { dynN: dynN,  /*__case__:"6_2", __from__: qInd,*/ __isInternal__:true, arguments:[content.tagName === "TEMPLATE" ? content.content : content, info.c[key].dN, componentName, constr, contentNewCompile? _LC.getContentForIE(contentNewCompile) : undefined,componentClass, fastRenderClass], __idx__: i});
+                            }
+                        };
                     }
-                    if(info.c[key]._ht) {
-                        info.c[key]._ht = content.cloneNode(true);
-                        componentClass._helperTemplate.content.append(info.c[key]._ht)
-                        content.innerHTML = "";
+                    else{
+                        postSwitchCaseCompile(info, constr, j, key, contentNewCompile, content, actualTemplateNewCompile,componentClass);
                     }
-            	}
-            	if(info.d.dN) {
-                    let contentNewCompile
-                    if(actualTemplateNewCompile) {
-                        contentNewCompile = _LC.getContentForIE(actualTemplateNewCompile.querySelector("[default]"));
-                    }
-                    var content = _LC.getContentForIE(dynNContent.querySelector("[default]"), undefined, true);
-                    setHT(content,info.d,contentNewCompile,constr);
-            		doCompile(content.tagName === "TEMPLATE" ? content.content : content, info.d.dN,componentName, constr, contentNewCompile, componentClass, fastRenderClass);
-                    if(actualTemplateNewCompile) {
-                      info.d._sta = _LC.processStatic(contentNewCompile);
-                    }
-                    if(info.d._ht) {
-                        info.d._ht = content.cloneNode(true);
-                        componentClass._helperTemplate.content.append(info.d._ht)
-                        content.innerHTML = "";
-                    }
-            	}
-            	
-            // }
-
-            if(info.actualTemplate) {
-                depthTemp = type;
-                // if(!Lyte._ie ) {
-                    if(info.svg){
-                        depthTemp = createSvgDepth(dynN.content,type)
-                    }else{
-                        depthTemp = createDepth(dynN,type)
-                    }
-                    appendDepth(depthTemp,constr);
-                // }
-                if(dynamicNodes[j-1] && (dynamicNodes[j-1].p.toString() === dynamicNodes[j].p.toString())) {
-            		dynamicNodes[j-1]._depthTemp = depthTemp;
-            	} else {
-            		dynamicNodes[j]._depthTemp = depthTemp;
-            	}
+                });
             }
+        // }
+        if(asyncCompile === false){
+            postSwitchCompile(dynN, info, constr, j, type, dynamicNodes, dynNewCompile,componentClass,fastRenderClass);
+        }
+    }
+    break;    
+    }
+    if(typeof callback == "function"){
+        callback(c_dynN);
+    }
+}
 
-            if(dynNewCompile) {
-                fastRenderClass.replaceWithPf(dynNewCompile,j)
+function postForCompile( dynN, info, constr, j, type, dynamicNodes, dynNewCompile, actualTemplateNewCompile, actualTemplate,componentClass, fastRenderClass) {
+    let depthTemp;
+    let dnNode;
+    if(actualTemplateNewCompile) {
+        let staticTemp = info.actualTemplate ? actualTemplateNewCompile : dynNewCompile;
+        info._sta = _LC.processStatic(staticTemp);                      
+    }
+    if(dynNewCompile){
+        fastRenderClass.cMAfter(actualTemplateNewCompile, info, type, j, dynNewCompile);
+    }
+    if(info.actualTemplate) {
+        depthTemp = type;
+            if(info.svg){
+                depthTemp = createSvgDepth(actualTemplate,type)
+            }else{
+                depthTemp = createDepth(actualTemplate,type)
             }
-            if(info._ht) {
-                info._ht = dynN.cloneNode(true);
-                componentClass._helperTemplate.content.append(info._ht)
-                dynN.innerHTML = "";
+            appendDepth(depthTemp,constr,componentClass);
+        
+        if(dynamicNodes[j-1] && (dynamicNodes[j-1].p.toString() === dynamicNodes[j].p.toString())) {
+            dnNode = dynamicNodes[j-1];
+        } else {
+            dnNode = dynamicNodes[j];
+        }
+        dnNode._depthTemp = depthTemp;
+    }
+    if(info._ht) {
+        info._ht = dynN.cloneNode(true);
+        componentClass._helperTemplate.content.append(info._ht)
+        dynN.innerHTML = "";
+    }
+}
+function postSwitchDefCompile(info, constr, contentNewCompile, content, actualTemplateNewCompile, def,componentClass) {
+    if(actualTemplateNewCompile) {
+        info.d._sta = _LC.processStatic(contentNewCompile);
+    }
+    if(info.d._ht) {
+        info.d._ht = content.cloneNode(true);
+        componentClass._helperTemplate.content.append(info.d._ht)
+        content.innerHTML = "";
+    }  
+}
+function postSwitchCaseCompile(info, constr, j, key, contentNewCompile, content, actualTemplateNewCompile,componentClass) {
+    if(actualTemplateNewCompile) {
+        info.c[key]._sta = _LC.processStatic(contentNewCompile);
+    }
+    if(info.c[key]._ht) {
+        info.c[key]._ht = content.cloneNode(true);
+        componentClass._helperTemplate.content.append(info.c[key]._ht)
+        content.innerHTML = "";
+    }
+}
+function postSwitchCompile(dynN, info, constr, j, type, dynamicNodes, dynNewCompile,componentClass,fastRenderClass) {   
+    let depthTemp;
+    if(info.actualTemplate) {
+        depthTemp = type;
+            if(info.svg){
+                depthTemp = createSvgDepth(dynN.content,type)
+            }else{
+                depthTemp = createDepth(dynN,type)
+            }
+            appendDepth(depthTemp,constr,componentClass);
+        if(dynamicNodes[j-1] && (dynamicNodes[j-1].p.toString() === dynamicNodes[j].p.toString())) {
+            dynamicNodes[j-1]._depthTemp = depthTemp;
+        } else {
+            dynamicNodes[j]._depthTemp = depthTemp;
+        }
+    }
+    if(dynNewCompile) {
+        fastRenderClass.replaceWithPf(dynNewCompile,j);
+    }
+    if(info._ht) {
+        info._ht = dynN.cloneNode(true);
+        componentClass._helperTemplate.content.append(info._ht);
+        dynN.innerHTML = "";
+    } 
+}
+function* doCompile(dynamicN, dynamicNodes, componentName, constr, newCompile, componentClass, fastRenderClass) {
+    let lastUsedAttrPosition ;
+    if(dynamicNodes && dynamicNodes.length){
+        let Q = Array.from(dynamicNodes), intCount = 0, postQ = [];
+        for(let j=0;j<Q.length;j++) {
+            let qItem=Q[j],nestedQ=[];
+            if(Q[j].__isInternal__){
+                intCount++;
+                if(qItem.arguments && qItem.arguments[1] && qItem.arguments[1].length){
+                    var argArr = [...qItem.arguments, ...[qItem.__idx__, Q, qItem.__callback__, j, nestedQ, postQ, qItem.dynN]];
+                    yield* doCompileHandling(...argArr);
+                }else if(qItem.callback && typeof qItem.callback == "function"){
+                    qItem.callback(qItem.dynN);
+                }
+            }else{
+                yield* doCompileHandling(dynamicN, dynamicNodes, componentName, constr, newCompile,componentClass,fastRenderClass, j-intCount, Q, undefined, j, nestedQ, postQ, qItem.dynN)
+            }
+            if(nestedQ.length){
+                let newQ = [];
+                nestedQ.forEach((item) => {
+                    if(item.__callback__){
+                        var nObj = {callback: item.__callback__, dynN: item.dynN, __isInternal__: true};
+                        delete item.__callback__;
+                        delete item.dynN;
+                        newQ.push(item);
+                        newQ.push(nObj);
+                    }
+                    else{
+                        newQ.push(item);
+                    }
+                });
+                Q.splice(j+1, 0, ...newQ);
             }
         }
-        break;    
-        }
+    }
+    else{
+        yield "";
     }
 }
 
@@ -9950,16 +11755,43 @@ defHelpers["method"] = function(parentComponent, attributeNode, functionName) {
         let node = this.$node;
         let contextSwitchArray = [];
         _LC.adCx(node, contextSwitchArray);
-        let processedArgs = this.$node.processArgs(this.$node._callee,{"helperInfo" : {"args" : args}}, [], undefined, this.$node);
+        let processDetails = {};
+        let processedArgs = this.$node.processArgs(this.$node._callee,{"helperInfo" : {"args" : args}}, [], [], undefined, this.$node, undefined, undefined, undefined, processDetails);
         let functionName1 = processedArgs.$splice(0,1)[0];
         _LC.rmCx(node, contextSwitchArray);
         let customArgs = Array.from(arguments);
         let mainArgs = processedArgs.$concat(customArgs);
         if(self._methods[functionName1]) {
-            return self._methods[functionName1].apply(self, mainArgs);
+            var appScope = _LC.getNearestParentApp(this);
+           //@Slicer.developmentStart
+           _LC.debugPerf(
+               appScope,
+               node.__renderId,
+               "Method "+functionName1,
+               self.constructor._compName
+           );
+           //@Slicer.developmentEnd
+           //@Slicer.catchAllErrorsStart
+           try{
+            //@Slicer.catchAllErrorsEnd 
+            var _meth = self._methods[functionName1].apply(self, mainArgs);
+            //@Slicer.developmentStart
+            _LC.debugPerf(
+                appScope,
+                node.__renderId,
+                "Method "+functionName1,
+                self.constructor._compName
+            );
+            //@Slicer.developmentEnd
+            return _meth;
+            //@Slicer.catchAllErrorsStart
+           }catch(err){
+            appScope.appError ?  appScope.appError.error(self,err):ComponentError.error(self,err);
+           }
+           //@Slicer.catchAllErrorsEnd
         }
         //@Slicer.developmentStart
-        ComponentError.error("LC005", functionName, self.$node.tagName);
+        ComponentError.error(self, "LC005", functionName, self.$node.tagName);
         //@Slicer.developmentEnd
     }
     if(childComponent) {
@@ -9972,126 +11804,15 @@ defHelpers["method"] = function(parentComponent, attributeNode, functionName) {
         return newFunc;
     }
 };
-
-defHelpers["unescape"] = function(value,additionalObject,userInstance){
-    let lyteIns = this.getAppOrAddon();
-    if(_LC.ffr) {
-        return value;
-    }
-    if(lyteIns.Security.ignoreSanitizer){ //af check //take this lyte app instance and proceed
-        let divEle = document.createElement("div");
-        divEle.innerHTML = value;
-        return divEle;
-    }
-    else{
-        if(additionalObject && Object.keys(additionalObject) && Object.keys(additionalObject).length >0){
-            if(Object(additionalObject.GLOBAL_TAGS).length>0){
-                var index = additionalObject.GLOBAL_TAGS.indexOf("link-to");
-                if(index != -1){
-                    additionalObject.GLOBAL_TAGS.$splice(index,1);
-                }
-            }
-            if(additionalObject && additionalObject.GLOBAL_ATTRIBUTES && Object.keys(additionalObject.GLOBAL_ATTRIBUTES).length>0){
-                var arr = ["yield-name","lt-prop-route", "lt-prop-dp", "lt-prop-fragment", "lt-prop-qp", "lt-prop", "lt-prop-class", "lt-prop-id", "lt-prop-rel", "lt-prop-title", "lt-prop-style", "lt-prop-target","lt-prop-td","lt-prop-custom","lt-prop-target","lt-prop-id","lt-prop-class","lt-prop-style","lt-prop-rel","lt-prop-title"];
-                for(var i=0;i<arr.length;i++){
-                    var index =additionalObject.GLOBAL_ATTRIBUTES.indexOf(arr[i]);
-                    if(index != -1){
-                        additionalObject.GLOBAL_ATTRIBUTES.$splice(index,1);
-                    }
-                }
-            }
-        }
-        if(additionalObject && additionalObject.GLOBAL_TAGS){//this if check is inorder to getobserved attributes given in globaltags
-            if(additionalObject.GLOBAL_ATTRIBUTES == undefined){
-                additionalObject.GLOBAL_ATTRIBUTES = [];
-            }
-            var globalTagArr = Array.from(additionalObject.GLOBAL_TAGS);
-            var attr = [];
-            for(var a=0; a<globalTagArr.length; a++){
-                
-                let regComps = ComponentRegistry._registeredCommonClass;
-                if(regComps[globalTagArr[a]]){
-                    attr = regComps[globalTagArr[a]].observedAttributes;
-                }else if(Lyte.registeredCustomComponent[globalTagArr[a]]){
-                    if(Lyte.registeredCustomComponent[globalTagArr[a]].observedAttributes){
-                        attr = Lyte.registeredCustomComponent[globalTagArr[a]].observedAttributes;
-                    }else{
-                        attr = [];
-                    }
-                }
-                for(var i=0; i<attr.length; i++){
-                    if(additionalObject.GLOBAL_ATTRIBUTES.indexOf(attr[i]) == -1){
-                        additionalObject.GLOBAL_ATTRIBUTES.$push(attr[i]);
-                    }
-                }
-            }
-        }
-        var divEle = document.createElement("div");
-        if(userInstance && Object.keys(userInstance).length){
-            if(additionalObject && Object.keys(additionalObject).length){
-                lyteIns.Security.addGlobalObject(userInstance,additionalObject);
-                var clean = userInstance.sanitize(value);
-                lyteIns.Security.removeGlobalObject(userInstance,additionalObject);
-            }
-            else{
-                var clean = userInstance.sanitize(value);
-            }
-        }
-        else{
-            if(additionalObject && Object.keys(additionalObject).length){
-                lyteIns.Security.addGlobalObject(lyteIns.Security._ourSanitizerInstance_,additionalObject);
-                var clean = lyteIns.Security._ourSanitizerInstance_.sanitize(value);
-                lyteIns.Security.removeGlobalObject(lyteIns.Security._ourSanitizerInstance_,additionalObject);
-            }else{
-                var clean = lyteIns.Security._ourSanitizerInstance_.sanitize(value);
-            }
-        }
-        divEle.innerHTML = clean;
-        return divEle;
-    }
-};
-defHelpers["unescape"] = function(value,additionalObject,userInstance){
-    let lyteIns = this.getAppOrAddon();
-    if(_LC.ffr) {
-        return value;
-    }
-    let divEle = document.createElement("div");
-    if(lyteIns.Security.ignoreSanitizer){ //af check //take this lyte app instance and proceed
-        divEle.innerHTML = value;
-        return divEle;
-    }
-    else{
-        if(additionalObject && Object.keys(additionalObject) && Object.keys(additionalObject).length > 0){
-            _LC.Security.initializeConfig(additionalObject);
-            _LC.Security.removeConfig(additionalObject);
-            _LC.Security.addLyteComponents(additionalObject);
-        }
-        let clean;
-        let ins = userInstance && Object.keys(userInstance).length ? userInstance : lyteIns.Security._ourSanitizerInstance_;
-        if(additionalObject && Object.keys(additionalObject).length){
-            clean = _LC.Security.sanitizeWithConfig(value ,additionalObject, ins);
-        }else{
-            clean = ins.sanitize(value);
-        }
-        divEle.innerHTML = clean;
-        return divEle;
-    }
+defHelpers["stringifyHTML"] = function(){// unescapeAttr renderString printHTML showString showHTML returnHTML stringifyHTML
+    defHelpers.unescape.apply(this,arguments).innerHTML;
 };
 
-defHelpers["escape"] = function(value,type){
-    if(type == 'url'){
-        return ZSEC.Encoder.encodeForHTMLAttribute(value);	
-    }
-    else if(type == 'js'){
-        return ZSEC.Encoder.encodeForJavaScript(value);
-    }
-    else if(type == 'css'){
-        return ZSEC.Encoder.encodeForCSS(value);	
-    }
-    else{
-        return value;
-    }
-};
+defHelpers["unescapeAttr"] = function(){
+    return defHelpers.unescape.apply(this,arguments).innerHTML;
+}
+
+
 
 defHelpers["debugger"] = function() {
     debugger;
@@ -10130,6 +11851,11 @@ defHelpers["ifNotEquals"] = function(arg1, arg2) {
     }
 };
 
+
+defHelpers["slyteImport"] = function(src, basePath){
+    return slyteImport(src,basePath || (this.$app && this.$app.staticPath));
+}
+
 defHelpers['concat'] = function(){
 	var resp = '';
 	var argLength = arguments.length;
@@ -10141,6 +11867,15 @@ defHelpers['concat'] = function(){
 	return resp;
 };
 
+defHelpers['toString'] = function(obj){
+    if(obj === null || obj === undefined){
+        return "";
+    }
+    else if(typeof obj == "object"){
+        return JSON.stringify(obj);
+    }
+    return obj;
+};
 
 defProp(HTMLElement.prototype, 'setData', {
     configurable : true, 
@@ -10157,9 +11892,74 @@ defProp(HTMLElement.prototype, 'setData', {
     }
 });
 
+Lyte.Compatibility.vue = {
+    yieldDisconnectedCallback : function(comp , callee){
+        let yieldName = comp.getAttribute("yield-name");
+        if( callee && callee._dynYields && callee._dynYields[yieldName]){
+            let dynamicToAppend = callee._dynYields[yieldName];
+            dynamicToAppend.apply(comp, [comp, comp.getData(),  { "remove" : true }]);
+        }
+    },
+    updateYield : function(comp, node){
+        if(node._callee._dynYields){
+            let dynamicToAppend = node._callee._dynYields[_LC.getYieldName(node)];
+            if(dynamicToAppend){
+                dynamicToAppend.apply(comp, [node, node.component.data,  { "add" : true }]);
+            }
+        }
+    },
+    addDynamicYield : function(currentComp, parentComp, yieldName){
+        if(parentComp._dynYields && parentComp._dynYields[yieldName]){
+            if(!currentComp._dynYields){
+                currentComp._dynYields = {};
+            }
+            currentComp._dynYields[yieldName] = parentComp._dynYields[yieldName];
+        }
+    },
+    renderYield : function(_lyteOptions, component){
+        if(_lyteOptions && _lyteOptions.registerYield && _lyteOptions.registerYield.length){
+            // _lyteOptions.registerYield.forEach(function(obj){
+            //     let yieldName = obj.yieldName;
+            //     let callBack =  obj.callback;
+            //     component.registerYield.apply(component,[yieldName, callBack]);
+            // });
+            component.registerYield.apply(component, [_lyteOptions.registerYield]);
+            component.__delayDidConnect = true;
+            return true;
+        }
+    },
+    delayDidConnect : function(comp, callBack){
+        setTimeout(function(){
+            callBack.apply(comp, ["didConnect"]);
+        },1)
+    }
+}
+window.__lyteConfig.render = _LC.render;
+defProp(HTMLElement.prototype, 'registerYield', {
+    configurable : true, 
+    writable : true,
+    value : function(arr) {
+        var self = this;
+        arr.forEach(function(obj){
+            self._dynYields = self._dynYields || {};
+            self._dynYields[obj.yieldName] = obj.callback;
+        })
+    }
+});
+
+defProp(HTMLElement.prototype, 'addAction', {
+    configurable : true, 
+    writable : true,
+    value : function() {
+        let args = Array.from(arguments);
+        _LC.addAction.apply(this,[this].concat(args));
+    }
+});
+
 defProp(HTMLElement.prototype, 'setMethods', {
     configurable : true, 
     writable : true,
+    enumerable: false, 
     value : function(arg0, arg1) {
         this._initMethods = this._initMethods || {};
         if(typeof arg0 === "string") {
@@ -10173,7 +11973,7 @@ defProp(HTMLElement.prototype, 'setMethods', {
 });
 
 defHelpers['encAttr'] = function(val) {
-    return ZSEC.Encoder.encodeForHTMLAttribute(encodeURIComponent(val));
+    return Encoder.encodeForHTMLAttribute(encodeURIComponent(val));
 }
 
 defHelpers['expHandlers'] = function(leftOperand,operator,rightOperand,nextOperand){
@@ -10257,7 +12057,16 @@ defHelpers['expHandlers'] = function(leftOperand,operator,rightOperand,nextOpera
 ComponentRegistry.registerCustomPropHandler("ltProp");
 
 _LC.shouldIgnoreDisconnect = function() {
-    return _LC.ignoreDisconnect;
+    return _LC.ignoreDisconnect || Lyte.ignoreDisconnect || ltCf.ignoreDisconnect;
+}
+_LC.setIgnoreDisconnect = function(val) {
+    _LC.ignoreDisconnect = Lyte.ignoreDisconnect = ltCf.ignoreDisconnect = val;
+}
+_LC.setDelayDidConnect = function(val) {
+    _LC.delayDidConnect = Lyte.delayDidConnect = ltCf.delayDidConnect = val;
+}
+_LC.getDelayDidConnect = function(val) {
+    return _LC.delayDidConnect;
 }
 
 _LC.addAction = function(element, eventName, func, context) {
@@ -10321,7 +12130,6 @@ _LC.executeObservers = function(compClass){
 }
 _LC.chromeBugFix();
 _LC.booleanAttrList = ["async","autocomplete","autofocus","autoplay","border","challenge","checked1","compact","contenteditable","controls","default","defer","disabled","formNoValidate","frameborder","hidden","indeterminate","ismap","loop","multiple","muted","nohref","noresize","noshade","novalidate","nowrap","open","readonly","required","reversed","scoped","scrolling","seamless","selected","sortable","spellcheck","translate"]
-
 _LC.core = {};
 _LC.core._constructor = customElementPrototype;
 _LC.core._registerComponent = customElementPrototype._registerComponent;
@@ -10341,10 +12149,22 @@ let insertAfter = _LC.insertAfter;
 let insertBeforeFn = _LC.insertBefore
 let replaceWith = _LC.replaceWith;
 let render = _LC.render;
+let nextTick = _LC.nextTick;
+var _addLyteAction = _LC.addAction;
 let shouldIgnoreDisconnect = _LC.shouldIgnoreDisconnect;
+let _setIgnoreDisconnect = _LC.setIgnoreDisconnect;
 _LC.globalDOMEvents = globalDOMEvents;
 _LC.globalEventHandler = globalEventHandler;
 _LC.changeEventhandler = changeEventhandler;
 _LC.doCompile = doCompile;
 _LC.getDynamicNode = getDynamicNode;
-export {ComponentRegistry,Component,RawComponent,Helper,arrayUtils,objectUtils,set,appendChild,insertAfter,insertBeforeFn as insertBefore,replaceWith,shouldIgnoreDisconnect,defProp,render,_LC,customElementPrototype,LyteCustomElement};
+function getNearestApp(node){
+    while(node){
+      if(node.component){
+        return node.component.getApp();
+      }
+      node = node.parentElement;
+    }
+    return Lyte._getDefaultAppIns();
+}
+export {ComponentRegistry,Component,RawComponent,Helper,arrayUtils,objectUtils,set,appendChild,insertAfter,insertBeforeFn as insertBefore,replaceWith,shouldIgnoreDisconnect,_setIgnoreDisconnect,defProp,makeSet,addBindings,render,_LC,customElementPrototype,LyteCustomElement,LyteYield,getNearestApp,_addLyteAction,nextTick};

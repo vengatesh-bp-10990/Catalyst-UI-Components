@@ -1,17 +1,19 @@
-import { getFromCB, _defProp, getDefaultVal, establishObsBindings, getpKVal, isDirty, recChk, setData, rllBckRecArr, deleteDeepNest, cmpSet, removeParentNesting, deleteFromArray, genUnRedoStack, rollBackDelete, rollBackNew, removeOnSave, evAdd, evRemove, evEmit, validateRecord, updateJSON, getInd, toJSON, unredoOp, deepCopyStack, deepCopyAttrs, setState, mergeResponse, getSchemaObj, changePersist} from "./utils.js";
-import { Dberror, ValidationError } from "./dberror";
+import { getFromCB, _defProp, getDefaultVal, establishObsBindings, getpKVal, isDirty, recChk, setData, rllBckRecArr, deleteDeepNest, removeParentNesting, deleteFromArray, genUnRedoStack, rollBackDelete, rollBackNew, removeOnSave, evAdd, evRemove, evEmit, validateRecord, updateJSON, getInd, toJSON, unredoOp, deepCopyStack, deepCopyAttrs, setState, mergeResponse, getSchemaObj, changePersist , rBinherit, insertIntoStore, savingDonorRecord , gE,requestIdGenerator} from "./utils.js";
+import { Dberror } from "./dberror";
 import { removeFromStore } from './utils';
-import { deepCopyObject, establishObjectBinding } from "@slyte/core/src/lyte-utils.js";
+import { deepCopyObject, establishObjectBinding ,extendEventListeners} from "@slyte/core/src/lyte-utils.js";
 import { Connector } from "./Connector.js";
+import { cmpSet } from "./commonUtils.js";
+import { ValidationError } from "./ValidationError.js";
 
 class Entity {
-    constructor(name,data,opts){
+    constructor(name,data,opts,clone){
         var def = db.getSchema(name), delayPers = opts ? opts.delayPersistence : getFromCB(db, "connector", def.connector, "delayPersistence");
         Object.assign(this, data);
         Object.defineProperties(this, {
             $ : {
                 writable : true,
-                value : new $Entity(this, def, delayPers)
+                value : new $Entity(this, def, delayPers , clone)
             }
         });
         var parent = db.$.saveParent;
@@ -21,6 +23,7 @@ class Entity {
         var defF = def._fldGrps.default;
         var watchF = def._fldGrps.watch;
         var hasManyF = def._fldGrps.hasMany;
+        var nested_prop = def._fldGrps.nested_prop;
         for(var dKey in defF){
             var dFld = defF[dKey];
             var fldVal = data[dKey];
@@ -31,7 +34,11 @@ class Entity {
 
         for( var k in model.fieldList){
             var field= model.fieldList[k];
-            if(/^(array|object)$/.test(field.type) && (field.properties || field.items)){
+            var customDtype = false;
+            if(field && field.type instanceof Function  && (field.type.hasOwnProperty("properties") || field.type.hasOwnProperty("items") )){
+                customDtype=true;
+            }
+            if((/^(array|object)$/.test(field.type) && (field.properties || field.items) )  ||  nested_prop.hasOwnProperty(k)){
                 establishObjectBinding(this,k,true,undefined,undefined,(field && field.watch)?field.watch:undefined);
             }
         }
@@ -44,7 +51,7 @@ class Entity {
             if(this.hasOwnProperty(hKey)){
                 this[hKey] = Array.isArray(this[hKey]) ? Array.from(this[hKey]) : this[hKey];
             }
-            else if(hFld.relatedTo){
+            else if(hFld.relatedTo && !clone){
                 var toInit = getFromCB(db,"serializer", getSchemaObj(db,hFld.relatedTo).serializer, "initHasManyRelation");
                 if(toInit){
                     this[hKey] = [];
@@ -64,7 +71,7 @@ class Entity {
 
 Entity.__lMod = "Entity";
 class $Entity {
-    constructor(ins, def, delayPers, db){
+    constructor(ins, def, delayPers, db , clone ){
         // def = getSchemaObj(db, def);
         this.isModified = false;
         this.isNew = false;
@@ -74,6 +81,7 @@ class $Entity {
         this.db = db;
         this.isUnloaded = false;
         var pkVal = getpKVal(ins, def);
+        extendEventListeners(this);
         Object.defineProperties(this, {
             events:{ 
                 value : [],
@@ -122,195 +130,278 @@ class $Entity {
             },
             delayPersistence : {
                 value : delayPers
-            },
-            entity: {
-                value: ins
             }
         });
+        if(def.deprecateProps && def.deprecateProps.size == 0){
+           Object.defineProperties(this,{
+                entity : {
+                    value : ins
+                }
+           })
+        }
+        if(clone){
+            Object.defineProperties(this, {
+                isCloned :{
+                    value : true,
+                    writable : false
+                },
+                donor :{ 
+                    value :gE(db , def.def , pkVal )
+                }
+            })
+        }
         this.inIDB = false;
         this.isPersisted = true;
         this.strictLock = def.db && def.db.entityStrictLock ? def.db.entityStrictLock : false; 
     }
     get(attr){
-        if(this.db.lyte && this.db.lyte.$utils && this.db.lyte.get){
-            return this.db.lyte.$utils._get(this.entity,attr)
-        }
-        else{
-            if(recChk(this.db.lyte, this.entity)){
-                return this.entity[attr];
+        let data,appIns = this.db.$app || this.db.$addon;
+        if(recChk(this.db.lyte, this.entity)){
+            if(this.db.lyte && this.db.lyte.$utils && this.db.lyte.get){
+                data = this.db.lyte.$utils._get(this.entity,attr)
+            }
+            else{            
+                data = this.entity[attr];
+            }
+            if(appIns.$mutate){
+                data = appIns.$mutate.create(data);
             }
         }
+        return data;
     }
     set(attr, value, opts){
-        if(recChk(this.db.lyte, this.entity)){
-            if(this.isUnloaded){
-                ValidationError.setRecErr(this, this.schema._pK, "ERR17");
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd
+            if(recChk(this.db.lyte, this.entity)){
+                if(this.isUnloaded){
+                    ValidationError.setRecErr(this, this.schema._pK, "ERR17");
+                }
+                else{
+                    setData(this, attr, value, opts);
+                }
+                return this.entity;
             }
-            else{
-                setData(this, attr, value, opts);
-            }
-            return this.entity;
+        //@Slicer.catchAllErrorsStart    
+        }catch(err){
+            Dberror.error(this.db,err)
         }
+        //@Slicer.catchAllErrorsEnd
     }
     getDirtyProps(){
-        if(recChk(this.db.lyte, this.entity)){
-            var ret = [];
-            var attributes = this._attributes;
-            if(Object.keys(attributes).length){
-                for(var key in attributes){
-                    ret.push(key);
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd
+            if(recChk(this.db.lyte, this.entity)){
+                var ret = [];
+                var attributes = this._attributes;
+                if(Object.keys(attributes).length){
+                    for(var key in attributes){
+                        ret.push(key);
+                    }
                 }
+                return ret;
             }
-            return ret;
-        }
+     //@Slicer.catchAllErrorsStart    
+    }catch(err){
+        Dberror.error(this.db,err)
+    }
+    //@Slicer.catchAllErrorsEnd
     }
     revertProps(attr){
-        if(recChk(this.db.lyte, this.entity)){
-            if(!Array.isArray(attr)){
-                attr = [attr];
-            }
-            var ins = this.entity, changed = [], def = this.schema, _attrs = this._attributes;
-            for(var i=0; i<attr.length; i++){
-                var key = attr[i];
-                if(_attrs.hasOwnProperty(key)){
-                    var field = def.fieldList[key], oldVal = _attrs[key];
-                    if(field.type == "relation"){
-                        rllBckRecArr(def.db, oldVal && oldVal._changes ? oldVal._changes : oldVal, ins, def, field);
-                        var obj = ins.$.dN && ins.$.dN.hasOwnProperty(key) ? ins.$.dN[key] : new Map();
-                        for(var dnArr of obj){
-                            deleteDeepNest(ins, key, dnArr[0]);
+    //@Slicer.catchAllErrorsStart
+      try{
+    //@Slicer.catchAllErrorsEnd
+            var ins = this.entity.$.entity;
+            if(recChk(this.db.lyte, ins)){
+                if(!Array.isArray(attr)){
+                    attr = [attr];
+                }
+                var changed = [], def = this.schema, _attrs = this._attributes;
+                for(var i=0; i<attr.length; i++){
+                    var key = attr[i];
+                    if(_attrs.hasOwnProperty(key)){
+                        var field = def.fieldList[key], oldVal = _attrs[key];
+                        if(field.type == "relation"){
+                            rllBckRecArr(def.db, oldVal && oldVal._changes ? oldVal._changes : oldVal, ins, def, field);
+                            var obj = ins.$.dN && ins.$.dN.hasOwnProperty(key) ? ins.$.dN[key] : new Map();
+                            for(var dnArr of obj){
+                                deleteDeepNest(ins, key, dnArr[0]);
+                            }
                         }
+                        else{
+                            cmpSet( def.db.lyte, ins, key, oldVal, undefined, true );
+                        }
+                        changed.push(key);
+                        delete _attrs[key];
                     }
-                    else{
-                        cmpSet( def.db.lyte, ins, key, oldVal, undefined, true );
+                    ValidationError.clrRecErr(this, key);
+                }
+                if(!Object.keys(this._attributes).length){
+                    if((!this.hasOwnProperty("dN") || ( this.dN && !Object.keys(this.dN).length )) && !ins.$.isNew){
+                        removeParentNesting(ins, undefined, "modified");
                     }
-                    changed.push(key);
-                    delete _attrs[key];
+                    cmpSet(def.db.lyte, this, "isModified", false);
+                    changePersist(ins, true);
+                    if(!this.isNew){
+                        deleteFromArray(def.dirty, this.get(def._pK));
+                    }
                 }
-                ValidationError.clrRecErr(this, key);
-            }
-            if(!Object.keys(this._attributes).length){
-                if((!this.hasOwnProperty("dN") || ( this.dN && !Object.keys(this.dN).length )) && !ins.$.isNew){
-                    removeParentNesting(ins, undefined, "modified");
-                }
-                cmpSet(def.db.lyte, this, "isModified", false);
-                changePersist(this.entity, true);
-                if(!this.isNew){
-                    deleteFromArray(def.dirty, this.get(def._pK));
+                if(changed.length > 0){
+                    var arr = [ins,changed];
+                    this.emit("change", arr);
+                    def.emit("change", arr);
+                    // this.undoStack = genUnRedoStack();
+                    // this.redoStack = genUnRedoStack();
                 }
             }
-            if(changed.length > 0){
-                var arr = [ins,changed];
-                this.emit("change", arr);
-                def.emit("change", arr);
-                this.undoStack = genUnRedoStack();
-                this.redoStack = genUnRedoStack();
-            }
+    //@Slicer.catchAllErrorsStart    
+        }catch(err){
+            Dberror.error(this.db,err)
         }
+    //@Slicer.catchAllErrorsEnd
     }
-    revert(state){
-        if(recChk(this.db.lyte, this.entity)){
-            var def = this.schema, pK = def._pK;
-            if(state){
-                this.revertToState(state);
+    revert(state,inherit){
+        //@Slicer.catchAllErrorsStart 
+        try{
+        //@Slicer.catchAllErrorsEnd
+            var ins = this.entity.$.entity;
+            if(recChk(this.db.lyte, ins)){
+                var def = this.schema, pK = def._pK , recmp = new Map();
+                inherit=(inherit===false)?false:def._fldGrps.inherit && Object.keys(def._fldGrps.inherit).length;
+                if(state){
+                    this.revertToState(state);
+                }
+                else {
+                    if(inherit){
+                        rBinherit(this,recmp);
+                    }
+                    if(this.isModified){
+                        this.revertProps(this.getDirtyProps());
+                        delete this._savedState;
+                    }
+                    if(this.isDeleted){
+                        // var index = getInd(model._deleted, pK, this.get(pK));
+                        rollBackDelete(def, this.get(pK));
+                    }
+                    else if(this.isNew){
+                        rollBackNew(def, ins, pK);
+                    }			
+                    else if(this.isError){
+                        ValidationError.clrRecErr(this);
+                    }
+                }
+                removeOnSave(def.db, this.schema._name, ins.$.pK);
             }
-            else {
-                if(this.isModified){
-                    this.revertProps(this.getDirtyProps());
-                    delete this._savedState;
-                }
-                if(this.isDeleted){
-                    // var index = getInd(model._deleted, pK, this.get(pK));
-                    rollBackDelete(def, this.get(pK));
-                }
-                else if(this.isNew){
-                    rollBackNew(def, this.entity, pK);
-                }			
-                else if(this.isError){
-                    ValidationError.clrRecErr(this);
-                }
-            }
-            removeOnSave(def.db, this.schema._name, this.entity.$.pK);
-        }
+    //@Slicer.catchAllErrorsStart    
+    }catch(err){
+        Dberror.error(this.db,err)
+    }
+    //@Slicer.catchAllErrorsEnd
     }
     delete(delayPers){
-        if(recChk(this.db.lyte, this.entity)){
-            var def = this.schema, ins = this.entity, 
-            delayPers = ( delayPers !== undefined ) ? delayPers : (ins.$.delayPersistence ? ins.$.delayPersistence.delete : false); 
-            removeFromStore(def, ins.$.pK, undefined, undefined, delayPers);
+        //@Slicer.catchAllErrorsStart  
+        try{
+        //@Slicer.catchAllErrorsEnd
+            var ins = this.entity.$.entity;
+            if(recChk(this.db.lyte, ins)){
+                var def = this.schema, 
+                delayPers = ( delayPers !== undefined ) ? delayPers : (ins.$.delayPersistence ? ins.$.delayPersistence.delete : false); 
+                removeFromStore(def, ins.$.pK, undefined, undefined, delayPers);
+            }
+        //@Slicer.catchAllErrorsStart  
+        }catch(err){
+            Dberror.error(this.db,err)
         }
+        //@Slicer.catchAllErrorsEnd
     }
     destroy(customData,qP,delayPers){
-        if(recChk(this.db.lyte, this.entity)){
+        var ins = this.entity.$.entity;
+        if(recChk(this.db.lyte, ins)){
             this.delete(delayPers);
             return this.save(customData,qP,"destroyRecord");
         }
     }
-    addEventListener(type, func){
-        if(recChk(this.db.lyte, this.entity)){
-            return evAdd(this, type, func);
-        }
-    }
-    removeEventListener(id){
-        if(recChk(this.db.lyte, this.entity)){
-            evRemove(this,id);
-        }
-    }
     emit(type, args){
-        if(recChk(this.db.lyte, this.entity)){
-            evEmit(this,type,args);
-        }
+        return this.triggerEvent(type, ...args);
     }
     triggerAction(actionName,customData,qP,method,data){
-        if(recChk(this.db.lyte, this.entity)){
+        //@Slicer.catchAllErrorsStart 
+        try{
+        //@Slicer.catchAllErrorsEnd
+        var ins = this.entity.$.entity;
+        if(recChk(this.db.lyte, ins)){
             var def = this.schema, 
 			db = def.db,
 			actions = def.actions, 
 			action = (actions) ? actions[actionName] : undefined;
             if(action){
-                return def.connector.constructor.handleAction(db,actionName,def,this.entity,customData,qP,method,data);
+                return def.connector.constructor.handleAction(db,actionName,def,ins,customData,qP,method,data);
             }
             return Promise.reject({code : "ERR18", message : Dberror.errorCodes.ERR18, data : actionName});
         }
+        //@Slicer.catchAllErrorsStart 
+        }catch(err){
+            Dberror.error(this.db,err);
+            return Promise.reject()
+        }
+        //@Slicer.catchAllErrorsEnd
     }
     save(customData,qP,options,destroy,mutationName){
-        if(recChk(this.db.lyte, this.entity)){
-            var def = this.schema, 
+        //@Slicer.catchAllErrorsStart 
+        try{
+        //@Slicer.catchAllErrorsEnd
+        var self = this;
+        var ins = this.entity.$.entity;
+        if(this.isCloned){
+            if(this.isUnloaded){
+                return Promise.resolve();
+            }
+            else{
+                self = savingDonorRecord(this);
+            }
+            ins = self.entity;
+        }
+        if(recChk(self.db.lyte, ins)){
+            var def = self.schema, 
 			db = def.db,
-			ins = this.entity, 
-			dirty = this.isDirty(), 
+			dirty = self.isDirty(), 
 			validateOnSave = options && options.validateOnSave, 
 			skipValidation = options && options.skipValidation, 
 			fields = def.fieldList, 
 			ret;
-            if(this.isUnloaded !== true){
-                if(this.isDeleted){
-                    if(!this.isNew){
-                        return Connector.del(db, def._name, ins, true, destroy, customData, qP, mutationName);
+            var reqId = requestIdGenerator(def._name , "save",db)
+            //@Slicer.developmentStart
+            db.lyte && db.lyte.time(reqId);
+            //@Slicer.developmentEnd 
+            if(self.isUnloaded !== true){
+                if(self.isDeleted){
+                    if(!self.isNew){
+                        return Connector.del(db, def._name, ins, true, destroy, customData, qP, mutationName,reqId);
                     }
                 }
-                else if(this.isNew){
-                    var err = this;
+                else if(self.isNew){
+                    var err = self;
                     if(!skipValidation && (!ins.$.validatedOnCreate || validateOnSave)){
-                        ret = validateRecord(db, this.entity, fields);
+                        ret = validateRecord(db, ins, fields);
                     }
                     if(!skipValidation && (ret == false || (err && err.error && Object.keys(err.error).length > 0))){
                         return Promise.reject(err.error);
                     }
-                    return Connector.create(db, def._name, ins, true , customData, qP, mutationName);
+                    return Connector.create(db, def._name, ins, true , customData, qP, mutationName,reqId);
                 }
-                else if(this.isModified || (dirty && dirty.length) ){
+                else if(self.isModified || (dirty && dirty.length) ){
                     var data = {};
                     if(!skipValidation && (options && validateOnSave)){
-                        ret = validateRecord(db, this.entity, fields);
+                        ret = validateRecord(db, ins, fields);
                     }
                     if(!skipValidation){
                         if(ret == false || (ins && ins.$ && ins.$.isError)){
                             return Promise.reject(ins.$.error);
                         }
                     }
-                    var data = updateJSON(db, this.entity, def, dirty);
-                    return Connector.put(db, def._name, data, ins, true, customData, qP, mutationName);
+                    var data = updateJSON(db, ins, def, dirty);
+                    return Connector.put(db, def._name, data, ins, true, customData, qP, mutationName,reqId);
                 }
             }
             else{
@@ -322,9 +413,16 @@ class $Entity {
 			}
             return Promise.resolve();
         }
+        //@Slicer.catchAllErrorsStart 
+        }catch(err){
+            Dberror.error(this.db,err)
+            return Promise.reject();
+        }
+        //@Slicer.catchAllErrorsEnd
     }
     getInitialValues(attr){
-        if(recChk(this.db.lyte, this.entity)){
+        var ins = this.entity.$.entity;
+        if(recChk(this.db.lyte, ins)){
             var isAttrPassed = false;
             if(attr){
                 if(!Array.isArray(attr)){
@@ -335,7 +433,7 @@ class $Entity {
             else{
                 attr = this.getDirtyProps();
             }
-            var ret = {}, rec = this.entity, _attrs = this._attributes;
+            var ret = {}, rec = ins, _attrs = this._attributes;
             for(var i=0; i<attr.length; i++){
                 if(rec[attr] == undefined || !rec[attr[i]].add){
                     ret[attr[i]] = _attrs[attr[i]];					
@@ -373,18 +471,29 @@ class $Entity {
         }
     }
     toJSON(type){
-        if(recChk(this.db.lyte, this.entity)){
-            var db = this.schema.db,addNotDefinedFields,
-            parentRel = arguments[1];
-            if(typeof type == "object" && type.hasOwnProperty("addNotDefinedFields")){
-                addNotDefinedFields = type.addNotDefinedFields?true:false
-                type = undefined;
+        //@Slicer.catchAllErrorsStart  
+        try{
+        //@Slicer.catchAllErrorsEnd  
+            var ins = this.entity.$.entity;
+            if(recChk(this.db.lyte, ins)){
+                var db = this.schema.db,addNotDefinedFields , inherit = true,
+                parentRel = arguments[1];
+                if(typeof type == "object"){
+                    addNotDefinedFields = type.addNotDefinedFields?true:false
+                    inherit = type.inherit == false ? false : Object.keys(this.schema._fldGrps.inherit).length ? true : false;
+                    // type = undefined;
+                }
+                return Object.assign({}, toJSON(db, this.schema._name, ins, !type ? true : type, undefined, undefined, parentRel,addNotDefinedFields,inherit));
             }
-            return Object.assign({}, toJSON(db, this.schema._name, this.entity, !type ? true : type, undefined, undefined, parentRel,addNotDefinedFields));
+        //@Slicer.catchAllErrorsStart  
+        }catch(err){
+            Dberror.error(this.db,err)
         }
+        //@Slicer.catchAllErrorsEnd
     }
     undo(attr, state){
-        if(recChk(this.db.lyte, this.entity)){
+        var ins = this.entity.$.entity;
+        if(recChk(this.db.lyte, ins)){
             var currentState = this.undoStack._order_.length;
             state = state || (currentState ? currentState - 1 : currentState);
             // state = state || 0;
@@ -403,72 +512,88 @@ class $Entity {
             unredoOp(2,this,attr);
         }
     }
-    validate(arr){
-        if(recChk(this.db.lyte, this.entity)){
+    validate(field,validateCallBack){
+        var ins = this.entity.$.entity;
+        if(recChk(this.db.lyte, ins)){
             var fields = {};
             var def = this.schema;
             var fieldList = def.fieldList;
-            if(Array.isArray(arr)){
-                arr.forEach(function(item, index){
+            if(Array.isArray(field)){
+                field.forEach(function(item, index){
                     if(fieldList[item]){
                         fields[item] = fieldList[item];
                     }
                 });
             }
+            else if(typeof field == "object"){
+                fields = field;
+            }
             if(Object.keys(fields).length == 0){
                 fields = fieldList;
             }
-            validateRecord(def.db, this.entity, fields);				
+            var err = validateRecord(def.db, ins, fields,validateCallBack);
+            if(validateCallBack && err && typeof err == "object"){
+                return err;
+            }			
         }
     }
     saveState(state){
-        if(recChk(this.db.lyte, this.entity)){
-            var fromRel = arguments[1];
-            var parentRel = arguments[2];
-            if(!fromRel){
-                if(!this.isNew && !this.isModified){
-                    Dberror.warn(this.db.lyte,"LD20");
-                    return;
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd
+            var ins = this.entity.$.entity;
+            if(recChk(this.db.lyte, ins)){
+                var fromRel = arguments[1];
+                var parentRel = arguments[2];
+                if(!fromRel){
+                    if(!this.isNew && !this.isModified){
+                        Dberror.warn(this.db.lyte,"LD20");
+                        return;
+                    }
+                    var savedState = this._savedState = this._savedState || {};
+                    var currentState = state, randomState;
+                    while(!currentState){
+                        randomState = Math.floor(Math.random()*100000 + 1);
+                        currentState = !savedState.hasOwnProperty(randomState) ? randomState : currentState;
+                    }
                 }
-                var savedState = this._savedState = this._savedState || {};
-                var currentState = state, randomState;
-                while(!currentState){
-                    randomState = Math.floor(Math.random()*100000 + 1);
-                    currentState = !savedState.hasOwnProperty(randomState) ? randomState : currentState;
+                var obj = this.toJSON("state", parentRel);
+                _defProp(obj, "$", {}, false, true);
+                _defProp(obj.$, "isSavedState", true, false, true);
+                _defProp(obj.$, "pK", ins.$.pK, false, true);
+                var pK = this.schema._arrPk;
+                pK.forEach(function(val){
+                    delete obj[val];
+                });
+                var undoStack = this.undoStack;
+                var redoStack = this.redoStack;
+                var _attributes = this._attributes;
+                // var dN = this.entity.$.dN;
+                if(undoStack && Object.keys(undoStack).length){
+                    var _order = undoStack._order_;
+                    undoStack = obj.$.undoStack = deepCopyStack(undoStack);
+                    _defProp(undoStack, "_order_", deepCopyObject(_order), false, true);
+                }
+                if(redoStack && Object.keys(redoStack).length){
+                    var _order = redoStack._order_;
+                    redoStack = obj.$.redoStack = deepCopyStack(redoStack);
+                    _defProp(redoStack, "_order_", deepCopyObject(_order), false, true);
+                }			
+                if(_attributes && Object.keys(_attributes).length){
+                    obj.$._attributes = deepCopyAttrs(this.schema, _attributes);
+                }
+                if(!fromRel){
+                    this._savedState[currentState] = obj; 
+                    return currentState;
+                }else{
+                    return obj;	
                 }
             }
-            var obj = this.toJSON("state", parentRel);
-            _defProp(obj, "$", {}, false, true);
-            _defProp(obj.$, "isSavedState", true, false, true);
-            _defProp(obj.$, "pK", this.entity.$.pK, false, true);
-            var pK = this.schema._arrPk;
-            pK.forEach(function(val){
-                delete obj[val];
-            });
-            var undoStack = this.undoStack;
-            var redoStack = this.redoStack;
-            var _attributes = this._attributes;
-            // var dN = this.entity.$.dN;
-            if(undoStack && Object.keys(undoStack).length){
-                var _order = undoStack._order_;
-                undoStack = obj.$.undoStack = deepCopyStack(undoStack);
-                _defProp(undoStack, "_order_", deepCopyObject(_order), false, true);
-            }
-            if(redoStack && Object.keys(redoStack).length){
-                var _order = redoStack._order_;
-                redoStack = obj.$.redoStack = deepCopyStack(redoStack);
-                _defProp(redoStack, "_order_", deepCopyObject(_order), false, true);
-            }			
-            if(_attributes && Object.keys(_attributes).length){
-                obj.$._attributes = deepCopyAttrs(this.schema, _attributes);
-            }
-            if(!fromRel){
-                this._savedState[currentState] = obj; 
-                return currentState;
-            }else{
-                return obj;	
-            }
+        //@Slicer.catchAllErrorsStart
+        }catch(err){
+            Dberror.error(this.db,err)
         }
+        //@Slicer.catchAllErrorsEnd
     }
     clearState(state){
         if(recChk(this.db.lyte, this.entity)){
@@ -496,36 +621,62 @@ class $Entity {
             return this._savedState && this._savedState.hasOwnProperty(state) ? true : false;
         }
     }
-    clone(){
-        if(recChk(this.db.lyte, this.entity)){
-            var parentRel = arguments[0];
-            var obj = this.toJSON("clone", parentRel);
-            return this.schema.db.newEntity(this.schema.def, obj);
-        }
-    }
+    // clone(){
+    //     if(recChk(this.db.lyte, this.entity)){
+    //         var parentRel = arguments[0];
+    //         var obj = this.toJSON("clone", parentRel);
+    //         return this.schema.db.newEntity(this.schema.def, obj);
+    //     }
+    // }
     persist(obj){
-        if(recChk(this.db.lyte, this.entity)){
-            var schema = this.schema, 
-			name = schema._name,
-			db = schema.db, 
-			ins = this.entity, 
-			partialObj = {obj:new Map()}, 
-            type, 
-            dirty;
-            if(this.isNew){
-                type = "create";
-                toJSON(db, name, ins, undefined, "create", partialObj);
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd
+            var ins = this.entity.$.entity;
+            if(recChk(this.db.lyte, ins)){
+                var schema = this.schema, 
+                name = schema._name,
+                db = schema.db,  
+                partialObj = {obj:new Map()}, 
+                type, 
+                dirty;
+                if(this.isNew){
+                    type = "create";
+                    toJSON(db, name, ins, undefined, "create", partialObj);
+                }
+                else if(dirty = this.isDirty()){
+                    var data = updateJSON(db, ins, this.schema, dirty);
+                    toJSON(db, name, data, undefined, undefined, partialObj);
+                }
+                var pObj = partialObj.obj.get(this.pK);
+                mergeResponse(db, ins, this.schema, undefined, this.pK, pObj, true);
+                if(db.idbIns){
+                    db.idbIns.updateIDB(db, name, type ? type : ins.$.isDeleted ? "deleteEntity" : ins.$.isModified || dirty ? "updateEntity" : undefined, ins);
+                }
             }
-            else if(dirty = this.isDirty()){
-                var data = updateJSON(db, ins, this.schema, dirty);
-                toJSON(db, name, data, undefined, undefined, partialObj);
-            }
-            var pObj = partialObj.obj.get(this.pK);
-            mergeResponse(db, ins, this.schema, undefined, this.pK, pObj, true);
-            if(db.idbIns){
-                db.idbIns.updateIDB(db, name, type ? type : ins.$.isDeleted ? "deleteEntity" : ins.$.isModified || dirty ? "updateEntity" : undefined, ins);
-            }
+        //@Slicer.catchAllErrorsStart
+        }catch(err){
+            Dberror.error(this.db,err)
         }
+        //@Slicer.catchAllErrorsEnd
+    }
+    clone(){
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd
+            if(!this.isCloned){
+                var parent = this.entity, data = this.entity.$.toJSON({type : "clone"});
+                var clonedEntity = insertIntoStore(this.db,this.schema.def,data,undefined,undefined,undefined,undefined,undefined,{type : "cloned"});
+                return clonedEntity;
+            }
+            else{
+                return undefined;
+            }
+        //@Slicer.catchAllErrorsStart
+        }catch(err){
+            Dberror.error(this.db,err)
+        }
+        //@Slicer.catchAllErrorsEnd
     }
 }
 $Entity.__lMod = "$Entity";

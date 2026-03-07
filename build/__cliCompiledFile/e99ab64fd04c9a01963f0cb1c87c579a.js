@@ -24,8 +24,10 @@ ComponentError.errorCodes = {
     LC014: "No listenerId provided",
     LC015: "Invalid listenerId / listener is not available",
     LC016: "Deprecation Warning! pass the component class to component-class attribute, instead of passing '{0}' string component name to component-name attribute.",
-    LC017: "{0} component not supporting shadow dom rendering. please add @shadow-supported in the component's template tag."
-
+    LC017: "{0} component not supporting shadow dom rendering. please add @shadow-supported in the component's template tag.",
+    LC018: "Expected to pass object for {1} on the component {0}.",
+    LC019: "A datatype mismatch has occurred for custom DataType '{0}'",
+    LC020: "{0} component not supporting hide-tag rendering. please add @hide-tag-supported in the component's template tag."
 };
 ComponentError.register();
 
@@ -65,8 +67,13 @@ RegistryError.errorCodes = {
     LC006: "Invalid registry instance '{0}'",
     LC007: "'{0}' Registry linked recursively in the app/addon.",
     LC008: "Invalid registry instance '{0}' passed in setDefaultRegisty hook of '{1}'",
-    LC009: "Default Registry not found.",
-    LC010: "{0} : {1} Not found in any registry."
+    LC009: "Default Registry as well as Current Registry not found.",
+    LC010: "{0} : {1} Not found in any registry.",
+    LC011: "Invalid registry class '{0}' passed to lyte-registry in the component '{1}'",
+    LC012: "Uninstantiated registry class '{0}' passed to lyte-registry in the component '{1}'",
+    LC013: "Invalid registry name '{0}' passed to lyte-registry in the component '{1}'",
+    LC014: "Uninstantiated registry class '{0}' passed to lyte-registry in the component '{1}'",
+    LC015: "Invalid registry instance '{0}' passed in {1}"
 };
 RegistryError.register();
 

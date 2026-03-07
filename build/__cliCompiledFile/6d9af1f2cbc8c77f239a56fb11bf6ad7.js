@@ -1,5 +1,4 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
-import "../../../../@slyte/component/src/directives/lyte-turbo.js";
 import { prop } from "../../../../@slyte/core/index.js";
 import { Component } from "../component.js";
 
@@ -412,7 +411,7 @@ class LyteButtonComponent extends Component {
     }
 }
 
-LyteButtonComponent._template = "<template tag-name=\"lyte-button\" onclick=\"{{action('check',event)}}\" onmousedown=\"{{action('check',event)}}\" @turbo-supported=\"\" @unbound=\"{{lyteUnbound}}\"> <button part=\"{{ltPropPart}}\" type=\"{{ltPropType}}\" class=\"{{finalClass}}\" value=\"{{ltPropValue}}\" tabindex=\"{{ltPropTabindex}}\" data-tabindex=\"{{ltPropDataTabindex}}\" id=\"{{ltPropId}}\" name=\"{{ltPropName}}\" autofocus=\"{{ltPropAutofocus}}\" disabled=\"{{ltPropDisabled}}\" style=\"{{finalStyle}}\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropText}}\" is=\"case\" lc-id=\"lc_id_0\"> {{ltPropText}} </template><template default=\"\"> <lyte-yield yield-name=\"text\"></lyte-yield> </template></template> </button> </template>";;
+LyteButtonComponent._template = "<template tag-name=\"lyte-button\" onclick=\"{{action('check',event)}}\" onmousedown=\"{{action('check',event)}}\"> <button part=\"{{ltPropPart}}\" type=\"{{ltPropType}}\" class=\"{{finalClass}}\" value=\"{{ltPropValue}}\" tabindex=\"{{ltPropTabindex}}\" data-tabindex=\"{{ltPropDataTabindex}}\" id=\"{{ltPropId}}\" name=\"{{ltPropName}}\" autofocus=\"{{ltPropAutofocus}}\" disabled=\"{{ltPropDisabled}}\" style=\"{{finalStyle}}\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropText}}\" is=\"case\" lc-id=\"lc_id_0\"> {{ltPropText}} </template><template default=\"\"> <lyte-yield yield-name=\"text\"></lyte-yield> </template></template></button> </template>";;
 LyteButtonComponent._dynamicNodes = [{"t":"a","p":[1],"a":{"style":{"name":"style","dynamicValue":"finalStyle"},"t":{"name":"type","dynamicValue":"ltPropType"}}},{"t":"s","p":[1,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[1],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{"dN":[{"t":"i","p":[1],"in":0,"cn":"default"}]},"dc":{"lc_id_0":{},"default":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[0]}];;
 
 LyteButtonComponent._observedAttributes = [

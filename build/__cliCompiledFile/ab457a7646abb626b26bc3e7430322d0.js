@@ -3,6 +3,7 @@ import { $Entity } from "./Entity.js";
 import { getDefaultVal } from './utils';
 import { establishObjectBinding, establishObserverBindings, extendEventListeners, isInheritedClass , establishWatchScope} from "@slyte/core/src/lyte-utils.js";
 import { Dberror } from "./dberror.js";
+import { Lyte } from "@slyte/core";
 
 class Schema {
     static observers(arg){
@@ -34,6 +35,7 @@ class Schema {
             schMap.set(schCls.name, schCls);
         }
         Schema.triggerEvent(rHash, schCls);
+        extendEventListeners(this);
     }
     static registerInDb(opts, parent){
         this.__class = Schema;
@@ -69,7 +71,7 @@ class Schema {
                 _this.triggerEvent.apply(this, arr);
             }
         });
-        var name = _this._name = this._name;
+        var name = _this._name = this._name , mp;
         var delay = this.opts && this.opts.delay ? this.opts.delay : undefined;
         _this.db = db;
         _this.Lyte = lIns;
@@ -84,6 +86,17 @@ class Schema {
         _this.events = {};
         _this.def = this;
         _this.endPoint = this.endPoint;
+        _this.deprecateProps = mp = new Map();
+        if(this.deprecateProps){
+            if(!Array.isArray(this.deprecateProps)){
+                deprecate = [this.deprecateProps];
+            }
+            this.deprecateProps.forEach(function(itm){
+                if(!mp.has(itm)){
+                    mp.set(itm, 1);
+                }
+            });
+        }
         _defProp(_this.data, "_recMap", new Map());
 		// _defProp(_this, "db", db);
         
@@ -135,23 +148,35 @@ class Schema {
             });
             // _this.actions = Object.assign(parentAct, this.prototype.actions());
         }
+        _this.didLoad = _this.didLoad || [];
+        if(this.prototype.didLoad){
+            _this.didLoad.push(this.prototype.didLoad);
+        }
         if(this.observers){
             var parentObs = {};
+            Lyte._preRegister();
             if(parent && parent.observers){
                 parentObs = parent.observers() || {};
             }
             var obj = Object.assign(parentObs, this.observers() || {});
             for(var key in obj){
-                obs.push(obj[key]);
+                if(obj[key].type == "observer"){
+                    obs.push(obj[key]);
+                }
+                if(obj[key].type == "callBack"){
+                    var prop = obj[key].properties
+                    obs.push(obj[key].observes);
+                    for(var i=0;i<prop.length ;i++){
+                        if(prop[i] == "init"){
+                            _this.didLoad.push(obj[key].value)
+                        }
+                    }
+                }
             }
-        }
-        _this.didLoad = _this.didLoad || [];
-        if(this.prototype.didLoad){
-            _this.didLoad.push(this.prototype.didLoad);
+            Lyte._postRegister();
         }
         if(this.prototype.idb){
-            this.prototype.idb;
-            _this.idb = this.prototype.idb(db);
+            _this.idb = this.prototype.idb;
         }
         if(!_this._pK){
             _this._pK = 'id';
@@ -265,7 +290,7 @@ class Schema {
         delete this.prototype.idb;
         return _this;
     }
-    constructor(data, opts, db){
+    constructor(data, opts, db, clone){
         // super();
         var def = this.constructor;
         def = getSchemaObj(db, def);
@@ -274,7 +299,7 @@ class Schema {
         Object.defineProperties(this, {
             $ :{
                 writable : true,
-                value : new $Entity(this, def, delayPers, db)
+                value : new $Entity(this, def, delayPers, db , clone)
             }
         });
         var parent = db.$.saveParent;
@@ -284,6 +309,7 @@ class Schema {
         var defF = def._fldGrps.default;
         var watchF = def._fldGrps.watch;
         var hasManyF = def._fldGrps.hasMany;
+        var nested_prop = def._fldGrps.nested_prop;
         for(var dKey in defF){
             var dFld = defF[dKey];
             var fldVal = data[dKey];
@@ -294,12 +320,15 @@ class Schema {
         for(var wKey in watchF){
             establishObjectBinding(this, wKey, true, undefined, undefined, true);
         }
+        for(var nest in nested_prop){
+            establishObjectBinding(this,nest,true , undefined , undefined ,  true);
+        }
         for(var hKey in hasManyF){
             var hFld = hasManyF[hKey];
             if(this.hasOwnProperty(hKey)){
                 this[hKey] = Array.isArray(this[hKey]) ? Array.from(this[hKey]) : this[hKey];
             }
-            else if(hFld.relatedTo){
+            else if(hFld.relatedTo && !clone){
                 var toInit = getFromCB(db,"serializer", getSchemaObj(db, hFld.relatedTo).serializer, "initHasManyRelation");
                 if(toInit){
                     this[hKey] = [];
@@ -314,15 +343,31 @@ class Schema {
             this._bindings.add(props);
             establishObsBindings(this,props);
         }
-    }
-    static addEventListener(type, func){
-        return evAdd(this,type,func);
-    }
-    static removeEventListener(id){
-        evRemove(this,id);
+        if(db.deprecateProps && def.deprecateProps && def.deprecateProps.size){
+			var prx = new Proxy(this, {
+                get:function(target, prop, receiver){
+                    if(def.deprecateProps.has(prop)){
+                       Dberror.warn("Property - '"+prop+"' of Schema-'"+def._name+"' has been deprecated. ");
+                    }
+                    return target[prop];
+                },
+                set: function(target, prop, value){
+                    if(def.deprecateProps.has(prop)){
+                        Dberror.warn("Property - "+prop+" of Schema-"+def._name+" has been deprecated.");
+                    }
+                    return Reflect.set(...arguments);
+                }
+            });
+            Object.defineProperties(this.$,{
+                entity : {
+                    value : prx,
+                }
+            })
+            return prx; 
+		}
     }
     static emit(type, args){
-        evEmit(this,type,args);
+        return this.triggerEvent(type, ...args);
     }
     static on(type,func){
         return this.addEventListener(type,func);

@@ -8,18 +8,18 @@ window.addEventListener('__onBeforeInject__',function(event){
     }
     link.setAttribute('href',""+path);
 });
-import { defineRelation, triggerEvent, isEntity, extendEventListeners, /*getConfig,@3055*/ addEventListener, removeEventListener, copyObject, defProps, globalsSet, globalsGet, /*,type, prop, addToInstance*/set,get, arrayUtils, objectUtils,_lyteInit,_lyteDidConnect} from '@slyte/core/src/lyte-utils.js';
+import { isEntity, extendEventListeners, /*getConfig,@3055*/ defProps, /*,type, prop, addToInstance*/_lyteInit,_lyteDidConnect, addLink, refreshParentRoute} from '@slyte/core/src/lyte-utils.js';
 import { __checkIfService, __handleLookups } from "./service";
-import { resolvePromises } from './rsvp';
+// import { resolvePromises } from './rsvp';
 import { Logger } from './lyte-error';
 import { Utils } from "./Utils.js";
 import { __getLyte } from "./service.js"
 import { DataType as DataTypeClass } from "./DataType.js";
 import {Mixin} from "./Mixin.js";
-var __instances = { engine : {}, addon: {}};
-var __componentsMap = {};
-var __servicesMap = {}; // Map for containing the services needed for every engine
-var __enginesMap = new Map(); //Map for containing the engines associated with every service
+// var __instances = { engine : {}, addon: {}};
+// var __componentsMap = {};
+// var __servicesMap = {}; // Map for containing the services needed for every engine
+// var __enginesMap = new Map(); //Map for containing the engines associated with every service
 var d = document;
 // //change to defProp later
 // Function.prototype.observes = function(){//af
@@ -104,6 +104,13 @@ class Lyte {
     if(options){
       if(options.app == true){
         Lyte._setDefaultApp(this);
+        if(options.clientConfig && options.clientConfig.performance){
+          this.__performance = true;
+          Lyte.__performance = true;
+        }
+      }
+      if(options.preload){
+        this._preloadLInkTag = true;
       }
       if(options._migration){
         this._migration = options._migration;
@@ -168,6 +175,9 @@ class Lyte {
     if(!Lyte._getDefaultAppIns() &&  defApp && defApp == this.constructor){
       Lyte._setDefaultAppIns(this);
     }
+    if(this.constructor.appError){
+      this.appError =  this.constructor.appError;
+    }
     Lyte._instances.push(this);
     // extendEventListeners(this);
     // this.lyteError = Logger;
@@ -184,7 +194,7 @@ class Lyte {
     this.version = "4.0.0";
     this.$ = {
       isApp : type == "app",
-      isSubApp : type == "subApp",
+      // isSubApp : type == "subApp",
       isAddon : type == "Addon",
       reqFiles : {},
       injectServices : {},
@@ -207,9 +217,9 @@ class Lyte {
       "registeredMixins":{
         value:{}
       },
-      "_registeredComponents":{
-        value: {}
-      },
+      // "_registeredComponents":{
+      //   value: {}
+      // },
       "Service":{
         value:{}
       },
@@ -233,7 +243,7 @@ class Lyte {
     for(var dKey in dTypeDef){
       this.dataType[dKey] = dTypeDef[dKey];
     }
-    this.registeredCustomComponent = {};
+    // this.registeredCustomComponent = {};
     this.updateMixinsInApp();
     // this.Globals = {}
     // this.__lyteRegisteredEvents = {};
@@ -283,54 +293,54 @@ class Lyte {
     this.Globals._name = "Globals";
     Utils.addMethods([this.Globals])
 
-    if(config && config.engines){
-      for(var engine in config.engines){
-        var dependencies = config.engines[engine];
-        if(dependencies.dependencies.services){
-          __servicesMap[engine] = dependencies.dependencies.services;
-        }
-      }
-    }
+    // if(config && config.engines){
+    //   for(var engine in config.engines){
+    //     var dependencies = config.engines[engine];
+    //     if(dependencies.dependencies.services){
+    //       __servicesMap[engine] = dependencies.dependencies.services;
+    //     }
+    //   }
+    // }
 
-    if(type == 'engine' && name){
-      if(__servicesMap[name]){
-        __servicesMap[name].forEach(function(itm){
-          if(config.dependencies && (engServ = config.dependencies.services)){
-            if(itm && typeof itm == 'object'){
-              for(var key in itm){
-                if(engServ.includes(key)){
-                  if(__instances.app.registeredServices.hasOwnProperty(itm[key])){
-                    self.registeredServices[itm[key]] = __instances.app.registeredServices[itm[key]]
-                  }
-                  // else{
-                  //   self.$.requiredServices(key,itm[key],callback.bind(self));
-                  // }
-                self.toBeInjectedServices[key] = itm[key];
-                  if(!__enginesMap.has(itm[key])){
-                    __enginesMap.set(itm[key],[]);
-                  }
-                  __enginesMap.get(itm[key]).push(self.name);
-                }
-              }
-            }else if(itm){
-              if(engServ.includes(itm)){
-                if(__instances.app.registeredServices.hasOwnProperty(itm)){
-                  self.registeredServices[itm] = __instances.app.registeredServices[itm]
-                }
-                // else{
-                //   self.$.requiredServices(itm,itm,callback.bind(self));
-                // }
-                self.toBeInjectedServices[itm] = itm;
-                if(!__enginesMap.has(itm)){
-                  __enginesMap.set(itm,[]);
-                }
-                __enginesMap.get(itm).push(self.name);
-                }
-              }
-            }
-        })
-      }
-    }
+    // if(type == 'engine' && name){
+    //   if(__servicesMap[name]){
+    //     __servicesMap[name].forEach(function(itm){
+    //       if(config.dependencies && (engServ = config.dependencies.services)){
+    //         if(itm && typeof itm == 'object'){
+    //           for(var key in itm){
+    //             if(engServ.includes(key)){
+    //               if(__instances.app.registeredServices.hasOwnProperty(itm[key])){
+    //                 self.registeredServices[itm[key]] = __instances.app.registeredServices[itm[key]]
+    //               }
+    //               // else{
+    //               //   self.$.requiredServices(key,itm[key],callback.bind(self));
+    //               // }
+    //             self.toBeInjectedServices[key] = itm[key];
+    //               if(!__enginesMap.has(itm[key])){
+    //                 __enginesMap.set(itm[key],[]);
+    //               }
+    //               __enginesMap.get(itm[key]).push(self.name);
+    //             }
+    //           }
+    //         }else if(itm){
+    //           if(engServ.includes(itm)){
+    //             if(__instances.app.registeredServices.hasOwnProperty(itm)){
+    //               self.registeredServices[itm] = __instances.app.registeredServices[itm]
+    //             }
+    //             // else{
+    //             //   self.$.requiredServices(itm,itm,callback.bind(self));
+    //             // }
+    //             self.toBeInjectedServices[itm] = itm;
+    //             if(!__enginesMap.has(itm)){
+    //               __enginesMap.set(itm,[]);
+    //             }
+    //             __enginesMap.get(itm).push(self.name);
+    //             }
+    //           }
+    //         }
+    //     })
+    //   }
+    // }
 
     // this.__lyteRegisteredEvents = {};
 
@@ -394,14 +404,14 @@ class Lyte {
     // addToInstance(this);
     // window.Lte = Lyte.$scp[type][this.name] = this;
     //window.Lte = Lyte.$scp[type][this.name] = this;
-    if(__instances.app && false) { /* remove this code. Move this to component module */
-      for(var compName in __globalElements.Component.registeredComponents){
-        __componentsMap[compName] = {
-              'is' : __instances.app.is,
-              'name' : __instances.app.name
-        };
-      }
-    }
+    // if(__instances.app && false) { /* remove this code. Move this to component module */
+    //   for(var compName in __globalElements.Component.registeredComponents){
+    //     __componentsMap[compName] = {
+    //           'is' : __instances.app.is,
+    //           'name' : __instances.app.name
+    //     };
+    //   }
+    // }
 
     // if(false) { /* check code to move to compoennt module*/
     //   this.Component._registeredComponents = Object.assign(this.Component._registeredComponents , __globalElements.Component._registeredComponents);
@@ -423,6 +433,75 @@ class Lyte {
       writable : true, 
       value : {"lookupMap" : new Map()}
     });
+    //Assigning env obj and adding observer to env object
+    this.addLink = function(outlet, style, options, observerFlag, callBack) {
+      if(self.__instantiated){
+        addLink(this,outlet,style,options,observerFlag,callBack);
+      }
+      else{
+        self.addEventListener("ready", function(){
+          addLink(self,outlet,style,options,observerFlag,callBack);
+        });
+      }
+    }
+    this.refreshParentRoute = function(observerFlag){
+      if(self.__instantiated){
+        refreshParentRoute(this,observerFlag);
+      }
+      else{
+        self.addEventListener("ready", function(){
+          refreshParentRoute(self,observerFlag);
+        });
+      }
+    }
+    this.removeCss = function(fileList) {
+      fileList.forEach(function(fileName){
+        let styleStack = this.__styleStack || [];
+        let len = styleStack.length;
+        for(let index = 0;index <len;index++) {
+          let iStyleStack = styleStack[index];
+          if(iStyleStack.filePath == fileName) {
+            let id = iStyleStack.id;
+            let node = document.getElementById(id);
+            styleStack.splice(index,1);
+            node.remove();
+            break;
+          }
+        }
+      }.bind(this));
+    }
+    if(!this.env){
+      this.env = {};
+    }
+    if(!this.__styleStack){
+      this.__styleStack = [];
+    }
+    let dummyObj = Object.assign({},this.env);
+    let appIns = this;
+    let newProxy = function(val) {
+      return new Proxy(val,{
+          get(target,prop) {
+              return target[prop];
+          },
+          set(obj,prop,value) {
+              obj[prop] = value;
+              appIns.refreshParentRoute(prop);
+              appIns.addLink(null,null,null,true);
+              return true;
+          }
+      });
+    }
+    let proxy = newProxy.call(this, dummyObj);
+    Object.defineProperty(this,"env",{
+        get() {
+            return proxy;
+        },
+        set(newVal) {
+            console.log("set call");
+            proxy = newProxy.call(this, newVal);
+            appIns.addLink(null,null,null,true);
+        }
+    })
     extendEventListeners(this.__lyte.lookupMap);
     __setCurrentContext(this);
     __handleLookups([Utils], this, this);
@@ -442,6 +521,9 @@ class Lyte {
     //   Lyte._component.didConnect(this);
     // }
     _lyteDidConnect(Lyte, this);
+
+    this.__instantiated = true;
+    //this.triggerEvent("ready"); // Added the ready event in app constructor through cli
   }
   updateMixinsInApp(){
     var hash = this.constructor._hash;
@@ -465,7 +547,16 @@ class Lyte {
   }
 }
 
+Lyte.Compatibility = {};
+
 Lyte._instances = [];
+
+Lyte.removeLink = function(providedParameter){
+  if(providedParameter!=null){
+    let linkTagParent=document.getElementById("lyteAssetsDiv");
+        linkTagParent.removeChild(linkTagParent.querySelector(`a[href*=${providedParameter}]`))
+  }
+};
 
 var fnProto = Function.prototype;
 if(!fnProto.on){
@@ -533,7 +624,7 @@ extendEventListeners(Lyte._singleTonLookupMap);
 //     this.error("objectUtils will be supported only if component registry is imported in the app");
 //   }
 // }
-// extendEventListeners(Lyte);
+extendEventListeners(Lyte);
 // Logger.addEventListener("error", function(){  
 //   var arr = Array.from(arguments);
 //   if (Lyte.onerror) {
@@ -565,7 +656,7 @@ Lyte._setDefaultAppIns = function(appIns){
   Lyte._defaultAppIns = appIns;
 }
 Lyte._getDefaultApp = function(){
-  return Lyte._defaultAppIns;
+  return Lyte._defaultApp;
 }
 Lyte._getDefaultAppIns = function(){
   return Lyte._defaultAppIns;
@@ -611,13 +702,13 @@ Lyte.toBeRegistered = [];
 Lyte.nestScp = {};
 Lyte.nestScpId = 1;
 Lyte.addons = {};
-Lyte.registeredCustomComponent = {};
-Lyte.$ = {
-  assetsDiv : document.createElement("div"),
-  shadowDiv : document.createElement("div")
-}
-Lyte.$.assetsDiv.setAttribute("id", "lyteAssetsDiv");
-Lyte.$.shadowDiv.setAttribute("id", "lyteShadowDiv");
+// Lyte.registeredCustomComponent = {};
+// Lyte.$ = {
+//   assetsDiv : document.createElement("div"),
+//   shadowDiv : document.createElement("div")
+// }
+// Lyte.$.assetsDiv.setAttribute("id", "lyteAssetsDiv");
+// Lyte.$.shadowDiv.setAttribute("id", "lyteShadowDiv");
 
 Lyte.domContentLoaded = function(callback) {
   if(d.readyState === "complete" || d.readyState === "interactive") { 
@@ -629,34 +720,34 @@ Lyte.domContentLoaded = function(callback) {
   }
 }
 
-Lyte.createApplication = function(name, config){
-  var ins = new Lyte("app", name, config);
-  setTimeout(function() {
-    config.includes.forEach(function(module) {
-      module.init && module.init(ins);
-    });
-  },0)
-  if(Lyte.Store) {
-    var sins = new Lyte.Store();
-    Lyte.$sscp.app[name] = sins;
-  }
-  // window.Lte = Lyte.$scp.app[name] = ins;
-  return ins;
-}
+// Lyte.createApplication = function(name, config){
+//   var ins = new Lyte("app", name, config);
+//   setTimeout(function() {
+//     config.includes.forEach(function(module) {
+//       module.init && module.init(ins);
+//     });
+//   },0)
+//   if(Lyte.Store) {
+//     var sins = new Lyte.Store();
+//     Lyte.$sscp.app[name] = sins;
+//   }
+//   // window.Lte = Lyte.$scp.app[name] = ins;
+//   return ins;
+// }
 
-Lyte.createEngine = function(name, config){
-  var ins = new Lyte("engine", name, config);
-  // var sins = new Lyte.Store();
-  // Lyte.$sscp.engine[name] = sins;
-  Lyte.$scp.engine[name] = ins;
-  return ins;
-}
+// Lyte.createEngine = function(name, config){
+//   var ins = new Lyte("engine", name, config);
+//   // var sins = new Lyte.Store();
+//   // Lyte.$sscp.engine[name] = sins;
+//   Lyte.$scp.engine[name] = ins;
+//   return ins;
+// }
 
-Lyte.createAddon = function(name, config){
-  var ins = new Lyte("addon", name, config);
-  Lyte.$scp.addon[name] = ins;
-  return ins;
-}
+// Lyte.createAddon = function(name, config){
+//   var ins = new Lyte("addon", name, config);
+//   Lyte.$scp.addon[name] = ins;
+//   return ins;
+// }
 
 // Lyte.prototype.types = ["string", "object", "number", "boolean", "array"];
 
@@ -1130,122 +1221,122 @@ Lyte.createAddon = function(name, config){
 //   })
 // }
 
-Lyte.createCustomElement = function(customElementName, definition) {
-  var constructor = definition.constructor;
-  delete definition.constructor;
-  var connectedCallback = definition.connectedCallback;
-  delete definition.connectedCallback;
-  var attributeChangedCallback = definition.attributeChangedCallback;
-  delete definition.attributeChangedCallback;
-  var disconnectedCallback = definition.disconnectedCallback;
-  delete definition.disconnectedCallback;
+// Lyte.createCustomElement = function (customElementName, definition) {
+//   var constructor = definition.constructor;
+//   delete definition.constructor;
+//   var connectedCallback = definition.connectedCallback;
+//   delete definition.connectedCallback;
+//   var attributeChangedCallback = definition.attributeChangedCallback;
+//   delete definition.attributeChangedCallback;
+//   var disconnectedCallback = definition.disconnectedCallback;
+//   delete definition.disconnectedCallback;
 
-  this.defProperty = function(obj, key, val) {
-    var obj1 = {};
-    if(val.get) {
-      obj1.get = val.get
-    }
-    if(val.set) {
-      obj1.set = val.set
-    }
-    Object.defineProperty(obj, key, obj1);
-  }
-  class classDef extends HTMLElement {
-    constructor() {
-      super();
-      if(this.isNewComp(customElementName)){
-        this.executeCallbacks(constructor,arguments);
-      }else{
-        this.__lyteIgnore = true;
-      }
-    }
+//   this.defProperty = function(obj, key, val) {
+//     var obj1 = {};
+//     if(val.get) {
+//       obj1.get = val.get
+//     }
+//     if(val.set) {
+//       obj1.set = val.set
+//     }
+//     Object.defineProperty(obj, key, obj1);
+//   }
+//   class classDef extends HTMLElement {
+//     constructor() {
+//       super();
+//       if(this.isNewComp(customElementName)){
+//         this.executeCallbacks(constructor,arguments);
+//       }else{
+//         this.__lyteIgnore = true;
+//       }
+//     }
 
-    connectedCallback(){
-      let _LC = Lyte._instances[0].$.modules.component[0]._getLyteComponent();//temp fix
-      if(!_LC.ignoreDisconnect && !this.__lyteIgnore) {
-        this.executeCallbacks(connectedCallback,arguments);
-        this.setAttribute("lyte-rendered-ce", "");
-      }
-    }
-    attributeChangedCallback(){
-      if(!this.__lyteIgnore) {
-        this.executeCallbacks(attributeChangedCallback,arguments);
-      }
-    }
-    disconnectedCallback(){
-      let _LC = Lyte._instances[0].$.modules.component[0]._getLyteComponent();//temp fix
-      if(!_LC.ignoreDisconnect && !this.__lyteIgnore) {
-        this.executeCallbacks(disconnectedCallback,arguments);
-      }
-    }
-    executeCallbacks(callBack,argArr){
-      if(callBack) {
-        callBack.apply(this, Array.from(argArr));
-      }
-    }
-    isNewComp(customElementName){
-      if(this.hasAttribute("lyte-rendered-ce")) {
-        return false;
-      }
-      return true;
-    }
-  }
-  var staticDef = definition.static;
-  if(staticDef) {
-    for(var key in staticDef) {
-      if(typeof staticDef[key] === "object") {
-        this.defProperty(classDef, key, staticDef[key]);
-      } else {
-        Object.defineProperty(classDef, key, {
-          value : staticDef[key]
-        });
-      }
-    }
-    delete definition.static;
-  }
-  for(var key in definition) {
-    if(typeof definition[key] === "object") {
-      this.defProperty(classDef.prototype, key, definition[key]);
-    } else {
-      Object.defineProperty(classDef.prototype, key, { writable: true, value : definition[key]});
-    }
-  }
-  definition.static = staticDef;
-  definition.constructor = constructor;
-  definition.connectedCallback = connectedCallback;
-  definition.attributeChangedCallback = attributeChangedCallback;
-  definition.disconnectedCallback = disconnectedCallback;
-  if (document.readyState === "complete" || document.readyState === "interactive") {     
-    // document is already ready to go
-    customElements.define(customElementName, classDef);
-  }
-  else{
-    // ***
-    //Change the Lyte to instance
-    Lyte.toBeRegistered.push({name:customElementName, def: classDef});
-  }
-  Lyte.registeredCustomComponent[customElementName] = classDef;
-}
+//     connectedCallback(){
+//       let _LC = Lyte._instances[0].$.modules.component[0]._getLyteComponent();//temp fix
+//       if(!_LC.ignoreDisconnect && !this.__lyteIgnore) {
+//         this.executeCallbacks(connectedCallback,arguments);
+//         this.setAttribute("lyte-rendered-ce", "");
+//       }
+//     }
+//     attributeChangedCallback(){
+//       if(!this.__lyteIgnore) {
+//         this.executeCallbacks(attributeChangedCallback,arguments);
+//       }
+//     }
+//     disconnectedCallback(){
+//       let _LC = Lyte._instances[0].$.modules.component[0]._getLyteComponent();//temp fix
+//       if(!_LC.ignoreDisconnect && !this.__lyteIgnore) {
+//         this.executeCallbacks(disconnectedCallback,arguments);
+//       }
+//     }
+//     executeCallbacks(callBack,argArr){
+//       if(callBack) {
+//         callBack.apply(this, Array.from(argArr));
+//       }
+//     }
+//     isNewComp(customElementName){
+//       if(this.hasAttribute("lyte-rendered-ce")) {
+//         return false;
+//       }
+//       return true;
+//     }
+//   }
+//   var staticDef = definition.static;
+//   if(staticDef) {
+//     for(var key in staticDef) {
+//       if(typeof staticDef[key] === "object") {
+//         this.defProperty(classDef, key, staticDef[key]);
+//       } else {
+//         Object.defineProperty(classDef, key, {
+//           value : staticDef[key]
+//         });
+//       }
+//     }
+//     delete definition.static;
+//   }
+//   for(var key in definition) {
+//     if(typeof definition[key] === "object") {
+//       this.defProperty(classDef.prototype, key, definition[key]);
+//     } else {
+//       Object.defineProperty(classDef.prototype, key, { writable: true, value : definition[key]});
+//     }
+//   }
+//   definition.static = staticDef;
+//   definition.constructor = constructor;
+//   definition.connectedCallback = connectedCallback;
+//   definition.attributeChangedCallback = attributeChangedCallback;
+//   definition.disconnectedCallback = disconnectedCallback;
+//   if (document.readyState === "complete" || document.readyState === "interactive") {     
+//     // document is already ready to go
+//     customElements.define(customElementName,classDef);
+//   }
+//   else{
+//     // ***
+//     //Change the Lyte to instance
+//     Lyte.toBeRegistered.push({name:customElementName, def: classDef});
+//   }
+//   Lyte.registeredCustomComponent[customElementName] = classDef;
+// }
 
-function domContentLoaded1() {
-  document.head.appendChild(Lyte.$.assetsDiv);
-  document.head.appendChild(Lyte.$.shadowDiv);
-  let comp = Lyte.toBeRegistered;    
-  if(comp && comp.length){    
-      for(let j=0; j<comp.length;j++){
-          customElements.define(comp[j].name, comp[j].def);    
-      }    
-      Lyte.toBeRegistered = [];    
-  }
-}
+// function domContentLoaded1() {
+// document.head.appendChild(Lyte.$.assetsDiv);
+// document.head.appendChild(Lyte.$.shadowDiv);
+// let comp = Lyte.toBeRegistered;    
+// if(comp && comp.length){    
+//     for(let j=0; j<comp.length;j++){
+//         customElements.define(comp[j].name, comp[j].def);    
+//     }    
+//     Lyte.toBeRegistered = [];    
+// }
+// }
 
-if(document.readyState === "complete" || document.readyState === "interactive") {
-    domContentLoaded1();
-} else {
-    document.addEventListener("DOMContentLoaded", function(e){
-        domContentLoaded1();
-    },true);
-}
+// if(document.readyState === "complete" || document.readyState === "interactive") {
+//     domContentLoaded1();
+// } else {
+//     document.addEventListener("DOMContentLoaded", function(e){
+//         domContentLoaded1();
+//     },true);
+// };
 
 //@3055
 // var XHRSend = XMLHttpRequest.prototype.send;
@@ -1322,7 +1413,10 @@ if(document.readyState === "complete" || document.readyState === "interactive") 
 // Lyte.errorCodes = errorCodes;
 // Lyte.registerErrorCodes = registerErrorCodes;
 // Lyte.getErrorMessage = getErrorMessage;
+window.addEventListener("onBeforeInject", function(ev) {
+  Lyte.triggerEvent("onBeforeInject",ev.detail, ev);
+})
 
-export { Lyte, __instances, __componentsMap, __getCurrentContext, toLowerCase, __getCurrentFunc, __scopedInstance, __setCurrentContext};
+export { Lyte, __getCurrentContext, toLowerCase, __getCurrentFunc, __scopedInstance, __setCurrentContext};
 
 

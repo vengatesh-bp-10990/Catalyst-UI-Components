@@ -1,18 +1,24 @@
-import { Lyte } from '@slyte/core';
+//check file download error
+//code check
+import { Lyte, resolvePromises } from '@slyte/core';
 import { deepCopyObject } from '@slyte/core/src/lyte-utils';
 import { Service } from '@slyte/core/src/service';
 import { linkToRegistration } from './go-to';
 import { History } from './history';
-import { _parseRouteMap, _traverseMap } from './map-parser';
+import { _parseRouteMap, _traverseMap, _addMap } from './map-parser';
 import { RouterError } from './router-errors';
-import { _dotSerperator, scriptExecution, _strPresence, _getObj, _delimit, _splitPath, _getRouteFromAlias, _compareObj, _wildcardRouteCheck, _dynamicRouteCheck, _frameQueryParams, _frameDynamicParams, _normalizeTransitionParams, _validateURL, _checkIfSameRoute} from './router-utils';
+import { _dotSerperator, scriptExecution, _strPresence, _getObj, _delimit, _splitPath, _getRouteFromAlias,
+	_compareObj, _wildcardRouteCheck, _dynamicRouteCheck, _frameQueryParams, _frameDynamicParams,
+	_normalizeTransitionParams, _validateURL, _checkIfSameRoute, _register, _popElements} from './router-utils';
 
 /*-----------string declaration starts------------*/
 const routeStr = "route",
+RouterStr = "Router",
 RouteStr = "Route",
 fetchStr = "fetch",
 FetchStr = "Fetch",
-forceFetchStr = "force" + FetchStr,
+forceFetchStr = `force${FetchStr}`,
+navigationStr = "navigation",
 NavigationStr = "Navigation",
 NavigateStr = "Navigate",
 pendingStr = "pending",
@@ -33,24 +39,31 @@ onBeforeLoadStr = "onBeforeLoad",
 LINKTOStr = "LINK-TO",
 stateChangeStr = "stateChange",
 DestroyStr = "Destroy",
-RouteNavigationStr = "Route" + NavigateStr,
-afterRenderStr = afterStr + "Render",
-beforeExitStr = beforeStr + "Exit",
+TemplateStr = "Template",
+RouteNavigationStr = `Route${NavigateStr}`,
+afterRenderStr = `${afterStr}Render`,
+beforeExitStr = `${beforeStr}Exit`,
 didDestroyStr = didStr + DestroyStr,
-pRoute = "lt-prop-" + routeStr,
-NavigationAbortedStr = NavigationStr+" "+abortedStr + ".",
-NavigationResumedStr = NavigationStr + " resumed.",
-NavigationPausedStr = NavigationStr + " paused.",
-NavigationComletedStr = NavigationStr+" "+completedStr + ".",
+pRoute = `lt-prop-${routeStr}`,
+NavigationAbortedStr = `${NavigationStr} ${abortedStr}.`,
+NavigationResumedStr = `${NavigationStr} resumed.`,
+NavigationPausedStr = 	`${NavigationStr} paused.`,
+NavigationComletedStr = `${NavigationStr} ${completedStr}.`,
 beforeFetchStr = beforeStr + FetchStr,
 afterFetchStr = afterStr + FetchStr,
+pushStateStr = "pushState",
+replaceStateStr = "replaceState",
 willNavigateStr = willStr + NavigateStr,
 didNavigateStr = didStr + NavigateStr,
 beforeRouteNavigationStr = beforeStr+RouteStr + NavigationStr,
 afterRouteNavigationStr = afterStr+RouteStr + NavigationStr,
-beforeTemplateDestroyStr = beforeStr+"Template" + DestroyStr,
-renderLoadingTemplateStr = "renderLoadingTemplate",
-renderTemplateWarning = renderStr+" hook should return either component or HTML. Rendering of HTML directly into the DOM within the "+renderStr + " hook is deprecated.",
+beforeTemplateDestroyStr = beforeStr+TemplateStr + DestroyStr,
+renderLoadingTemplateStr = `${renderStr}Loading${TemplateStr}`,
+depricatedStr = "depricated",
+html5Str = "html5",
+stringStr = "string",
+nestedPromisesStr = "nestedPromises",
+renderTemplateWarning = `${renderStr} hook should return either component or HTML. Rendering of HTML directly into the DOM within the ${renderStr} hook is ${depricatedStr}.`,
 __routeProm__Str = "__routeProm__",
 /*-----------string declaration ends------------*/
 fontColor = "MediumOrchid",
@@ -122,10 +135,14 @@ class Router extends Service {
 			} 
 			r.__lp.req = {
 				resources : r.__lp.loadResources = Promise.all(res).then(function() {
-					r.__lp.resourcesLoaded = true
+					if(LR.__lp.nav.get(r)) {
+						r.__lp.resourcesLoaded = true
+					}
 				}),
 				dependencies : r.__lp.loadDependencies = Promise.all(dep).then(function() {
-					r.__lp.dependenciesLoaded = true	
+					if(LR.__lp.nav.get(r)) {
+						r.__lp.dependenciesLoaded = true	
+					}
 				})
 			}
 			return resolvedPromise;
@@ -135,15 +152,15 @@ class Router extends Service {
 		run[fetchStr] = 
 		run[afterFetchStr] = function(hook,index) {
 			var routeInstance = this.routes[index],
-			args = [getHook(routeInstance, hook),routeInstance];
-			args.push(hook == afterFetchStr ? [routeInstance.currentData, routeInstance.__lp.param] : [routeInstance.__lp.param]);
-			return callHookWithPromise.apply(this,args).then(setDataIn$,setDataIn$);
-			function setDataIn$(data) {
+			args = [getHook(routeInstance, hook),routeInstance],
+			setDataIn$ = function(data) {
 				routeInstance.$[hook] = data;
 				if(hook == fetchStr) {
 					routeInstance.currentData = data;
 				}
-			}
+			}.bind(this)
+			args.push(hook == afterFetchStr ? [routeInstance.currentData, routeInstance.__lp.param] : [routeInstance.__lp.param]);
+			return callHookWithPromise.apply(this,args).then(setDataIn$,setDataIn$);
 		};
 
         run[divertStr] = function(hook,index) {
@@ -163,7 +180,7 @@ class Router extends Service {
 				}  
 			}
 			if(!options || !options.consoled) {
-				_consoleErrorFromCallback(err,hook,errIns.routeName,state,options);
+				_consoleErrorFromCallback(err,hook,errIns.routeName,state,options,errIns);
 			}
 		};
 
@@ -208,7 +225,7 @@ class Router extends Service {
         run[beforeLoadStr] = function(hook,index) {
 			var routeProp = this.routes[index].__lp;
 			if(routeProp.fns[hook]) {
-				lyte.log(beforeLoadStr +' callback is depricated. Use renderLoadingTemplate callback');
+				lyte.log(`${beforeLoadStr} callback is ${depricatedStr}. Use ${renderLoadingTemplateStr} callback`);
 			}
 			callHookWithoutPromise.call(this,routeProp.fns[hook],hook,index,[routeProp.param]);
 			return resolvedPromise;
@@ -257,7 +274,7 @@ class Router extends Service {
 						}
 						setVisibleTrans.call(this)
 						resolve();
-						lyte.time(this.prom.hook + this.prom.index);
+						lyte.time(this.prom.hook+" "+routeInstance.routeName);
 						if(index == 0) {
 							transitionCompleted({state : 200});
 						}
@@ -292,7 +309,7 @@ class Router extends Service {
 				}
 				route.outlet = outlet;
 				if(loadingTemplate.component) {
-					renderComp(outlet, loadingTemplate.component, {data : loadingTemplate.data , ins : route, hook,index , registry : loadingTemplate.registry || LR.__lp.config.registry})
+					renderComp(outlet,loadingTemplate.component,{ data : loadingTemplate.data , ins : route, hook,index , registry : loadingTemplate.registry || LR.__lp.config.registry})
 				} else if(loadingTemplate.html) {
 					renderHTML(outlet, loadingTemplate.html)
 				}
@@ -326,12 +343,16 @@ class Router extends Service {
 								route : routeInstance
 							};
 							if(renderTemplate.component) {
-								if(routeInstance.component && !renderTemplate.reRender && (routeInstance.component.localName == renderTemplate.component._compName) && routeInstance.outlet == outlet && outlet.contains(routeInstance.component)) {
-									// componentDataCheck.call(this,data,routeInstance,hook,index);
-									routeInstance.component.setData(data)
+								if(renderTemplate.component.__lMod) {
+									if(routeInstance.component && !renderTemplate.reRender && (routeInstance.component.localName == renderTemplate.component._compName) && routeInstance.outlet == outlet && outlet.contains(routeInstance.component)) {
+										componentDataCheck.call(this,data,routeInstance,hook,index);
+										routeInstance.component.setData(data)
+									} else {
+										triggerTemplateDestroy(obj,false);
+										routeInstance.component = renderComp(outlet, renderTemplate.component, {data, ins : routeInstance, registry : renderTemplate.registry || LR.__lp.config.registry})
+									}
 								} else {
-									triggerTemplateDestroy(obj,false);
-									routeInstance.component = renderComp(outlet, renderTemplate.component,{data, ins : routeInstance , hook,index , registry : renderTemplate.registry || LR.__lp.config.registry})
+									routeInstance.component = LR.renderer(outlet, renderTemplate.component, {data, hook, index, ins : routeInstance,reRender : renderTemplate.reRender,triggerTemplateDestroy});
 								}
 							} else if(renderTemplate.html) {
 								routeInstance.component = undefined;
@@ -339,7 +360,7 @@ class Router extends Service {
 								renderHTML(outlet, renderTemplate.html)
 							}
 						} else {
-							RouterError.error(428,renderTemplate.outlet);
+							RouterError.error(routeInstance,428,renderTemplate.outlet);
 						}
 					} else {
 						lyte.warn(renderTemplateWarning);
@@ -351,13 +372,13 @@ class Router extends Service {
 			return resolvedPromise;
 		};
 
-        // function componentDataCheck(data,routeInstance,hook,index) {
-        // 	if(data) {
-        // 		if(typeof data != "object" && Array.isArray(data)) {
-        // 			processError.call(this,{stopTrans : true, err :Error(RouterError.getErrorMessage(203)).stack,instance :routeInstance,hook : hook,index : index});
-        // 		}   
-        // 	}
-        // }
+        function componentDataCheck(data,routeInstance,hook,index) {
+			if(data) {
+				if(typeof data != "object" && Array.isArray(data)) {
+					processError.call(this,{stopTrans : true, err :Error(RouterError.getErrorMessage(203)).stack,instance :routeInstance,hook : hook,index : index});
+				}   
+			}
+		}
 
         function renderHTML(outlet, html) {
 			outlet.innerHTML = html;
@@ -367,21 +388,27 @@ class Router extends Service {
 			}
 		}
 
-        function renderComp(outlet, component, {data, ins, hook,index, registry }) {
-			if(typeof component == "string") {
-				console.error("Component name cannot be string");
-				return;
+        function renderComp(outlet, component,{ data, hook, index, ins, registry }) {
+			if(component.__lMod) {
+				if(typeof component == stringStr) {
+					console.error(`Component name cannot be ${stringStr}`);
+					return;
+				}
+				componentDataCheck.call(this,data,ins,hook,index);
+				var compIns = component._render({
+					outlet : outlet,
+					data : data,
+					options : {clearOutlet : true},
+					registryInstance : registry,
+					_route : ins.__lp.objPath
+				})
+				return compIns;
+			} else {
+				LR.renderer(outlet, component, {data, hook, index, ins});
 			}
-			// componentDataCheck.call(this,data,ins,hook,index);
-			var compIns = component._render({
-				outlet : outlet,
-				data : data,
-				options : {clearOutlet : true},
-				registryInstance : registry,
-				_route : ins.__lp.objPath
-			})
-			return compIns;
 		}
+
+
 
         function getOutlet(outlet,parent) {
 			var _outlet;
@@ -404,16 +431,16 @@ class Router extends Service {
 				}
 				this.cleared = true;
 				delete this.runLoop.templateToRemove;
-				lyte.removeFromCache();
+				// lyte.removeFromCache();
 			}
 		};
 
         function setVisibleTrans() {
 			if(visibleTrans != this) {
 				visibleTrans = this;
-				if(prevTrans != LR.__lp.visibleTrans) {
-					removeNavWeakMap(LR.__lp.visibleTrans,this)
-				}
+				// if(prevTrans != LR.__lp.visibleTrans) {
+				// 	removeNavWeakMap(LR.__lp.visibleTrans,this)
+				// }
 				LR.__lp.visibleTrans = visibleTrans;
 			}
 		}
@@ -423,7 +450,7 @@ class Router extends Service {
 		}
 
         function addToHistory(obj) {
-			var type = obj.replace ? "replaceState" : "pushState";
+			var type = obj.replace ? replaceStateStr : pushStateStr;
 			obj.title = obj.title || document.title;
 			/* support for windows, undefined is appended to url */
 			var args = [obj.data, obj.title]
@@ -434,6 +461,10 @@ class Router extends Service {
 				trans.location = LR.location
 			}
 		}
+
+        this.addMap = function(MapClass, route) {
+			_addMap.call(this,{MapClass, route, lyte, config, initialRegisterRoute});
+		};
 
         this.getRouteDefinition = function(arr,def) {
 			if(arr == "*" || !arr) {
@@ -450,9 +481,9 @@ class Router extends Service {
 				if(key == "queryParamOptions") {
 					config.queryParamOptions.cache = defConfig.queryParamOptions.cache;
 				} else if(key == "historyType"){
-					config[key] = defConfig[key] == "html5";
+					config[key] = defConfig[key] == html5Str;
 				} else if(key == "history"){
-					config.historyType = defConfig.history == "html5";
+					config.historyType = defConfig.history == html5Str;
 				} else {
 					config[key] = defConfig[key];
 				}
@@ -495,7 +526,7 @@ class Router extends Service {
 			}
 			if(this.onInit) { this.onInit();}
 			lHistory = new History({
-				historyType : LR.__lp.config.historyType ? "html5" : "hash",
+				historyType : LR.__lp.config.historyType ? html5Str : "hash",
 				popState : popState
 			}) 
 			this.history = lHistory.__lh.exp;
@@ -659,7 +690,7 @@ class Router extends Service {
 							url = url.replace('<<dp>>',matched.dynamicParams[i]);	
 						}
 					} else if(url.indexOf('<<dp>>') != -1) {
-						RouterError.error(linkTo ? "499A" : 499,matched.route,linkTo ? this : undefined);
+						RouterError.error(lyte,linkTo ? "499A" : 499,matched.route,linkTo ? this : undefined);
 					}
 					if(!matched.queryParams) {matched.queryParams = {}}
 					for(var key in matchedCache.defQP) {
@@ -707,7 +738,7 @@ class Router extends Service {
 				processed.matched.replace = true;
 			}
 			if(!LR.__lp.initCalled) {
-				RouterError.error(405);
+				RouterError.error(lyte,405);
 				return 
 			}
 			var matched = processed.matched,
@@ -721,11 +752,11 @@ class Router extends Service {
 			};
 			var url = dispatchTransition(processed);
 			if(url && newTrans) {
-				newTrans.navigationType = replace ? "replaceState" : "pushState";
-				lyte.log(NavigateStr+' to '+currRoute+' '+url,routeStr);
+				newTrans.navigationType = replace ? replaceStateStr : pushStateStr;
+				lyte.log(`${NavigateStr} to ${currRoute} ${url}`,routeStr);
 				return newTrans._trans;  
 			} else {
-				lyte.log(NavigateStr+' failed')
+				lyte.log(`${NavigateStr} failed`);
 				return {};
 			}
 		}
@@ -774,6 +805,7 @@ class Router extends Service {
 				matched.dynamicParams = matched.dynamicParams || [];
 				matched.refreshData = false;
 				var url,
+				regexMatch = false,
 				sameRoute = !!trans,
 				dynamicPos = matched.dynamicParams.length != matched.route.length,
 				dynamicParamPos = 0,
@@ -789,7 +821,7 @@ class Router extends Service {
 					}
 					routeObj = _getObj(route,routeObj);
 					if(!(routeObj && routeObj.__lp && routeObj.__lp.path)) {
-						RouterError.error(422,matched.route,i);
+						RouterError.error(lyte,422,matched.route,i);
 						return false;
 					}
 					var def = routeObj.__lp.handler && routeObj.__lp.handler.name != __routeProm__Str ? routeObj.__lp.handler : undefined,
@@ -825,26 +857,45 @@ class Router extends Service {
 							}
 						}
 					}
-					if(routeObj.__lp.dkey) {
-						var dynamicPathSplit = _splitPath(path),
-						dynamicPathSplitTemp = _splitPath(path),
-						pos = dynamicPos ? dynamicParamPos : i;
-						if(!matched.dynamicParams || !matched.dynamicParams[pos]) {
-							RouterError.error(linkTo ? "499A" : 499,route,linkTo ? this : undefined);
-						return false;   
+					if(routeObj.__lp.dpKeys) {
+						var pos = dynamicPos ? dynamicParamPos : i;
+						if(!matched.dynamicParams || matched.dynamicParams[pos] == undefined) {
+							RouterError.error(lyte,linkTo ? "499A" : 499,route,linkTo ? this : undefined);
+							return false;
 						} else {
-							dynamicPathSplit[routeObj.__lp.dIndex] = encodeURI(matched.dynamicParams[pos]);
-							dynamicPathSplitTemp[routeObj.__lp.dIndex] = _delimit('<<dp>>');
-							templateUrl += _delimit(dynamicPathSplitTemp.join('/')); 
-							url += _delimit(dynamicPathSplit.join('/')); 
-							dynamicParamPos++;
-						} 
+							let reg = routeObj.__lp.regex && routeObj.__lp.regex[routeObj.__lp.dpKeys]
+							if(reg) {
+								if(reg.test(matched.dynamicParams[pos])) {
+									regexMatch = true
+									url += _delimit(matched.dynamicParams[pos]);
+								} else {
+									RouterError.error(lyte, "499C" , route);
+									return false;
+								}
+							} else {
+								var dynamicPathSplit = _splitPath(path),
+								dynamicPathSplitTemp = _splitPath(path);
+								if(routeObj.__lp.wildcard) {
+									dynamicPathSplit[routeObj.__lp.dIndex] = encodeURI(matched.dynamicParams[pos]);
+									dynamicPathSplitTemp[routeObj.__lp.dIndex] = _delimit('<<dp>>');
+									dynamicParamPos++;
+								} else {
+									routeObj.__lp.dpKeys.forEach(function(dpKey, i) {
+										dynamicPathSplit[routeObj.__lp.dIndex[i]] = encodeURI(Array.isArray(matched.dynamicParams[pos]) ?  matched.dynamicParams[pos][i] :  matched.dynamicParams[pos]);
+										dynamicPathSplitTemp[routeObj.__lp.dIndex[i]] = _delimit('<<dp>>');
+										dynamicParamPos++;
+									})
+								}
+								templateUrl += _delimit(dynamicPathSplitTemp.join('/')); 
+								url += _delimit(dynamicPathSplit.join('/')); 
+							}
+						}
 					} else {
 						templateUrl += _delimit(path);
 						url += _delimit(path);
 					}
 				}
-				if(!config.cacheRoutes[strRoute]) {
+				if(!config.cacheRoutes[strRoute] && !regexMatch) {
 					config.urlCache[strRoute] = {url : _validateURL(templateUrl), defQP : defQPTemp};
 				}
 				return appendQueryParamsAndFrag(url,matched);
@@ -878,7 +929,7 @@ class Router extends Service {
 			let history;
 			lyte.time(RouteNavigationStr);
 			if(path && config.baseURL && document.location.pathname.indexOf(config.baseURL) == -1) {
-				RouterError.error("400A");
+				RouterError.error(lyte,"400A");
 				return;
 			}
 			processed = processed || (!initialLoad && (history = lHistory.getMeta()) && history.matched && history.__lh.url == getLocation({withHash : true}) /* && history.__lh.url.indexOf(path) != -1 */ ? normalizeMatchedObj(history.matched) : traverse(path));
@@ -889,6 +940,7 @@ class Router extends Service {
 			processed.transComp = processed.transComp || getTransitionDiffernce(processed.prevTrans, processed.matched,processed.R);
 			invoke(processed);
 			lyte.triggerEvent("navigationStart", {prevTrans : prevTrans && prevTrans._trans, nextTrans : newTrans._trans});
+			LR.triggerEvent("navigationStart", {prevTrans : prevTrans && prevTrans._trans, nextTrans : newTrans._trans});
 			invokeRunLoop = setTimeout(function() {
 				if(processed.matched.route.length) {
 					downloadLazyRoutes(processed)
@@ -968,7 +1020,7 @@ class Router extends Service {
 						r = R ? R[i] : LR.getDefinition(route.slice(0,i));
 						if(r.name != __routeProm__Str && like && compareRoute(matched._routes[i],i,prevMatched,matched)) {
 							common.push(route);
-							if(prevTrans.rOpts[i].rendered) {
+							if(prevTrans.rOpts[i] && prevTrans.rOpts[i].rendered) {
 								rendered.push(route);  
 							} else {
 								// like = false; dont change this code. It is commented for decideTransition function
@@ -980,7 +1032,7 @@ class Router extends Service {
 						}
 					} else {
 						similar = false;
-						if(templateToRemove == undefined && prevTrans.routes[i] && prevTrans.rOpts[i].rendered != -1 && prevTrans.routes[i].outlet) {
+						if(templateToRemove == undefined && prevTrans.routes && prevTrans.routes[i] && prevTrans.rOpts && prevTrans.rOpts[i] && prevTrans.rOpts[i].rendered != -1 && prevTrans.routes[i].outlet) {
 							templateToRemove = i;
 						}
 						unRendered.push(route);
@@ -988,7 +1040,7 @@ class Router extends Service {
 				}
 				if(prevMatched.route.length > matched.route.length) {
 					var index = matched.route.length;
-					if(templateToRemove == undefined && prevTrans.rOpts[i].rendered/* && prevTrans.routes[i].outlet */) {
+					if(templateToRemove == undefined && prevTrans.rOpts[i] && prevTrans.rOpts[i].rendered/* && prevTrans.routes[i].outlet */) {
 					templateToRemove = index;
 					}
 				}
@@ -998,14 +1050,26 @@ class Router extends Service {
 			return { rendered, unRendered, common, templateToRemove };
 		}
 
+        function compareDPs({routeObj, index, prevMatched, matched}) {
+			if(routeObj.__lp.dpKeys) {
+				if(prevMatched.dynamicParams[index] && matched.dynamicParams[index]) {
+					return Array.isArray(prevMatched.dynamicParams[index]) ? prevMatched.dynamicParams[index].join(".") == matched.dynamicParams[index].join(".") : prevMatched.dynamicParams[index] == matched.dynamicParams[index];
+				} else {
+					return false;
+				}
+			}
+			return true;
+		}
+
+
         function compareRoute(rArr,index,prevMatched,matched) {
 			var same = true,
 			routeObj = _getObj(rArr,config.routes),
 			ropt = routeObj.__lp.options;
-			if(!ropt.queryParams && !routeObj.__lp.dkey) {
+			if(!ropt.queryParams && !routeObj.__lp.dpKeys) {
 				return true;
 			}
-			if(routeObj.__lp.dkey && prevMatched.dynamicParams[index] != matched.dynamicParams[index]) {
+			if(!compareDPs({routeObj, index, prevMatched, matched})) {
 				return false;
 			} else if(ropt.queryParams && matched.refreshData) {
 				ropt.queryParams.every(function(key) {
@@ -1049,18 +1113,20 @@ class Router extends Service {
 		}
 
         function convertToFF({ trans, index }) {
-			var r = trans.routes[index];
-			if(typeof r.__lp.fns.forceFetch && callHookWithoutPromise.call(trans,r.__lp.fns.forceFetch,forceFetchStr,index,[])) {
-				trans.runLoop.forceFetch[index] = []
-				pushFetchHooks((trans.runLoop.forceFetch[index] = []),index)
-				trans.runLoop.current.every(function(obj,i) {
-					if(obj.hook == beforeFetchStr && obj.index == index) {
-						trans.runLoop.current.splice(i, 3);
-						return false;
-					}
-					return true;
-				})
-				r.__lp.fetchStatus = pendingStr;
+			if(trans.routes) {
+				var r = trans.routes[index];
+				if(typeof r.__lp.fns.forceFetch && callHookWithoutPromise.call(trans,r.__lp.fns.forceFetch,forceFetchStr,index,[])) {
+					trans.runLoop.forceFetch[index] = []
+					pushFetchHooks((trans.runLoop.forceFetch[index] = []),index)
+					trans.runLoop.current.every(function(obj,i) {
+						if(obj.hook == beforeFetchStr && obj.index == index) {
+							trans.runLoop.current.splice(i, 3);
+							return false;
+						}
+						return true;
+					})
+					r.__lp.fetchStatus = pendingStr;
+				}
 			}
 		}
 
@@ -1164,17 +1230,24 @@ class Router extends Service {
 			this.onLoadCalled = [];
 			this.fns = [];
 
-			this.getDynamicParams = function() {
+			//check this
+			this.getDynamicParams = function(route) {
 				var dpObj = {};
 				if(this.matched.dynamicParams) {
 					this.matched.dynamicParams.forEach(function(dp,i) {
 						if(dp) {
 							var routesObj = _getObj(this.matched._routes[i], config.routes)
-							dpObj[routesObj.__lp.dkey] = dp;
+							dpObj[routesObj.__lp.dpKeys] = dp;
 						}
 					}.bind(this))
 				}
-				return dpObj;
+				if(route == "*" || route == undefined) {
+					return dpObj;
+				} else {
+					let routesObj = _getObj(route.split("."), config.routes)
+					return {[routesObj.__lp.dkey] : dpObj[routesObj.__lp.dkey]};
+				}
+				
 			};
 			this.pending = {
 				dependencies : new Set(),
@@ -1299,9 +1372,9 @@ class Router extends Service {
 
         function callDidDestroy(inst,index) {
 			lyte.log(didDestroyStr+" of "+ inst.routeName,routeStr,fontColor);
-			lyte.time(didDestroyStr+index);
+			lyte.time(didDestroyStr+' '+inst.routeName);
 			callHookWithoutPromise.call(this,inst.didDestroy,didDestroyStr,index,[inst.currentData, inst.__lp.param]);
-			lyte.time(didDestroyStr+index);
+			lyte.time(didDestroyStr+' '+inst.routeName);
 		}
 
         var stoppableHooks = [getRequirementsStr,beforeFetchStr,fetchStr,afterFetchStr];
@@ -1325,7 +1398,7 @@ class Router extends Service {
 						t.logs.push(hook +' of route '+instance.routeName+ ' called');
 						var result = callback.apply(instance,args);
 						if(stopNav && result) { /* check why stopTrans is needed? */
-							result = lyte.resolvePromises(result);
+							result = resolvePromises(result);
 						}
 						resp = Promise.resolve(result);
 					} catch(err) {
@@ -1333,7 +1406,7 @@ class Router extends Service {
 						return;
 					}
 					resp.then(function(data) {
-						if(prom.state != "previous" && trans._trans != instance.navigation) {
+						if(prom.state != "previous" && trans._trans != (LR.__lp.nav.get(instance) && instance.navigation)) {
 							t.logs.push("old navigation's promise rejected");
 							reject()
 						} else {
@@ -1372,28 +1445,34 @@ class Router extends Service {
 			routeInstance = this.routes[index] && this.routes[index];
 			if(action = getAction(routeInstance, hook)) {
 				try {
-					trans.logs.push(hook +' of route '+routeInstance.routeName+ ' called');
+					trans.logs.push(`${hook} of ${routeStr} ${routeInstance.routeName} called.`);
 					if(action.apply(routeInstance,args) == false) {
 						return false;
 					}
 				} catch(e) {
-					_consoleErrorFromCallback(e,hook,routeInstance.routeName);
+					_consoleErrorFromCallback(e,hook,routeInstance.routeName,undefined,undefined,routeInstance);
 					return false;
 				} 
 			}
 		}
 
-        function _consoleErrorFromCallback(err,hook,routeName,state,options) {
-			if(typeof err == "string" || (typeof err == "object" && err.stack && !err.$)) {
+        function _consoleErrorFromCallback(err,hook,routeName,state,options,routeIns) {
+			if(typeof err == stringStr || (typeof err == "object" && err.stack && !err.$)) {
 				if(!err.stack) {
 					err = Error(err);
 				}
 				err.$ = true;
 				var internalErr = RouterError.getErrorMessage(state) || RouterError.getErrorMessage("420A",hook,routeName);
 				err.stack = err.stack.replace(err.message,err.message = err.message+"\n\t"+internalErr);
-				RouterError.error(err);
+				//@Slicer.catchAllErrorsStart
+				if(!state){
+					lyte.appError ? lyte.appError.error(routeIns,err) : RouterError.error(routeIns,err);
+					return;
+				}
+				//@Slicer.catchAllErrorsEnd
+				RouterError.error(routeIns, err);
 			} else {
-				RouterError.error(state,hook,routeName,err,options && options.PR);
+				RouterError.error(routeIns,state,hook,routeName,err,options && options.PR);
 			}
 		}
 
@@ -1408,7 +1487,7 @@ class Router extends Service {
 				trans.pause();
 				run[onErrorStr].call(this,hook,index,err,"420",options);
 			} else {
-				_consoleErrorFromCallback(err,hook,instance.routeName);
+				_consoleErrorFromCallback(err,hook,instance.routeName,undefined,undefined,instance);
 				// if(_strPresence([willNavigateStr,didNavigateStr,beforeExitStr,redirectStr],hook)) {
 					if(options.promise) {
 						options.promise.resolve();
@@ -1423,7 +1502,7 @@ class Router extends Service {
 			success = success || emptyFn;
 			failure = failure || function(error) {
 				if(error != abortedStr) {
-					RouterError.error(error);
+					RouterError.error(lyte,error);
 				}
 			};
 			new Promise(function(resolve,reject) {
@@ -1446,7 +1525,7 @@ class Router extends Service {
 		};
 
         function processRunLoop() {
-			runLoopPromise.call(trans,nestedPromises,"nestedPromises",'previous',function() {
+			runLoopPromise.call(trans,nestedPromises,nestedPromisesStr,'previous',function() {
 			if(processedDispatch && !trans.running && !trans.aborted ) {
 				initRoute(trans, processedDispatch);
 				if(processedDispatch.hasOwnProperty("refreshFrom")) {
@@ -1523,7 +1602,7 @@ class Router extends Service {
 				routeOptions.newTransInfo = processedDispatch = newTransInfo = undefined;
 				trans.running = true;
 			}
-			runLoopPromise.call(trans,nestedPromises,"nestedPromises",'current');
+			runLoopPromise.call(trans,nestedPromises,nestedPromisesStr,'current');
 			}.bind(this));
 		}
 
@@ -1562,9 +1641,9 @@ class Router extends Service {
 				logCallbacks(promise);
 				forcedLoop[promise.index][0].running = true;
 				forcedLoop[promise.index].splice(0, 1);
-				lyte.time(promise.hook+promise.index);
+				lyte.time(promise.hook+" "+routeInstance.routeName);
 				run[promise.hook].call(this, promise.hook, promise.index).then(function (data) {
-					lyte.time(promise.hook+promise.index);
+					lyte.time(promise.hook+" "+routeInstance.routeName);
 					setPendingResume.call(trans, trans.prom);
 					if(promise.hook == afterFetchStr) {
 						routeInstance.__lp.fetchStatus = completedStr;
@@ -1603,14 +1682,18 @@ class Router extends Service {
         function nestedPromiseCall(promise, routeInstance, loop, state, resolve) {
 			if(promise.hook == beforeFetchStr && !routeInstance.__lp.dependenciesLoaded) {
 				routeInstance.__lp.loadDependencies.then(function() {
-					routeInstance.__lp.dependenciesLoaded = true
-					nestedPromises.call(this,loop,state,resolve);
+					if(LR.__lp.nav.get(routeInstance)) {
+						routeInstance.__lp.dependenciesLoaded = true
+						nestedPromises.call(this,loop,state,resolve);
+					}
 				}.bind(this));
 				return;
 			} else if(promise.hook == renderStr && !routeInstance.__lp.resourcesLoaded) {
 				routeInstance.__lp.loadResources.then(function() {
-					routeInstance.__lp.resourcesLoaded = true
-					nestedPromises.call(this,loop,state,resolve);
+					if(LR.__lp.nav.get(routeInstance)) {
+						routeInstance.__lp.resourcesLoaded = true
+						nestedPromises.call(this,loop,state,resolve);
+					}
 				}.bind(this));
 				return;
 			} else if(promise.hook == divertStr && routeInstance.__lp.fns.forceFetch && routeInstance.__lp.fetchStatus == pendingStr) {
@@ -1624,9 +1707,9 @@ class Router extends Service {
 				promise.state = state;
 				trans.prom = promise;
 				logCallbacks(promise);
-				lyte.time(promise.hook+promise.index);
+				lyte.time(promise.hook+(routeInstance ? ' '+routeInstance.routeName : ""));
 				run[promise.hook].call(this,promise.hook,promise.index).then(function(data) {
-					lyte.time(promise.hook+promise.index);
+					lyte.time(promise.hook+(routeInstance ? ' '+routeInstance.routeName : ""));
 					setPendingResume.call(trans,trans.prom);
 					if(this.runningProm.resolve == resolve) {
 					removeHook(loop[state],promise.hook,promise.index);
@@ -1644,7 +1727,9 @@ class Router extends Service {
 					routeInstance = state == "previous"? prevTrans.routes[promise.index] : this.routes[promise.index];
 					if(routeInstance instanceof Promise) {
 						routeInstance.then(function() {
-							if(this.onLoadCalled.length && runLoop[0].hook != onBeforeLoadStr) {
+							if(state == "previous") {
+								removeHook(loop[state],promise.hook,promise.index);
+							} else if(this.onLoadCalled.length && runLoop[0].hook != onBeforeLoadStr) {
 								runLoop.unshift({hook : onBeforeLoadStr});
 							}
 							nestedPromises.call(this, loop, state, resolve);
@@ -1699,7 +1784,7 @@ class Router extends Service {
 				trans.state = trans._trans.state = obj.state;
 				trans._trans.triggerEvent(stateChangeStr,trans.state);
 				if(initialLoad || trans.state == 200) {
-					removeNavWeakMap(prevTrans, trans)
+					removeNavWeakMap(visibleTrans, trans)
 					routeOptions.prevTrans = LR.__lp.prevTrans = prevTrans = trans;
 					lyte.log(NavigationComletedStr,routeStr);
 					lyte.time(RouteNavigationStr);
@@ -1711,7 +1796,7 @@ class Router extends Service {
 					}
 					run[afterRouteNavigationStr](trans._trans);
 				} else if(obj.iAbort || visibleTrans == trans) {
-					removeNavWeakMap(prevTrans, trans)
+					// removeNavWeakMap(prevTrans, trans)
 					routeOptions.prevTrans = LR.__lp.prevTrans = prevTrans = trans;
 					if (trans.state && trans.state != 201) {
 					run[afterRouteNavigationStr](trans._trans);
@@ -1720,7 +1805,7 @@ class Router extends Service {
 					if (trans.state && trans.state != 201) {
 						run[afterRouteNavigationStr](trans._trans);
 					}
-					removeNavWeakMap(trans, newTrans || prevTrans)
+					// removeNavWeakMap(trans, newTrans || prevTrans)
 					routeOptions.trans = LR.__lp.trans = trans = prevTrans;  
 				}
 				if(initialLoad) {
@@ -1731,16 +1816,24 @@ class Router extends Service {
 			}
 		}
 
-        function removeNavWeakMap(p,t) {
-			if(p && (visibleTrans && p != visibleTrans)) {
-				setTimeout(function() {
-					p.routes.forEach(function(route,i) {
-						if(/*!t.rOpts[i] || p.rOpts[i].objPath != t.rOpts[i].objPath || */p.routes[i] != t.routes[i]) {
-							LR.__lp.nav.delete(route);
-						}
-					})
-				},0)
-			}
+        function removeNavWeakMap(visibleTrans,trans) {
+			LR.__lp.nav = new WeakMap();
+			[visibleTrans,trans].forEach(function(t) {
+				if(t) {
+					t.routes.forEach(function(ins) {
+						LR.__lp.nav.set(ins,t)
+					}) 
+				}
+			})
+			// if(p && (visibleTrans && p != visibleTrans)) {
+			// 	setTimeout(function() {
+			// 		p.routes.forEach(function(route,i) {
+			// 			if(/*!t.rOpts[i] || p.rOpts[i].objPath != t.rOpts[i].objPath || */p.routes[i] != t.routes[i]) {
+			// 				LR.__lp.nav.delete(route);
+			// 			}
+			// 		})
+			// 	},0)
+			// }
 		}
 
         function traverse(path, get) {
@@ -1749,7 +1842,11 @@ class Router extends Service {
 				if(routeObj) {
 					return pathProcessor.apply(this,[get].concat(routeObj));
 				} else {
-					RouterError.error("400A",config.baseURL && path.indexOf(config.baseURL) != 0 ? '' : path);
+					if(config.baseURL && path.indexOf(config.baseURL) != 0) {
+						RouterError.error(lyte,"400A");	
+					} else {
+						RouterError.error(lyte,"400", path);
+					}
 					return { error : true }
 				}
 			}
@@ -1794,9 +1891,7 @@ class Router extends Service {
 				});
 			}
 			config.activeLinkTags = [];
-			var R,
-			r,
-			matched = processed.matched;
+			var matched = processed.matched;
 			try {
 				function linkTagPush(tag) {
 					if(tag.getAttribute('lt-prop-route') == matched.target && activeLinkTags.indexOf(tag) == -1) {
@@ -1818,12 +1913,14 @@ class Router extends Service {
 				}
 
 				function callSetParams(i) {
-					setParams(i)
+					if(trans.routes) {
+						setParams(i)
+					}
 				}
 				
 				for(var i = 0,l = trans.R.length; i < l; i++) {
 					if(trans.routes[i] instanceof Promise) {
-						trans.routes[i].then(callSetParams.bind(this,i))
+						trans.routes[i].then(callSetParams.bind(this,i,trans))
 					} else {
 						setParams(i)
 					}
@@ -1831,7 +1928,7 @@ class Router extends Service {
 				}
 				LR.__lp.mutateCache(matched.target)
 			} catch(e) {
-				RouterError.error(e);
+				RouterError.error(lyte,e);
 			}
 			return;
 		}
@@ -1873,7 +1970,7 @@ class Router extends Service {
 					options.qpdef = {};
 					options.$ = {};
 					RouteClass.queryParams.forEach(function(qp,i) {
-						if(typeof qp == "string") {
+						if(typeof qp == stringStr) {
 							options.qpdef[qp] = {
 							cache : cache,
 							refreshData : true
@@ -1956,7 +2053,7 @@ class Router extends Service {
 				errorCheck = function(route,i) {
 					routesObj = _getObj(route,routesObj);
 					if(!routesObj) {
-						throw Error(RouterError.getErrorMessage("400A",matched.target));
+						throw Error(RouterError.getErrorMessage("400",matched.target));
 					}
 					R.push(routesObj.__lp.handler)
 				};
@@ -1989,7 +2086,13 @@ class Router extends Service {
 						matched._routes.push(_dotSerperator(matched.target));
 						errorCheck(route,i)
 						if(dynamicParams) {
-							matched.dynamicParams.push(routesObj.__lp.dkey ? dynamicParams.shift() : undefined);
+							if(routesObj.__lp.dpKeys) {
+								let _dynamicParams = dynamicParams.splice(routesObj.__lp.dpKeys.length);
+								matched.dynamicParams.push(dynamicParams.length == 1 ? dynamicParams[0] : dynamicParams);
+								dynamicParams = _dynamicParams;
+							} else {
+								matched.dynamicParams.push(undefined)	
+							}
 						}
 					});
 					var r = _getObj(matched._routes[matched._routes.length-1],config.routes)
@@ -1997,10 +2100,10 @@ class Router extends Service {
 						matched.mountRoute = true
 					}
 					if(dynamicParams && dynamicParams.length) {
-						lyte.error('Extra dynamic params found. Provide exact numbers dynamic params required for the transition '+ JSON.stringify(dynamicParams));
+						lyte.error(`Extra dynamic params found. Provide exact numbers dynamic params required for the ${navigationStr} ${JSON.stringify(dynamicParams)}`);
 					}
 				} catch(e) {
-					RouterError.error(e);
+					RouterError.error(lyte,e);
 					return {error : e};
 				}
 				return { 
@@ -2010,9 +2113,9 @@ class Router extends Service {
 				};
 			} else {
 				if(this.tagName == LINKTOStr) {
-					RouterError.error("498A", pRoute ,this.outerHTML);
+					RouterError.error(lyte,"498A", pRoute ,this.outerHTML);
 				} else {
-					RouterError.error("499B");  
+					RouterError.error(lyte,"499B");  
 				}
 			}
 		}
@@ -2025,13 +2128,14 @@ class Router extends Service {
 			matched = processed.matched,
 			refMatch = processed.prevTrans,
 			similarRoute = true;
-			trans.routes = [];
 
 			function pushRoute(i, routeObj, ins) {
-				LR.__lp.nav.set(ins, newTrans);
-				ins.parent = newTrans.routes[i-1] instanceof Promise ? newTrans.routes[i-1].then(function() {ins.parent = newTrans.routes[i-1]}.bind(this)) : newTrans.routes[i-1];
-				trans.rOpts[i] = deepCopyObject(routeObj.__lp.options);
-				newTrans.routes[i] = ins
+				if(newTrans.routes) {
+					LR.__lp.nav.set(ins, newTrans);
+					ins.parent = newTrans.routes[i-1] instanceof Promise ? newTrans.routes[i-1].then(function() {ins.parent = newTrans.routes[i-1]}.bind(this)) : newTrans.routes[i-1];
+					trans.rOpts[i] = deepCopyObject(routeObj.__lp.options);
+					newTrans.routes[i] = ins;
+				}
 			}
 
 			function promFunc({routeStringArr, i, routeObj}, res) {
@@ -2075,13 +2179,23 @@ class Router extends Service {
 			var rOpts = nav.rOpts[i] = deepCopyObject(LR.__lp.nav.get(route).rOpts[i])
 			LR.__lp.nav.set(route, nav);
 			delete rOpts.rendered;
-			if(processed.transComp && !processed.transComp.rendered[i] && processed.transComp.redirected) {
-				if(processed.transComp.redirected.index < i) {
+			if(processed.transComp && !processed.transComp.rendered[i]) {
+				if(processed.transComp.redirected) {
+					if(processed.transComp.redirected.index < i) {
+						delete rOpts.loadDependencies;
+						delete rOpts.loadResources;
+						delete rOpts.dependenciesLoaded;
+						delete rOpts.resourcesLoaded;
+						route.$.beforeFetch = route.$.fetch = route.$.afterFetch = undefined;
+					} else if(processed.transComp.redirected.index != i) {
+						delete rOpts.stencils;
+					}
+				} else {
 					delete rOpts.loadDependencies;
 					delete rOpts.loadResources;
+					delete rOpts.dependenciesLoaded;
+					delete rOpts.resourcesLoaded;
 					route.$.beforeFetch = route.$.fetch = route.$.afterFetch = undefined;
-				} else if(processed.transComp.redirected.index != i) {
-					delete rOpts.stencils;
 				}
 			} else {
 				delete rOpts.stencils;
@@ -2096,6 +2210,17 @@ class Router extends Service {
 				dispatch(url,decideTransition(processed));
 			}
 			return url;
+		}
+
+        function convertDpArray({matched, info}) {
+			let dp = info.dynamicParams = []
+			matched.dynamicParams.forEach((arr) => {
+				if(!arr || arr.length > 1) {
+					dp.push(arr);
+				} else {
+					dp.push(arr[0]);
+				}
+			})
 		}
 
         const allHooks = [getRequirementsStr,beforeFetchStr,fetchStr,afterFetchStr,divertStr,renderStr,afterRenderStr];
@@ -2136,6 +2261,7 @@ class Router extends Service {
 					} else {
 						trans.abort({state : 409, iAbort : true});
 					}
+					convertDpArray({matched, info})
 					processed.transComp = transComp;
 				} else if(trans && !trans.aborted) {
 					trans.abort({state : 409, iAbort : true});
@@ -2150,6 +2276,26 @@ class Router extends Service {
         var routeOptions = {
 			lyte,
 			dispatch,
+			render : function({outlet, component, data, html, hook, index, reRender, registry}) {
+				if(outlet = getOutlet(outlet,this.parent)) {
+					let currentTrans = this.navigation == trans._trans ? trans : (newTrans && this.navigation == newTrans._trans ? newTrans : undefined);
+					run.removeTemplate.call(currentTrans);
+					setVisibleTrans.call(currentTrans)
+					let  obj = { outlet, route : this}
+					if(component) {
+						if(component && !reRender && (!this.component || this.component.localName == component._compName) && this.outlet == outlet && outlet.contains(this.component)) {
+							this.component.setData(data)
+						} else {
+							triggerTemplateDestroy(obj,false);
+							this.component = renderComp(outlet, component, {data, hook, index, ins : this, registry : registry || LR.__lp.config.registry})
+						}
+					} else if(html) {
+						this.component = undefined;
+						triggerTemplateDestroy(obj,false);
+						renderHTML(outlet, html)
+					}
+				}
+			},
 			LR,
 			constructURLFromRoute,
 			decideTransition
@@ -2159,6 +2305,8 @@ class Router extends Service {
     }
 }
 
-Router.__lMod = "Router";
+Router.__lMod = RouterStr;
+
+Router.register = _register;
 
 export { Router };

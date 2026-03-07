@@ -4,20 +4,20 @@ import { _getObj, _getRouteFromAlias } from "./router-utils";
 const startFromStr = "start-from",
 ltPropStr = "lt-prop",
 routeStr = "route",
-pReplace = ltPropStr+"-replace",
-pStartFrom = ltPropStr+"-"+startFromStr,
-pFragment = ltPropStr+"-fragment",
-pDp = ltPropStr+"-dp",
-pQp = ltPropStr+"-qp",
-pTd = ltPropStr+"-td",
-pData = ltPropStr+"-data",
-pTrans = ltPropStr+"-trans",
-pMeta = ltPropStr+"-meta",
-refreshHRouteStr = "refresh-"+routeStr,
-pRefreshRoute = ltPropStr+"-"+refreshHRouteStr,
+pReplace = `${ltPropStr}-replace`,
+pStartFrom = `${ltPropStr}-${startFromStr}`,
+pFragment = `${ltPropStr}-fragment`,
+pDp = `${ltPropStr}-dp`,
+pQp = `${ltPropStr}-qp`,
+pTd = `${ltPropStr}-td`,
+pData = `${ltPropStr}-data`,
+pTrans = `${ltPropStr}-trans`,
+pMeta = `${ltPropStr}-meta`,
+refreshHRouteStr = `refresh-${routeStr}`,
+pRefreshRoute = `${ltPropStr}-${refreshHRouteStr}`,
 linktoStr = "link-to",
-ltPropWarning = "Error while parsing ltProp in "+linktoStr,
-pRoute = ltPropStr+"-"+routeStr;
+ltPropWarning = `Error while parsing ltProp in ${ltPropStr}`,
+pRoute = `${ltPropStr}-${routeStr}`;
 const parse = JSON.parse;
 
 function linkToRegistration(lyte,LR,config) {
@@ -49,7 +49,7 @@ function linkToRegistration(lyte,LR,config) {
 
     class LinkTo extends HTMLElement {
         static get observedAttributes() {
-            return [pRoute, pDp, pFragment, pQp, ltPropStr, 'lt-prop-class', 'lt-prop-id', 'lt-prop-rel', 'lt-prop-title', 'lt-prop-style', 'lt-prop-target','lt-prop-data-tabindex', 'lt-prop-aria-attributes','lt-prop-tabindex','lt-prop-aria-label'];
+            return [pRoute, pDp, pFragment, pQp, ltPropStr, 'lt-prop-class', 'lt-prop-id', 'lt-prop-rel', 'lt-prop-title', 'lt-prop-style', 'lt-prop-target','lt-prop-data-tabindex','lt-prop-prevent-default', 'lt-prop-aria-attributes','lt-prop-tabindex','lt-prop-aria-label'];
         }
         attributeChangedCallback(attr, oldValue, newValue) {
             if(this.matched && this.hasAttribute("lyte-rendered")) {
@@ -147,7 +147,7 @@ function linkToRegistration(lyte,LR,config) {
                     r = routes[i];
                     routesObj =  _getObj(r,routesObj);
                     if(!routesObj || !routesObj.__lp) {
-                        RouterError.error(422,routes,i);
+                        RouterError.error(lyte,422,routes,i);
                         return false;
                     }
                     var def = routesObj.__lp.handler && routesObj.__lp.options;
@@ -196,7 +196,7 @@ function linkToRegistration(lyte,LR,config) {
             }
             if(!onlyLtProp) {
                 for(let i=0,attr,attrName; attr = this.attributes[i]; i++) {
-                    if((attrName = attr.nodeName) !== ltPropStr && /^(lt-prop-id|lt-prop-rel|lt-prop-class|lt-prop-style|lt-prop-target|lt-prop-data-tabindex|lt-prop-tabindex|lt-prop-aria-label|lt-prop-aria-attributes)$/.test(attrName)) {
+                    if((attrName = attr.nodeName) !== ltPropStr && /^(lt-prop-id|lt-prop-rel|lt-prop-class|lt-prop-style|lt-prop-target|lt-prop-prevent-default|lt-prop-data-tabindex|lt-prop-tabindex|lt-prop-aria-label|lt-prop-aria-attributes)$/.test(attrName)) {
                         linkTag.setAttribute(attrName.substring(8), attr.nodeValue);
                     }
                 }
@@ -227,7 +227,7 @@ function linkToRegistration(lyte,LR,config) {
             try {
                 dynamicParams = parse(dynamicParams);  
             } catch(e) {
-                RouterError.error("498A","dynamicParams",this.outerHTML);
+                RouterError.error(lyte,"498A","dynamicParams",this.outerHTML);
                 return;
             }
         }
@@ -235,11 +235,11 @@ function linkToRegistration(lyte,LR,config) {
             try{
                 queryParams = parse(queryParams);
                 if(Array.isArray(queryParams)) {
-                    RouterError.error("498A","queryParams",this.outerHTML);
+                    RouterError.error(lyte,"498A","queryParams",this.outerHTML);
                     return;
                 }
             } catch(e) {
-                RouterError.error("498A","queryParams",this.outerHTML);
+                RouterError.error(lyte,"498A","queryParams",this.outerHTML);
                 return;
             }
         }
@@ -265,7 +265,7 @@ function linkToRegistration(lyte,LR,config) {
             return;
         }
         var targetElem = linkTo || event.currentTarget;
-        if(targetElem.children[0].tagName === "A" && (event.ctrlKey == true || event.metaKey == true || event.which == 2 || (targetElem.children[0].hasAttribute("target") && targetElem.children[0].getAttribute("target") !== "_self")) ) {
+        if(targetElem.children[0].tagName === "A" && (targetElem.getAttribute("lt-prop-prevent-default") && targetElem.getAttribute("lt-prop-prevent-default") != "true") && (event.ctrlKey == true || event.metaKey == true || event.which == 2 || (targetElem.children[0].hasAttribute("target") && targetElem.children[0].getAttribute("target") !== "_self")) ) {
             return;  
         }
         event.preventDefault();
@@ -284,7 +284,7 @@ function linkToRegistration(lyte,LR,config) {
             try{
                 transObj = parse(transProp);  
             } catch(e) {
-                RouterError.error("498A", pMeta , linkTo.outerHTML);
+                RouterError.error(lyte,"498A", pMeta , linkTo.outerHTML);
             }
         }
         let transitionData = targetElem.getAttribute(pData) || targetElem.getAttribute(pTd) || (ltProp && ltProp.data);
@@ -293,7 +293,7 @@ function linkToRegistration(lyte,LR,config) {
                 try {
                     transitionData = parse(transitionData);
                 } catch(e) {
-                    RouterError.error("498A", pData , linkTo.outerHTML);
+                    RouterError.error(lyte,"498A", pData , linkTo.outerHTML);
                 }
             }
             transObj.data = transitionData;

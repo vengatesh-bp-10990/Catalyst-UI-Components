@@ -1,13 +1,13 @@
 import { __scopedInstance } from "./lyte";
 import { Service } from "./service";
-import { _lyteInit, _lyteDidConnect } from "./lyte-utils.js";
+import { _lyteInit, _lyteDidConnect/*, addLink*/ } from "./lyte-utils.js";
 // import { resolvePromises } from './rsvp';
 // import { Logger } from './lyte-error';
 /*convert to custom class*/
 class LyteAddon extends Service {
     constructor(config){
         super();
-        this.config = config;
+        this.config = config || {} ;
         _lyteInit(LyteAddon,this);
         _lyteDidConnect(LyteAddon,this);
     }
@@ -29,7 +29,20 @@ class LyteAddon extends Service {
     get __isAddon() {
         return true;
     }
-    
+    // addLink() {
+    //     let node = this, appIns;
+    //     while (node && !appIns) {
+    //         appIns = node.$app || (node.$addon && node.$addon.$app);
+    //         node = node.$addon;
+    //     }
+    //     if (appIns) {
+    //         appIns.__instantiated ? 
+    //             addLink.apply(null, [appIns].concat(Array.from(arguments))): 
+    //             appIns.addEventListener("ready", () => {
+    //                 addLink.apply(null, [appIns].concat(Array.from(arguments)));
+    //             });
+    //     }
+    // }
 }
 // LyteAddon.prototype.resolvePromises = function(promises) {
 //     return new Promise(function(res, rej) {

@@ -47,18 +47,7 @@ window.addEventListener('resize' , function(eve){
 		if(window._lyteUiUtils.popupStack.globalStack && window._lyteUiUtils.popupStack.betaPopoverStack.length > 0){
 			for(var i=0;i<window._lyteUiUtils.popupStack.betaPopoverStack.length;i++){
 				var currentPopup = window._lyteUiUtils.popupStack.betaPopoverStack[i].parentElement
-				if(currentPopup.getData('ltPropCloseOnResize')){
-					currentPopup.setData('ltPropShow' , false)
-					return
-				}
-				if(!currentPopup.getData('ltPropOffsetForParent')){
-					currentPopup.component.setPopoverPosition();
-				} else {
-					currentPopup.component.setDirectPopoverPosition();
-				}
-				if(currentPopup.component.getMethods('onResize')){
-					currentPopup.component.executeMethod('onResize' , currentPopup.component , eve)
-				}
+				currentPopup.component.setPopoverPosition()
 			}
 		}
 	}
@@ -103,9 +92,6 @@ _lyteBetaPopover.scrollHandler = function(event){
 				var currentPopup = window._lyteUiUtils.popupStack.betaPopoverStack[i].parentElement
 				if(currentPopup){
 					if(currentPopup.getData('ltPropCloseOnScroll')){
-						if($L(event.target).closest('lyte-drop-box')[0] && $L(event.target).closest('lyte-drop-box')[0].origindd.closest('.lytePopover')){
-							return
-						}
 						currentPopup.setData('ltPropShow' , false);
 						return;
 					}
@@ -113,11 +99,7 @@ _lyteBetaPopover.scrollHandler = function(event){
 					var currentWormhole = window._lyteUiUtils.popupStack.betaPopoverStack[i].childElement
 					if(currentWormhole && currentPopup.getData('ltPropScrollable')){
 	
-						if(!currentPopup.getData('ltPropOffsetForParent')){
-							currentPopup.component.setPopoverPosition();
-						} else {
-							currentPopup.component.setDirectPopoverPosition();
-						}
+						currentPopup.component.setPopoverPosition()
 	
 					}
 					// will throw error in isPopoverInBoundary function if the originElem is not present (ltPropShow is false)
@@ -242,9 +224,6 @@ class LyteBetaPopoverComponent extends Component {
 			ltPropOffset : prop('object' ,{
 				default : {}
 			}),
-			ltPropOffsetForParent : prop('boolean' , {
-				default : false
-			}),
 			ltPropOffsetFromTarget : prop( "object" ,{	
 				default : {}
 			}),
@@ -285,9 +264,6 @@ class LyteBetaPopoverComponent extends Component {
 			ltPropCloseOnScroll : prop( 'boolean' ,{
 				default : false
 			}),
-			ltPropCloseOnResize : prop('boolean' , {
-				default : false
-			}),
 			ltPropAllowContainment : prop('boolean' , {
                 default : false
             }),
@@ -299,14 +275,12 @@ class LyteBetaPopoverComponent extends Component {
             }),
 
 			ltPropAria : prop( 'boolean' ,{ 	
-				default : true
+				default : false
 			}),
 			ltPropAriaAttributes : prop( 'object' ,{ 	
-				default : {"aria-label" : "Popover" , "close-label" : "Close Popover"}  
+				default : {} 
 			}),
-			ltPropDragHandle : prop('string' , {
-				default : ''
-			}),
+			
 			
 			ltPropScaleFrom : prop('number' , {
 				default: 0
@@ -317,11 +291,8 @@ class LyteBetaPopoverComponent extends Component {
 			ltPropHostElement : prop('string' , {
                 default : ''
             }),
-			ltPropReOpen : prop('boolean' , {
+			ltPropReOpen : prop('string' , {
 				default : false
-			}),
-			ltPropWrapContainer : prop('string' , {
-				default : '' 
 			}),
 
 			initialPopoverDim : prop('object',{
@@ -354,16 +325,6 @@ class LyteBetaPopoverComponent extends Component {
 			}),
 			popoverClosedOn : prop('string' , {
 				default : ''
-			}),
-			finalPosition : prop('string' , {
-				default : ''
-			}),
-			showDragFreeze : prop('boolean' , {
-				default : false
-			}),
-			onCloseTriggered : prop('boolean' , {default : false}),
-			triggeredFromLocal : prop('boolean' , {
-				default : false
 			})
 
 
@@ -375,7 +336,6 @@ class LyteBetaPopoverComponent extends Component {
 		if(!window._lyteUiUtils.lytePopoverKeyDown){
 			window._lyteUiUtils.lytePopoverKeyDown = true
 			document.addEventListener('keydown' , function(evt){
-				_this.event = evt
 				var popoverArr = []
 				var popStack = []
 				if(window._lyteUiUtils.popupStack && window._lyteUiUtils.popupStack.betaPopoverStack){
@@ -387,12 +347,12 @@ class LyteBetaPopoverComponent extends Component {
 				var isEscape = false;
 				if ("key" in evt) {
 					isEscape = (evt.key == "Escape" || evt.key == "Esc");
-					window.isTabPressed = (evt.key == "Tab");
-					window.isEnter = (evt.key == "Enter");
+					// window.isTabPressed = (evt.key == "Tab");
+					// isEnter = (evt.key == "Enter");
 				} else {
 					isEscape = (evt.keyCode == 27);
-					window.isTabPressed = (evt.keyCode == 9);
-					window.isEnter = (evt.keyCode == 13);
+					// window.isTabPressed = (evt.keyCode == 9);
+					// isEnter = (evt.keyCode == 13);
 				}
 				if(isEscape){
 					if(popoverArr && popoverArr.length > 0){
@@ -405,24 +365,12 @@ class LyteBetaPopoverComponent extends Component {
 				}
 			})
 		}
-		this.$node.getActualPosition = function(){
-			return this.component.getData('finalPosition')
-		}
-		this.$node.alignPopover = function(){
-			if(!this.getData('ltPropOffsetForParent')){
-				this.component.setPopoverPosition();
-			} else {
-				this.component.setDirectPopoverPosition();
-			}
-		}
 	}
 
     static actions(arg1) {
         return Object.assign(super.actions({
             closePopover : function(){
-                if(!window._lyteUiUtils.isAriaKeyDownEnabled){
                 this.setData('ltPropShow' , false);
-                }
             }	
             // Functions for event handling
         }), arg1);
@@ -441,18 +389,12 @@ class LyteBetaPopoverComponent extends Component {
                 this.actualModalDiv = $L(this.childComp).find(".lytePopoverElement")[0];
 
                 if(this.getData('ltPropDraggable')){
-                    if(this.getData('ltPropDragHandle') !== '' && $L(this.childComp).find(this.getData('ltPropDragHandle'))[0]){
-                        $L(this.childComp).find(this.getData('ltPropDragHandle'))[0].style.cursor="move";
-                        $L(this.childComp).find(this.getData('ltPropDragHandle'))[0].addEventListener('mousedown' , this.mousedownFun)
-                    } else {
                     if($L(this.childComp).find('lyte-popover-header')[0]){
                         $L(this.childComp).find('lyte-popover-header')[0].style.cursor="move";
                         $L(this.childComp).find('lyte-popover-header')[0].addEventListener('mousedown' , this.mousedownFun)
-                        }
                     }
                 }
 
-                this.addAriaValues();
                 // //Sets the padding style based on user provide padding values
                 // if(this.$node.parentElement && this.$node.parentElement.tagName == 'LYTE-COLORPICKER'){
                 //     this.$node.parentElement.component.childComp = this.childComp;
@@ -486,7 +428,6 @@ class LyteBetaPopoverComponent extends Component {
 		$L(this).addClass('lytePopoverDragRunning')
 		var getBcr = $L(this)[0].getBoundingClientRect()
 		var _this = $L(this).closest('lyte-wormhole')[0].component.parent.component
-		_this.setData('showDragFreeze' , true)
 
 		// if((_this.getData('initialMouseDown').clientX === 0) && (_this.getData('initialMouseDown').clientY === 0)){
 			objectUtils(_this.getData('initialMouseDown') , 'add' , 'clientX' , eve.clientX)
@@ -537,7 +478,6 @@ class LyteBetaPopoverComponent extends Component {
     mouseupFun(eve) {
 		var dragHeader = $L('.lytePopoverDragRunning')
 		var _this = $L('.lytePopoverDragRunning').closest('lyte-wormhole')[0].component.parent.component
-		_this.setData('showDragFreeze' , false)
 
 		dragHeader.removeClass('lytePopoverDragRunning')
 		window.removeEventListener('mousemove' , _this.mousemoveFun);
@@ -547,7 +487,8 @@ class LyteBetaPopoverComponent extends Component {
 
     //Component functions
     addMutationObserver() {
-                if(this.getData('ltPropAutoAlign')){
+        var lyteSelf = this;
+        if(this.getData('ltPropAutoAlign')){
             var popover = this.$node,
             targetNode = this.actualModalDiv, reAlign, config;
             this.setData('prevOffsetVal', {
@@ -555,7 +496,7 @@ class LyteBetaPopoverComponent extends Component {
                     width : this.actualModalDiv.offsetWidth
                 });
             popover.mutobserver = new MutationObserver( function( mutations ) {
-                if(this.getData('ltPropAutoAlign') && this.getData('ltPropShow') && this.actualModalDiv){
+                if(this.getData('ltPropAutoAlign') && this.getData('ltPropShow') && this.actualMOdalDiv){
                     var popoverElem = this.actualModalDiv;
                     var prevOffsetVal = this.getData('prevOffsetVal');
                     var offsetWidth = popoverElem.offsetWidth;
@@ -574,16 +515,11 @@ class LyteBetaPopoverComponent extends Component {
                     }
                     if(reAlign){
                         reAlign = false;
-						if(!this.getData('ltPropOffsetForParent')){
-						this.setPopoverPosition();
-						} else {
-							this.setDirectPopoverPosition();
+						if(this.getData('ltPropOriginElem') !== ''){
+							this.setPopoverPosition();
+						} else if(!lyteSelf.$registry.registeredHelpers.lyteUiIsEmptyObject(this.$node.ltProp('offset'))){
+							this.setArrowPosition(this.getData('ltPropPlacement'));
 						}
-						// if(this.getData('ltPropOriginElem') !== ''){
-						// 	this.setPopoverPosition();
-						// } else if(!Lyte.Component.registeredHelpers.lyteUiIsEmptyObject(this.$node.ltProp('offset'))){
-						// 	this.setArrowPosition(this.getData('ltPropPlacement'));
-						// }
                     }
                 }
             }.bind( this ) );
@@ -688,26 +624,6 @@ class LyteBetaPopoverComponent extends Component {
 		}
 	}
 
-    setDirectPopoverPosition() {
-		var popoverElem = $L(this.childComp).find('.lytePopoverElement')
-		var offsetObj = this.getData('ltPropOffset')
-		if(Object.keys(offsetObj).length > 0){
-
-			if(parseFloat(offsetObj.left) > -1){
-				popoverElem[0].style.left = offsetObj.left;
-			}
-			if(parseFloat(offsetObj.top) > -1){
-				popoverElem[0].style.top = offsetObj.top;
-			}
-			if(parseFloat(offsetObj.right) > -1){
-				popoverElem[0].style.right = offsetObj.right;
-			}
-			if(parseFloat(offsetObj.bottom) > -1){
-				popoverElem[0].style.bottom = offsetObj.bottom;
-			}
-		}
-	}
-
     setPopoverPosition() {
 
 		var popoverElem = $L(this.childComp).find('.lytePopoverElement')
@@ -750,13 +666,7 @@ class LyteBetaPopoverComponent extends Component {
 		}
 		// if(this.getData('ltPropOriginElem') !== ""){
 
-			var finalPosition;
-			if(this.getData('ltPropWrapContainer') !== ''){
-				finalPosition = this.getActualPositionWithWrapper(popoverElemWidth , popoverElemHeight,originElemDim ,placementArr , $L(this.getData('ltPropWrapContainer'))[0].getBoundingClientRect()  )
-			} else {
-				finalPosition = this.getActualPosition(popoverElemWidth , popoverElemHeight,originElemDim ,placementArr)
-			}
-			this.setData('finalPosition' , finalPosition)
+			var finalPosition = this.getActualPosition(popoverElemWidth , popoverElemHeight,originElemDim ,placementArr)
 
 			switch(finalPosition){
 				case "top":
@@ -1020,84 +930,6 @@ class LyteBetaPopoverComponent extends Component {
 			let y = obj.top;
 			if((((tarLength/2)+obj.left) >= (popLength/2)) && ((wlength-(obj.left+(tarLength/2))) >= (popLength/2))){
 				x = ((tarLength/2)+obj.left) + (wlength-(obj.left+(tarLength/2)));
-			}
-			return [x,y];
-		}
-		function getPopupPosition(results,popLength,popHeight,preference){
-			if(preference!==undefined && preference.length>=0){
-				for(let key of preference){
-					if(results[key][0]>=popLength && results[key][1]>=popHeight){
-						return key;
-					}
-				}
-			}
-			for(let key in results){
-				if(results[key][0]>=popLength && results[key][1] >=popHeight){
-					return key;
-				}
-			}
-			if(preference!==undefined && preference.length>=0){
-				return preference[0];
-			}
-			return 'topRight';
-		}
-		return getPopupPosition(results,popLength,popHeight,preference);
-	}
-
-    getActualPositionWithWrapper(popLength, popHeight, obj, preference, layoutObj) {
-    
-		let wlength = window.innerWidth;
-		let wHeight = window.innerHeight;
-	
-		let results = {        
-			topLeft : [(layoutObj.width-(obj.left-layoutObj.left)),(obj.top - layoutObj.top)], 
-			top : tcFunc(),
-			topRight : [((obj.left-layoutObj.left)+obj.width), (obj.top - layoutObj.top)],
-	
-		
-			left : [(obj.left-layoutObj.left),(layoutObj.height)-((obj.top-layoutObj.top))],
-			leftCenter : lcFunc(), 
-			leftBottom : [(obj.left-layoutObj.left),((obj.top-layoutObj.top)+obj.height)],
-		   
-			
-			bottomLeft : [(layoutObj.width-(obj.left-layoutObj.left)),(layoutObj.bottom-obj.bottom)],
-			bottom : bcFunc(), 
-			bottomRight : [((obj.left-layoutObj.left)+obj.width),(layoutObj.bottom-obj.bottom)],
-		   
-			
-			right : [(layoutObj.right-obj.right),(layoutObj.height)-((obj.top-layoutObj.top))],
-			rightCenter : rcFunc(),
-			rightBottom : [(layoutObj.right-obj.right),((obj.top-layoutObj.top)+obj.height)]
-		}
-		function lcFunc(){
-			let x = (obj.left-layoutObj.left);
-			let y = 0;
-			if((((obj.top-layoutObj.top)+(obj.height/2)) >= (popHeight/2)) && (((layoutObj.bottom-obj.bottom)+(obj.height/2)) >= (popHeight/2))){
-				y = ((obj.top-layoutObj.top)+(obj.height/2))+((layoutObj.bottom-obj.bottom)+(obj.height/2));
-			}
-			return [x,y];
-		}
-		function bcFunc(){
-			let x = 0;
-			let y = (layoutObj.bottom-obj.bottom);
-			if((((obj.left-layoutObj.left)+(obj.width/2)) >= (popLength/2)) && (((layoutObj.right-obj.right)+(obj.width/2)) >= (popLength/2))){
-				x = ((obj.left-layoutObj.left)+(obj.width/2))+((layoutObj.right-obj.right)+(obj.width/2));
-			}
-			return [x,y];
-		}
-		function rcFunc(){
-			let x = (layoutObj.right-obj.right);
-			let y = 0;
-			if((((obj.top - layoutObj.top)+(obj.height/2)) >= (popHeight/2)) && (((layoutObj.bottom-obj.bottom)+(obj.height/2)) >= (popHeight/2))){
-				y = ((obj.top - layoutObj.top)+(obj.height/2)) + ((layoutObj.bottom-obj.bottom)+(obj.height/2));
-			}
-			return [x,y];
-		}
-		function tcFunc(){
-			let x = 0;
-			let y = (obj.top-layoutObj.top);
-			if((((obj.left-layoutObj.left)+(obj.width/2))>= (popLength/2)) &&  (((layoutObj.right-obj.right)+(obj.width/2)) >= (popLength/2))){
-					x = (((obj.left-layoutObj.left)+(obj.width/2)) + ((layoutObj.right-obj.right)+(obj.width/2)));
 			}
 			return [x,y];
 		}
@@ -1401,7 +1233,7 @@ class LyteBetaPopoverComponent extends Component {
 		} else {
 			originElem = $L(this.getData('ltPropOriginElem'))[0]
 		}
-		if(originElem && Object.keys(this.getData('ltPropBoundary')).length > 0){
+		if(originElem && this.getData('ltPropBoundary') !== {}){
 			var popoverDim = originElem.getBoundingClientRect()
 			var boundaryVal = this.getData('ltPropBoundary')
 			if(!boundaryVal.top){
@@ -1465,15 +1297,12 @@ class LyteBetaPopoverComponent extends Component {
 		var popoverElem = $L(this.childComp).find('.lytePopoverWrapper')
 		var popoverElemInnerElem = popoverElem.find('.lytePopoverElement')[0];
 		var animationType = this.getData('ltPropAnimation');
-		var duration = parseFloat(this.getData('ltPropDuration'))
 		if(window._lyteUiUtils.targetAvailable){
 			delete window._lyteUiUtils.targetAvailable
 		}
 		if($L(this.childComp).find('.lytePopupFreezeLayer')[0]){
 			$L(this.childComp).find('.lytePopupFreezeLayer')[0].style.opacity = 0;
 		}
-		var finalPositionBackup = this.getData("finalPosition");
-		this.setData('finalPosition' , '')
 		switch(animationType) {
 			case "fade": 
 				popoverElem.removeClass('lytePopoverFadeAnimation')
@@ -1487,22 +1316,10 @@ class LyteBetaPopoverComponent extends Component {
 				var originElemLeft = originElemMidPoint.midWidth;
 				var originElemTop = originElemMidPoint.midHeight;
 				
-				var xdiff = -1 * (popoverElemLeft - originElemLeft) + 'px';
-				var ydiff = -1 * (popoverElemTop - originElemTop) + 'px';
-				if(finalPositionBackup == "left" || finalPositionBackup == "leftBottom" || finalPositionBackup == "leftCenter") {
-					xdiff = "50%";
-				}
-				else if(finalPositionBackup == "right" || finalPositionBackup == "rightBottom" || finalPositionBackup == "rightCenter") {
-					xdiff = "-50%";
-				}
-				else if(finalPositionBackup == "top" || finalPositionBackup == "topLeft" || finalPositionBackup == "topRight") {
-					ydiff = "50%";
-				}
-				else if(finalPositionBackup == "bottom" || finalPositionBackup == "bottomLeft" || finalPositionBackup == "bottomRight") {
-					ydiff = "-50%";
-				}
+				var xdiff = -1 * (popoverElemLeft - originElemLeft);
+				var ydiff = -1 * (popoverElemTop - originElemTop);
 				var transformString;
-				transformString = 'translate(' + xdiff + ", " + ydiff + ") scale(0)";
+				transformString = 'translate(' + xdiff + "px, " + ydiff + "px) scale(0)";
 				popoverElemInnerElem.style.transform = transformString;
 				popoverElem.removeClass('lytePopoverZoomAnimation');
 				break;
@@ -1531,7 +1348,6 @@ class LyteBetaPopoverComponent extends Component {
 			if(_self.$node && _self.$node.mutobserver){
 				_self.$node.mutobserver.disconnect()
 			}
-			$L(_self.childComp).trapFocus('destroy')
 			_self.unsetDimensions();
 			popoverElem.removeClass('lytePopoverShow').addClass('lytePopoverHide');
 			popoverElem.removeClass('lytePopoverZoom lytePopoverPop');
@@ -1556,25 +1372,10 @@ class LyteBetaPopoverComponent extends Component {
 
 			_self.setData('ltPropShowWormhole' , false)
 
-			if(_self.getMethods("onClose") && !_self.getData('onCloseTriggered')){
-				_self.setData('onCloseTriggered' , true)
+			if(_self.getMethods("onClose")){
 				_self.executeMethod( "onClose" , event , _self , _self.actualModalDiv);
 			}
-			_self.event = null
-		},duration)
-	}
-
-    addAriaValues(arg) {
-    if(this.getData('ltPropAria') && this.actualModalDiv){
-        var ariaProp = this.getData('ltPropAriaAttributes') || {};
-        $L(this.actualModalDiv).attr('aria-popover' , true)
-        // $L(this.actualModalDiv).attr('aria-expanded' , this.getData('ltPropShow'))
-        window._lyteUiUtils.setAttribute( this.actualModalDiv, ariaProp, arg ? arg.oldValue : {} );
-        var closeIcon = this.actualModalDiv.querySelector('.lytePopoverClose');
-        if(closeIcon){
-            closeIcon.setAttribute('aria-label', ariaProp['close-label'] || 'Close icon at top right position');
-        }
-    }
+		},300)
 	}
 
     _popoverChanges() {
@@ -1602,16 +1403,6 @@ class LyteBetaPopoverComponent extends Component {
 
     _draggableFunction() {
 		if(this.childComp && this.getData('ltPropShow')){
-			if(this.getData('ltPropDragHandle') !== ''){
-				if(this.getData('ltPropDraggable') && $L(this.childComp).find(this.getData('ltPropDragHandle'))[0]){
-					$L(this.childComp).find(this.getData('ltPropDragHandle'))[0].style.cursor="move";
-					$L(this.childComp).find(this.getData('ltPropDragHandle'))[0].addEventListener('mousedown' , this.mousedownFun)
-					return
-				} else {
-					$L(this.childComp).find(this.getData('ltPropDragHandle'))[0].style.cursor="";
-					$L(this.childComp).find(this.getData('ltPropDragHandle'))[0].removeEventListener('mousedown' , this.mousedownFun)
-				}
-			}
 			if(this.getData('ltPropDraggable')){
 				$L(this.childComp).find('lyte-popover-header')[0].style.cursor="move";
 				$L(this.childComp).find('lyte-popover-header')[0].addEventListener('mousedown' , this.mousedownFun)
@@ -1635,14 +1426,6 @@ class LyteBetaPopoverComponent extends Component {
 
 		this.setData('ltPropShowWormhole', false);
 		// this.$node.classList.remove('lytePopoverOpened');
-		if(this.getData('showDragFreeze')){
-			window.removeEventListener('mousemove' , this.mousemoveFun);
-			window.removeEventListener('mouseup' , this.mouseupFun);
-			this.setData('showDragFreeze' , false)
-			var popover = $L('.lytePopoverDragRunning')[0]
-			$L('.lytePopoverDragRunning').removeClass('lytePopoverDragRunning')
-			popover.style.overflow = "auto"
-		}
 
 		clearTimeout(this.closePopoverTransition); 
 		if(this.popoverObserver){
@@ -1653,12 +1436,9 @@ class LyteBetaPopoverComponent extends Component {
 			delete window._lyteUiUtils.targetAvailable
 		}
 
+
         if(this.childComp){
-			if(this.getMethods("onClose") && !this.getData('onCloseTriggered')){
-				this.setData('onCloseTriggered' , true)
-				this.executeMethod("onClose",window.event , this , this.actualModalDiv);
-			}
-			this.event = null
+            
             if(this.tIdBeforeClose){
                 clearTimeout(this.tIdBeforeClose);
                 this.tIdBeforeClose = false;
@@ -1684,15 +1464,7 @@ class LyteBetaPopoverComponent extends Component {
     static observers(arg1) {
         return Object.assign(super.observers({
             //Observer funcitons
-            _showPopover : function(){
-                if(this.getData('triggeredFromLocal')){
-                    this.setData('triggeredFromLocal' , false)
-                    return
-                }
-                var event = event || window.event || {}
-                if(this.closePopoverTransition){
-                    clearTimeout(this.closePopoverTransition)
-                }
+            _showPopover : function(event){
                 var originElem = $L(this.getData('ltPropOriginElem'))[0]
                 var animationType = this.getData('ltPropAnimation');
                 var duration = parseInt(this.getData('ltPropDuration'))
@@ -1704,11 +1476,7 @@ class LyteBetaPopoverComponent extends Component {
                         closeResult = this.executeMethod("onBeforeClose",event,this , this.actualModalDiv);
                     }
                     if(closeResult !== false){
-                        this._closePopover(event);
-                    }
-                    if(closeResult === false){
-                        this.setData('triggeredFromLocal' , true)
-                        this.setData('ltPropShow' , true)
+                        this._closePopover();
                     }
                     return;
                 }
@@ -1716,8 +1484,6 @@ class LyteBetaPopoverComponent extends Component {
                 this.closePrevPopup()
 
                 if(this.getData('ltPropShow')){
-                    this.setData('onCloseTriggered' , false)
-                    this.setData('finalPosition' , '')
                     if(this.closePopoverTransition){
                         clearTimeout(this.closePopoverTransition); 
                     }
@@ -1742,7 +1508,7 @@ class LyteBetaPopoverComponent extends Component {
                     }
                     var result = true;
                     if(this.getMethods("onBeforeShow")){
-                        result = this.executeMethod("onBeforeShow",this , this.actualModalDiv , this.childComp);
+                        result = this.executeMethod("onBeforeShow",this , this.actualModalDiv);
                     }
                     if(result !== false){
 
@@ -1786,11 +1552,7 @@ class LyteBetaPopoverComponent extends Component {
                         // 		this.setArrowPosition(this.getData('ltPropPlacement'));
                         // 	}
                         // } else if(originElem){
-                            if(!this.getData('ltPropOffsetForParent')){
                             this.setPopoverPosition();
-                            } else {
-                                this.setDirectPopoverPosition();
-                            }
                         // }
 
                         this.addMutationObserver();
@@ -1802,30 +1564,16 @@ class LyteBetaPopoverComponent extends Component {
                                 transformString = "scale(" + this.getData("ltPropScaleFrom") + ")";
                             }
                             else {
-                                var finalPosition = this.getData("finalPosition");
                                 var popoverElemDim = popoverElemInnerElem.getBoundingClientRect();
                                 var popoverElemLeft = popoverElemDim.x + (popoverElemDim.width / 2);
                                 var popoverElemTop = popoverElemDim.y + (popoverElemDim.height / 2);
                                 var originElemMidPoint = this.getTargetMidPoint();
                                 var originElemLeft = originElemMidPoint.midWidth;
                                 var originElemTop = originElemMidPoint.midHeight;
-                                var xdiff = -1 * (popoverElemLeft - originElemLeft) + "px";
-                                var ydiff = -1 * (popoverElemTop - originElemTop) + "px";
-                                if(finalPosition == "left" || finalPosition == "leftBottom" || finalPosition == "leftCenter") {
-                                    xdiff = "50%";
-                                }
-                                else if(finalPosition == "right" || finalPosition == "rightBottom" || finalPosition == "rightCenter") {
-                                    xdiff = "-50%";
-                                }
-                                else if(finalPosition == "top" || finalPosition == "topLeft" || finalPosition == "topRight") {
-                                    ydiff = "50%";
-                                }
-                                else if(finalPosition == "bottom" || finalPosition == "bottomLeft" || finalPosition == "bottomRight") {
-                                    ydiff = "-50%";
-                                }
-
+                                var xdiff = -1 * (popoverElemLeft - originElemLeft);
+                                var ydiff = -1 * (popoverElemTop - originElemTop);
                                 popoverElem.addClass('lytePopoverZoom');
-                                transformString = 'translate(' + xdiff + ", " + ydiff + ") scale(0)";
+                                transformString = 'translate(' + xdiff + "px, " + ydiff + "px) scale(0)";
                             }
                             popoverElemInnerElem.style.transition = 'none';
                             popoverElemInnerElem.style.transform = transformString;
@@ -1833,11 +1581,8 @@ class LyteBetaPopoverComponent extends Component {
                         var _self = this;
                         setTimeout(function() {
                             var animType = _self.getData('ltPropAnimation');
-                            popoverElemInnerElem.style.transition = '';
-                            popoverElemInnerElem.style.transitionDuration = (duration+'ms')
                             switch (animType) {
                                 case "fade":
-                                    
                                     popoverElem.addClass('lytePopoverFadeAnimation')
                                     break;
                                 case "zoom":
@@ -1861,7 +1606,7 @@ class LyteBetaPopoverComponent extends Component {
                                 $L(_self.childComp).trapFocus()
                             }
                             _self.setDimension()
-                        },duration+10)
+                        },duration)
                     } else {
                         this.setData('ltPropShow' ,false)
                         this.setData('ltPropBindToBody' , false)
@@ -1871,25 +1616,9 @@ class LyteBetaPopoverComponent extends Component {
 
             }.observes('ltPropShow').on('didConnect'),
 
-            _changeHeight : function(){
-            if(this.actualModalDiv && this.getData('ltPropShow')){
-                this.setPopoverHeight();
-            }
-            }.observes('ltPropHeight'),
-
-            _changeWidth : function(){
-                if(this.actualModalDiv && this.getData('ltPropShow')){
-                    this.setPopoverWidth();
-                }
-            }.observes('ltPropWidth'),
-
             _changeOriginElem : function(){
                 if(this.actualModalDiv && this.getData('ltPropShow')){
-                    if(!this.getData('ltPropOffsetForParent')){
                     this.setPopoverPosition();
-                    } else {
-                        this.setDirectPopoverPosition();
-                    }
                 }
             }.observes('ltPropOriginElem'),
 
@@ -1913,11 +1642,7 @@ class LyteBetaPopoverComponent extends Component {
                         "lytePopoverBottomLeft",
                         "lytePopoverBottomRight"
                     )
-                    if(!this.getData('ltPropOffsetForParent')){
                     this.setPopoverPosition();
-                    } else {
-                        this.setDirectPopoverPosition();
-                    }
                 }
             }.observes('ltPropPlacement'),
 
@@ -1937,11 +1662,7 @@ class LyteBetaPopoverComponent extends Component {
                         popoverElemInnerElem.style.bottom = ''
                         popoverElemInnerElem.style.top = ''
                     }
-                    if(!this.getData('ltPropOffsetForParent')){
-                        this.setPopoverPosition();
-                    } else {
-                        this.setDirectPopoverPosition();
-                    }
+                    this.setPopoverPosition()
                 }
             }.observes('ltPropOffset'),
 
@@ -1973,11 +1694,7 @@ class LyteBetaPopoverComponent extends Component {
                         delete _lyteBetaPopover._sourceComp;
                     }
                 }
-            }.observes('ltPropStopClick'),
-
-            ariaValueObserver: function (arg) {
-                this.addAriaValues( arg )
-             }.observes('ltPropAriaAttributes', 'ltPropAriaAttributes.{}', 'checkAria')
+            }.observes('ltPropStopClick')
         }), arg1);
     }
 
@@ -1986,8 +1703,8 @@ class LyteBetaPopoverComponent extends Component {
     }
 }
 
-LyteBetaPopoverComponent._template = "<template tag-name=\"lyte-beta-popover\" role=\"dialog\" aria-label=\"lyte popover\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropBindToBody}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-wormhole case=\"true\" class=\"lytePopoverVisibilityHidden\" on-before-append=\"{{method(&quot;beforeWormholeAppend&quot;)}}\" lt-prop-focus-on-close=\"{{ltPropFocusOnClose}}\" lt-prop-show=\"{{ltPropShowWormhole}}\"> <template is=\"registerYield\" yield-name=\"lyte-content\"> <div class=\"popoverWrapper lytePopoverWrapper {{ltPropWrapperClass}} lytePopupZI\" role=\"dialogue\"> <div class=\"lytePopoverElement {{if(ifEquals(ltPropAnimation,'zoom'),'lytePopover lyteZoom','lytePopover')}}\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ifEquals(ltPropType,&quot;callout&quot;)}}\" is=\"case\" lc-id=\"lc_id_0\"> <span id=\"lytePopoverArrow\" class=\"lytePopoverArrowIcon\"></span> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropShowCloseButton}}\" is=\"case\" lc-id=\"lc_id_0\"> <span case=\"true\" class=\"lytePopoverClose\" onclick=\"{{action('closePopover')}}\" role=\"button\" tabindex=\"0\"></span> </template></template> <lyte-yield yield-name=\"popover\" class=\"lytePopoverYield\"></lyte-yield> </div> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropFreeze}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-popover-freeze class=\"lytePopupFreezeLayer\"></lyte-popover-freeze> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{showDragFreeze}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-popover-freeze class=\"lytePopupFreezeLayer lytePopupDragFreezeLayer\"></lyte-popover-freeze> </template></template> </div> </template> </lyte-wormhole> </template></template> </template>";;
-LyteBetaPopoverComponent._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"s","p":[1,1,1],"c":{"lc_id_0":{"dN":[],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":4,"sibl":[3]},{"t":"s","p":[1,1,3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":3,"sibl":[2]},{"t":"i","p":[1,1,5],"in":2,"sibl":[1]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[1,5],"c":{"lc_id_0":{"dN":[{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[2,1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[0]}];;
+LyteBetaPopoverComponent._template = "<template tag-name=\"lyte-beta-popover\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropBindToBody}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-wormhole case=\"true\" class=\"lytePopoverVisibilityHidden\" on-before-append=\"{{method(&quot;beforeWormholeAppend&quot;)}}\" lt-prop-focus-on-close=\"{{ltPropFocusOnClose}}\" lt-prop-show=\"{{ltPropShowWormhole}}\"> <template is=\"registerYield\" yield-name=\"lyte-content\"> <div class=\"popoverWrapper lytePopoverWrapper {{ltPropWrapperClass}} lytePopupZI\"> <div class=\"lytePopoverElement {{if(ifEquals(ltPropAnimation,'zoom'),'lytePopover lyteZoom','lytePopover')}}\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ifEquals(ltPropType,&quot;callout&quot;)}}\" is=\"case\" lc-id=\"lc_id_0\"> <span id=\"lytePopoverArrow\" class=\"lytePopoverArrowIcon\"></span> </template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropShowCloseButton}}\" is=\"case\" lc-id=\"lc_id_0\"> <span case=\"true\" class=\"lytePopoverClose\" onclick=\"{{action('closePopover')}}\" tabindex=\"0\"></span> </template></template><lyte-yield yield-name=\"popover\" class=\"lytePopoverYield\"></lyte-yield> </div> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropFreeze}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-popover-freeze class=\"lytePopupFreezeLayer\"></lyte-popover-freeze> </template></template></div> </template> </lyte-wormhole> </template></template></template>";;
+LyteBetaPopoverComponent._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"a","p":[1,1]},{"t":"s","p":[1,1,1],"c":{"lc_id_0":{"dN":[],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":3,"sibl":[2]},{"t":"s","p":[1,1,2],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1]},{"t":"i","p":[1,1,3],"in":1,"sibl":[0]},{"t":"s","p":[1,3],"c":{"lc_id_0":{"dN":[{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0}],"dc":[1,0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[0]}];;
 
 LyteBetaPopoverComponent._observedAttributes = [
     "ltPropShow",
@@ -2011,7 +1728,6 @@ LyteBetaPopoverComponent._observedAttributes = [
     "ltPropCloseOnBodyClick",
     "ltPropDuration",
     "ltPropOffset",
-    "ltPropOffsetForParent",
     "ltPropOffsetFromTarget",
     "ltPropBindToBody",
     "ltPropHeaderPadding",
@@ -2026,28 +1742,21 @@ LyteBetaPopoverComponent._observedAttributes = [
     "ltPropIgnoreBoundary",
     "ltPropMargin",
     "ltPropCloseOnScroll",
-    "ltPropCloseOnResize",
     "ltPropAllowContainment",
     "ltPropIgnoreInput",
     "ltPropFocusOnClose",
     "ltPropAria",
     "ltPropAriaAttributes",
-    "ltPropDragHandle",
     "ltPropScaleFrom",
     "ltPropShowWormhole",
     "ltPropHostElement",
     "ltPropReOpen",
-    "ltPropWrapContainer",
     "initialPopoverDim",
     "initialMouseDown",
     "initialComputedPopoverDim",
     "prevOffsetVal",
     "finalPlacement",
-    "popoverClosedOn",
-    "finalPosition",
-    "showDragFreeze",
-    "onCloseTriggered",
-    "triggeredFromLocal"
+    "popoverClosedOn"
 ];
 
 export { LyteBetaPopoverComponent };

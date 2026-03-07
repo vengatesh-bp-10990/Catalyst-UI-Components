@@ -5,7 +5,7 @@ const _strPresence = (str, char) => str.includes(char),
 
 _dotSerperator = (str) => str.split('.').filter(Boolean),
 
-_dynamicRouteCheck = (route) => _strPresence(route,":"),
+_dynamicRouteCheck = (route) => route.source || _strPresence(route,":"),
 
 _wildcardRouteCheck = (route) => _strPresence(route,"*"),
 
@@ -26,6 +26,13 @@ function scriptExecution(scriptNode) {
     }
 }
 
+function _popElements(arr, num) {
+    for (let i = 0; i < num; i++) {
+        arr.pop();
+    }
+    return arr;
+}
+  
 function _compareObj(obj1,obj2) {
     var obj1keys = Object.keys(obj1),
     obj2keys = Object.keys(obj2);
@@ -40,6 +47,10 @@ function _compareObj(obj1,obj2) {
     return true;
     }
 }
+
+function _register({hash}) {
+	this._hash = hash;
+};
 
 function _getObj(arr,obj) {
     /**
@@ -64,6 +75,28 @@ function _getObj(arr,obj) {
     });
     return obj;
 }
+
+function _getPathForRoute(arr,obj) {
+    if(!obj) {
+        return;
+    } else if(!arr) {
+        return obj;
+    } else if(!Array.isArray(arr) && typeof arr == 'string') {
+        arr = _dotSerperator(arr);
+    }
+    let paths = []
+    arr.every(function(key)  {
+        if(obj && obj[key]) {
+            obj = obj[key];
+            paths.push(obj.__lp.path);
+            return true;
+        }
+        return obj = false;
+    });
+    return paths;
+}
+
+
 
 function _frameQueryParams(url) {
     if(url) {
@@ -95,9 +128,13 @@ function _frameDynamicParams(url,matched, routesObj) {
             } else {
             fdp = decodeURI(urlSplit.join('/'));
             }
-        } else if(routeObj.dkey) {
+        } else if(routeObj.dpKeys) {
             dynamicParam = urlSplit[routeObj.dIndex];
-            pop(_splitPath(routeObj.path),urlSplit);
+            if(routeObj.regex) {
+                pop(dynamicParam, urlSplit);
+            } else {
+                pop(_splitPath(routeObj.path),urlSplit);
+            }
             fdp = decodeURI(dynamicParam);
         } else {
             pop(_splitPath(routeObj.path),urlSplit);
@@ -111,6 +148,7 @@ function _frameDynamicParams(url,matched, routesObj) {
 function _validateURL(url) {
     url = url.replace(/\/\//g,'/');
     url = url.replace(/\/\?/g,'?');
+    if (url.endsWith("/") && url != "/") {url = url.slice(0, -1)}
     return url;
 }
 
@@ -188,6 +226,7 @@ export {
     _dotSerperator,
     scriptExecution,
     _getObj,
+    _getPathForRoute,
     _delimit,
     _splitPath,
     _getRouteFromAlias,
@@ -198,5 +237,7 @@ export {
     _normalizeTransitionParams,
     _validateURL,
     _frameDynamicParams,
-    _checkIfSameRoute
+    _checkIfSameRoute,
+    _popElements,
+    _register
 }

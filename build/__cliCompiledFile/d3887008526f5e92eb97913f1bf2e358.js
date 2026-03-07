@@ -2,6 +2,9 @@ import { Logger } from "/node_modules/@slyte/core/index.js";
 
 class RouterError extends Logger {
     static getErrorMessage(code) {
+        if(!code){
+            return;
+        }
         arguments[0] = `LR${code}`
         var msg = super.getErrorMessage.apply(this,arguments);
         return msg;
@@ -17,6 +20,7 @@ RouterError.errorCodes = {
     LR499 : `Dynamic params for the route {0} is not provided.`,
     LR499A : `Dynamic params for the route {0} is not provided {args[2].outerHTML}.`,
     LR499B: `Transition tried without arguments.`,
+    LR499C : `Dynamic param for the route {0} does not match the specified regex`,
     LR405 : `Method invocation before Router initialized.`,
      // LR203 : `Data provided for component is not valid.`,
      LR428 : `There is no outlet named {0}.`,

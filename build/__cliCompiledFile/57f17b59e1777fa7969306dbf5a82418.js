@@ -1,7 +1,8 @@
 import { Service } from "@slyte/core"
 import { isInheritedClass, isEntity } from "@slyte/core/src/lyte-utils.js";
 import {  initCB, getFromCB, dbModName } from "./utils.js";
-import { ConnectorError } from "./dberror.js";
+import { ConnectorError } from "./ConnectorError.js";
+import { Dberror } from "./dberror.js";
 /*convert to custom class*/
 class Connector extends Service {
     constructor(){
@@ -10,95 +11,122 @@ class Connector extends Service {
     }
     static processResponse(db, xhr, type, name, argsObj, urlObj, key, customData, opts){
         return new Promise(function(resolve, reject){
-            if(xhr){
-                var contentType = xhr.getResponseHeader('content-type'),
-                resp,
-                isSuccess = xhr && (xhr.status.toString()[0] == "2" || xhr.status.toString()[0] == "3") ? true : false,
-                def = db.getSchemaObj(name),
-                cresp;
-                if(Connector.JSON.test(contentType)){
-                    resp = xhr.responseText.length ? JSON.parse(xhr.responseText) : JSON.parse("{}");
-                }
-                else if(Connector.TEXT.test(contentType)){
-                    try {
-                        resp = JSON.parse(xhr.responseText);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd
+                if(xhr){
+                    var contentType = xhr.getResponseHeader('content-type'),
+                    resp,
+                    isSuccess = xhr && (xhr.status.toString()[0] == "2" || xhr.status.toString()[0] == "3") ? true : false,
+                    def = db.getSchemaObj(name),
+                    cresp;
+                    if(Connector.JSON.test(contentType)){
+                        resp = xhr.responseText.length ? JSON.parse(xhr.responseText) : JSON.parse("{}");
                     }
-                    catch(exp){ 
-                        resp = new ConnectorError("Cannot parse the data", xhr);
-                        isSuccess = false;
+                    else if(Connector.TEXT.test(contentType)){
+                        try {
+                            resp = JSON.parse(xhr.responseText);
+                        }
+                        catch(exp){ 
+                            resp = new ConnectorError("Cannot parse the data", xhr);
+                            isSuccess = false;
+                        }
                     }
-                }
-                else if(type !== "triggerAction"){
-                    resp = xhr.responseText;
-                }
-                else{
-                    resp = new ConnectorError("Not an acceptable content-type: "+contentType, xhr);
-                }
-                argsObj.payLoad = resp;
-                // def = getSchemaObj(db, def);
-                var res = initCB(
-                    db,
-                    "connector",
-                    def ? def.connector : undefined,
-                    Connector.PARSERESPONSE,
-                    { argsObj: argsObj, args:[type, name, xhr, resp, urlObj ? urlObj.qP : undefined, key, customData, opts]}
-                );
-                if(res){
-                    cresp = res.data;
-                    resp = argsObj.payLoad = cresp;
-                }
-                if(cresp && cresp instanceof Promise)
-                {
-                    return cresp.then(function(res){
-                        argsObj.payLoad = res;
-                        return resolve(res)
-                    }, function(res){
-                        return reject(res);
-                    })
-                    // return RESTConnector.handleParseResponsePromise(db,cresp,def,type,key,urlObj,xhr,undefined,undefined,undefined,resolve,reject,opts,argsObj);
-                }
-                else{
-                    if(isSuccess){
-                        return resolve(resp)
+                    else if(type !== "triggerAction"){
+                        resp = xhr.responseText;
                     }
                     else{
-                        return reject(resp);
+                        resp = new ConnectorError("Not an acceptable content-type: "+contentType, xhr);
                     }
-                }
+                    argsObj.payLoad = resp;
+                    // def = getSchemaObj(db, def);
+                    //@Slicer.developmentStart
+                    db.lyte ? db.lyte.time(argsObj.__reqId__+"_"+"parseResponse"+"_promise") : undefined;
+                    //@Slicer.developmentEnd
+                    var res = initCB(
+                        db,
+                        "connector",
+                        def ? def.connector : undefined,
+                        Connector.PARSERESPONSE,
+                        { argsObj: argsObj, args:[type, name, xhr, resp, urlObj ? urlObj.qP : undefined, key, customData, opts]}
+                    );
+                    if(res){
+                        cresp = res.data;
+                        resp = argsObj.payLoad = cresp;
+                    }
+                    if(cresp && cresp instanceof Promise)
+                    {
+                        return cresp.then(function(res){
+                            argsObj.payLoad = res;
+                            //@Slicer.developmentStart
+                            db.lyte ? db.lyte.time(argsObj.__reqId__+"_"+"parseResponse"+"_promise") : undefined;
+                            //@Slicer.developmentEnd
+                            return resolve(res)
+                        }, function(res){
+                            //@Slicer.developmentStart
+                            db.lyte ? db.lyte.time(argsObj.__reqId__+"_"+"parseResponse"+"_promise") : undefined;
+                            //@Slicer.developmentEnd
+                            return reject(res);
+                        });
+                        // return RESTConnector.handleParseResponsePromise(db,cresp,def,type,key,urlObj,xhr,undefined,undefined,undefined,resolve,reject,opts,argsObj);
+                    }
+                    else{
+                        if(isSuccess){
+                            return resolve(resp)
+                        }
+                        else{
+                            return reject(resp);
+                        }
+                    }
 
+                }
+            //@Slicer.catchAllErrorsStart
+            }catch(err){
+                Dberror.error(db,err);
+                return reject();
             }
+            //@Slicer.catchAllErrorsEnd
         });
     }
 
     static sendXHR(db,name,type,key,urlObj,customData,argsObj,opts){
         var xhr = new XMLHttpRequest();
         var prm = new Promise(function(res, rej){
-            argsObj.xhr = xhr;
-            xhr.open(urlObj.method, urlObj.url, true);
-            for(var header in urlObj.headers){
-                xhr.setRequestHeader(header, urlObj.headers[header]);
-            }
-            if(urlObj.data !== undefined && !(urlObj.data instanceof FormData) && ( urlObj.headers && !urlObj.headers.hasOwnProperty("Content-Type") && urlObj.method !== "GET")){
-                xhr.setRequestHeader("Content-Type", "application/json");
-            }
-            xhr.withCredentials = (urlObj.withCredentials)?true:false;
-            var sch = db.getSchemaObj(name);
-            if(sch && sch.connector){
-                initCB(db, "connector", sch.connector, /*RESTConnector.PARSEREQUEST*/ "parseRequest", { argsObj: argsObj, args:[type, name, xhr ,urlObj ? urlObj.qP : undefined, key, customData]});
-            }
-            db.emit("beforeRequest", [xhr, name, type, key, urlObj.qP]);
-            xhr.send(urlObj.data);
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState == 4){
-                    db.emit("afterRequest",[xhr, name, type, key, urlObj.qP]);
-                    argsObj.status = xhr.status;
-                    /*RESTConnector.processResponse*/ Connector.processResponse(db, xhr, type, name, argsObj, urlObj, key, customData, opts).then(function(data){
-                        return res({data:data, xhr:xhr});
-                    }, function(err){
-                        return rej({data:err, xhr:xhr});
-                    });
+           //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd
+                argsObj.xhr = xhr;
+                xhr.open(urlObj.method, urlObj.url, true);
+                for(var header in urlObj.headers){
+                    xhr.setRequestHeader(header, urlObj.headers[header]);
                 }
+                if(urlObj.data !== undefined && !(urlObj.data instanceof FormData) && ( urlObj.headers && !urlObj.headers.hasOwnProperty("Content-Type") && urlObj.method !== "GET")){
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                }
+                xhr.withCredentials = (urlObj.withCredentials)?true:false;
+                var sch = db.getSchemaObj(name);
+                if(sch && sch.connector){
+                    initCB(db, "connector", sch.connector, /*RESTConnector.PARSEREQUEST*/ "parseRequest", { argsObj: argsObj, args:[type, name, xhr ,urlObj ? urlObj.qP : undefined, key, customData]});
+                }
+                db.emit("beforeRequest", [xhr, name, type, key, urlObj.qP]);
+                xhr.send(urlObj.data);
+                xhr.onreadystatechange = function(){
+                    if(xhr.readyState == 4){
+                        db.emit("afterRequest",[xhr, name, type, key, urlObj.qP]);
+                        argsObj.status = xhr.status;
+                        /*RESTConnector.processResponse*/ Connector.processResponse(db, xhr, type, name, argsObj, urlObj, key, customData, opts).then(function(data){
+                            return res({data:data, xhr:xhr});
+                        }, function(err){
+                            return rej({data:err, xhr:xhr});
+                        });
+                    }
+                }
+                //@Slicer.catchAllErrorsStart
+            }catch(err){
+                Dberror.error(db,err);
+                return rej({data:err, xhr:xhr, Error:"Slyte Db Exception"})
             }
+            //@Slicer.catchAllErrorsEnd
         });
         prm.xhr = xhr;
         return prm;
@@ -141,72 +169,94 @@ class Connector extends Service {
         }
     }
     static getSuccess(db,def,type,key,urlObj,respObj,resolve,reject,response,resObj,from,opts,argsObj){
-        var resp = respObj ? respObj.data : response, 
-        // req = respObj ? respObj.xhr : undefined, 
-        req,
-        xhr = respObj ? respObj.xhr : undefined,
-        batchIndex, 
-        batch, 
-        customD = opts.customD, 
-        name = def && def._name ? def._name : def,
-        status = xhr ? xhr.status : undefined;
-        if(from != "idb"){
-            var baseCons = def && def.connector ? def.connector.constructor : db.constructor.Connector;
-            if(resObj){
-                batchIndex = resObj.index;
-                batch = resObj.batch;
-                argsObj.xhr = req = resObj.resp;
-                argsObj.payLoad = resObj.content;
-                var res = initCB(db,"connector", def.connector, baseCons.PARSERESPONSE , { argsObj: argsObj, args:[type, name, req, resp, urlObj ? urlObj.qP : undefined, key, customD, opts]});
-                if(res){
-                    resp = res.data;
+        //@Slicer.catchAllErrorsStart
+        try {
+        //@Slicer.catchAllErrorsEnd
+            var resp = respObj ? respObj.data : response, 
+            // req = respObj ? respObj.xhr : undefined, 
+            req,
+            xhr = respObj ? respObj.xhr : undefined,
+            batchIndex, 
+            batch, 
+            customD = opts.customD, 
+            name = def && def._name ? def._name : def,
+            status = xhr ? xhr.status : undefined;
+            if(from != "idb"){
+                var baseCons = def && def.connector ? def.connector.constructor : db.constructor.Connector;
+                if(resObj){
+                    batchIndex = resObj.index;
+                    batch = resObj.batch;
+                    argsObj.xhr = req = resObj.resp;
+                    argsObj.payLoad = resObj.content;
+                    var res = initCB(db,"connector", def.connector, baseCons.PARSERESPONSE , { argsObj: argsObj, args:[type, name, req, resp, urlObj ? urlObj.qP : undefined, key, customD, opts]});
+                    if(res){
+                        resp = res.data;
+                    }
+                    if(resp instanceof Promise)
+                    {
+                        return baseCons.handleParseResponsePromise(db,resp,def,type,key,urlObj,xhr,undefined,batchIndex,batch,resolve,reject,opts,argsObj);
+                    }
+                    else{
+                        argsObj.payLoad = resp;
+                    }
                 }
-                if(resp instanceof Promise)
-                {
-                    return baseCons.handleParseResponsePromise(db,resp,def,type,key,urlObj,xhr,undefined,batchIndex,batch,resolve,reject,opts,argsObj);
-                }
-                else{
+                // if(req){
                     argsObj.payLoad = resp;
-                }
+                // }
+                return baseCons.findParseRequestPromise(db, resp,def,type,key,urlObj,xhr,batchIndex,batch,resolve,opts,argsObj);
             }
-            // if(req){
-                argsObj.payLoad = resp;
-            // }
-            return baseCons.findParseRequestPromise(db, resp,def,type,key,urlObj,xhr,batchIndex,batch,resolve,opts,argsObj);
+            var resArr = xhr ? [resp, xhr.statusText, xhr] : (batchIndex != undefined) ? [resp,"batch",{index:batchIndex,batch:batch}] : from ? [resp, "idb"] : [resp];
+            resolve(resArr);
+        //@Slicer.catchAllErrorsStart
+        }catch(err){
+            Dberror.error(db,err);
+            reject(respObj ? respObj.xhr : undefined)
         }
-        var resArr = xhr ? [resp, xhr.statusText, xhr] : (batchIndex != undefined) ? [resp,"batch",{index:batchIndex,batch:batch}] : from ? [resp, "idb"] : [resp];
-        resolve(resArr);
+        //@Slicer.catchAllErrorsEnd
     }
     static getFailure(db,def,type,key,urlObj,respObj,resolve,reject,opts,content,code,argsObj,bObj){
-        var customD = opts.customD, 
-        name = def && def._name ? def._name : def;
-        var xhr = respObj? respObj.xhr : undefined,
-        response = respObj ? respObj.data : undefined;
-        if(xhr){
-            var resp;         
-            argsObj.payLoad = response;
-            var baseCons = def && def.connector ? def.connector.constructor : db.constructor.Connector;
-            var res = initCB(db,"connector", def ? def.connector : undefined, baseCons.PARSERESPONSE, { argsObj: argsObj, args:[type, name, xhr, response ,urlObj ? urlObj.qP : undefined, key, customD, opts]});
-            if(res){
-                resp = res.data;
-                argsObj.payLoad = resp;
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd
+            var customD = opts.customD, 
+            name = def && def._name ? def._name : def;
+            var xhr = respObj? respObj.xhr : undefined,
+            response = respObj ? respObj.data : undefined;
+            if(xhr){
+                var resp;         
+                resp=argsObj.payLoad = response;
+                var baseCons = def && def.connector ? def.connector.constructor : db.constructor.Connector;
+                if(bObj){
+                    var res = initCB(db,"connector", def ? def.connector : undefined, baseCons.PARSERESPONSE, { argsObj: argsObj, args:[type, name, xhr, response ,urlObj ? urlObj.qP : undefined, key, customD, opts]});
+                    if(res){
+                        resp = res.data;
+                        argsObj.payLoad = resp;
+                    }
+                    if(resp instanceof Promise)
+                    {
+                        return baseCons.handleParseResponsePromise(db,resp,def,type,key,urlObj,xhr,undefined,undefined,undefined,resolve,reject,opts,argsObj);
+                    }
+                }
+                if(db.responseOnReject){
+                    return reject(resp)
+                }
+                return reject(xhr);
             }
-            if(resp instanceof Promise)
-            {
-                return baseCons.handleParseResponsePromise(db,resp,def,type,key,urlObj,xhr,undefined,undefined,undefined,resolve,reject,opts,argsObj);
+            else if(content){
+                var batch, batchIndex;
+                if(bObj){
+                    batchIndex = bObj.index;
+                    batch = bObj.batch;
+                }
+                db.$.batchResponse[batch][batchIndex] = {code:code, status:"requestFailure", data:content};
+                return reject({code:code,status:"requestFailure", data:content});
             }
-            return reject(xhr);
+        //@Slicer.catchAllErrorsStart
+        }catch(err){
+            Dberror.error(db,err);
+            return reject(respObj ? respObj.xhr : undefined)
         }
-        else if(content){
-            var batch, batchIndex;
-            if(bObj){
-                batchIndex = bObj.index;
-                batch = bObj.batch;
-            }
-            db.$.batchResponse[batch][batchIndex] = {code:code, status:"requestFailure", data:content};
-            return reject({code:code,status:"requestFailure", data:content});
-        }
-        return reject(respObj.data);
+        //@Slicer.catchAllErrorsEnd
     }
     static handleParseResponsePromise(db,response,def,type,key,urlObj,xhr,partialObj,batchIndex,batch,resolve,reject,opts,argsObj)
     {
@@ -231,6 +281,9 @@ class Connector extends Service {
         var baseSerz = def && def.serializer ? def.serializer.constructor : db.constructor.Serializer; 
         var resp = baseSerz.getResponse(db,payload,def,type,key,urlObj,xhr, opts ? opts.customD : undefined, options,argsObj);
         var resArr = xhr ? [resp, xhr.statusText, xhr] : (batchIndex != undefined) ? [resp,"batch",{index:batchIndex,batch:batch}] : [resp];
+        //@Slicer.developmentStart
+        db.lyte && db.lyte.time(argsObj.__reqId__);
+        //@Slicer.developmentEnd
         resolve(resArr);
     }
     static create(db, name, data, isSingleRecord, customData, qP, mutationName){
@@ -285,12 +338,24 @@ class Connector extends Service {
                 obj.data = response;
             }
         }
+        //@Slicer.developmentStart
+        db.lyte && db.lyte.time(argsObj.__reqId__);
+        //@Slicer.developmentEnd 
         resolve(response);
     }
     static handleRequest(db,urlObj,name,data,type,changedData,customData,partialObj,key,actionName, partialRef, argsObj){
         if(urlObj.data && (typeof urlObj.data == "object" || isEntity(urlObj.data) || Array.isArray(urlObj.data)) && !(urlObj.data instanceof FormData)){
             // urlObj.reqData = Lyte.deepCopyObject(urlObj.data);
-            urlObj.data = JSON.stringify(urlObj.data);
+            //@Slicer.catchAllErrorsStart
+            try{
+            //@Slicer.catchAllErrorsEnd
+                urlObj.data = JSON.stringify(urlObj.data);
+            //@Slicer.catchAllErrorsStart
+            }catch{
+                Dberror.error(db,err);
+                Promise.reject()
+            }
+            //@Slicer.catchAllErrorsEnd
         }
         var self = this, xhr, key, def = db.schema[name], prmXhr;;
         var prm = new Promise(function(resolve, reject){
@@ -305,9 +370,24 @@ class Connector extends Service {
                 if(returnPromise instanceof Promise){
                     batchPro = true;						
                     returnPromise.then(function(resp){
-                        resp = (resp == "" ? JSON.parse("{}") : JSON.parse(resp));
-                        response = baseSerz.genericResponse(db,resp,def,type,data,urlObj,undefined,partialObj,customData,undefined,argsObj);
-                        resolve(response);
+                        //@Slicer.catchAllErrorsStart
+                        try{
+                        //@Slicer.catchAllErrorsEnd
+                            resp = (resp == "" ? JSON.parse("{}") : JSON.parse(resp));
+                            response = baseSerz.genericResponse(db,resp,def,type,data,urlObj,undefined,partialObj,customData,undefined,argsObj);
+                            //@Slicer.developmentStart
+                            db.lyte && db.lyte.time(argsObj.__reqId__);
+                            //@Slicer.developmentEnd 
+                            resolve(response);
+                        //@Slicer.catchAllErrorsStart
+                        }catch(err){
+                            //@Slicer.developmentStart
+                            db.lyte && db.lyte.time(argsObj.__reqId__);
+                            //@Slicer.developmentEnd 
+                            Dberror.error(db, err);
+                            reject(resp);
+                        }
+                        //@Slicer.catchAllErrorsEnd
                     },function(message){
                         reject(message);
                     });
@@ -342,52 +422,80 @@ class Connector extends Service {
         return prm;
     }
     static handleSuccess(db, name, type, xhrResp, data, urlObj, resolve, resp, respObj, partialObj, reject, key, customData, actionName, partialRef, argsObj){
-        var resp = resp ? resp : xhrResp ? xhrResp.data : undefined, 
-        req, 
-        batchIndex, 
-        batch, 
-        xhr = xhrResp ? xhrResp.xhr : undefined,
-        req = xhr ? xhr : undefined,
-        def = db.schema[name], 
-        opts = { customD : customData };
-        var baseCons = def && def.connector ? def.connector.constructor : db.constructor.Connector;
-        if(respObj){
-            batchIndex = respObj.index;
-            batch = respObj.batch;
-            req = respObj.resp;
-            argsObj.xhr = req;
-            var res = initCB(db,"connector", def && def.connector ? def.connector : undefined, baseCons.PARSERESPONSE, { argsObj:argsObj, args:[type, name, req, resp, urlObj ? urlObj.qP : undefined, key,customData,undefined,actionName]});
-            if(res){
-                resp = res.data;
-                if(resp instanceof Promise)
-                {
-                    return baseCons.handleParseResponsePromise(db,resp,def,type,data,urlObj,xhr,partialObj,batchIndex,batch,resolve,reject,opts,argsObj);
-                }
-                else{
-                    argsObj.payLoad = resp;
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd
+            var resp = resp ? resp : xhrResp ? xhrResp.data : undefined, 
+            req, 
+            batchIndex, 
+            batch, 
+            xhr = xhrResp ? xhrResp.xhr : undefined,
+            req = xhr ? xhr : undefined,
+            def = db.schema[name], 
+            opts = {
+                customD : customData
+            };
+            var baseCons = def && def.connector ? def.connector.constructor : db.constructor.Connector;
+            if(respObj){
+                batchIndex = respObj.index;
+                batch = respObj.batch;
+                req = respObj.resp;
+                argsObj.xhr = req;
+                var res = initCB(db,"connector", def && def.connector ? def.connector : undefined, baseCons.PARSERESPONSE, { argsObj:argsObj, args:[type, name, req, resp, urlObj ? urlObj.qP : undefined, key,customData,undefined,actionName]});
+                if(res){
+                    resp = res.data;
+                    if(resp instanceof Promise)
+                    {
+                        return baseCons.handleParseResponsePromise(db,resp,def,type,data,urlObj,xhr,partialObj,batchIndex,batch,resolve,reject,opts,argsObj);
+                    }
+                    else{
+                        argsObj.payLoad = resp;
+                    }
                 }
             }
+            return this.otherParseRequestPromise(db, resp,def,type,data,urlObj,xhr,partialObj,batchIndex,batch,resolve,reject,customData,partialRef,argsObj,key);
+        //@Slicer.catchAllErrorsStart
+        }catch(err){
+            Dberror.error(db,err);
+            reject(xhrResp ? xhrResp.xhr : undefined)
         }
-        return this.otherParseRequestPromise(db, resp,def,type,data,urlObj,xhr,partialObj,batchIndex,batch,resolve,reject,customData,partialRef,argsObj,key);
+        //@Slicer.catchAllErrorsEnd
     }
     static handleFailure(db, name, type, xhrResp, data, urlObj, resolve, respObj, partialObj,reject,key,customData,code,actionName,argsObj,bObj){
-        var def = db.schema[name],
-        xhr = xhrResp ? xhrResp.xhr : undefined;
-        if(xhr){
-            var resp, 
-            response = xhrResp ? xhrResp.data : undefined;
-            argsObj.payLoad = response;
-        }
-        else if(respObj){
-            var batch, batchIndex;
-            if(bObj){
-                batchIndex = bObj.index;
-                batch = bObj.batch;
+        //@Slicer.catchAllErrorsStart
+        try{
+        //@Slicer.catchAllErrorsEnd
+            var def = db.schema[name],
+            xhr = xhrResp ? xhrResp.xhr : undefined;
+            //@Slicer.developmentStart
+            db.lyte && db.lyte.time(argsObj.__reqId__);
+            //@Slicer.developmentEnd
+            if(xhr){
+                var resp, 
+                response = xhrResp ? xhrResp.data : undefined;
+                argsObj.payLoad = response;
             }
-            db.$.batchResponse[batch][batchIndex] = {code:code, status:"requestFailure", data:respObj};
-            reject({code:code, status:"requestFailure", data:respObj});
+            else if(respObj){
+                var batch, batchIndex;
+                if(bObj){
+                    batchIndex = bObj.index;
+                    batch = bObj.batch;
+                }
+                db.$.batchResponse[batch][batchIndex] = {code:code, status:"requestFailure", data:respObj};
+                reject({code:code, status:"requestFailure", data:respObj});
+            }
+            if(db.responseOnReject){
+                reject(response);
+            }
+            else{
+                reject(xhr);
+            }
+        //@Slicer.catchAllErrorsStart
+        }catch(err){
+            Dberror.error(db,err);
+            reject( xhrResp ? xhrResp.xhr : undefined)
         }
-        reject(response);
+        //@Slicer.catchAllErrorsEnd
     }
 }
 Connector.__lMod = "Connector";

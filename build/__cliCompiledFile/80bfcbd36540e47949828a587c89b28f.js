@@ -1,19 +1,15 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
 import './lyte-menu.js';
-import { LyteUiComponentComponentRegistry, Component } from "../component.js";
 import { prop } from "../../../../@slyte/core/index.js";
-import { arrayUtils, RawComponent } from "../../../../@slyte/component/index.js";
+import { Component, LyteUiComponentComponentRegistry } from "../component.js";
 import $L from "../../../lyte-dom/modules/lyte-dom-utils.js";
 
 /**
  * Renders a tabs component
  * @component lyte-tabs
  * @version 1.0.0
- * @dependencies lyte-menu
- */
-
-/**
- * @domEvents commonEvents keydown, keyup, focus, blur, focusin, focusout 
+ * @utility addTab,deleteTab,openTab,enableTab,disableTab,addCloseIcon,resizeTab
+ * @methods onBeforeOpen,onOpen,onBeforeDelete,onDelete,onBeforeMenuOpen,onMenuOpen,onBeforeMenuCLose,onMenuClose,onMenuClick,onBeforeMenuRender,onAfterMenuRender
  */
 
 class LyteTabsComponent extends Component {
@@ -34,17 +30,15 @@ class LyteTabsComponent extends Component {
            * @componentProperty {string} ltPropHover
            * @version 1.0.0
            * @default lyteTabHover 
-           * @input
            */
-          "ltPropHover": prop("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'hover', 'lyteTabHover' ), 'input' : 'true', 'output' : 'false' }),
+          "ltPropHover": prop("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'hover', 'lyteTabHover' ) }),
 
           /**
            * @componentProperty {string} ltPropActiveClass
            * @version 1.0.0
            * @default lyteTabActive
-           * @input
            */
-          "ltPropActiveClass": prop("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'activeClass', 'lyteTabActive' ), 'input' : 'true', 'output' : 'false' }),
+          "ltPropActiveClass": prop("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'activeClass', 'lyteTabActive' ) }),
           /**
            * @typedef {object} position
            * @property {top|bottom|left|right} pos
@@ -54,17 +48,16 @@ class LyteTabsComponent extends Component {
            * @componentProperty {object} ltPropPosition
            * @version 1.0.0
            * @default { "pos":"top","align":"left" }
-           * @input
            */
-          "ltPropPosition": prop("object", { "default":  { 'pos': 'top', 'align': 'left' }, 'input' : 'true', 'output' : 'false' }),
+          "ltPropPosition": prop("object", { "default":  { 'pos': 'top', 'align': 'left' } }),
 
           /**
            * @componentProperty {boolean} ltPropCloseIcon
            * @version 1.0.0
            * @default false
-           * @input
+           * 
            */
-          "ltPropCloseIcon": prop("boolean", { "default": false, 'input' : 'true', 'output' : 'false' }),
+          "ltPropCloseIcon": prop("boolean", { "default": false }),
           "prevTarget": prop("object", { "default": null }),
 
           /**
@@ -72,43 +65,36 @@ class LyteTabsComponent extends Component {
            * @version 1.0.0
            * @default 400px
            * @suffix px,pt,cm,mm,vh,vm,em
-           * @input
            */
-          "ltPropHeight": prop("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'height', "400px"),'input' : 'true', 'output' : 'false' }),
+          "ltPropHeight": prop("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'height', "400px") }),
 
           /**
            * @componentProperty {string} ltPropType
            * @version 1.0.0
            * @options collapse
-           * @input
            */
-          "ltPropType": prop("string", { 'input' : 'true', 'output' : 'false' }), //options - collapse
+          "ltPropType": prop("string"), //options - collapse
 
           /**
            * @componentProperty {string} ltPropMaxWidth
            * @version 1.0.0
            * @default 90%
-           * @condition ltPropType collapse
            * @suffix px,pt,cm,mm,vh,vm,em,%
-           * @input
            */
-          "ltPropMaxWidth": prop("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'maxWidth', "90%"), 'input' : 'true', 'output' : 'false' }),
+          "ltPropMaxWidth": prop("string", { "default": window._lyteUiUtils.resolveDefaultValue( 'lyte-tabs', 'maxWidth', "90%") }),
 
           /**
            * @componentProperty {string} ltPropTabStyle
            * @version 2.2.7
            * @options nested
-           * @input
            */
-          "ltPropTabStyle": prop("string",{'input' : 'true', 'output' : 'false'}),     //nested
+          "ltPropTabStyle": prop("string"),     //nested
 
           /**
            * @componentProperty {string} ltPropMenuWrapperClass
-           * @condition ltPropType collapse
            * @version 2.2.8
-           * @input
            */
-          "ltPropMenuWrapperClass": prop("string",{'input' : 'true', 'output' : 'false'}),
+          "ltPropMenuWrapperClass": prop("string"),
           /**
            * @typedef {object} currentTab 
            * @property {string} index
@@ -117,19 +103,9 @@ class LyteTabsComponent extends Component {
           /**
            * @componentProperty {currentTab} ltPropCurrentTab
            * @version 3.6.0
-           * @output
            */
-          "ltPropCurrentTab": prop("object",{'input' : 'false', 'output' : 'true'}),
-           /**
-           * @componentProperty {number} ltPropActiveTab
-           * @version 3.110.0
-           * @default 0
-           * @minValue 0
-           * @input 
-           * @output 
-           */
-          "ltPropActiveTab": prop('number',{ 'input' : 'true', 'output' : 'true'}),
-          "ltPropAriaAutoActivation" : prop('boolean',{ "default": false}),
+          "ltPropCurrentTab": prop("object"),
+          "ltPropActiveTab": prop('number'),
           "ltPropHiddenTabs": prop('array', { "default": [] }),
           "ltPropFireOnInit": prop('boolean',{"default": true }),
           "createTabMenu" :  prop( 'boolean', { "default" : false } ),
@@ -139,72 +115,28 @@ class LyteTabsComponent extends Component {
     }
 
     init() {
-        /**
-         * @utility addTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { object } newTab
-         */
         this.$node.addTab = function (newTab) {
             this.component.constructTabs(this, newTab);
             this.component.collapseHeader(true);
         };
-        /**
-         * @utility deleteTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { string } tabId
-         */
         this.$node.deleteTab = function (tabId) {
             this.component.deleteTabContent(tabId, null);
         };
-        /**
-         * @utility openTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { string } tabId
-         */
         this.$node.openTab = function (tabId) {
             this.component.openTabContent(tabId, null);
         };
-        /**
-         * @utility enableTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { string } tabId
-         */
         this.$node.enableTab = function (tabId) {
             this.component.enableTab(tabId);
         };
-        /**
-         * @utility disableTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         * @param { string } tabId
-         */
         this.$node.disableTab = function (tabId) {
             this.component.disableTab(tabId);
         };
-        /**
-         * @utility addCloseIcon
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         */
         this.$node.addCloseIcon = function () {
             this.component.checkCloseIcon();
         };
-        /**
-         * @utility resizeTab
-         * @author santhoshraj.s <santhoshraj.s@zohocorp.com>
-         * @version 1.0.0
-         */
         this.$node.resizeTab = function(){
             this.component.collapseHeader(true);
             this.component.checkHeightOnResize();   
-        }
-        this.$node.reselectTab = function(){
-            var title = this.$node.querySelector('lyte-tab-head').querySelectorAll('lyte-tab-title');
-            this.component.openTabContent(title[this.component.getData('ltPropActive').id].getAttribute('lt-prop-id'));
         }
         this.$node.hideTab = function(id){
             if(!Array.isArray(id)){
@@ -260,7 +192,8 @@ class LyteTabsComponent extends Component {
     }
 
     didConnect() {
-        $L('LYTE-TAB-HEAD',this.$node).attr('role','tablist');
+        $L(this.$node).attr('role','tabs');
+        $L('LYTE-TAB-HEAD').attr('role','tablist');
         this.initialFunc(true);
         this.rendered = true;
     }
@@ -309,10 +242,6 @@ class LyteTabsComponent extends Component {
             var contents = this.getContent( $L('lyte-tab-content',this.$node.querySelector('lyte-tab-body')) );
             var active = this.getData('ltPropActiveClass');
             var pos;
-            var tabpanel = ['top','bottom'];
-            if(!tabpanel.includes(position.pos)){
-                head.setAttribute('aria-orientation','vertical')
-            }
             this.setPosition(position);
             this.checkCloseIcon(head);
 
@@ -356,13 +285,11 @@ class LyteTabsComponent extends Component {
                 if(contents[i]){
                     if (pos && (pos === i || labels[pos].getAttribute('lt-prop-id') === contents[i].id)) {
                         this.executeOnBeforeOpen(labels[pos], labels[pos].getAttribute('lt-prop-id'), null, null);
-                        contents[i].classList.remove('lyteTabHide');
                         contents[i].classList.add('lyteTabShow');
                         this.setData('ltPropCurrentTab', { 'index': pos, 'name': labels[pos].textContent.trim(),'id' : labels[pos].getAttribute('lt-prop-id') });
                         this.executeOnOpen(labels[pos], labels[pos].getAttribute('lt-prop-id'), null, onRender);
                     }
                     else {
-                        contents[i].classList.remove('lyteTabShow');
                         contents[i].classList.add('lyteTabHide');
                         $L(labels[i]).attr('aria-selected',false);
                     }
@@ -412,16 +339,10 @@ class LyteTabsComponent extends Component {
                     if(onRender){
                         window._lyteUiUtils.dispatchEvent('lytetabafterrender', this.$node );
                     }
-                    /**
-                     * This method is invoked after a lyte-tabs component is rendered in the page.
-                     * @method afterRender
-                     * @author santhoshraj.s@zohocorp.com
-                     * @param { object } component
-                    */
                     onRender && this.getMethods('afterRender') && this.executeMethod('afterRender', this.$node);
                 }
                 else {
-                    var cs = window.getComputedStyle(this.$node);
+                    var cs = getComputedStyle(this.$node);
                     var borderDimensionY = ((cs.borderTop ? parseFloat(cs.borderTop) : 0) +
                         (cs.borderBottom ? parseFloat(cs.borderBottom) : 0));
                     var navHeight = this.$node.querySelector('.lyteTabNav').getBoundingClientRect().height;
@@ -455,23 +376,19 @@ class LyteTabsComponent extends Component {
     }
 
     keydown(event) {
-        var menu = $L('#moreMenu',this.$node)[0];
-        if((event.target.tagName !== 'LYTE-TAB-TITLE' && event.target.id !== "moreMenu") || (menu && menu.classList.contains('lyteMenuSelected'))){
+        if(event.target.tagName !== 'LYTE-TAB-TITLE'){
             return;
         }
-        var head = $L('lyte-tab-head',this.$node);
-        var tabs = head.find('lyte-tab-title').not('.lyteTabForceHide').toArray();
-        menu && tabs.push(menu);
-        var curr_tab = head.find('.lyteTabFocused');
-        curr_tab = curr_tab.length === 0 ? head.find('.lyteTabActive') : curr_tab;
+        var tabs = $L(this.$node).find('lyte-tab-title').toArray();
+        var curr_tab = $L(this.$node).find('.lyteTabHover'); //$L(this.$node).find('.lyteTabActive');
+        curr_tab = curr_tab.length === 0 ? $L(this.$node).find('.lyteTabActive') : curr_tab;
         var tabFocus = tabs.indexOf(curr_tab[0]),prevFocus;
+
         var tab_length = tabs.length;
-        var isVertical = head[0].getAttribute('aria-orientation') == 'vertical';
-        if( ( (event.keyCode === 39 || event.keyCode === 37) && !isVertical )  || (isVertical && ( event.keyCode == 40 || event.keyCode == 38 ) ) ){
-            // tabs[tabFocus].setAttribute('tabindex', -1);
+        if (event.keyCode === 39 || event.keyCode === 37){
+            tabs[tabFocus].setAttribute('tabindex', -1);
             $L(tabs[tabFocus]).removeClass('lyteTabHover');
-            $L(tabs[tabFocus]).removeClass('lyteTabFocused');
-            if( event.keyCode === 39  ||  event.keyCode === 40){
+            if(event.keyCode === 39){
                 tabFocus++;
                 if( tabFocus >= tab_length ){
                     tabFocus = 0;
@@ -482,37 +399,11 @@ class LyteTabsComponent extends Component {
                     tabFocus = tab_length - 1;
                 }
             }
-            // tabs[tabFocus].setAttribute('tabindex', 0);
-            tabs[tabFocus].classList.add('lyteTabFocused');
-            if(tabs[tabFocus].id !== "moreMenu"){
-                $L(tabs[tabFocus]).addClass('lyteTabHover')
-            }
-            if( this.getData('ltPropAriaAutoActivation') ){
-                if(tabs[tabFocus].id === "moreMenu"){
-                    menu.click();
-                }else{
-                    this.openTabContent($L(tabs[tabFocus]).attr('lt-prop-id'), event);
-                }
-            }
+            tabs[tabFocus].setAttribute('tabindex', 0);
+            $L(tabs[tabFocus]).addClass('lyteTabHover')
         }
-        if(event.keyCode === 8 && this.getData('ltPropCloseIcon')){
-            this.$node.deleteTab($L(tabs[tabFocus]).attr('lt-prop-id'));
-            var next_tab = tabFocus - 1;
-            if( next_tab < 0 ){
-                next_tab = tabFocus + 1;
-            }
-            if( tabs[ next_tab ] ){
-                this.openTabContent( tabs[ next_tab ], null);
-                tabs[ next_tab ].focus();
-            }
-            return;
-        }
-        if(event.keyCode === 13 && !this.getData('ltPropAriaAutoActivation')){
-            if(tabs[tabFocus].id === "moreMenu"){
-                menu.click();
-            }else{
-                this.openTabContent($L(tabs[tabFocus]).attr('lt-prop-id'), event);
-            }
+        if(event.keyCode === 13){
+            this.openTabContent($L(tabs[tabFocus]).attr('lt-prop-id'), event);
         }
         tabs[tabFocus].focus();  
     }
@@ -617,9 +508,8 @@ class LyteTabsComponent extends Component {
         if (!id) {
             id = this.generateId(title);
         }
-        content = content ? content : '';
-        titleEle.innerHTML = title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        contentEle.innerHTML = content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        titleEle.innerHTML = title;
+        contentEle.innerHTML = content;
         titleEle.setAttribute('lt-prop-id', id);
         //aria-attribute
         titleEle.setAttribute('aria-controls', id);
@@ -656,14 +546,6 @@ class LyteTabsComponent extends Component {
         if (tabId) {
             var returnVal = true;
             if (this.getMethods('onBeforeDelete')) {
-                /**
-                 * This method is invoked whenever you try to delete a tab by clicking on the close icon or by invoking the deleteTab method. If returned false form the method the sepecified tab wont be deleted.
-                 * @method onBeforeDelete
-                 * @author santhoshraj.s@zohocorp.com
-                 * @condition ltPropCloseIcon true
-                 * @param { string } tabId
-                 * @param { object } component
-                */
                 returnVal = this.executeMethod('onBeforeDelete', tabId, this.$node, event);
                 returnVal = returnVal === undefined ? true : returnVal;
             }
@@ -687,14 +569,6 @@ class LyteTabsComponent extends Component {
                 }
             }
             if (this.getMethods('onDelete')) {
-                /**
-                 * This method is invoked after a tab is deleted either by clicking on the close icon or by invoking the deleteTab method
-                 * @method onDelete
-                 * @author santhoshraj.s@zohocorp.com
-                 * @condition ltPropCloseIcon true
-                 * @param { string } tabId
-                 * @param { object } component
-                */
                 this.executeMethod('onDelete', tabId, this.$node, event);
             }
 
@@ -714,7 +588,7 @@ class LyteTabsComponent extends Component {
                         if (headers[v].classList.contains('lyteTabDisable')) {
                             headers[v].classList.remove('lyteTabDisable');
                             if (headers[v].classList.contains('lyteTabForceHide')) {
-                                arrayUtils(this.getData('menuLabels'), "push", this.getMenuLabel(headers[v])/*headers[v].textContent*/);
+                                this.$addon.arrayUtils(this.getData('menuLabels'), "push", this.getMenuLabel(headers[v])/*headers[v].textContent*/);
                             }
                         }
                         break;
@@ -724,7 +598,7 @@ class LyteTabsComponent extends Component {
             if (typeof tabId == "object" && tabId.classList.contains('lyteTabDisable')) {
                 tabId.classList.remove('lyteTabDisable');
                 if (tabId.classList.contains('lyteTabForceHide')) {
-                    arrayUtils(this.getData('menuLabels'), "push", this.getMenuLabel(tabId)/*tabId.textContent*/);
+                    this.$addon.arrayUtils(this.getData('menuLabels'), "push", this.getMenuLabel(tabId)/*tabId.textContent*/);
                 }
             }
         }
@@ -742,7 +616,7 @@ class LyteTabsComponent extends Component {
                             if (headers[v].classList.contains('lyteTabForceHide')) {
                                 var index = this.getData('menuLabels').indexOf(this.getMenuLabel(headers[v])/*headers[v].textContent*/);
                                 if (index != -1) {
-                                    arrayUtils(this.getData('menuLabels'), "removeAt", index, 1);
+                                    this.$addon.arrayUtils(this.getData('menuLabels'), "removeAt", index, 1);
                                 }
                             }
                         }
@@ -755,7 +629,7 @@ class LyteTabsComponent extends Component {
                 if (tabId.classList.contains('lyteTabForceHide')) {
                     var index = this.getData('menuLabels').indexOf(this.getMenuLabel(tabId)/*tabId.textContent*/);
                     if (index != -1) {
-                        arrayUtils(this.getData('menuLabels'), "removeAt", index, 1);
+                        this.$addon.arrayUtils(this.getData('menuLabels'), "removeAt", index, 1);
                     }
                 }
             }
@@ -777,7 +651,7 @@ class LyteTabsComponent extends Component {
                         content.classList.remove('lyteTabHide');
                         content.classList.add('lyteTabShow');
                     }
-                    _this.setData('ltPropCurrentTab', { 'index': window.v, 'name': label.textContent.trim() , 'id' : tabId });
+                    _this.setData('ltPropCurrentTab', { 'index': v, 'name': label.textContent.trim() , 'id' : tabId });
                     _this.executeOnOpen(label, tabId, event);
                     _this.setData('prevTarget', label);
                     
@@ -800,12 +674,6 @@ class LyteTabsComponent extends Component {
                         break;
                     }
                 }
-                if (this.getData('ltPropType') == "collapse" && this.getData('menuLabels').indexOf(this.getMenuLabel(label)/*label.textContent*/) > -1) {
-                    this.collapseHeader(true);
-                }
-
-                $L(label).attr('tabindex',0);
-                $L(label).attr('aria-selected','true');
             }
             if (typeof tabId == "object") {
                 if (tabId.classList.contains(this.getData('ltPropActiveClass'))) {
@@ -836,12 +704,6 @@ class LyteTabsComponent extends Component {
                         _this.setData('ltPropCurrentTab', { 'index': pos, 'name': label.textContent.trim(), 'id' : id });
                         _this.executeOnOpen(tabId, id, event);
                         _this.setData('prevTarget', tabId);
-                        if (_this.getData('ltPropType') == "collapse" && _this.getData('menuLabels').indexOf(_this.getMenuLabel(label)/*label.textContent*/) > -1) {
-                            _this.collapseHeader(true);
-                        }
-
-                        $L(label).attr('tabindex',0);
-                        $L(label).attr('aria-selected','true');
                     })
                 }else{
                     this.hideAll();
@@ -864,15 +726,31 @@ class LyteTabsComponent extends Component {
                     this.setData('ltPropCurrentTab', { 'index': pos, 'name': label.textContent.trim(), 'id': tempid });
                     this.executeOnOpen(tabId, id, event);
                     this.setData('prevTarget', tabId);
-                    if (this.getData('ltPropType') == "collapse" && this.getData('menuLabels').indexOf(this.getMenuLabel(label)/*label.textContent*/) > -1) {
-                        this.collapseHeader(true);
-                    }
-
-                    $L(label).attr('tabindex',0);
-                    $L(label).attr('aria-selected','true');
                 }
+                // this.hideAll();
+
+                // tabId.classList.add(this.getData('ltPropActiveClass'));
+                // if (content) {
+                //     content.classList.remove('lyteTabHide');
+                //     content.classList.add('lyteTabShow');
+                // }
+                // var headers = this.$node.querySelector('lyte-tab-head').querySelectorAll('lyte-tab-title'), pos;
+                // for (var v = 0; v < headers.length; v++) {
+                //     if (headers[v].isEqualNode(label) && headers[v].getAttribute('lt-prop-id') === id) {
+                //         pos = v;
+                //         break;
+                //     }
+                // }
+                // this.setData('ltPropCurrentTab', { 'index': pos, 'name': label.textContent.trim() });
+                // this.executeOnOpen(tabId, id, event);
+                // this.setData('prevTarget', tabId);
             }
-           
+            if (this.getData('ltPropType') == "collapse" && this.getData('menuLabels').indexOf(this.getMenuLabel(label)/*label.textContent*/) > -1) {
+                this.collapseHeader(true);
+            }
+
+            $L(label).attr('tabindex',0);
+            $L(label).attr('aria-selected','true');
         }
        
     }
@@ -934,7 +812,7 @@ class LyteTabsComponent extends Component {
         }
         else {
             $L.fastdom.measure(function () {
-                var cs = window.getComputedStyle(this.$node);
+                var cs = getComputedStyle(this.$node);
                 var borderDimensionY = ((cs.borderTop ? parseFloat(cs.borderTop) : 0) +
                     (cs.borderBottom ? parseFloat(cs.borderBottom) : 0));
                 var navHeight = this.$node.querySelector('.lyteTabNav').getBoundingClientRect().height;
@@ -1078,7 +956,6 @@ class LyteTabsComponent extends Component {
             if (!menu) {
                 var span = document.createElement('span');
                 span.id = "moreMenu";
-                span.tabIndex = '-1';
                 var uniqueSel = this.createUniqueSlector();
                 span.classList.add(uniqueSel);
                 span.appendChild(document.createElement('span'));
@@ -1095,8 +972,8 @@ class LyteTabsComponent extends Component {
                 }
             }
             else/*if(onResize)*/ {
-                arrayUtils(this.getData('menuLabels'), "removeAt", 0, this.getData('menuLabels').length);
-                arrayUtils(this.getData('menuLabels'), "push", menuLabels);
+                this.$addon.arrayUtils(this.getData('menuLabels'), "removeAt", 0, this.getData('menuLabels').length);
+                this.$addon.arrayUtils(this.getData('menuLabels'), "push", menuLabels);
             }
         }
         else {
@@ -1190,16 +1067,6 @@ class LyteTabsComponent extends Component {
         var returnVal;
          if(this.getData('ltPropFireOnInit')){
             if (this.getMethods('onBeforeOpen')) {
-                /**
-                 * It is triggered when the user clicks on a tab but before it is opened.
-                 * @method onBeforeOpen
-                 * @author santhoshraj.s@zohocorp.com
-                 * @param { object } currContent
-                 * @param { object } prevContent
-                 * @param { object } component
-                 * @param { string } clickedTab 
-                 * @param { string } PrevisousTab
-                */
                 returnVal = this.executeMethod('onBeforeOpen', this.$node.querySelector("#" + targetId), this.$node.querySelector("#" + prevEleId), this, clickedItem, this.getData('prevTarget') ? this.getData('prevTarget') : null, event);
             }
         }else{
@@ -1216,14 +1083,6 @@ class LyteTabsComponent extends Component {
         
         if(this.getData('ltPropFireOnInit')){
             if (this.getMethods('onOpen') ) {
-                /**
-                 * It is triggered when the clicked tab is opened.
-                 * @method onOpen
-                 * @author santhoshraj.s@zohocorp.com
-                 * @param { object } currContent
-                 * @param { object } component
-                 * @param { string } clickedTab 
-                */
                 this.executeMethod('onOpen', this.$node.querySelector("#" + targetId), this, clickedItem, event, targetId);
             } 
         }else{
@@ -1281,104 +1140,43 @@ class LyteTabsComponent extends Component {
                     // tab.collapseHeader(true);
                 }
                 if (tab.getMethods('onMenuClick')) {
-                    /**
-                     * This method is called whenever menu item is clicked
-                     * @method onMenuClick
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { string } value
-                     * @param { object } Event
-                     * @param { object } lyteMenu
-                     * @param { object } MenuOriginElement
-                     * @param { object } ClickedItem
-                     * @param { object } tabComponent
-                     * @param { object } ClickedTabTitle
-                    */
                     tab.executeMethod('onMenuClick', value, event, menu, menuOriginElem, subMenu, tab, label);
                 }
             },
             onTabMenuBeforeOpen: function (menu, event, menuOriginElem) {
-                if (this.getMethods('onBeforeMenuOpen')) {
-                    /**
-                     * This method is called before opening menu.
-                     * @method onBeforeMenuOpen
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } Event
-                     * @param { object } MenuOriginElement
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onBeforeMenuOpen', menu, event, menuOriginElem, this);
+                var tab = this;
+                if (tab.getMethods('onBeforeMenuOpen')) {
+                    tab.executeMethod('onBeforeMenuOpen', menu, event, menuOriginElem, tab);
                 }
             },
             onTabMenuOpen: function (menu, event, menuOriginElem) {
-                if (this.getMethods('onMenuOpen')) {
-                    /**
-                     * This method is called when menu is opened.
-                     * @method onMenuOpen
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } Event
-                     * @param { object } MenuOriginElement
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onMenuOpen', menu, event, menuOriginElem, this);
+                var tab = this;
+                if (tab.getMethods('onMenuOpen')) {
+                    tab.executeMethod('onMenuOpen', menu, event, menuOriginElem, tab);
                 }
             },
             onBeforeClose: function (menu, event) {
-                if (this.getMethods('onBeforeMenuClose')) {
-                    /**
-                     * This method is called before closing menu.
-                     * @method onBeforeMenuClose
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } Event
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onBeforeMenuClose', menu, event, this);
+                var tab = this;
+                if (tab.getMethods('onBeforeMenuClose')) {
+                    tab.executeMethod('onBeforeMenuClose', menu, event, tab);
                 }
             },
             onClose: function (menu, event) {
-                if (this.getMethods('onMenuClose')) {
-                    /**
-                     * This method is called when menu is closed.
-                     * @method onMenuClose
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } Event
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onMenuClose', menu, event, this);
+                var tab = this;
+                if (tab.getMethods('onMenuClose')) {
+                    tab.executeMethod('onMenuClose', menu, event, tab);
                 }
             },
             MenubeforeRender: function (menu) {
-                if (this.getMethods('onBeforeMenuRender')) {
-                    /**
-                     * This method is invoked before component is rendered
-                     * @method onBeforeMenuRender
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onBeforeMenuRender', menu, this);
+                var tab = this;
+                if (tab.getMethods('onBeforeMenuRender')) {
+                    tab.executeMethod('onBeforeMenuRender', menu, tab);
                 }
             },
             MenuafterRender: function (menu) {
-                if (this.getMethods('onAfterMenuRender')) {
-                    /**
-                     * This method is invoked after component rendered
-                     * @method onAfterMenuRender
-                     * @author santhoshraj.s@zohocorp.com
-                     * @condition ltPropType collapse
-                     * @param { object } lyteMenu
-                     * @param { object } tabComponent
-                    */
-                    this.executeMethod('onAfterMenuRender', menu, this);
+                var tab = this;
+                if (tab.getMethods('onAfterMenuRender')) {
+                    tab.executeMethod('onAfterMenuRender', menu, tab);
                 }
             }
         }), arg1);
@@ -1403,17 +1201,12 @@ class LyteTabsComponent extends Component {
                     }
                 }
                 comp = null;
+                compHead = null;
                 compHeaders = null;
                 compBody = null;
                 var position = this.getData('ltPropPosition');
-                var tabpanel = ['top','bottom'];
-                if(!tabpanel.includes(position.pos)){
-                    compHead.setAttribute('aria-orientation','vertical')
-                }
-                compHead = null;
                 this.setPosition(position);
                 this.setHeight(position);
-
                 //this.initialFunc(false);
             }.observes('ltPropPosition'),
 
@@ -1421,18 +1214,6 @@ class LyteTabsComponent extends Component {
                 this.$node.style.height = this.getData('ltPropHeight');
                 this.setHeight(this.getData('ltPropPosition'));
             }.observes('ltPropHeight'),
-
-            onTypeChange: function () {
-                var head = this.$node.querySelector('lyte-tab-head');
-                var Tabtitles = this.getHeader(head.querySelectorAll('lyte-tab-title'));
-                if(this.getData('ltPropType') !== "collapse"){
-                    $L(Tabtitles).removeClass('lyteTabForceHide');
-                    $L('#moreMenu',this.$node)[0].remove();
-                    this.setData('createTabMenu', false);
-                }else{
-                    this.$node.resizeTab();
-                }
-            }.observes('ltPropType'),
 
             onHideListChange: function(){
                 var head = this.$node.querySelector('lyte-tab-head');
@@ -1491,8 +1272,8 @@ class LyteTabsComponent extends Component {
     }
 }
 
-LyteTabsComponent._template = "<template tag-name=\"lyte-tabs\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropYield}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"tabYield\"></lyte-yield> </template></template> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{createTabMenu}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-menu id=\"lyteTabMenu\" on-before-open=\"{{method(&quot;onTabMenuBeforeOpen&quot;)}}\" on-open=\"{{method(&quot;onTabMenuOpen&quot;)}}\" on-before-close=\"{{method(&quot;onBeforeClose&quot;)}}\" on-close=\"{{method(&quot;onClose&quot;)}}\" on-menu-click=\"{{method(&quot;onClick&quot;)}}\" before-render=\"{{method('MenubeforeRender')}}\" after-render=\"{{method('MenuafterRender')}}\" lt-prop-yield=\"{{ltPropMenuYield}}\" lt-prop-wrapper-class=\"{{ltPropMenuWrapperClass}}\"> <template is=\"registerYield\" yield-name=\"yield\"> <lyte-yield yield-name=\"tab-menu\" hidden-tabs=\"{{menuLabels}}\"></lyte-yield> </template> </lyte-menu> </template></template> </template>";;
-LyteTabsComponent._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"i","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
+LyteTabsComponent._template = "<template tag-name=\"lyte-tabs\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{ltPropYield}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-yield yield-name=\"tabYield\"></lyte-yield> </template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{createTabMenu}}\" is=\"case\" lc-id=\"lc_id_0\"> <lyte-menu id=\"lyteTabMenu\" on-before-open=\"{{method(&quot;onTabMenuBeforeOpen&quot;)}}\" on-open=\"{{method(&quot;onTabMenuOpen&quot;)}}\" on-before-close=\"{{method(&quot;onBeforeClose&quot;)}}\" on-close=\"{{method(&quot;onClose&quot;)}}\" on-menu-click=\"{{method(&quot;onClick&quot;)}}\" before-render=\"{{method('MenubeforeRender')}}\" after-render=\"{{method('MenuafterRender')}}\" lt-prop-yield=\"{{ltPropMenuYield}}\" lt-prop-wrapper-class=\"{{ltPropMenuWrapperClass}}\"> <template is=\"registerYield\" yield-name=\"yield\"> <lyte-yield yield-name=\"tab-menu\" hidden-tabs=\"{{menuLabels}}\"></lyte-yield> </template> </lyte-menu> </template></template></template>";;
+LyteTabsComponent._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"i","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[2],"c":{"lc_id_0":{"dN":[{"t":"a","p":[1],"cn":"lc_id_0"},{"t":"r","p":[1,1],"dN":[{"t":"a","p":[1]},{"t":"i","p":[1],"in":0}],"dc":[0],"hc":true,"trans":true,"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"cD","p":[1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
 
 LyteTabsComponent._observedAttributes = [
     "ltPropYield",
@@ -1508,7 +1289,6 @@ LyteTabsComponent._observedAttributes = [
     "ltPropMenuWrapperClass",
     "ltPropCurrentTab",
     "ltPropActiveTab",
-    "ltPropAriaAutoActivation",
     "ltPropHiddenTabs",
     "ltPropFireOnInit",
     "createTabMenu",
@@ -1526,19 +1306,11 @@ LyteTabsComponent._observedAttributes = [
 //         return 'lyte_tab_tile_' + _lyteTab._lyteTabTitleId;
 //     }
 // }
-
 /**
- * @customElement lyte-tab-title
- */
-/**
- * @customElement lyte-tab-head
- */
-/**
- * @customElement lyte-tab-body
- */
-
-/**
- * @customElement lyte-tab-content
+ * @customElement lyte-tab-title,
+ *                lyte-tab-head,
+ *                lyte-tab-body,
+ *                lyte-tab-content
  */
 if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
     window._lyteUiUtils.registeredCustomElements['lyte-tab-title'] = true;
@@ -1558,19 +1330,15 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
             var lyteNode = this.$node;
 
             $L(lyteNode).attr('role','tab');
+            $L(lyteNode).attr('tabindex',-1);
+            $L(lyteNode).attr('aria-selected','false');
+
+
             var compEle = lyteNode.closest('lyte-tabs');
-            lyteNode._tabComp = compEle;
-            if(lyteNode.classList.contains(compEle.getData('ltPropActiveClass'))){
-                $L(lyteNode).attr('tabindex',0);
-                $L(lyteNode).attr('aria-selected','true');
-            }else{
-                $L(lyteNode).attr('tabindex',-1);
-                $L(lyteNode).attr('aria-selected','false');
-            }
             if(compEle.getData('ltPropCloseIcon') && compEle.component.rendered){
                 compEle.component.createCloseIcon([lyteNode]);
             }
-            if (compEle && compEle.component  ) {
+            if (compEle && compEle.component && compEle.getData('ltPropType') == "collapse" ) {
 
                 if (compEle.checkTabs) {
                     clearTimeout(compEle.checkTabs);
@@ -1580,7 +1348,7 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
                     lyteNode.closest('lyte-tab-head').classList.add('lyteTabVH');
                 }
                 compEle.checkTabs = setTimeout(function () {
-                    var tab = lyteNode._tabComp;
+                    var tab = lyteNode.closest('lyte-tabs');
                     if (tab) {
                         var comp = tab.component;
                         var head = lyteNode.closest('lyte-tab-head');
@@ -1597,7 +1365,7 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
                                 activeTabIndex = i;
                             }
                         }
-                        if (activeTabIndex == -1 && !titles[0].classList.contains('lyteTabTitleHide') && comp.rendered) {
+                        if (activeTabIndex == -1 && !titles[0].classList.contains('lyteTabTitleHide')) {
                             comp.openTabContent(titles[0], null);
                         }
                         if (totalWidth > compWidth || totalWidth > maxWidth) {
@@ -1616,14 +1384,11 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-title']) {
 
         disconnectedCallback() {
             var lyteNode = this.$node;
-            var compEle = lyteNode._tabComp;
+            var compEle = lyteNode.closest('lyte-tabs');
             if (compEle && compEle.checkTabs) {
                 clearTimeout(compEle.checkTabs);
                 compEle.checkTabs = false;
-                var tabHead = $L('lyte-tab-head',compEle)[0];
-                if(tabHead){
-                    tabHead.classList.remove('lyteTabVH');
-                }
+                lyteNode.closest('lyte-tab-head').classList.remove('lyteTabVH');
             }
         }
 
@@ -1669,14 +1434,6 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-content']) {
 
         connectedCallback() {
             var lyteNode = this.$node;
-            var tab_id = lyteNode.getAttribute('id');
-            var tab = lyteNode.closest('lyte-tabs');
-            var tab_title = tab.querySelector('[lt-prop-id="' + tab_id + '"]');
-            if(tab_title.classList.contains(tab.getData('ltPropActiveClass'))){
-                lyteNode.classList.add('lyteTabShow');
-            }else{
-                lyteNode.classList.add('lyteTabHide');
-            }
             $L(lyteNode).attr('role','tabpanel');
         }
 
@@ -1686,6 +1443,7 @@ if (!window._lyteUiUtils.registeredCustomElements['lyte-tab-content']) {
     }
 
     LyteTabContentCustomElements.options = {clone : {allCallbacks : false}};
+
     LyteTabContentCustomElements.register("lyte-tab-content");
 }
 
@@ -1695,14 +1453,14 @@ window.addEventListener('resize', function () {
         window._lyteUiUtils.tabResizeTriggered = false;
     }
     window._lyteUiUtils.tabResizeTriggered = setTimeout(function () {
-        var tabs = _lyteUiUtils.querySelectorAll('lyte-tabs');
+        var tabs = window._lyteUiUtils.querySelectorAll('lyte-tabs');
         for (var i = 0; i < tabs.length; i++) {
             if (tabs[i].component && tabs[i].component.getData('ltPropType') == "collapse") {
                 tabs[i].component.collapseHeader(true);
             }
             tabs[i].component.checkHeightOnResize();
         }
-        _lyteUiUtils.tabResizeTriggered = false;
+        window._lyteUiUtils.tabResizeTriggered = false;
     }, 50);
 });
 
@@ -1711,16 +1469,16 @@ window.addEventListener('resize', function () {
  * <lyte-tabs>
  *     <template is = "registerYield" yield-name = "tabYield">
  *         <lyte-tab-head>
- *             <lyte-tab-title lt-prop-id = "tab1"> <span> Header 1 </span> </lyte-tab-title>
- *             <lyte-tab-title lt-prop-id = "tab2"> <span> Header 2 </span> </lyte-tab-title>
- *             <lyte-tab-title lt-prop-id = "tab3"> <span> Header 3 </span> </lyte-tab-title>
- *             <lyte-tab-title lt-prop-id = "tab4"> <span> Header 4 </span> </lyte-tab-title>
+ *             <lyte-tab-title lt-prop-id = "tabs1"> Header 1 </lyte-tab-title>
+ *             <lyte-tab-title lt-prop-id = "tabs2"> Header 2 </lyte-tab-title>
+ *             <lyte-tab-title lt-prop-id = "tabs3"> Header 3 </lyte-tab-title>
+ *             <lyte-tab-title lt-prop-id = "tabs4"> Header 4 </lyte-tab-title>
  *         </lyte-tab-head>
  *         <lyte-tab-body>
- *             <lyte-tab-content id = "tab1"> <span> Content 1 </span> </lyte-tab-content>
- *             <lyte-tab-content id = "tab2"> <span> Content 2 </span> </lyte-tab-content>
- *             <lyte-tab-content id = "tab3"> <span> Content 3 </span> </lyte-tab-content>
- *             <lyte-tab-content id = "tab4"> <span> Content 4 </span> </lyte-tab-content>
+ *             <lyte-tab-content id = "tabs1"> Content 1 </lyte-tab-content>
+ *             <lyte-tab-content id = "tabs2"> Content 2 </lyte-tab-content>
+ *             <lyte-tab-content id = "tabs3"> Content 3 </lyte-tab-content>
+ *             <lyte-tab-content id = "tabs4"> Content 4 </lyte-tab-content>
  *         </lyte-tab-body>
  *     </template>
  * </lyte-tabs>

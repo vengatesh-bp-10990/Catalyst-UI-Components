@@ -33,6 +33,7 @@
         get commentedMustacheCheck() { return /\\{{.*}}/ }
     
     }
+    Compile._registryNameList = [];
     Compile.getTrimmedContent = function(content, position, node) {
         let dummyContent = content;
         if(node) {
@@ -71,15 +72,39 @@
         helper = {
             name: "concat",
             args: []
-        };
+        },
+        strStack = [],lastAdded,helperStarted;
         for (var i = 0; i < str.length; i++) {
             var j = i;
-            if (str[i - 1] !== "\\" && str[i] === "{" && str[++i] === "{") {
+            if(helperStarted && str[i] === "'"){
+                if(lastAdded === "'" && str[i-1] !== "\\"){
+                    strStack.pop();
+                    lastAdded = undefined;
+                }
+                else if(!strStack.length){
+                    lastAdded = str[i];
+                    strStack.push(lastAdded);
+                }
+            }
+            else if(helperStarted && str[i] === "\""){
+                if(lastAdded === "\"" && str[i-1] !== "\\"){
+                    strStack.pop();
+                    lastAdded = undefined;
+                }
+                else if(!strStack.length){
+                    lastAdded = str[i];
+                    strStack.push(lastAdded);
+                }
+            }
+            else if( ((helperStarted && !strStack.length) || !helperStarted) && str[i-1] !== "\\" && str[i] === "{" && str[++i] === "{"){
                 stack.push('{{');
                 helper.args.push("'" + str.substr(start, j - start) + "'");
                 start = i + 1;
-            } else if (str[i] === "}" && str[++i] === "}" && stack.length) {
+                helperStarted = true;
+            }
+            else if( ((helperStarted && !strStack.length) || !helperStarted) && str[i] === "}" && str[++i] === "}" && stack.length){
                 stack.pop(start);
+                helperStarted = false;
                 var toPush = str.substr(start, j - start);
                 if((toPush.startsWith("'") && toPush.endsWith("'")) || (toPush.startsWith('"') && toPush.endsWith('"'))){
                     console.warn("Rendering string value inside dynamic data (mustache) is depriciated","for the value ",toPush ,"on the attribute value ",str);

@@ -5,8 +5,11 @@ import { Mixin } from "@slyte/core/src/Mixin";
 import { resolvePromises } from "@slyte/core/src/rsvp";
 import { Service } from "@slyte/core/src/service";
 import { CustomValidator } from "@slyte/core/src/CustomValidator";
-import CustomElements from "@slyte/core/src/CustomElements";
-import{ prop, one, many, getNearestApp, getClass, createCustomClass, deepCopyObject} from "@slyte/core/src/lyte-utils";
+import{ prop, one, many, isEntity ,getClass, createCustomClass, deepCopyObject, getModuleInfo, slyteImport} from "@slyte/core/src/lyte-utils";
 import { DataType } from "./src/DataType";
 import { StateHandler } from "./src/stateHandler";
-export{ Lyte, Logger, LyteAddon, Mixin, resolvePromises, CustomValidator, prop, one, many, Service, CustomElements, getNearestApp, DataType, getClass, createCustomClass, StateHandler, deepCopyObject}
+import { I18n } from "@slyte/i18n"
+import { Mutate } from "./src/Mutable";
+import { Immutate } from "./src/Immutable";
+import { IdleTaskScheduler } from "./src/IdleTaskScheduler";
+export{ Lyte, Logger, LyteAddon, Mixin, resolvePromises, CustomValidator, prop, one, many, isEntity ,Service, Mutate, Immutate, DataType, getClass, createCustomClass, StateHandler, deepCopyObject, I18n, getModuleInfo,slyteImport, IdleTaskScheduler};
