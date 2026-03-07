@@ -91,13 +91,11 @@ __webpack_require__.r(__webpack_exports__);
 class ZcatAppComponentRegistry extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_1__.ComponentRegistry{
     constructor(){
         super();
-        console.log('[ZCAT] ZcatAppComponentRegistry created. LyteUiComp._instanceList:', _node_modules_zoho_lyte_ui_component_components_component_js__WEBPACK_IMPORTED_MODULE_0__.LyteUiComponentComponentRegistry._instanceList);
     }
     lookups(){
         return []
     }
     addRegistries() {
-        console.log('[ZCAT] addRegistries called. LyteUiComp._instanceList:', _node_modules_zoho_lyte_ui_component_components_component_js__WEBPACK_IMPORTED_MODULE_0__.LyteUiComponentComponentRegistry._instanceList);
         return _node_modules_zoho_lyte_ui_component_components_component_js__WEBPACK_IMPORTED_MODULE_0__.LyteUiComponentComponentRegistry._instanceList;
     }
 
