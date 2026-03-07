@@ -111,6 +111,7 @@ class CheckboxComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPOR
       self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { default: this }),
       checkboxObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
         default: {
+          variant: 'primary',
           label: 'Accept terms & conditions',
           checked: false,
           size: 'default',
@@ -140,34 +141,34 @@ class CheckboxComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPOR
       }),
       // All Variants tab objects
       varUncheckedObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Unchecked option', checked: false }
+        default: { variant: 'primary', label: 'Unchecked option', checked: false }
       }),
       varCheckedObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Checked option', checked: true }
+        default: { variant: 'primary', label: 'Checked option', checked: true }
       }),
       varPartialObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Partial selection', partial: true }
+        default: { variant: 'primary', label: 'Partial selection', partial: true }
       }),
       varNoLabelObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { checked: true }
+        default: { variant: 'primary', checked: true }
       }),
       varSizeDefaultObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Default size', checked: true, size: 'default' }
+        default: { variant: 'primary', label: 'Default size', checked: true, size: 'default' }
       }),
       varSizeSmallObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Small size', checked: true, size: 'small' }
+        default: { variant: 'primary', label: 'Small size', checked: true, size: 'small' }
       }),
       varSizeExsmObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Extra-small', checked: true, size: 'extra-small' }
+        default: { variant: 'primary', label: 'Extra-small', checked: true, size: 'extra-small' }
       }),
       varDisabledObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Disabled', disabled: true }
+        default: { variant: 'primary', label: 'Disabled', disabled: true }
       }),
       varDisabledCheckedObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Disabled checked', checked: true, disabled: true }
+        default: { variant: 'primary', label: 'Disabled checked', checked: true, disabled: true }
       }),
       varDisabledPartialObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { label: 'Disabled partial', partial: true, disabled: true }
+        default: { variant: 'primary', label: 'Disabled partial', partial: true, disabled: true }
       }),
       jsCodeSnippet: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { default: { code: '' } }),
       slyteCodeSnippet: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { default: { code: '' } }),
@@ -181,6 +182,7 @@ class CheckboxComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPOR
     return Object.assign(super.methods({
       resetCustomization() {
         this.setData('checkboxObj', {
+          variant: 'primary',
           label: 'Accept terms & conditions',
           checked: false,
           size: 'default',

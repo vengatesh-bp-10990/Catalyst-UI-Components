@@ -348,7 +348,7 @@ let LyteTableSortableMixin = createCustomClass(function(arg1, overrides, LyteTab
 });
 
 LyteTableSortableMixin.register({
-    hash: "LyteTableSortableMixin_4",
+    hash: "LyteTableSortableMixin_5",
     refHash: "@zoho/lyte-ui-component_3"
 });
 

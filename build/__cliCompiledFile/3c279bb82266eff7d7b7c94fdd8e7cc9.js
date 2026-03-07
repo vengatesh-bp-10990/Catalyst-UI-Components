@@ -92,6 +92,7 @@ class CheckboxComp extends Component {
       self: prop('object', { default: this }),
       checkboxObj: prop('object', {
         default: {
+          variant: 'primary',
           label: 'Accept terms & conditions',
           checked: false,
           size: 'default',
@@ -121,34 +122,34 @@ class CheckboxComp extends Component {
       }),
       // All Variants tab objects
       varUncheckedObj: prop('object', {
-        default: { label: 'Unchecked option', checked: false }
+        default: { variant: 'primary', label: 'Unchecked option', checked: false }
       }),
       varCheckedObj: prop('object', {
-        default: { label: 'Checked option', checked: true }
+        default: { variant: 'primary', label: 'Checked option', checked: true }
       }),
       varPartialObj: prop('object', {
-        default: { label: 'Partial selection', partial: true }
+        default: { variant: 'primary', label: 'Partial selection', partial: true }
       }),
       varNoLabelObj: prop('object', {
-        default: { checked: true }
+        default: { variant: 'primary', checked: true }
       }),
       varSizeDefaultObj: prop('object', {
-        default: { label: 'Default size', checked: true, size: 'default' }
+        default: { variant: 'primary', label: 'Default size', checked: true, size: 'default' }
       }),
       varSizeSmallObj: prop('object', {
-        default: { label: 'Small size', checked: true, size: 'small' }
+        default: { variant: 'primary', label: 'Small size', checked: true, size: 'small' }
       }),
       varSizeExsmObj: prop('object', {
-        default: { label: 'Extra-small', checked: true, size: 'extra-small' }
+        default: { variant: 'primary', label: 'Extra-small', checked: true, size: 'extra-small' }
       }),
       varDisabledObj: prop('object', {
-        default: { label: 'Disabled', disabled: true }
+        default: { variant: 'primary', label: 'Disabled', disabled: true }
       }),
       varDisabledCheckedObj: prop('object', {
-        default: { label: 'Disabled checked', checked: true, disabled: true }
+        default: { variant: 'primary', label: 'Disabled checked', checked: true, disabled: true }
       }),
       varDisabledPartialObj: prop('object', {
-        default: { label: 'Disabled partial', partial: true, disabled: true }
+        default: { variant: 'primary', label: 'Disabled partial', partial: true, disabled: true }
       }),
       jsCodeSnippet: prop('object', { default: { code: '' } }),
       slyteCodeSnippet: prop('object', { default: { code: '' } }),
@@ -162,6 +163,7 @@ class CheckboxComp extends Component {
     return Object.assign(super.methods({
       resetCustomization() {
         this.setData('checkboxObj', {
+          variant: 'primary',
           label: 'Accept terms & conditions',
           checked: false,
           size: 'default',

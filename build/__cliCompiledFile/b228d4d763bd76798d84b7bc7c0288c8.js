@@ -1,4 +1,5 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
+import './zcat-hovercard.js';
 import './zcat-icon.js';
 import "../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-radiobutton.js";
 import "../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-svg.js";

@@ -11,11 +11,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatRadio": () => (/* binding */ ZcatRadio)
 /* harmony export */ });
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_text_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-text.js */ 53043315);
-/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_radiobutton_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-radiobutton.js */ 43318909);
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
-/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
+/* harmony import */ var _zcat_hovercard_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-hovercard.js */ 61083875);
+/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_text_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-text.js */ 53043315);
+/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_radiobutton_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-radiobutton.js */ 43318909);
+/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
+/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
 
 
 
@@ -23,7 +24,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class ZcatRadio extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_3__.Component {
+
+class ZcatRadio extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.Component {
   constructor() {
     super();
   }
@@ -43,10 +45,10 @@ class ZcatRadio extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
       name: '',
     };
     return Object.assign(super.data({
-      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object'),
-      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object'),
-      key: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('string'),
-      formData: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object', { watch: true })
+      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object'),
+      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object'),
+      key: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('string'),
+      formData: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { watch: true })
     }), arg1);
   }
 

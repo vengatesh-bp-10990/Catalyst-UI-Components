@@ -274,7 +274,12 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
   static actions(arg1) {
     return Object.assign(super.actions({
       changeInputVariant(e) {
-        this.$app.objectUtils(this.getData('inputObj'), 'add', 'type', e.target.value);
+        let inputObj = this.getData('inputObj');
+        this.$app.objectUtils(inputObj, 'add', 'type', e.target.value);
+        if (e.target.value === 'password') {
+          this.$app.objectUtils(inputObj, 'delete', 'iconRight');
+          this.setData('showIconRightRow', false);
+        }
         this.constructCodeSnippet();
       },
       changeInputSize(e) {

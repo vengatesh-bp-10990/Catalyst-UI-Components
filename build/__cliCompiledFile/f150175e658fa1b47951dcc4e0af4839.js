@@ -1,4 +1,5 @@
 import { _defineProperty } from "@slyte/core/src/lyte-utils";
+import './zcat-hovercard.js';
 import './zcat-icon.js';
 import './zcat-input.js';
 import './zcat-dropdown.js';

@@ -194,6 +194,8 @@ class ButtonComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTE
           "disabled": false,
           "loading": false,
           "type": "",
+          "icon": null,
+          "menu": null,
           "callback": { "name": "" }
         });
         // Reset toggle prop objects
@@ -227,8 +229,20 @@ class ButtonComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTE
         let btnObj = this.getData('btnStyles');
         if (checked) {
           this.$app.objectUtils(btnObj, 'add', 'type', 'split');
+          this.$app.objectUtils(btnObj, 'add', 'id', 'split-btn-demo');
+          this.$app.objectUtils(btnObj, 'add', 'icon', { position: 'left', name: 'plus', strokeWidth: 1.3 });
+          this.$app.objectUtils(btnObj, 'add', 'menu', {
+            list: [
+              { label: 'Edit', icon: { position: 'left', name: 'edit', stroke: 'var(--zcat-menuList-icon-active)', strokeWidth: 1.3 } },
+              { label: 'Duplicate', icon: { position: 'left', name: 'copy', stroke: 'var(--zcat-menuList-icon-active)', strokeWidth: 1.3 } },
+              { label: 'Delete', icon: { position: 'left', name: 'delete', stroke: 'var(--zcat-menuList-icon-active)', strokeWidth: 1.3 } }
+            ]
+          });
         } else {
           this.$app.objectUtils(btnObj, 'add', 'type', '');
+          this.$app.objectUtils(btnObj, 'add', 'icon', null);
+          this.$app.objectUtils(btnObj, 'add', 'menu', null);
+          this.$app.objectUtils(btnObj, 'delete', 'id');
         }
         this.constructCodeSnippet();
       },
