@@ -5,11 +5,13 @@ import { LyteUiComponentComponentRegistry } from "../node_modules/@zoho/lyte-ui-
 class ZcatAppComponentRegistry extends ComponentRegistry{
     constructor(){
         super();
+        console.log('[ZCAT] ZcatAppComponentRegistry created. LyteUiComp._instanceList:', LyteUiComponentComponentRegistry._instanceList);
     }
     lookups(){
         return []
     }
     addRegistries() {
+        console.log('[ZCAT] addRegistries called. LyteUiComp._instanceList:', LyteUiComponentComponentRegistry._instanceList);
         return LyteUiComponentComponentRegistry._instanceList;
     }
 
