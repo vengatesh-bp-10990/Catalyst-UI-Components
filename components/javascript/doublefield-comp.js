@@ -306,8 +306,8 @@ class ZcatDoubleField extends _node_modules_slyte_component_index_js__WEBPACK_IM
 
 		// To set the size for the seperate inputs 
 		const zcatProp = this.getData('zcatProp');
-		this.$addon.objectUtils(zcatProp, "add", "fieldList[0].fieldObj.size", zcatProp.size);
-		this.$addon.objectUtils(zcatProp, "add", "fieldList[1].fieldObj.size", zcatProp.size);
+		this.$app.objectUtils(zcatProp, "add", "fieldList[0].fieldObj.size", zcatProp.size);
+		this.$app.objectUtils(zcatProp, "add", "fieldList[1].fieldObj.size", zcatProp.size);
 	}
 
     data(arg1) {
@@ -379,12 +379,12 @@ class ZcatDoubleField extends _node_modules_slyte_component_index_js__WEBPACK_IM
 		const zcatProp = this.getData('zcatProp');
 			if(zcatProp.isOptional){
 				if(!zcatProp.label){
-					this.$addon.objectUtils(zcatProp, "add", "fieldList[0].fieldObj.isOptional", true);
-					this.$addon.objectUtils(zcatProp, "add", "fieldList[1].fieldObj.isOptional", true);
+					this.$app.objectUtils(zcatProp, "add", "fieldList[0].fieldObj.isOptional", true);
+					this.$app.objectUtils(zcatProp, "add", "fieldList[1].fieldObj.isOptional", true);
 				}
 				else{
-					this.$addon.objectUtils(zcatProp, "delete", "fieldList[0].fieldObj.isOptional");
-					this.$addon.objectUtils(zcatProp, "delete", "fieldList[1].fieldObj.isOptional");
+					this.$app.objectUtils(zcatProp, "delete", "fieldList[0].fieldObj.isOptional");
+					this.$app.objectUtils(zcatProp, "delete", "fieldList[1].fieldObj.isOptional");
 				}
 		}
 	}

@@ -214,7 +214,7 @@ class ZcatCards extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
 
         if (zcatProp && value) {
           // Update the zcatProp object when a value is selected
-          this.$addon.objectUtils(zcatProp, 'add', 'selected', value);
+          this.$app.objectUtils(zcatProp, 'add', 'selected', value);
         }
 
         if (zcatProp && key) {
@@ -236,7 +236,7 @@ class ZcatCards extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
           const selectedValue = isChecked ? value : '';
           const keyValue = isChecked ? value.checked : '';
 
-          this.$addon.objectUtils(prop, 'add', 'selected', selectedValue);
+          this.$app.objectUtils(prop, 'add', 'selected', selectedValue);
           //   self.setData(prop.key, keyValue);
         }
 
@@ -265,7 +265,7 @@ class ZcatCards extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
       const zcatProp = this.getData('zcatProp');
       const formData = this.getData('formData');
       const key = this.getData('key');
-      this.$addon.objectUtils(zcatProp, 'add', 'selected', formData[key]);
+      this.$app.objectUtils(zcatProp, 'add', 'selected', formData[key]);
     }
     return Object.assign(super.observers({
       userObjToZcatProp: userObjToZcatProp.observes('formData.*'), // No I18N

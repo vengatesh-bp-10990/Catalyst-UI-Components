@@ -92,10 +92,10 @@ class ZcatDropdown extends Component {
         const zcatProp = this.getData('zcatProp');
           const errorObject = this.getData('errorObj');
         if(this.$node.querySelector('lyte-dropdown').getData('ltPropSelected').length > 0){
-          // this.$addon.objectUtils(zcatProp, "delete", "errorMessage");
+          // this.$app.objectUtils(zcatProp, "delete", "errorMessage");
           // this.setData('errorMessage', '');
           if(errorObject){
-              this.$addon.objectUtils(errorObject, "delete", zcatProp.key);
+              this.$app.objectUtils(errorObject, "delete", zcatProp.key);
           }
           else if(this.getData('errorMessage')){
               this.setData('errorMessage', '');
@@ -110,10 +110,10 @@ class ZcatDropdown extends Component {
         const zcatProp = this.getData('zcatProp');
           const errorObject = this.getData('errorObj');
         if(this.$node.querySelector('lyte-dropdown').getData('ltPropSelectedList').length > 0){
-          // this.$addon.objectUtils(zcatProp, "delete", "errorMessage");
+          // this.$app.objectUtils(zcatProp, "delete", "errorMessage");
           // this.setData('errorMessage', '');
           if(errorObject){
-              this.$addon.objectUtils(errorObject, "delete", zcatProp.key);
+              this.$app.objectUtils(errorObject, "delete", zcatProp.key);
           }
           else if(this.getData('errorMessage')){
               this.setData('errorMessage', '');
@@ -128,10 +128,10 @@ class ZcatDropdown extends Component {
         const zcatProp = this.getData('zcatProp');
           const errorObject = this.getData('errorObj');
         if(this.$node.querySelector('lyte-dropdown').getData('ltPropSelectedList').length > 0){
-          // this.$addon.objectUtils(zcatProp, "delete", "errorMessage");
+          // this.$app.objectUtils(zcatProp, "delete", "errorMessage");
           // this.setData('errorMessage', '');
           if(errorObject){
-              this.$addon.objectUtils(errorObject, "delete", zcatProp.key);
+              this.$app.objectUtils(errorObject, "delete", zcatProp.key);
           }
           else if(this.getData('errorMessage')){
               this.setData('errorMessage', '');
@@ -186,6 +186,11 @@ class ZcatDropdown extends Component {
           this.executeMethod('onBeforeHide', param1, param2, param3);
         }
       }, 
+      defaultOnBeforeSelect(param1, param2, param3) {        
+        if (this.getMethods('onBeforeSelect')) {
+          this.executeMethod('onBeforeSelect', param1, param2, param3);
+        }
+      },
       defaultOnBeforeAdd(param1, param2, param3) {        
         if (this.getMethods('onBeforeAdd')) {
           this.executeMethod('onBeforeAdd', param1, param2, param3);

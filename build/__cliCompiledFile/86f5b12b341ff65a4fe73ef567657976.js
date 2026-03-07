@@ -112,7 +112,7 @@ class ZcatFileupload extends Component {
           defaultErrMsg = type.type;
         }
 
-        this.$addon.objectUtils(zcatProp, 'add', 'errorMessage', defaultErrMsg);
+        this.$app.objectUtils(zcatProp, 'add', 'errorMessage', defaultErrMsg);
 
         if (this.getMethods('onReject')) {
           this.executeMethod('onReject', param1, param2, param3);
@@ -121,12 +121,12 @@ class ZcatFileupload extends Component {
       defaultOnSelect(fileObj, param1, param2, param3) {
         const zcatProp = this.getData('zcatProp');
         // if (zcatProp.errorMessage) {
-        //   // this.$addon.objectUtils(zcatProp, 'delete', 'errorMessage');
+        //   // this.$app.objectUtils(zcatProp, 'delete', 'errorMessage');
         //   // this.setData('errorMessage', '');          
         // }
         const errorObject = this.getData('errorObj');
         if(errorObject){
-            this.$addon.objectUtils(errorObject, "delete", zcatProp.key);
+            this.$app.objectUtils(errorObject, "delete", zcatProp.key);
         }
         else if(this.getData('errorMessage')){
             this.setData('errorMessage', '');

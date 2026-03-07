@@ -591,6 +591,17 @@ class ZcatTable extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
 
   static methods(arg1) {
     return Object.assign(super.methods({
+      onPerPageChange(event, lyteElement) {
+        const selected = lyteElement ? lyteElement.getData('ltPropSelected') : event;
+        const self = this.getData('self');
+        const zcatProp = this.getData('zcatProp');
+        if (zcatProp && zcatProp.pagination) {
+          this.setData('zcatProp.pagination.perPage', selected);
+        }
+        if (self && this.getMethods('onPerPageChange')) {
+          self.executeMethod('onPerPageChange', selected);
+        }
+      },
       tablePaginationChangeMethod(value) {
         // update the selected value
         this.setData('tablePaginationDropdownSelected', value);
@@ -660,11 +671,11 @@ class ZcatTable extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
           const testcheckedList = this.getData('checkedList');
 
           if (isChecked) {
-            this.$addon.arrayUtils(testcheckedList, 'push', checkboxTableBody);
+            this.$app.arrayUtils(testcheckedList, 'push', checkboxTableBody);
             checkboxTableBody.isAllRowSelect = true;
           } else {
             let itemIndex = testcheckedList.findIndex((item) => item.id === checkboxTableBody.id);
-            this.$addon.arrayUtils(testcheckedList, 'removeAt', itemIndex, 1);
+            this.$app.arrayUtils(testcheckedList, 'removeAt', itemIndex, 1);
             checkboxTableBody.isAllRowSelect = false;
           }
 
@@ -699,10 +710,10 @@ class ZcatTable extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
     //     const testrowData = this.getData('zcatProp.body');
     //     const testcheckedList = this.getData('checkedList');
     //       if (isChecked) {
-    //         this.$addon.arrayUtils(testcheckedList, 'push', checkboxTableBody);
+    //         this.$app.arrayUtils(testcheckedList, 'push', checkboxTableBody);
     //       } else{
     //         let itemIndex = testcheckedList.findIndex((item) => item.id === checkboxTableBody.id);
-    //         this.$addon.arrayUtils(testcheckedList, 'removeAt', itemIndex, 1)
+    //         this.$app.arrayUtils(testcheckedList, 'removeAt', itemIndex, 1)
     //       }
           
     //       // console.log(testcheckedList)
@@ -756,7 +767,7 @@ class ZcatTable extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
 				const self = this.getData('self');
 				if (value) {
 					const prop = this.getData('zcatProp');
-					this.$addon.objectUtils(prop, 'add', 'selected', value);
+					this.$app.objectUtils(prop, 'add', 'selected', value);
 					if (prop.key) {
 					self.setData(prop.key, value);
 					}

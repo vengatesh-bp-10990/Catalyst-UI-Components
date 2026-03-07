@@ -25,6 +25,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const ICON_OPTIONS = [
+  'search','edit','plus','minus','close','tick','delete','copy',
+  'eye-open','eye-close','upload-cloud','download-cloud','folder',
+  'user','star','refresh','settings','notification','link','filter',
+  'calendar','clock','phone','info','alert-circle','globe','edit-pencil'
+];
+
 class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.Component {
   constructor() {
     super();
@@ -36,88 +43,77 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
 
   constructCodeSnippet() {
     let inputObj = this.getData('inputObj') || {};
-    let defaults = { id: 'input-id', type: 'text', width: '100%', size: 'default', placeholder: 'Enter a text', label: 'Label' };
 
-    // --- sLyte tab: template + JS combined ---
-    let inputData = {};
-    inputData.id = inputObj.id || defaults.id;
-    if (inputObj.type && inputObj.type !== defaults.type) { inputData.type = inputObj.type; }
-    if (inputObj.width && inputObj.width !== defaults.width) { inputData.width = inputObj.width; }
-    if (inputObj.size && inputObj.size !== defaults.size) { inputData.size = inputObj.size; }
-    if (inputObj.placeholder && inputObj.placeholder !== defaults.placeholder) { inputData.placeholder = inputObj.placeholder; }
-    if (inputObj.label) { inputData.label = inputObj.label; }
-    if (inputObj.disabled) { inputData.disabled = true; }
-    if (inputObj.errorMessage) { inputData.errorMessage = inputObj.errorMessage; }
-
+    // --- sLyte tab ---
     let slyte_code = '<zcat-input\n  self="{{self}}"\n  zcat-prop="{{inputObj}}"\n></zcat-input>';
 
-    // 2. JS tab: data() code
+    // --- JS tab: build minimal inputData showing only non-default values ---
+    let inputData = { id: inputObj.id || 'input-id' };
+    if (inputObj.type && inputObj.type !== 'text') { inputData.type = inputObj.type; }
+    if (inputObj.size && inputObj.size !== 'default') { inputData.size = inputObj.size; }
+    if (inputObj.placeholder) { inputData.placeholder = inputObj.placeholder; }
+    if (inputObj.label) { inputData.label = inputObj.label; }
+    if (inputObj.disabled) { inputData.disabled = true; }
+    if (inputObj.readonly) { inputData.readonly = true; }
+    if (inputObj.isOptional) { inputData.isOptional = true; }
+    if (inputObj.errorMessage) { inputData.errorMessage = inputObj.errorMessage; }
+    if (inputObj.iconLeft) { inputData.iconLeft = inputObj.iconLeft; }
+    if (inputObj.iconRight) { inputData.iconRight = inputObj.iconRight; }
+    if (inputObj.infoIcon) { inputData.infoIcon = inputObj.infoIcon; }
+
     let js_code = 'data() {\n  return {\n    self: prop(\'object\', { default: this }),\n    inputObj: prop("object", {\n      default: ' + JSON.stringify(inputData, null, 6) + '\n    })\n  };\n}';
 
-    // 3. sLyte New tab: attributes + self + inline callback
-    let newSlyteAttrs = [];
-    newSlyteAttrs.push('  self="{{self}}"');
-    newSlyteAttrs.push('  zcat-prop-id="' + (inputObj.id || defaults.id) + '"');
+    // --- sLyte New tab ---
+    let newSlyteAttrs = ['  self="{{self}}"', '  zcat-prop-id="' + (inputObj.id || 'input-id') + '"'];
     if (inputObj.label) { newSlyteAttrs.push('  zcat-prop-label="' + inputObj.label + '"'); }
-    if (inputObj.type && inputObj.type !== defaults.type) { newSlyteAttrs.push('  zcat-prop-type="' + inputObj.type + '"'); }
+    if (inputObj.type && inputObj.type !== 'text') { newSlyteAttrs.push('  zcat-prop-type="' + inputObj.type + '"'); }
     if (inputObj.placeholder) { newSlyteAttrs.push('  zcat-prop-placeholder="' + inputObj.placeholder + '"'); }
-    if (inputObj.size && inputObj.size !== defaults.size) { newSlyteAttrs.push('  zcat-prop-size="' + inputObj.size + '"'); }
-    if (inputObj.width && inputObj.width !== defaults.width) { newSlyteAttrs.push('  zcat-prop-width="' + inputObj.width + '"'); }
+    if (inputObj.size && inputObj.size !== 'default') { newSlyteAttrs.push('  zcat-prop-size="' + inputObj.size + '"'); }
     if (inputObj.disabled) { newSlyteAttrs.push('  zcat-prop-disabled="true"'); }
-    if (inputObj.errorMessage) { newSlyteAttrs.push('  zcat-prop-errorMessage="' + inputObj.errorMessage + '"'); }
-    newSlyteAttrs.push('  zcat-prop-callback-onValueChange="onInputChange"');
-
+    if (inputObj.readonly) { newSlyteAttrs.push('  zcat-prop-readonly="true"'); }
+    if (inputObj.isOptional) { newSlyteAttrs.push('  zcat-prop-is-optional="true"'); }
+    if (inputObj.errorMessage) { newSlyteAttrs.push('  zcat-prop-error-message="' + inputObj.errorMessage + '"'); }
+    if (inputObj.iconLeft) { newSlyteAttrs.push('  zcat-prop-icon-left-position="left"\n  zcat-prop-icon-left-name="' + inputObj.iconLeft.name + '"'); }
+    if (inputObj.iconRight) { newSlyteAttrs.push('  zcat-prop-icon-right-position="right"\n  zcat-prop-icon-right-name="' + inputObj.iconRight.name + '"'); }
+    newSlyteAttrs.push('  zcat-prop-callback-on-value-change="onInputChange"');
     let newSlyte_code = '// Template\n<zcat-input\n' + newSlyteAttrs.join('\n') + '\n></zcat-input>\n\n'
-      + '// Inline JS — callback via self\nstatic methods() {\n  return {\n    onInputChange(value) {\n      console.log("Input changed:", value);\n    }\n  };\n}';
+      + '// JS — callback\nstatic methods() {\n  return {\n    onInputChange(value) {\n      console.log("Input changed:", value);\n    }\n  };\n}';
 
-    // 4. HTML tab: plain HTML
+    // --- HTML tab ---
     let isTextarea = (inputObj.type === 'textarea');
-    let sizeClass = '';
-    let size = inputObj.size || 'default';
-    if (size === 'small') { sizeClass = ' zcat-input-sm'; }
-    else if (size === 'extra-small') { sizeClass = ' zcat-input-exsm'; }
-
+    let sizeClass = inputObj.size === 'small' ? ' zcat-input-sm' : inputObj.size === 'extra-small' ? ' zcat-input-exsm' : '';
+    let disabledAttr = inputObj.disabled ? ' disabled' : '';
+    let readonlyAttr = inputObj.readonly ? ' readonly' : '';
     let htmlParts = [];
     if (inputObj.label) {
-      htmlParts.push('<label class="zcat-input-label">' + inputObj.label + '</label>');
+      let optLabel = inputObj.isOptional ? ' <span class="optional-label">(Optional)</span>' : '';
+      htmlParts.push('<label class="zcat-input-label">' + inputObj.label + optLabel + '</label>');
     }
-    let disabledAttr = inputObj.disabled ? ' disabled' : '';
-    if (isTextarea) {
-      htmlParts.push('<textarea class="zcat-input-el' + sizeClass + '"' +
-        ' placeholder="' + (inputObj.placeholder || '') + '"' +
-        ' style="width: ' + (inputObj.width || '300px') + '"' +
-        disabledAttr + '></textarea>');
+    if (inputObj.iconLeft || inputObj.iconRight) {
+      let iconLeftHtml = inputObj.iconLeft ? '\n  <span class="zcat-input-icon-left"><!-- ' + inputObj.iconLeft.name + ' icon --></span>' : '';
+      let iconRightHtml = inputObj.iconRight ? '\n  <span class="zcat-input-icon-right"><!-- ' + inputObj.iconRight.name + ' icon --></span>' : '';
+      if (isTextarea) {
+        htmlParts.push('<div class="zcat-input-relative-wrapper">' + iconLeftHtml + '\n  <textarea class="zcat-input-el' + sizeClass + '" placeholder="' + (inputObj.placeholder || '') + '"' + disabledAttr + readonlyAttr + '></textarea>' + iconRightHtml + '\n</div>');
+      } else {
+        htmlParts.push('<div class="zcat-input-relative-wrapper">' + iconLeftHtml + '\n  <input type="' + (inputObj.type || 'text') + '" class="zcat-input-el' + sizeClass + '" placeholder="' + (inputObj.placeholder || '') + '"' + disabledAttr + readonlyAttr + ' />' + iconRightHtml + '\n</div>');
+      }
     } else {
-      htmlParts.push('<input type="text" class="zcat-input-el' + sizeClass + '"' +
-        ' placeholder="' + (inputObj.placeholder || '') + '"' +
-        ' style="width: ' + (inputObj.width || '300px') + '"' +
-        disabledAttr + ' />');
+      if (isTextarea) {
+        htmlParts.push('<textarea class="zcat-input-el' + sizeClass + '" placeholder="' + (inputObj.placeholder || '') + '"' + disabledAttr + readonlyAttr + '></textarea>');
+      } else {
+        htmlParts.push('<input type="' + (inputObj.type || 'text') + '" class="zcat-input-el' + sizeClass + '" placeholder="' + (inputObj.placeholder || '') + '"' + disabledAttr + readonlyAttr + ' />');
+      }
     }
-    if (inputObj.errorMessage) {
-      htmlParts.push('<span class="zcat-input-error">' + inputObj.errorMessage + '</span>');
-    }
+    if (inputObj.errorMessage) { htmlParts.push('<span class="zcat-input-error-msg">' + inputObj.errorMessage + '</span>'); }
     let html_code = '<div class="zcat-input-wrapper">\n  ' + htmlParts.join('\n  ') + '\n</div>';
 
-    // 5. CSS tab: relevant CSS classes
-    let css_code = '.zcat-input-wrapper {\n  display: flex;\n  flex-direction: column;\n}\n';
-    if (inputObj.label) {
-      css_code += '.zcat-input-label {\n  font-size: 13px;\n  font-weight: 500;\n  color: var(--zcat-inputField-text-label);\n  margin-bottom: 6px;\n}\n';
-    }
-    if (isTextarea) {
-      css_code += 'textarea.zcat-input-el {\n  height: 80px;\n  padding: 10px 12px;\n  resize: vertical;\n  font-size: 14px;\n  background: var(--zcat-inputField-bg-default);\n  border: var(--zcat-inputField-border-default);\n  border-radius: 8px;\n  color: var(--zcat-body-text-primary);\n}\n';
-    } else {
-      css_code += '.zcat-input-el {\n  height: 36px;\n  padding: 0 12px;\n  font-size: 14px;\n  background: var(--zcat-inputField-bg-default);\n  border: var(--zcat-inputField-border-default);\n  border-radius: 8px;\n  color: var(--zcat-body-text-primary);\n}\n';
-    }
-    css_code += '.zcat-input-el:hover {\n  background: var(--zcat-inputField-bg-hover);\n  border: var(--zcat-inputField-border-hover);\n}\n';
-    css_code += '.zcat-input-el:focus {\n  background: var(--zcat-inputField-bg-active);\n  border: var(--zcat-inputField-border-active);\n}\n';
-    if (sizeClass) {
-      let sizeMap = { ' zcat-input-sm': { h: '30px', fs: '13px', p: '0 10px' }, ' zcat-input-exsm': { h: '24px', fs: '12px', p: '0 8px' } };
-      let s = sizeMap[sizeClass];
-      if (s) { css_code += sizeClass.trim() + ' {\n  height: ' + s.h + ';\n  font-size: ' + s.fs + ';\n  padding: ' + s.p + ';\n}\n'; }
-    }
-    if (inputObj.errorMessage) {
-      css_code += '.zcat-input-error-msg {\n  font-size: 12px;\n  color: var(--zcat-inputField-text-error);\n  margin-top: 4px;\n}';
-    }
+    // --- CSS tab ---
+    let css_code = '.zcat-input-wrapper { display: flex; flex-direction: column; gap: 4px; }\n';
+    if (inputObj.label) { css_code += '.zcat-input-label { font-size: 13px; font-weight: 500; color: var(--zcat-inputField-text-label); }\n'; }
+    css_code += '.zcat-input-el { height: 36px; padding: 0 12px; font-size: 14px;\n  background: var(--zcat-inputField-bg-default);\n  border: var(--zcat-inputField-border-default);\n  border-radius: 8px;\n  color: var(--zcat-body-text-primary);\n}\n';
+    css_code += '.zcat-input-el:hover { background: var(--zcat-inputField-bg-hover); border: var(--zcat-inputField-border-hover); }\n';
+    css_code += '.zcat-input-el:focus { background: var(--zcat-inputField-bg-active); border: var(--zcat-inputField-border-active); }\n';
+    if (inputObj.errorMessage) { css_code += '.zcat-input-error-msg { font-size: 12px; color: var(--zcat-inputField-text-error); }\n'; }
 
     this.setData('slyteCodeSnippet.code', slyte_code);
     this.setData('jsCodeSnippet.code', js_code);
@@ -131,9 +127,9 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
       activeTab: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('string', { default: 'slyte' }),
       pageTab: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('string', { default: 'customize' }),
       self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: this }),
-      inputObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { 
+      inputObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", {
         default: {
-          "id": "input-id", 
+          "id": "input-id",
           "width": "100%",
           "label": "Label",
           "type": "text",
@@ -141,6 +137,10 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
           "size": "default"
         }
       }),
+      iconOptions: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('array', { default: ICON_OPTIONS }),
+      showInfoIconRow: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('boolean', { default: false }),
+      showIconLeftRow: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('boolean', { default: false }),
+      showIconRightRow: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('boolean', { default: false }),
       varDefaultObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { default: { id: 'v-default', placeholder: 'Default size', width: '220px' } }),
       varSmallObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { default: { id: 'v-small', placeholder: 'Small size', size: 'small', width: '220px' } }),
       varExsmObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { default: { id: 'v-exsm', placeholder: 'Extra small', size: 'extra-small', width: '220px' } }),
@@ -162,8 +162,17 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
       toggleLabelObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
         default: { checked: true, size: 'small', callback: { name: 'onToggleLabel' } }
       }),
-      toggleDisabledObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
-        default: { checked: false, size: 'small', callback: { name: 'onToggleDisabled' } }
+      toggleInfoIconObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
+        default: { checked: false, size: 'small', callback: { name: 'onToggleInfoIcon' } }
+      }),
+      toggleIconLeftObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
+        default: { checked: false, size: 'small', callback: { name: 'onToggleIconLeft' } }
+      }),
+      toggleIconRightObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
+        default: { checked: false, size: 'small', callback: { name: 'onToggleIconRight' } }
+      }),
+      toggleOptionalObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
+        default: { checked: false, size: 'small', callback: { name: 'onToggleOptional' } }
       }),
       toggleErrorObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', {
         default: { checked: false, size: 'small', callback: { name: 'onToggleError' } }
@@ -181,16 +190,21 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
       resetInputCustomization() {
         this.setData('inputObj', {
           "id": "input-id",
-          "width": "300px",
+          "width": "100%",
           "label": "Label",
           "type": "text",
           "placeholder": "Enter a text",
           "size": "default"
         });
-        // Reset toggle prop objects
         this.$app.objectUtils(this.getData('toggleLabelObj'), 'add', 'checked', true);
-        this.$app.objectUtils(this.getData('toggleDisabledObj'), 'add', 'checked', false);
+        this.$app.objectUtils(this.getData('toggleInfoIconObj'), 'add', 'checked', false);
+        this.$app.objectUtils(this.getData('toggleIconLeftObj'), 'add', 'checked', false);
+        this.$app.objectUtils(this.getData('toggleIconRightObj'), 'add', 'checked', false);
+        this.$app.objectUtils(this.getData('toggleOptionalObj'), 'add', 'checked', false);
         this.$app.objectUtils(this.getData('toggleErrorObj'), 'add', 'checked', false);
+        this.setData('showInfoIconRow', false);
+        this.setData('showIconLeftRow', false);
+        this.setData('showIconRightRow', false);
         let selects = this.$node.querySelectorAll('.zcat-custom-select');
         if (selects) { selects.forEach(function(s) { s.selectedIndex = 0; }); }
         this.constructCodeSnippet();
@@ -204,12 +218,46 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
         }
         this.constructCodeSnippet();
       },
-      onToggleDisabled(checked) {
+      onToggleInfoIcon(checked) {
+        let inputObj = this.getData('inputObj');
+        this.setData('showInfoIconRow', checked);
+        if (checked) {
+          this.$app.objectUtils(inputObj, 'add', 'infoIcon', {
+            id: inputObj.id + '-info',
+            value: 'Field information tooltip',
+            placement: 'auto'
+          });
+        } else {
+          this.$app.objectUtils(inputObj, 'delete', 'infoIcon');
+        }
+        this.constructCodeSnippet();
+      },
+      onToggleIconLeft(checked) {
+        let inputObj = this.getData('inputObj');
+        this.setData('showIconLeftRow', checked);
+        if (checked) {
+          this.$app.objectUtils(inputObj, 'add', 'iconLeft', { position: 'left', name: 'search', strokeWidth: 1.3 });
+        } else {
+          this.$app.objectUtils(inputObj, 'delete', 'iconLeft');
+        }
+        this.constructCodeSnippet();
+      },
+      onToggleIconRight(checked) {
+        let inputObj = this.getData('inputObj');
+        this.setData('showIconRightRow', checked);
+        if (checked) {
+          this.$app.objectUtils(inputObj, 'add', 'iconRight', { position: 'right', name: 'edit', strokeWidth: 1.3 });
+        } else {
+          this.$app.objectUtils(inputObj, 'delete', 'iconRight');
+        }
+        this.constructCodeSnippet();
+      },
+      onToggleOptional(checked) {
         let inputObj = this.getData('inputObj');
         if (checked) {
-          this.$app.objectUtils(inputObj, 'add', 'disabled', true);
+          this.$app.objectUtils(inputObj, 'add', 'isOptional', true);
         } else {
-          this.$app.objectUtils(inputObj, 'delete', 'disabled');
+          this.$app.objectUtils(inputObj, 'delete', 'isOptional');
         }
         this.constructCodeSnippet();
       },
@@ -227,12 +275,42 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
 
   static actions(arg1) {
     return Object.assign(super.actions({
-      changeInputType(e) {
+      changeInputVariant(e) {
         this.$app.objectUtils(this.getData('inputObj'), 'add', 'type', e.target.value);
         this.constructCodeSnippet();
       },
       changeInputSize(e) {
         this.$app.objectUtils(this.getData('inputObj'), 'add', 'size', e.target.value);
+        this.constructCodeSnippet();
+      },
+      changeTooltipPlacement(e) {
+        let inputObj = this.getData('inputObj');
+        if (inputObj.infoIcon) {
+          this.$app.objectUtils(inputObj.infoIcon, 'add', 'placement', e.target.value);
+        }
+        this.constructCodeSnippet();
+      },
+      changeIconLeft(e) {
+        let inputObj = this.getData('inputObj');
+        if (inputObj.iconLeft) {
+          this.$app.objectUtils(inputObj.iconLeft, 'add', 'name', e.target.value);
+        }
+        this.constructCodeSnippet();
+      },
+      changeIconRight(e) {
+        let inputObj = this.getData('inputObj');
+        if (inputObj.iconRight) {
+          this.$app.objectUtils(inputObj.iconRight, 'add', 'name', e.target.value);
+        }
+        this.constructCodeSnippet();
+      },
+      changeInputState(e) {
+        let inputObj = this.getData('inputObj');
+        let state = e.target.value;
+        this.$app.objectUtils(inputObj, 'delete', 'disabled');
+        this.$app.objectUtils(inputObj, 'delete', 'readonly');
+        if (state === 'disabled') { this.$app.objectUtils(inputObj, 'add', 'disabled', true); }
+        else if (state === 'readonly') { this.$app.objectUtils(inputObj, 'add', 'readonly', true); }
         this.constructCodeSnippet();
       },
       showSlyteTab() { this.setData('activeTab', 'slyte'); },
@@ -265,14 +343,18 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
   }
 }
 
-InputComp._template = "<template tag-name=\"input-comp\"> <div class=\"zcat-page-wrapper\"> <!-- Header --> <div class=\"zcat-page-header\"> <h1 class=\"zcat-page-title\">Text-box</h1> <p class=\"zcat-page-desc\">Text and TextArea input fields for collecting user data.</p> <div class=\"zcat-page-tabs\"> <span class=\"zcat-page-tab {{expHandlers(expHandlers(pageTab,'===','customize'),'?:','active','')}}\" onclick=\"{{action('showCustomizeTab')}}\">Customize</span> <span class=\"zcat-page-tab {{expHandlers(expHandlers(pageTab,'===','variants'),'?:','active','')}}\" onclick=\"{{action('showVariantsTab')}}\">All Variants</span> <span class=\"zcat-page-tab\">Change Logs</span> </div> </div> <!-- Body: Customize Tab --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(pageTab,'===','customize')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-page-body\"> <!-- Left: Preview + Code --> <div class=\"zcat-page-left\"> <h3 class=\"zcat-section-label\">preview</h3> <div class=\"zcat-preview-box\"> <div class=\"zcat-preview-area\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{inputObj}}\"></zcat-input> </div> </div> <!-- Code Tabs --> <div class=\"zcat-code-tabs\"> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','slyte'),'?:','active','')}}\" onclick=\"{{action('showSlyteTab')}}\">sLyte</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','js'),'?:','active','')}}\" onclick=\"{{action('showJsTab')}}\">JS</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','newslyte'),'?:','active','')}}\" onclick=\"{{action('showNewSlyteTab')}}\">sLyte New</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','html'),'?:','active','')}}\" onclick=\"{{action('showHtmlTab')}}\">HTML</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','css'),'?:','active','')}}\" onclick=\"{{action('showCssTab')}}\">CSS</span> </div> <div class=\"zcat-code-panel\"> <div class=\"zcat-code-lines\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','slyte')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{slyteCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','js')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{jsCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','newslyte')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{newSlyteCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','html')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{htmlCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','css')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{cssCodeSnippet.code}}</pre></template></template></div> <span class=\"zcat-code-copy\" onclick=\"{{action('copyCode')}}\" title=\"Copy code\"> <zcat-icon name=\"copy\" width=\"16\" height=\"16\" stroke=\"currentColor\" stroke-width=\"1.3\"></zcat-icon> </span> </div> </div> <!-- Right: Customise --> <div class=\"zcat-page-right\"> <div class=\"zcat-custom-header\"> <h3 class=\"zcat-custom-title\">Customise</h3> <zcat-button self=\"{{self}}\" zcat-prop=\"{{resetButtonObj}}\"></zcat-button> </div> <div class=\"zcat-custom-body\"> <!-- Type --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Type</span> <select onchange=\"{{action('changeInputType',event)}}\" class=\"zcat-custom-select\"> <option value=\"text\">Text</option> <option value=\"textarea\">Textarea</option> </select> </div> <!-- Size --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Size</span> <select onchange=\"{{action('changeInputSize',event)}}\" class=\"zcat-custom-select\"> <option value=\"default\">Default</option> <option value=\"small\">Small</option> <option value=\"extra-small\">Extra-small</option> </select> </div> <!-- Label toggle --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Label</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleLabelObj}}\"></zcat-toggle> </div> <!-- Disabled toggle --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Disabled</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleDisabledObj}}\"></zcat-toggle> </div> <!-- Error toggle --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Show Error</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleErrorObj}}\"></zcat-toggle> </div> </div> </div> </div></template></template><!-- Body: All Variants Tab --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(pageTab,'===','variants')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-page-left\" style=\"flex:1\"> <h3 class=\"zcat-section-label\" style=\"margin-top:4px\">Sizes</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Default</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varDefaultObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Small</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varSmallObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Extra Small</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varExsmObj}}\"></zcat-input> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">Types</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">With Label</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varLabelledObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Textarea</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varTextareaObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Password</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varPasswordObj}}\"></zcat-input> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">States</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Disabled</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varDisabledObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Error</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varErrorObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Read-only</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varReadonlyObj}}\"></zcat-input> </div> </div> </div> </div></template></template></div> </template><style>/* input-comp demo styles are in utilities */\n</style>";;
-InputComp._dynamicNodes = [{"t":"a","p":[1,3,5,1]},{"t":"a","p":[1,3,5,3]},{"t":"s","p":[1,7],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3,3,1,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,3,1,1],"in":10,"sibl":[9],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,1],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,3],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,5],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,7],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,9],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":9,"sibl":[8],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,2],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":8,"sibl":[7],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":7,"sibl":[6],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,4],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":6,"sibl":[5],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,5],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"a","p":[0,3,9,3],"cn":"lc_id_0"},{"t":"cD","p":[0,3,9,3,1],"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"a","p":[0,7,1,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,1,3],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,3,3],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,7,3],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,11,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,11,3],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,15,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,15,3],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,19,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,19,3],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[10,4,3,2,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[1,10],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,1,3,1],"in":8,"sibl":[7],"cn":"lc_id_0"},{"t":"a","p":[0,3,3,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,3,3,1],"in":7,"sibl":[6],"cn":"lc_id_0"},{"t":"a","p":[0,3,5,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,5,3,1],"in":6,"sibl":[5],"cn":"lc_id_0"},{"t":"a","p":[0,7,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,7,1,3,1],"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,3,1],"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"a","p":[0,7,5,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,7,5,3,1],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"a","p":[0,11,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,11,1,3,1],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,11,3,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,11,3,3,1],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,11,5,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,11,5,3,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[8,7,6,5,4,3,2,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
+InputComp._template = "<template tag-name=\"input-comp\"> <div class=\"zcat-page-wrapper\"> <!-- Header --> <div class=\"zcat-page-header\"> <h1 class=\"zcat-page-title\">Text-box</h1> <p class=\"zcat-page-desc\">Text and TextArea input fields for collecting user data.</p> <div class=\"zcat-page-tabs\"> <span class=\"zcat-page-tab {{expHandlers(expHandlers(pageTab,'===','customize'),'?:','active','')}}\" onclick=\"{{action('showCustomizeTab')}}\">Customize</span> <span class=\"zcat-page-tab {{expHandlers(expHandlers(pageTab,'===','variants'),'?:','active','')}}\" onclick=\"{{action('showVariantsTab')}}\">All Variants</span> <span class=\"zcat-page-tab\">Change Logs</span> </div> </div> <!-- Body: Customize Tab --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(pageTab,'===','customize')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-page-body\"> <!-- Left: Preview + Code --> <div class=\"zcat-page-left\"> <h3 class=\"zcat-section-label\">preview</h3> <div class=\"zcat-preview-box\"> <div class=\"zcat-preview-area\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{inputObj}}\"></zcat-input> </div> </div> <!-- Code Tabs --> <div class=\"zcat-code-tabs\"> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','slyte'),'?:','active','')}}\" onclick=\"{{action('showSlyteTab')}}\">sLyte</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','js'),'?:','active','')}}\" onclick=\"{{action('showJsTab')}}\">JS</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','newslyte'),'?:','active','')}}\" onclick=\"{{action('showNewSlyteTab')}}\">sLyte New</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','html'),'?:','active','')}}\" onclick=\"{{action('showHtmlTab')}}\">HTML</span> <span class=\"zcat-code-tab {{expHandlers(expHandlers(activeTab,'===','css'),'?:','active','')}}\" onclick=\"{{action('showCssTab')}}\">CSS</span> </div> <div class=\"zcat-code-panel\"> <div class=\"zcat-code-lines\"> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','slyte')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{slyteCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','js')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{jsCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','newslyte')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{newSlyteCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','html')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{htmlCodeSnippet.code}}</pre></template></template><template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(activeTab,'===','css')}}\" is=\"case\" lc-id=\"lc_id_0\"><pre>{{cssCodeSnippet.code}}</pre></template></template></div> <span class=\"zcat-code-copy\" onclick=\"{{action('copyCode')}}\" title=\"Copy code\"> <zcat-icon name=\"copy\" width=\"16\" height=\"16\" stroke=\"currentColor\" stroke-width=\"1.3\"></zcat-icon> </span> </div> </div> <!-- Right: Customise --> <div class=\"zcat-page-right\"> <div class=\"zcat-custom-header\"> <h3 class=\"zcat-custom-title\">Customise</h3> <zcat-button self=\"{{self}}\" zcat-prop=\"{{resetButtonObj}}\"></zcat-button> </div> <div class=\"zcat-custom-body\"> <!-- Variant (type) --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Variant</span> <select onchange=\"{{action('changeInputVariant',event)}}\" class=\"zcat-custom-select\"> <option value=\"text\">Text</option> <option value=\"textarea\">Textarea</option> <option value=\"password\">Password</option> </select> </div> <!-- Size --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Size</span> <select onchange=\"{{action('changeInputSize',event)}}\" class=\"zcat-custom-select\"> <option value=\"default\">Default</option> <option value=\"small\">Small</option> <option value=\"extra-small\">Extra-small</option> </select> </div> <!-- Label --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Label</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleLabelObj}}\"></zcat-toggle> </div> <!-- Label with Info Icon --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Label with Info Icon</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleInfoIconObj}}\"></zcat-toggle> </div> <!-- Tooltip Placement — shown only when Info Icon is ON --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{showInfoIconRow}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Tooltip Placement</span> <select onchange=\"{{action('changeTooltipPlacement',event)}}\" class=\"zcat-custom-select\"> <option value=\"auto\">Auto</option> <option value=\"top\">Top</option> <option value=\"bottom\">Bottom</option> <option value=\"left\">Left</option> <option value=\"right\">Right</option> </select> </div></template></template><!-- Icon Left --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Icon Left</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleIconLeftObj}}\"></zcat-toggle> </div> <!-- Change Icon Left — shown only when Icon Left is ON --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{showIconLeftRow}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Change Icon</span> <select onchange=\"{{action('changeIconLeft',event)}}\" class=\"zcat-custom-select\"> <option is=\"for\" lyte-for=\"true\" items=\"{{iconOptions}}\" item=\"icon\" index=\"index\" _new=\"true\"></option> </select> </div></template></template><!-- Icon Right --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Icon Right</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleIconRightObj}}\"></zcat-toggle> </div> <!-- Change Icon Right — shown only when Icon Right is ON --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{showIconRightRow}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Change Icon</span> <select onchange=\"{{action('changeIconRight',event)}}\" class=\"zcat-custom-select\"> <option is=\"for\" lyte-for=\"true\" items=\"{{iconOptions}}\" item=\"icon\" index=\"index\" _new=\"true\"></option> </select> </div></template></template><!-- Optional --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Optional</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleOptionalObj}}\"></zcat-toggle> </div> <!-- Input State --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Input State</span> <select onchange=\"{{action('changeInputState',event)}}\" class=\"zcat-custom-select\"> <option value=\"default\">Default</option> <option value=\"disabled\">Disabled</option> <option value=\"readonly\">Read-only</option> </select> </div> <!-- Show Error --> <div class=\"zcat-custom-row\"> <span class=\"zcat-custom-label\">Show Error</span> <zcat-toggle self=\"{{self}}\" zcat-prop=\"{{toggleErrorObj}}\"></zcat-toggle> </div> </div> </div> </div></template></template><!-- Body: All Variants Tab --> <template is=\"switch\" l-c=\"true\" _new=\"true\"><template case=\"{{expHandlers(pageTab,'===','variants')}}\" is=\"case\" lc-id=\"lc_id_0\"><div class=\"zcat-page-left\" style=\"flex:1\"> <h3 class=\"zcat-section-label\" style=\"margin-top:4px\">Sizes</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Default</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varDefaultObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Small</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varSmallObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Extra Small</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varExsmObj}}\"></zcat-input> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">Types</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">With Label</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varLabelledObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Textarea</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varTextareaObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Password</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varPasswordObj}}\"></zcat-input> </div> </div> </div> <h3 class=\"zcat-section-label\" style=\"margin-top:24px\">States</h3> <div class=\"zcat-variants-grid\"> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Disabled</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varDisabledObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Error</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varErrorObj}}\"></zcat-input> </div> </div> <div class=\"zcat-variant-card\"> <div class=\"zcat-variant-card-head\"><span class=\"zcat-variant-card-title\">Read-only</span></div> <div class=\"zcat-variant-card-preview\"> <zcat-input self=\"{{self}}\" zcat-prop=\"{{varReadonlyObj}}\"></zcat-input> </div> </div> </div> </div></template></template></div> </template><style>/* input-comp demo styles are in utilities */\n</style>";;
+InputComp._dynamicNodes = [{"t":"a","p":[1,3,5,1]},{"t":"a","p":[1,3,5,3]},{"t":"s","p":[1,7],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3,3,1,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,3,1,1],"in":16,"sibl":[15],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,1],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,3],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,5],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,7],"cn":"lc_id_0"},{"t":"a","p":[0,3,7,9],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,1],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":15,"sibl":[14],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,2],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":14,"sibl":[13],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,3],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":13,"sibl":[12],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,4],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":12,"sibl":[11],"cn":"lc_id_0"},{"t":"s","p":[0,3,9,1,5],"c":{"lc_id_0":{"dN":[{"t":"tX","p":[0,0],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":11,"sibl":[10],"cn":"lc_id_0"},{"t":"a","p":[0,3,9,3],"cn":"lc_id_0"},{"t":"cD","p":[0,3,9,3,1],"in":10,"sibl":[9],"cn":"lc_id_0"},{"t":"a","p":[0,7,1,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,1,3],"in":9,"sibl":[8],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,3,3],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,7,3],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,11,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,11,3],"in":8,"sibl":[7],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,15,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,15,3],"in":7,"sibl":[6],"cn":"lc_id_0"},{"t":"s","p":[0,7,3,19],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3],"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":6,"sibl":[5],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,22,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,22,3],"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"s","p":[0,7,3,26],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3],"cn":"lc_id_0"},{"t":"a","p":[0,3,1],"cn":"lc_id_0"},{"t":"f","p":[0,3,1],"dN":[{"t":"a","p":[0]},{"t":"tX","p":[0,0]}],"actualTemplate":"<template is=\"for\"><option value=\"{{icon}}\">{{icon}}</option></template>","cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,29,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,29,3],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"s","p":[0,7,3,33],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3],"cn":"lc_id_0"},{"t":"a","p":[0,3,1],"cn":"lc_id_0"},{"t":"f","p":[0,3,1],"dN":[{"t":"a","p":[0]},{"t":"tX","p":[0,0]}],"actualTemplate":"<template is=\"for\"><option value=\"{{icon}}\">{{icon}}</option></template>","cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{}},"hd":true,"co":["lc_id_0"],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,36,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,36,3],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,40,3],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,44,3],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,44,3],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[16,10,9,8,7,5,3,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":1,"sibl":[0]},{"t":"s","p":[1,10],"c":{"lc_id_0":{"dN":[{"t":"a","p":[0,3,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,1,3,1],"in":8,"sibl":[7],"cn":"lc_id_0"},{"t":"a","p":[0,3,3,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,3,3,1],"in":7,"sibl":[6],"cn":"lc_id_0"},{"t":"a","p":[0,3,5,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,3,5,3,1],"in":6,"sibl":[5],"cn":"lc_id_0"},{"t":"a","p":[0,7,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,7,1,3,1],"in":5,"sibl":[4],"cn":"lc_id_0"},{"t":"a","p":[0,7,3,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,7,3,3,1],"in":4,"sibl":[3],"cn":"lc_id_0"},{"t":"a","p":[0,7,5,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,7,5,3,1],"in":3,"sibl":[2],"cn":"lc_id_0"},{"t":"a","p":[0,11,1,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,11,1,3,1],"in":2,"sibl":[1],"cn":"lc_id_0"},{"t":"a","p":[0,11,3,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,11,3,3,1],"in":1,"sibl":[0],"cn":"lc_id_0"},{"t":"a","p":[0,11,5,3,1],"cn":"lc_id_0"},{"t":"cD","p":[0,11,5,3,1],"in":0,"cn":"lc_id_0"}],"cdp":{"t":"a","p":[0]},"dcn":true}},"d":{},"dc":{"lc_id_0":{"dc":[8,7,6,5,4,3,2,1,0],"hc":true,"trans":true}},"hd":true,"co":["lc_id_0"],"hc":true,"trans":true,"in":0},{"type":"dc","trans":true,"hc":true,"p":[1,0]}];;
 
 InputComp._observedAttributes = [
   "activeTab",
   "pageTab",
   "self",
   "inputObj",
+  "iconOptions",
+  "showInfoIconRow",
+  "showIconLeftRow",
+  "showIconRightRow",
   "varDefaultObj",
   "varSmallObj",
   "varExsmObj",
@@ -284,7 +366,10 @@ InputComp._observedAttributes = [
   "varReadonlyObj",
   "resetButtonObj",
   "toggleLabelObj",
-  "toggleDisabledObj",
+  "toggleInfoIconObj",
+  "toggleIconLeftObj",
+  "toggleIconRightObj",
+  "toggleOptionalObj",
   "toggleErrorObj",
   "jsCodeSnippet",
   "slyteCodeSnippet",

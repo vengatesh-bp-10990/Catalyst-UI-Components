@@ -28,7 +28,7 @@ class ZcatCheckbox extends Component {
 
       //   if (zcatProp && value) {
       //     // Update the zcatProp object when a value is selected
-      //     this.$addon.objectUtils(zcatProp, 'add', 'selected', value);
+      //     this.$app.objectUtils(zcatProp, 'add', 'selected', value);
       //   }
 
       //   if (zcatProp && key) {
@@ -49,7 +49,7 @@ class ZcatCheckbox extends Component {
 
           // 1. Update zcatProp.selected when checkbox changes
           if (zcatProp) {
-            this.$addon.objectUtils(zcatProp, "add", "selected", !!value);
+            this.$app.objectUtils(zcatProp, "add", "selected", !!value);
           }
 
           // 2. Sync zcatProp.selected → formData.key (if key exists)
