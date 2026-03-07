@@ -48,6 +48,11 @@ class ZcatAutocomplete extends _node_modules_slyte_component_index_js__WEBPACK_I
 				if (this.getMethods("onSelect")) {
 				this.executeMethod("onSelect", event, lyteElement);
 				}
+			},
+			defaultOnSearch(results, param2, param3) {
+				if (this.getMethods('onSearch')) {
+					this.executeMethod('onSearch', results, param2, param3);
+				}
 			}
 		}), arg1);
 	}

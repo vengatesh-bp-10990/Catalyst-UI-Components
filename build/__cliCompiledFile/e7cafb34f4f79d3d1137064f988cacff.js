@@ -95,7 +95,6 @@ class ZcatButton extends Component {
   static actions(arg1) {
     return Object.assign(super.actions({
       async customLbindForButtonClick(a, b, c, d) {
-        console.log("zcat-button.js----------")
         const self = this.getData('self');
         const prop = this.getData('zcatProp');
         if (prop.callback.name && prop.callback.type !== 'submit') {

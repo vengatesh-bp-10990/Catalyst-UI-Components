@@ -29,6 +29,11 @@ class ZcatAutocomplete extends Component {
 				if (this.getMethods("onSelect")) {
 				this.executeMethod("onSelect", event, lyteElement);
 				}
+			},
+			defaultOnSearch(results, param2, param3) {
+				if (this.getMethods('onSearch')) {
+					this.executeMethod('onSearch', results, param2, param3);
+				}
 			}
 		}), arg1);
 	}

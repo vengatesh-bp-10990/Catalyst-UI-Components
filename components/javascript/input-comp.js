@@ -36,7 +36,7 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
 
   constructCodeSnippet() {
     let inputObj = this.getData('inputObj') || {};
-    let defaults = { id: 'input-id', type: 'text', width: '300px', size: 'default', placeholder: 'Enter a text', label: 'Label' };
+    let defaults = { id: 'input-id', type: 'text', width: '100%', size: 'default', placeholder: 'Enter a text', label: 'Label' };
 
     // --- sLyte tab: template + JS combined ---
     let inputData = {};
@@ -134,7 +134,7 @@ class InputComp extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED
       inputObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { 
         default: {
           "id": "input-id", 
-          "width": "300px",
+          "width": "100%",
           "label": "Label",
           "type": "text",
           "placeholder": "Enter a text",
