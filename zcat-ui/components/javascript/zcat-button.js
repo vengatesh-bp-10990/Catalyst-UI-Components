@@ -84,8 +84,7 @@ class ZcatButton extends Component {
   }
 
   static methods() {
-    return {
-    };
+    return {};
   }
 
   static actions() {

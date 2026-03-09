@@ -28,7 +28,7 @@ class ZcatToggle extends Component {
     return {
       onToggleChecked() {
         let zcatProp = this.getData('zcatProp');
-        if (zcatProp && zcatProp.disabled) { return; }
+        if (zcatProp && zcatProp.disabled) return;
         this.setData('isChecked', true);
         let self = this.getData('self');
         if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {
@@ -37,7 +37,7 @@ class ZcatToggle extends Component {
       },
       onToggleUnchecked() {
         let zcatProp = this.getData('zcatProp');
-        if (zcatProp && zcatProp.disabled) { return; }
+        if (zcatProp && zcatProp.disabled) return;
         this.setData('isChecked', false);
         let self = this.getData('self');
         if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {

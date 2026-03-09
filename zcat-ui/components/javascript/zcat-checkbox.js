@@ -16,6 +16,20 @@ class ZcatCheckbox extends Component {
 
   static methods() {
     return {
+      onSimpleChecked() {
+        let zcatProp = this.getData('zcatProp');
+        let self = this.getData('self');
+        if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {
+          self.executeMethod(zcatProp.callback.name, true, zcatProp);
+        }
+      },
+      onSimpleUnchecked() {
+        let zcatProp = this.getData('zcatProp');
+        let self = this.getData('self');
+        if (self && zcatProp && zcatProp.callback && zcatProp.callback.name) {
+          self.executeMethod(zcatProp.callback.name, false, zcatProp);
+        }
+      },
       async customLbindForCheckbox(methodName, value, ...args) {
         try {
           const zcatProp = this.getData("zcatProp");

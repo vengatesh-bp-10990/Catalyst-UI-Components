@@ -1,6 +1,15 @@
 <template tag-name="zcat-checkbox">
   <div class="zcat-dF zcat-direction-column zcat-gap-10 zcat-w100p">
-    <%if(zcatProp.variant === 'primary'){ %>
+    <%if(!zcatProp.options || !zcatProp.options.length){ %>
+    <lyte-checkbox
+      lt-prop-checked="{{zcatProp.checked ? 'true' : 'false'}}"
+      lt-prop-partial="{{zcatProp.partial ? 'true' : 'false'}}"
+      lt-prop-disabled="{{zcatProp.disabled ? 'true' : 'false'}}"
+      lt-prop-label="{{zcatProp.label || ''}}"
+      on-checked="{{method('onSimpleChecked')}}"
+      on-unchecked="{{method('onSimpleUnchecked')}}"
+    ></lyte-checkbox>
+    <%}else if(zcatProp.variant === 'primary'){ %>
     <lyte-checkbox
       lyte-for="{{zcatProp.options}} as item index"
       lt-prop-type="{{zcatProp.type ? zcatProp.type : 'default'}}"

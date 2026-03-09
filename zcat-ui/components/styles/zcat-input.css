@@ -195,6 +195,7 @@ lyte-input.vertical .lyteLabel {
 } */
 .lyteInputBox:not(.lyteInputDisabled) .lyteField:hover {
   border-color: var(--zcat-inputField-border-hover);
+  background: var(--zcat-inputField-bg-hover);
 }
 .lyteInputBox.lyteInputDisabled .lyteField,
 .lyteInputBox.lyteInputDisabled .lyteField:hover {
@@ -209,6 +210,7 @@ lyte-input.vertical .lyteLabel {
 .lyteInputBox.lyteInputFocus .lyteField {
   border-width: 1px;
   border-color: var(--zcat-inputField-border-active);
+  background: var(--zcat-inputField-bg-active);
   /* box-shadow: var(--zcat-shadow-light-all); */
   border-radius: 6px;
 }

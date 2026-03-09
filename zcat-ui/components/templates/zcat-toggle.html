@@ -1,8 +1,5 @@
 <template tag-name="zcat-toggle">
-  <div class="zcat-toggle-wrap
-    {{zcatProp.size === 'small' ? 'zcat-toggle-sm' : zcatProp.size === 'extra-small' ? 'zcat-toggle-exsm' : ''}}
-    {{zcatProp.disabled ? 'zcat-toggle-disabled' : ''}}
-    {{zcatProp.classCss || ''}}">
+  <div class="zcat-toggle-wrap {{zcatProp.size === 'small' ? 'zcat-toggle-sm' : zcatProp.size === 'extra-small' ? 'zcat-toggle-exsm' : ''}} {{zcatProp.disabled ? 'zcat-toggle-disabled' : ''}} {{zcatProp.classCss || ''}}">
     <lyte-checkbox
       lt-prop-type="switch"
       lt-prop-checked="{{isChecked}}"

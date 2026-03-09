@@ -1,163 +1,172 @@
 /* ==============================
-   ZCAT Toggle (Switch) Component
-   Matches reference design exactly
+   ZCAT Toggle — wraps lyte-checkbox type=switch
+   Overrides lyte's default switch styles with zcat tokens
    ============================== */
 
 zcat-toggle * {
   box-sizing: border-box;
 }
 
+/* Lyte vendor CSS is NOT bundled in the built JS — we must re-declare the
+   rules here so the switch renders correctly. */
+
+/* Hide the native checkbox input that lyte puts inside the switch label */
+zcat-toggle lyte-checkbox input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+  height: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+/* Give lyte-checkbox and its label proper block/flex layout */
+zcat-toggle lyte-checkbox {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+zcat-toggle lyte-checkbox label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  width: 100%;
+}
+
 /* --- Wrapper --- */
 .zcat-toggle-wrap {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  user-select: none;
   font: 400 14px/20px var(--zcat-font-family-primary);
   color: var(--zcat-body-text-primary);
-  line-height: 1;
 }
 
-/* --- Hidden native input --- */
-.zcat-toggle-input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-
-/* --- Track (pill) — 28×18 to match reference --- */
-.zcat-toggle-track {
+/* --- Override lyte switch track ---
+     CRITICAL: must have display:inline-block + position:relative.
+     span is inline by default → width/height are ignored without this.
+     position:relative is needed so .on-btn (position:absolute) anchors here. */
+.zcat-toggle-wrap .lyteCheckSwitch {
+  display: inline-block;
   position: relative;
-  display: inline-flex;
-  align-items: center;
   width: 28px;
   height: 18px;
-  border: 1px solid var(--zcat-toggle-border-default);
   border-radius: 25px;
-  background-color: var(--zcat-toggle-bg-default);
-  flex-shrink: 0;
+  background: var(--zcat-toggle-bg-default);
+  border: 1px solid var(--zcat-toggle-border-default);
   transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+  vertical-align: middle;
 }
 
-/* --- Thumb (circle) — 14×14 to match reference --- */
-.zcat-toggle-thumb {
+/* --- Override lyte switch thumb ---
+     CRITICAL: must have position:absolute + border-radius:50%.
+     Without position:absolute the thumb sits in normal flow (not inside the track). */
+.zcat-toggle-wrap .lyteCheckSwitch .on-btn {
+  display: block;
   position: absolute;
   width: 14px;
   height: 14px;
-  left: 1px;
+  border-radius: 50%;
   top: 0;
   bottom: 0;
   margin: auto;
+  left: 1px;
   background: var(--zcat-toggle-inner-default);
-  border-radius: 50%;
   transition: left 150ms ease-in-out, background 0.15s;
   will-change: left;
 }
 
 /* --- Hover (unchecked) --- */
-.zcat-toggle-wrap:hover .zcat-toggle-track:not(.checked) {
+.zcat-toggle-wrap:hover input[type="checkbox"].on-off-sw:not(:checked) + .lyteCheckSwitch {
   background: var(--zcat-toggle-bg-hover);
   border-color: var(--zcat-toggle-border-hover);
 }
-.zcat-toggle-wrap:hover .zcat-toggle-thumb {
+.zcat-toggle-wrap:hover input[type="checkbox"].on-off-sw:not(:checked) + .lyteCheckSwitch .on-btn {
   background: var(--zcat-toggle-inner-hover);
 }
 
 /* --- Checked state --- */
-.zcat-toggle-track.checked {
-  background: var(--zcat-toggle-bg-clicked);
-  border-color: transparent;
+.zcat-toggle-wrap input[type="checkbox"].on-off-sw:checked + .lyteCheckSwitch {
+  background: var(--zcat-toggle-bg-clicked) !important;
+  border-color: transparent !important;
 }
-.zcat-toggle-track.checked .zcat-toggle-thumb {
-  left: calc(100% - 15px);
+.zcat-toggle-wrap input[type="checkbox"].on-off-sw:checked + .lyteCheckSwitch .on-btn {
+  left: 11px;
   background: var(--zcat-toggle-inner-active);
 }
 
 /* --- Checked hover --- */
-.zcat-toggle-wrap:hover .zcat-toggle-track.checked {
-  background: var(--zcat-toggle-bg-clicked-hover);
+.zcat-toggle-wrap:hover input[type="checkbox"].on-off-sw:checked + .lyteCheckSwitch {
+  background: var(--zcat-toggle-bg-clicked-hover) !important;
 }
 
-/* --- Label --- */
-.zcat-toggle-label {
-  margin-left: 4px;
+/* --- Label (lyte renders it via lyte-label span) --- */
+.zcat-toggle-wrap lyte-checkbox .lyte-label,
+.zcat-toggle-wrap lyte-checkbox .lyteLabel {
   font-size: 14px;
   font-weight: 400;
   color: var(--zcat-body-text-primary);
   line-height: 20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-family: var(--zcat-font-family-primary);
 }
 
 /* ===========================
-   SIZES
+   SIZE — Small
    =========================== */
-/* Small */
-.zcat-toggle-sm .zcat-toggle-track {
+.zcat-toggle-sm .lyteCheckSwitch {
   width: 24px;
   height: 15px;
 }
-.zcat-toggle-sm .zcat-toggle-thumb {
+.zcat-toggle-sm .lyteCheckSwitch .on-btn {
   width: 11px;
   height: 11px;
-  left: 1px;
 }
-.zcat-toggle-sm .zcat-toggle-track.checked .zcat-toggle-thumb {
-  left: calc(100% - 12px);
-}
-.zcat-toggle-sm .zcat-toggle-label {
-  font-size: 13px;
-  line-height: 18px;
-}
-
-/* Extra-small */
-.zcat-toggle-exsm .zcat-toggle-track {
-  width: 20px;
-  height: 13px;
-}
-.zcat-toggle-exsm .zcat-toggle-thumb {
-  width: 9px;
-  height: 9px;
-  left: 1px;
-}
-.zcat-toggle-exsm .zcat-toggle-track.checked .zcat-toggle-thumb {
-  left: calc(100% - 10px);
-}
-.zcat-toggle-exsm .zcat-toggle-label {
-  font-size: 12px;
-  line-height: 16px;
+.zcat-toggle-sm input[type="checkbox"].on-off-sw:checked + .lyteCheckSwitch .on-btn {
+  left: 10px;
 }
 
 /* ===========================
-   DISABLED STATE
+   SIZE — Extra-small
+   =========================== */
+.zcat-toggle-exsm .lyteCheckSwitch {
+  width: 20px;
+  height: 13px;
+}
+.zcat-toggle-exsm .lyteCheckSwitch .on-btn {
+  width: 9px;
+  height: 9px;
+}
+.zcat-toggle-exsm input[type="checkbox"].on-off-sw:checked + .lyteCheckSwitch .on-btn {
+  left: 8px;
+}
+
+/* ===========================
+   DISABLED
    =========================== */
 .zcat-toggle-disabled {
   cursor: not-allowed;
   pointer-events: none;
-  opacity: 1;
 }
-.zcat-toggle-disabled .zcat-toggle-track {
-  border-color: var(--zcat-toggle-border-disabled);
-  background-color: var(--zcat-toggle-bg-disabled);
+.zcat-toggle-disabled .lyteCheckSwitch {
+  background: var(--zcat-toggle-bg-disabled) !important;
+  border-color: var(--zcat-toggle-border-disabled) !important;
 }
-.zcat-toggle-disabled .zcat-toggle-thumb {
-  background: var(--zcat-toggle-inner-disabled);
+.zcat-toggle-disabled .lyteCheckSwitch .on-btn {
+  background: var(--zcat-toggle-inner-disabled) !important;
 }
-.zcat-toggle-disabled .zcat-toggle-track.checked {
-  background: var(--zcat-toggle-bg-clicked-disabled);
-  border-color: transparent;
+.zcat-toggle-disabled input[type="checkbox"].on-off-sw:checked + .lyteCheckSwitch {
+  background: var(--zcat-toggle-bg-clicked-disabled) !important;
+  border-color: transparent !important;
 }
-.zcat-toggle-disabled .zcat-toggle-track.checked .zcat-toggle-thumb {
-  background: var(--zcat-toggle-inner-active-disabled);
+.zcat-toggle-disabled input[type="checkbox"].on-off-sw:checked + .lyteCheckSwitch .on-btn {
+  background: var(--zcat-toggle-inner-active-disabled) !important;
 }
 
-/* ===========================
-   FOCUS VISIBLE
-   =========================== */
-.zcat-toggle-input:focus-visible ~ .zcat-toggle-track {
+/* Remove lyte default box-shadow/outline on focus */
+.zcat-toggle-wrap input[type="checkbox"].on-off-sw:focus + .lyteCheckSwitch {
   box-shadow: none;
+  outline: none;
 }
