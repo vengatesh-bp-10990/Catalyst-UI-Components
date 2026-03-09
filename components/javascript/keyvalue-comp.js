@@ -11,10 +11,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "KeyvalueComp": () => (/* binding */ KeyvalueComp)
 /* harmony export */ });
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _zcat_button_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-button.js */ 28020792);
-/* harmony import */ var _zcat_toggle_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-toggle.js */ 21046360);
-/* harmony import */ var _zcat_keyvalue_pair_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zcat-keyvalue-pair.js */ 72422418);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-icon.js */ 35554276);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_button_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-button.js */ 43360219);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_toggle_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-toggle.js */ 85465283);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_keyvalue_pair_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-keyvalue-pair.js */ 40062378);
 /* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
 /* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
 
@@ -235,17 +235,17 @@ KeyvalueComp._observedAttributes = [
 
 
 KeyvalueComp.register("keyvalue-comp", {
-  hash: "KeyvalueComp_4",
+  hash: "KeyvalueComp_6",
   refHash: "C_zcat-app_app_0"
 });
 
 
 /***/ }),
 
-/***/ 72422418:
-/*!*****************************************************!*\
-  !*** ./components/javascript/zcat-keyvalue-pair.js ***!
-  \*****************************************************/
+/***/ 40062378:
+/*!**************************************************************************!*\
+  !*** ./node_modules/zcat-ui/components/javascript/zcat-keyvalue-pair.js ***!
+  \**************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -253,16 +253,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatKeyvaluePair": () => (/* binding */ ZcatKeyvaluePair)
 /* harmony export */ });
-/* harmony import */ var _zcat_hovercard_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-hovercard.js */ 61083875);
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _zcat_input_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-input.js */ 9513644);
-/* harmony import */ var _zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zcat-dropdown.js */ 71154528);
-/* harmony import */ var _zcat_autocomplete_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./zcat-autocomplete.js */ 41243170);
-/* harmony import */ var _zcat_button_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./zcat-button.js */ 28020792);
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
-/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
-/* harmony import */ var _node_modules_zoho_lyte_ui_component_plugins_lyte_sortable_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/plugins/lyte-sortable.js */ 45109745);
-/* harmony import */ var _node_modules_zoho_lyte_ui_component_plugins_lyte_sortable_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_node_modules_zoho_lyte_ui_component_plugins_lyte_sortable_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _zcat_hovercard_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-hovercard.js */ 5719580);
+/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-icon.js */ 35554276);
+/* harmony import */ var _zcat_input_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-input.js */ 16528657);
+/* harmony import */ var _zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zcat-dropdown.js */ 91662813);
+/* harmony import */ var _zcat_autocomplete_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./zcat-autocomplete.js */ 58976118);
+/* harmony import */ var _zcat_button_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./zcat-button.js */ 43360219);
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../component.js */ 62316197);
+/* harmony import */ var _slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../@slyte/core/index.js */ 60469700);
+/* harmony import */ var _zoho_lyte_ui_component_plugins_lyte_sortable_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../@zoho/lyte-ui-component/plugins/lyte-sortable.js */ 45109745);
+/* harmony import */ var _zoho_lyte_ui_component_plugins_lyte_sortable_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_zoho_lyte_ui_component_plugins_lyte_sortable_js__WEBPACK_IMPORTED_MODULE_7__);
 
 
 
@@ -274,24 +274,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class ZcatKeyvaluePair extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_7__.Component {
+class ZcatKeyvaluePair extends _component_js__WEBPACK_IMPORTED_MODULE_6__.Component {
   constructor() {
     super();
   }
 
   data(arg1) {
     return Object.assign(super.data({
-      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('object', { default: this }), 
+      self: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('object', { default: this }), 
       // zcatProp: prop('object', { default: {} }), 
-      zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)("object", { watch: true }),
-      userObjKeys: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('object', { default: {} }),
-      userObjValues: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('object', { default: {} }),
-      fieldList: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('array', { default: [] }), 
-      featureObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('array', { default: [] }), 
-			userObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('object', { default: {} })	,
-      rowList: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('array', { default: [] }),
-      rowCounter: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('number', {default: 0 }), 
-      reconstructedErrorObject: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('array')
+      zcatProp: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)("object", { watch: true }),
+      userObjKeys: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('object', { default: {} }),
+      userObjValues: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('object', { default: {} }),
+      fieldList: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('array', { default: [] }), 
+      featureObj: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('array', { default: [] }), 
+			userObj: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('object', { default: {} })	,
+      rowList: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('array', { default: [] }),
+      rowCounter: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('number', {default: 0 }), 
+      reconstructedErrorObject: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_8__.prop)('array')
     }), arg1);
   }
 
@@ -949,8 +949,8 @@ ZcatKeyvaluePair._observedAttributes = [
 
 
 ZcatKeyvaluePair.register("zcat-keyvalue-pair", {
-  hash: "ZcatKeyvaluePair_4",
-  refHash: "C_zcat-app_app_0"
+  hash: "ZcatKeyvaluePair_6",
+  refHash: "C_zcat-ui_zcat-ui_2"
 });
 
 

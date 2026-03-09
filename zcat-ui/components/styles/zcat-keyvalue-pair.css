@@ -1,0 +1,78 @@
+.lyteSortableParent .lyteSortablePlaceholder:hover, .lyteSortableParent .lyteSortablePlaceholder{
+    border: 1px solid var(--zcat-keyvalue-drag-border);
+    background: var(--zcat-keyvalue-drag-bg);
+}
+
+/* === Global base styles from reference css/zcat-key-value-pairs.css === */
+table.zcat-label-value-pairs {
+  width: 100%;
+  border: none;
+  border-spacing: 0 10px;
+}
+table.zcat-label-value-pairs td,
+th {
+  border: none;
+  text-align: left;
+}
+table.zcat-label-value-pairs td:nth-child(2),
+table.zcat-label-value-pairs td:nth-child(5),
+table.zcat-label-value-pairs td:nth-child(8) {
+  width: 30px;
+  text-align: center;
+}
+table.zcat-label-value-pairs td:nth-child(3),
+table.zcat-label-value-pairs td:nth-child(6) {
+  padding-right: 20px;
+}
+table.zcat-label-value-pairs .key {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-secondary);
+}
+table.zcat-label-value-pairs .value {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-primary);
+}
+zcat-keyvalue-pair .zcat-key-value-pair-box.invalid, .zcat-key-value-pair-box.invalid {
+  padding-bottom: 20px;
+}
+
+zcat-keyvalue-pair .zcat-key-value-pair-box .zcat-invalid {
+    margin-bottom: 6px;
+}
+
+/* === Global base styles from reference css/zcat-key-value-pairs.css === */
+table.zcat-label-value-pairs {
+  width: 100%;
+  border: none;
+  border-spacing: 0 10px;
+}
+table.zcat-label-value-pairs td,
+th {
+  border: none;
+  text-align: left;
+}
+table.zcat-label-value-pairs td:nth-child(2),
+table.zcat-label-value-pairs td:nth-child(5),
+table.zcat-label-value-pairs td:nth-child(8) {
+  width: 30px;
+  text-align: center;
+}
+table.zcat-label-value-pairs td:nth-child(3),
+table.zcat-label-value-pairs td:nth-child(6) {
+  padding-right: 20px;
+}
+table.zcat-label-value-pairs .key {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-secondary);
+}
+table.zcat-label-value-pairs .value {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-primary);
+}
+zcat-keyvalue-pair .zcat-key-value-pair-box.invalid, .zcat-key-value-pair-box.invalid {
+  padding-bottom: 20px;
+}
+
+zcat-keyvalue-pair .zcat-key-value-pair-box .zcat-invalid {
+    margin-bottom: 6px;
+}

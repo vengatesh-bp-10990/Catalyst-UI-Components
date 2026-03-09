@@ -11,9 +11,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LoaderComp": () => (/* binding */ LoaderComp)
 /* harmony export */ });
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _zcat_button_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-button.js */ 28020792);
-/* harmony import */ var _zcat_loader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-loader.js */ 83674599);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-icon.js */ 35554276);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_button_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-button.js */ 43360219);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_loader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-loader.js */ 96373674);
 /* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
 /* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
 
@@ -179,40 +179,40 @@ LoaderComp._observedAttributes = [
 
 
 LoaderComp.register("loader-comp", {
-  hash: "LoaderComp_4",
+  hash: "LoaderComp_6",
   refHash: "C_zcat-app_app_0"
 });
 
 
 /***/ }),
 
-/***/ 83674599:
-/*!**********************************************!*\
-  !*** ./components/javascript/zcat-loader.js ***!
-  \**********************************************/
+/***/ 96373674:
+/*!*******************************************************************!*\
+  !*** ./node_modules/zcat-ui/components/javascript/zcat-loader.js ***!
+  \*******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatLoader": () => (/* binding */ ZcatLoader)
 /* harmony export */ });
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
-/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../component.js */ 62316197);
+/* harmony import */ var _slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../@slyte/core/index.js */ 60469700);
 
 
 
 
-class ZcatLoader extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_0__.Component {
+class ZcatLoader extends _component_js__WEBPACK_IMPORTED_MODULE_0__.Component {
   constructor() {
     super();
   }
 
   data(arg1) {
     return Object.assign(super.data({
-      self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('object'),
-     	zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('object'),
-      rows: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('number', { default: 12 }),
-      type: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('string', { default: '' })
+      self: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('object'),
+     	zcatProp: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('object'),
+      rows: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('number', { default: 12 }),
+      type: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_1__.prop)('string', { default: '' })
     }), arg1);
   }
 
@@ -238,8 +238,8 @@ ZcatLoader._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[],"cdp":{"t":
 ZcatLoader._observedAttributes = ["self", "zcatProp", "rows", "type"];
 
 ZcatLoader.register("zcat-loader", {
-  hash: "ZcatLoader_4",
-  refHash: "C_zcat-app_app_0"
+  hash: "ZcatLoader_6",
+  refHash: "C_zcat-ui_zcat-ui_2"
 });
 
 

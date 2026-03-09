@@ -11,10 +11,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DropdownComp": () => (/* binding */ DropdownComp)
 /* harmony export */ });
-/* harmony import */ var _zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-dropdown.js */ 71154528);
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _zcat_button_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-button.js */ 28020792);
-/* harmony import */ var _zcat_toggle_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zcat-toggle.js */ 21046360);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-dropdown.js */ 91662813);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_icon_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-icon.js */ 35554276);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_button_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-button.js */ 43360219);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_toggle_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-toggle.js */ 85465283);
 /* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
 /* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
 
@@ -546,7 +546,7 @@ DropdownComp._observedAttributes = [
 
 
 DropdownComp.register("dropdown-comp", {
-  hash: "DropdownComp_4",
+  hash: "DropdownComp_6",
   refHash: "C_zcat-app_app_0"
 });
 

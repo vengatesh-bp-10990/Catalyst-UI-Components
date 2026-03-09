@@ -1,0 +1,480 @@
+form lyte-modal-header .primary-tabs lyte-tab-title{
+    border-bottom: 1px solid var(--zcat-color-primarylight);
+}
+
+
+/* modal tab  */
+
+  .zcat-subheader-tabs {
+    width: 100%;
+    /* height: 48px; */
+    display: flex;
+    gap: 5px;
+    padding: 0 14px;
+    background: var(--zcat-tabs-primary-bg);
+    /* border-bottom: 1px solid var(--zcat-tabs-primary-border-default); */
+  }
+  .zcat-subheader-tabs a {
+    font-size: 14px;
+    font-family: var(--zcat-font-family-primary);
+    color: var(--zcat-tabs-primary-text-default);
+    text-decoration: none;
+    /* padding: 15px 10px; */
+    padding: 0 8px;
+    cursor: pointer;
+    /* height: 48px; */
+    display: inline-flex;
+    font-weight: 400;
+    padding: 4px 8px;
+  }
+  .zcat-subheader-tabs a:hover {
+    cursor: pointer;
+    color: var(---zcat-tabs-primary-text-hover) !important;
+    background: var(--zcat-tabs-primary-bg-hover);
+    border-bottom: 2px solid var(--zcat-tabs-primary-border-hover);
+    border-radius: 4px 4px 0px 0px;
+  }
+  .zcat-subheader-tabs a.active-tab {
+    color: var(--zcat-tabs-primary-text-active) !important;
+    font-family: var(--zcat-font-family-primary);
+    border-bottom: 2px solid var(--zcat-tabs-primary-border-active);
+    font-weight: 500;
+    border-radius: 4px 4px 0px 0px;
+  }
+  
+.header-border{
+    border-bottom: 1px solid var(--zcat-tabs-primary-border-default);
+}
+.zcat-subheader-tabs.zcat-secondary-tab{
+    width:fit-content;
+    padding: 4px;
+    border-radius: 6px;
+    background: var(--zcat-tabs-secondary-bg-default);
+    display: flex;
+    gap: 4px;
+}
+
+.zcat-subheader-tabs.zcat-secondary-tab a {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    /* height: 20px; */
+  }
+  .zcat-subheader-tabs.zcat-secondary-tab a:hover {
+    cursor: pointer;
+    color: var(---zcat-tabs-secondary-text-hover) !important;
+    background: var(--zcat-tabs-secondary-bg-hover);
+    border-bottom: none;
+  }
+  .zcat-subheader-tabs.zcat-secondary-tab a.active-tab {
+    color: var(--zcat-tabs-secondary-text-active) !important;
+    font-family: var(--zcat-font-family-primary);
+    border-bottom: none;
+    font-weight: 500;
+    background-color: var(--zcat-tabs-secondary-bg-active);
+    border-radius: 4px;
+  }
+ /* .zcat-primary-tab-present{
+    height: calc(100% - 79px);
+  } */
+  .secondary-tab-height{
+    height: 48px;
+  }
+
+
+.lyteModal lyte-modal-header .zcat-subheader-tabs{
+  border-bottom: 1px solid var(--zcat-tabs-primary-border-default);
+}
+
+.delete-modal--noinput .lyteModal{
+  width: 414px !important;
+}
+.delete-modal--input .lyteModal{
+  width: 548px !important;
+}
+
+  
+
+/* === Global base styles from reference css/zcat-modal.css === */
+lyte-wormhole * {
+  box-sizing: border-box;
+}
+.lyteModal {
+  background: var(--zcat-popup-bg);
+  border: 1px solid var(--zcat-popup-border);
+  box-shadow: 0 0px 4px 0px var(--zcat-shadow-bg-default);
+  border-radius: 10px;
+  min-width: 450px;
+  margin-top: -24px;
+  margin-left: -27px;
+}
+lyte-modal-header {
+  color: var(--zcat-body-text-primary);
+  font-family: var(--zcat-font-family-primary);
+  padding: 25px;
+  font-weight: 600;
+}
+/* lyte-modal-content {
+  padding: 8px 25px;
+} */
+lyte-modal-footer {
+  padding: 15px 25px 25px;
+}
+lyte-modal-footer lyte-button {
+  margin-left: 0px;
+}
+lyte-modal-freeze {
+  background: var(--zcat-popup-bg-blur);
+  opacity: unset !important;
+  transition: none;
+}
+lyte-modal-content {
+  padding: 8px 24px;
+  max-height: calc(100vh - 200px) !important;
+  overflow-y: auto;
+  color: var(--zcat-body-text-primary);
+}
+lyte-modal-content > * {
+  display: block;
+}
+form lyte-modal-footer {
+  padding: 0;
+}
+form lyte-modal-footer lyte-button {
+  margin-left: 0px;
+}
+/* lyte-modal-freeze {
+  background: var(--zcat-popup-bg-blur);
+  /* opacity: 0.3; 
+  transition: none;
+} */
+form lyte-modal-header {
+  font-family: var(--zcat-font-family-primary);
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+form lyte-modal-header .zcat-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 16px;
+  width: 100%;
+  background: var(--zcat-popup-bg);
+  border-radius: 10px 10px 0 0;
+}
+form lyte-modal-header .zcat-form-header .zcat-left-alignment {
+  /* display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 10px; */
+}
+form lyte-modal-header .zcat-form-header .zcat-right-alignment {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 10px;
+}
+form lyte-modal-header .zcat-form-header .three-dots-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  background: var(--zcat-color-grey2);
+  border: 1px solid var(--zcat-color-grey1);
+  border-radius: 6px;
+  cursor: pointer;
+}
+form lyte-modal-header .zcat-form-header .three-dots-btn:hover {
+  background: var(--zcat-color-primarylight);
+  border-color: var(--zcat-color-grey1);
+}
+form lyte-modal-header .zcat-form-header-tabs {
+  width: 100%;
+  height: 28px;
+  display: flex;
+  gap: 5px;
+  padding: 0 16px;
+  background: var(--zcat-color-white);
+  border-bottom: 1px solid var(--zcat-color-primarylight);
+}
+form lyte-modal-header .zcat-form-header-tabs div {
+  font-size: 14px;
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-color-dark1);
+  padding: 0px 10px;
+  cursor: pointer;
+  display: inline-flex;
+}
+form lyte-modal-header .zcat-form-header-tabs div:hover {
+  cursor: pointer;
+  color: var(--zcat-color-primary) !important;
+}
+form lyte-modal-header .zcat-form-header-tabs div.active-tab {
+  color: var(--zcat-color-primary) !important;
+  font-family: var(--zcat-font-family-primary);
+  border-bottom: 2px solid var(--zcat-color-primary);
+  font-weight: 600;
+}
+form lyte-modal-footer.zcat-form-footer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 24px;
+}
+form lyte-modal-footer.zcat-form-footer .zcat-left-alignment {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 16px;
+}
+form lyte-modal-footer.zcat-form-footer .zcat-right-alignment {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 16px;
+}
+
+/* popup loader component */
+.modal-loader::before {
+  content: '';
+  position: absolute;
+  border: 3px solid var(--zcat-loader-content-primary);
+  border-radius: 50%;
+  border-top: 3px solid var(--zcat-loader-round-primary);
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  z-index: 2;
+  left: calc(50% - 20px);
+  top: calc(50% - 20px);
+}
+.modal-loader::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--zcat-popup-bg-blur);
+  transition: none;
+  top: 0;
+  z-index: 1;
+}
+.modal-loader {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
+.refreshing {
+  animation: rotate 1.5s linear infinite;
+}
+@keyframes rotate {
+  to {
+      transform: rotate(-360deg);
+  }
+}
+
+/* === Global base styles from reference css/zcat-modal.css === */
+lyte-wormhole * {
+  box-sizing: border-box;
+}
+.lyteModal {
+  background: var(--zcat-popup-bg);
+  border: 1px solid var(--zcat-popup-border);
+  box-shadow: 0 0px 4px 0px var(--zcat-shadow-bg-default);
+  border-radius: 10px;
+  min-width: 450px;
+  margin-top: -24px;
+  margin-left: -27px;
+}
+lyte-modal-header {
+  color: var(--zcat-body-text-primary);
+  font-family: var(--zcat-font-family-primary);
+  padding: 25px;
+  font-weight: 600;
+}
+/* lyte-modal-content {
+  padding: 8px 25px;
+} */
+lyte-modal-footer {
+  padding: 15px 25px 25px;
+}
+lyte-modal-footer lyte-button {
+  margin-left: 0px;
+}
+lyte-modal-freeze {
+  background: var(--zcat-popup-bg-blur);
+  opacity: unset !important;
+  transition: none;
+}
+lyte-modal-content {
+  padding: 8px 24px;
+  max-height: calc(100vh - 200px) !important;
+  overflow-y: auto;
+  color: var(--zcat-body-text-primary);
+}
+lyte-modal-content > * {
+  display: block;
+}
+form lyte-modal-footer {
+  padding: 0;
+}
+form lyte-modal-footer lyte-button {
+  margin-left: 0px;
+}
+/* lyte-modal-freeze {
+  background: var(--zcat-popup-bg-blur);
+  /* opacity: 0.3; 
+  transition: none;
+} */
+form lyte-modal-header {
+  font-family: var(--zcat-font-family-primary);
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+form lyte-modal-header .zcat-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 16px;
+  width: 100%;
+  background: var(--zcat-popup-bg);
+  border-radius: 10px 10px 0 0;
+}
+form lyte-modal-header .zcat-form-header .zcat-left-alignment {
+  /* display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 10px; */
+}
+form lyte-modal-header .zcat-form-header .zcat-right-alignment {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 10px;
+}
+form lyte-modal-header .zcat-form-header .three-dots-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  background: var(--zcat-color-grey2);
+  border: 1px solid var(--zcat-color-grey1);
+  border-radius: 6px;
+  cursor: pointer;
+}
+form lyte-modal-header .zcat-form-header .three-dots-btn:hover {
+  background: var(--zcat-color-primarylight);
+  border-color: var(--zcat-color-grey1);
+}
+form lyte-modal-header .zcat-form-header-tabs {
+  width: 100%;
+  height: 28px;
+  display: flex;
+  gap: 5px;
+  padding: 0 16px;
+  background: var(--zcat-color-white);
+  border-bottom: 1px solid var(--zcat-color-primarylight);
+}
+form lyte-modal-header .zcat-form-header-tabs div {
+  font-size: 14px;
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-color-dark1);
+  padding: 0px 10px;
+  cursor: pointer;
+  display: inline-flex;
+}
+form lyte-modal-header .zcat-form-header-tabs div:hover {
+  cursor: pointer;
+  color: var(--zcat-color-primary) !important;
+}
+form lyte-modal-header .zcat-form-header-tabs div.active-tab {
+  color: var(--zcat-color-primary) !important;
+  font-family: var(--zcat-font-family-primary);
+  border-bottom: 2px solid var(--zcat-color-primary);
+  font-weight: 600;
+}
+form lyte-modal-footer.zcat-form-footer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 24px;
+}
+form lyte-modal-footer.zcat-form-footer .zcat-left-alignment {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 16px;
+}
+form lyte-modal-footer.zcat-form-footer .zcat-right-alignment {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 16px;
+}
+
+/* popup loader component */
+.modal-loader::before {
+  content: '';
+  position: absolute;
+  border: 3px solid var(--zcat-loader-content-primary);
+  border-radius: 50%;
+  border-top: 3px solid var(--zcat-loader-round-primary);
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  z-index: 2;
+  left: calc(50% - 20px);
+  top: calc(50% - 20px);
+}
+.modal-loader::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--zcat-popup-bg-blur);
+  transition: none;
+  top: 0;
+  z-index: 1;
+}
+.modal-loader {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
+.refreshing {
+  animation: rotate 1.5s linear infinite;
+}
+@keyframes rotate {
+  to {
+      transform: rotate(-360deg);
+  }
+}

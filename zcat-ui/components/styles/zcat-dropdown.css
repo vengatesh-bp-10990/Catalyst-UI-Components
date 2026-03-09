@@ -1,0 +1,2538 @@
+
+
+/* === Global base styles from reference css/zcat-dropdown.css === */
+lyte-dropdown * {
+  box-sizing: border-box;
+}
+lyte-dropdown, lyte-multi-dropdown {
+  max-width: unset;
+  position: relative;
+}
+lyte-drop-button,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button {
+  padding: 8px 26px 8px 8px;
+  background: var(--zcat-inputField-bg-default);
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  color: var( --zcat-inputField-text-active);
+  border-color: var(--zcat-inputField-border-default);
+  border-radius: 6px;
+  /* height: 36px;  */
+  display: flex;
+    /* align-items: center; */
+    padding: 0 26px 0 8px;
+    max-height: 70px;
+  min-height: 36px;
+  overflow: auto;
+}
+lyte-drop-button{
+  align-items: center;
+}
+lyte-dropdown::after, lyte-multi-dropdown::after {
+  content: attr(error-message);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-error);
+  padding-top: 2px;
+}
+lyte-dropdown lyte-drop-button:hover,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button:hover {
+  border-color: var(--zcat-inputField-border-hover) !important;
+}
+lyte-drop-item[selected='true'],
+lyte-popover-item[selected='true'] {
+  background: var(--zcat-menuList-bg-selected);
+}
+lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button:hover,
+lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button,
+.lyteDropButtonDown, .lyteDropButtonDown:hover {
+  border-color: var(--zcat-inputField-border-active) !important;
+  box-shadow: none;
+}
+lyte-drop-box, lyte-drop-box.lyteDropdownUp {
+  box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+  border-radius: 6px;
+  border: 1px solid var(--zcat-menuList-border-default);
+  overflow: hidden;
+  background: var(--zcat-menuList-bg-default);
+}
+lyte-drop-box.lyteDropdownUp {
+  transform: translateY(-1px);
+}
+lyte-drop-box.lyteDropdownDown {
+  transform: translateY(1px);
+}
+.lyteDropPlaceholderNormal,
+.lyteDropdownLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  margin-right: 0;
+}
+.lyteCalendarPopup .lyteDropPlaceholderNormal,
+.lyteCalendarPopup .lyteDropdownLabel {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+}
+.lyteDropdownUp.lyteDropdownCurve,
+.lyteDropdownDown.lyteDropdownCurve {
+  border-radius: 6px;
+  box-shadow: 0px 4px 6px 0px var(--zcat-shadow-bg-default);
+}
+lyte-drop-button.lyteDropButtonUp,
+lyte-drop-button.lyteDropButtonDown {
+  border-radius: 6px;
+  box-shadow: none;
+}
+lyte-drop-body, lyte-menu-body {
+  padding: 8px;          
+}
+lyte-drop-body.lyteExsm, lyte-drop-body.lyteSm {
+  padding: 8px;
+}
+lyte-drop-body.lyteEXsm lyte-drop-item, lyte-dlyte-drop-item, lytrop-body.lyteSm lyte-drop-item,
+lyte-popover-item {
+  border-radius: 4px;
+  padding: 6px 28px 6px 4px;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-menuList-text-default);
+  margin-bottom: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+lyte-drop-body.lyteEXsm lyte-drop-item[selected='true']::before,
+lyte-drop-body.lyteEXsm lyte-popover-item[selected='true']::before {
+  top: 9px;
+  right: 7px;
+  transform: scale(0.8);
+}
+lyte-drop-item, lyte-popover-item {
+  border-radius: 6px;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-menuList-text-default);
+  margin-bottom: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  padding: 8px 28px 8px 4px;
+}
+lyte-drop-item, lyte-popover-item, lyte-drop-item div p{
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.autocomplete-dropbox lyte-drop-item{
+  display: block;
+}
+lyte-drop-item.lyteDropdown-disabled{
+  opacity: 1;
+  color: var(--zcat-inputField-text-disabled);
+}
+lyte-drop-item[selected='true']::before, 
+lyte-popover-item[selected='true']::before {
+  top: 14px;
+  left: auto;
+  /* right: 10px; */
+  /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='9' viewBox='0 0 12 9' fill='none'%3E%3Cpath d='M10.6668 1.5L4.25016 7.91667L1.3335 5' stroke='%232A65F0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); */
+  width: 16px;
+  height: 16px;
+  right: 4px;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M13.3334 4.29999L6.00002 11.6333L2.66669 8.29999" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  top: 50%;
+  transform: translateY(-50%);
+}
+.lyteDropdownSelection, .lyteMultiDropdownCheckBoxTypeDropbox .lyteDropdownSelection {
+  background: var(--zcat-menuList-bg-hover);
+}
+lyte-drop-box .lyteArrowTop::before {
+  border-bottom-color: var(--zcat-color-grey2);
+}
+lyte-drop-box .lyteArrowTop::after {
+  border-bottom-color: var(--zcat-color-white);
+}
+ul.lyteMultipleSelect {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+.lyteMultipleSelect li {
+  background: var(--zcat-chips-bg-default);
+  color: var(--zcat-inputField-text-active);
+  border: 1px solid var(--zcat-chips-border-default);
+  border-radius: 6px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+  display: inline-block;
+  position: relative;
+  cursor: default;
+  max-width: 100%;
+  box-sizing: border-box;
+    margin: 0;
+    padding: 2px 18px 2px 4px;
+    height: 24px;
+    /* display: flex;
+    align-items: center; */
+    padding: 2px 14px 2px 4px;
+    min-height: 24px;
+    height: auto;
+}
+lyte-dropdown lyte-icon.dropdown {
+  top: calc(50% - 1px);
+}
+lyte-dropdown[lt-prop-type='multisearch'] lyte-drop-button::after,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button::after {
+  top: calc(50% - 1px);
+}
+lyte-dropdown[lt-prop-type='multisearch'] lyte-drop-button,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button {
+  padding: 8px 26px 8px 8px;
+  min-height: 36px;
+  /* height: auto; */
+}
+.lyteMultipleSelect .lyteCloseIcon {
+  border-radius: 5px;
+  width: 16px;
+  width: 16px;
+    height: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 2px;
+    border-radius: 50%;
+}
+.lyteMultipleSelect .lyteCloseIcon::before { 
+  content: '';
+  /* margin-top: -1px; */
+  /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); */
+  background-position: center;
+  /* width: 16px;
+  height: 16px; */
+  /* background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4L12 12" stroke="%23101F3E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>'); */
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M9 3L3 9M3 3L9 9" stroke="%23101F3E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 12px;
+  height: 12px; 
+} 
+
+html[data-user-color-scheme="dark"] .lyteMultipleSelect .lyteCloseIcon::before {
+  /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); */
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M9 3L3 9M3 3L9 9" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+.lyteMultipleSelect li:hover {
+  border-color: var(--zcat-chips-border-hover);
+  background: var(--zcat-chips-bg-hover);
+} 
+.lyteMultipleSelect li:hover .lyteCloseIcon {
+  background-color: transparent;
+}
+.lyteMultipleSelect li:hover .lyteCloseIcon::before {
+  border-radius: 2px;
+}
+lyte-drop-box:not(.lyteDropBodyCallout) .lyteArrow {
+  background-color: transparent;
+}
+.lyteDropPlaceholderMultiple {
+  color: var(--zcat-inputField-text-placeholder);
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  align-self: center;
+  white-space: nowrap;
+}
+.lyteDropdownNoResult {
+  padding: 10px 15px 10px;
+  text-align: center;
+  color: var(--zcat-menuList-text-light);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+  /* display: none !important; */
+}
+.sm-dropdown-btn lyte-drop-button {
+  padding: 5px 35px 5px 8px;
+}
+lyte-dropdown.zcat-invalid lyte-drop-button,
+lyte-dropdown.zcat-invalid lyte-drop-button:hover,
+lyte-dropdown.zcat-invalid .lyteDummyEventContainer:focus lyte-drop-button,
+lyte-dropdown.zcat-invalid
+  .lyteDummyEventContainer:focus
+  lyte-drop-button:hover,
+lyte-multi-dropdown.zcat-invalid lyte-drop-button,
+lyte-multi-dropdown.zcat-invalid lyte-drop-button:hover {
+  border-color: var(--zcat-inputField-border-error) !important;
+  background: var(--zcat-inputField-bg-error);
+}
+lyte-dropdown.zcat-invalid .lyteDummyEventContainer lyte-drop-button::before {
+  background-color: var(--zcat-inputField-border-error);
+}
+lyte-dropdown lyte-icon.dropdown,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button::after,
+lyte-dropdown[lt-prop-type='multisearch'] lyte-drop-button::after {
+  top: calc(50% - 2px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  height: 6px;
+  /* height: 12px;
+  width: 12px; */
+}
+html[data-user-color-scheme="dark"] lyte-dropdown lyte-icon.dropdown{
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.header-container lyte-drop-button.lyteExsm lyte-icon.dropdown {
+  /* transform: scale(0.8); */
+}
+
+/* Dropdown Sizes */
+lyte-drop-box.lyteSm {
+  padding: 0;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+}
+lyte-drop-box.lyteExsm{
+  padding: 0;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+}
+lyte-drop-button.lyteSm, 
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm
+{
+  padding: 2px 6px;
+  padding-right: 22px;
+  min-height: 28px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+}
+.lyteSm lyte-drop-item,
+.lyteSm lyte-popover-item{
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+}
+lyte-drop-button.textDrpdwn,
+.textDrpdwn lyte-drop-item,
+.textDrpdwn lyte-popover-item {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--zcat-pagination-theme);
+}
+lyte-drop-button.textDrpdwn:hover {
+  background-color: var(--zcat-inputField-bg-hover);
+  border-color: var(--zcat-inputField-border-hover)!important
+}
+lyte-dropdown .lyteDummyEventContainer {
+  display: flex;
+  align-items: center;
+}
+lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button.textDrpdwn:hover,
+lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button.textDrpdwn {
+  background-color: var(--zcat-inputField-bg-hover);
+  border-color: var(--zcat-inputField-border-hover) !important;
+}
+lyte-drop-button.lyteExsm,
+.lyteExsm lyte-drop-item,
+.lyteExsm lyte-popover-item,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm
+{
+  min-height: 24px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+  padding: 2px 22px 2px 4px; 
+}
+.lyteExsm lyte-drop-item[selected='true']::before {
+  /* top: 7px; */
+}
+.lyteSm lyte-drop-item[selected='true']::before {
+  /* top: 8px; */
+}
+lyte-drop-button .lyteDropPlaceholderNormal {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+lyte-drop-header, lyte-drop-box.lyteSm lyte-drop-header,
+lyte-drop-box.lyteExsm lyte-drop-header  {
+  /* padding: 16px 16px 0 16px; */
+  padding: 8px 8px 0;
+}
+lyte-dropdown .lyteDropdown-disabled lyte-drop-button,
+lyte-dropdown
+  .lyteDropdown-disabled
+  .lyteDummyEventContainer:focus
+  lyte-drop-button:hover,
+lyte-dropdown
+  .lyteDropdown-disabled
+  .lyteDummyEventContainer:focus
+  lyte-drop-button {
+  background: var(--zcat-inputField-bg-disabled) !important;
+  color: var(--zcat-inputField-text-disabled) !important;
+  cursor: not-allowed;
+  border-color: var(--zcat-inputField-border-disabled) !important;
+  box-shadow: none;
+}
+lyte-dropdown.lyteDropdownDisabled
+  .lyteDummyEventContainer:focus
+  lyte-drop-button:hover,
+lyte-dropdown.lyteDropdownDisabled
+  .lyteDummyEventContainer:focus
+  lyte-drop-button {
+  border-color: var(--zcat-inputField-border-disabled) !important;
+}
+lyte-drop-label, lyte-drop-header h4 {
+  /* padding: 5px 10px 5px 7px; */
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 600;
+  font-family: var(--zcat-font-family-primary);
+  padding: 0 0 6px;
+  color: var(--zcat-inputField-text-label);
+}
+lyte-drop-box.lyteDropBodyCallout {
+  box-shadow: var(--zcat-shadow-bg-default);
+  border-radius: 6px;
+  border: 1px solid var(--zcat-inputField-border-default);
+}
+
+/* Dropdown scrollbar */
+/* lyte-drop-body::-webkit-scrollbar-track {
+	border-radius: 10px;
+	background-color: var(--zcat-color-grey6);
+} */
+/* 
+lyte-drop-body::-webkit-scrollbar {
+  width: 4px;
+  background-color: var(--zcat-inputField-bg-default);
+}
+lyte-drop-body::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: var(--zcat-color-dark4);
+} */
+
+ /* Dropdown scrollbar */
+lyte-drop-body::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+
+lyte-drop-body::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: var(--zcat-scrollbar-bg);
+}
+
+lyte-drop-body::-webkit-scrollbar-track {
+	background-color: var(--zcat-scrollbar-track-bg);
+}
+
+lyte-drop-box .dropdown-menu-btn {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 500 !important;
+  color: var(--zcat-btn-ghost-text-primary-default);
+  border-top: 1px solid var(--zcat-menuList-border-default);
+  cursor: pointer;
+}
+lyte-drop-box .dropdown-menu-btn.sm {
+  height: 36px;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+}
+lyte-drop-box .dropdown-menu-btn.exSm {
+  height: 36px;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+}
+lyte-drop-box .dropdown-menu-btn:hover,
+lyte-drop-box .dropdown-menu-btn.sm:hover,
+lyte-drop-box .dropdown-menu-btn.exSm:hover {
+  background-color: var(var(--zcat-btn-ghost-bg-primary-hover));
+}
+lyte-drop-item.hide,
+lyte-popover-item.hide {
+  display: none;
+}
+/* .lyteMultiDropdownCheckBoxTypeDropbox lyte-drop-item[selected='true'], */
+.lyteMultiDropdownCheckBoxTypeDropbox .lyteDropdownSelection {
+  background: transparent;
+  background: var(--zcat-menuList-bg-hover); 
+}
+.lyteMultiDropSelectedText {
+  font: 14px/13px var(--zcat-font-family-primary);
+}
+.lyteMultiDropSelectedText .lyteTextSuffix {
+  padding-left: 4px;
+}
+.lyteMultiDropSelectedText .lyteTextNoSpace {
+  /* display: inline-table; */
+}
+lyte-drop-box.lyteMultiSelectDropdown {
+  z-index: 1000;
+}
+.lyteDropdownText {
+  padding: 10px 15px 10px;
+  text-align: center;
+  color: var(--zcat-menuList-text-light);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+  display: none !important;
+}
+lyte-drop-button input {
+  color: var(--zcat-color-dark3);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+}
+lyte-dropdown[lt-prop-type='multisearch']
+  .lyteMultipleSelect
+  li.lyteMultiselectInput {
+  background: transparent;
+}
+lyte-drop-box.lyteMultiSelectDropdown {
+  z-index: 10000 !important;
+}
+/* info icon */
+.lyteHovercardPopover .lytePopover {
+  background: var(--zcat-tooltip-bg);
+  border-radius: 6px;
+  color: var(--zcat-tooltip-text-primary);
+  font-weight: 400;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  text-align: left;
+  box-shadow: var(--zcat-shadow-bg-default);
+  word-break: break-word;
+  overflow: visible;
+  border: 1px solid var(--zcat-tooltip-border);
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowBottom {
+  box-shadow: 1px 1px 0 0 var(--zcat-shadow-bg-default);
+}
+.lyteHovercardPopover .lytePopoverArrowIcon {
+  background: var(--zcat-inputField-icon-active);
+}
+lyte-hovercard-content {
+  padding: 6px 10px;
+}
+.tooltip-info-icon{
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none"><g clip-path="url(%23clip0_4506_905)"><path d="M6 8V6M6 4H6.005M11 6C11 8.76142 8.76142 11 6 11C3.23858 11 1 8.76142 1 6C1 3.23858 3.23858 1 6 1C8.76142 1 11 3.23858 11 6Z" stroke="%234D618A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_4506_905"><rect width="12" height="12" fill="white"/></clipPath></defs></svg>');
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    color: var(--zcat-body-text-light);
+}
+html[data-user-color-scheme="dark"] .tooltip-info-icon{
+	background: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(%23clip0_1060_709)"><g clip-path="url(%23clip1_1060_709)"><path d="M6.99996 12.8346C10.2216 12.8346 12.8333 10.223 12.8333 7.0013C12.8333 3.77964 10.2216 1.16797 6.99996 1.16797C3.7783 1.16797 1.16663 3.77964 1.16663 7.0013C1.16663 10.223 3.7783 12.8346 6.99996 12.8346Z" stroke="%23888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 9.33333V7" stroke="%23888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 4.66797H7.00625" stroke="%23888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></g><defs><clipPath id="clip0_1060_709"><rect width="14" height="14" fill="white"/></clipPath><clipPath id="clip1_1060_709"><rect width="14" height="14" fill="white"/></clipPath></defs></svg>');
+}
+
+#lytedropdownfreezelayer{
+    background: none !important;
+    opacity: 1 !important;
+}
+
+lyte-drop-body::-webkit-scrollbar-thumb {
+  background: var(--zcat-scrollbar-bg);
+}
+
+lyte-dropdown.now-wrap-dropdown ul.lyteMultipleSelect::-webkit-scrollbar {
+  width: 4px;
+  height: 2px;
+} 
+lyte-dropdown.now-wrap-dropdown ul.lyteMultipleSelect::-webkit-scrollbar-thumb {
+  background: var(--zcat-scrollbar-bg);
+} 
+
+lyte-dropdown.now-wrap-dropdown ul.lyteMultipleSelect::-webkit-scrollbar-track {
+  background: var(--zcat-scrollbar-track-bg);
+} 
+
+lyte-button .lyte-button.btn-radius-top0{
+  border-radius: 0 0 6px 6px;
+  width: 100%;
+}
+
+
+
+/* May 28 - Kamali - CSS in document file  */
+.zcat-dropdown-icon-position{
+    z-index: 1;
+    left: 8px;
+    top: 10px;
+}
+.zcat-dropdown-icon-position-exsm{
+    left: 4px;
+    z-index: 1;
+}
+.zcat-dropdown-icon-position-sm{
+  top: 7px;
+  left: 6px;
+}
+.zcat-dropdown-icon-position-exsm{
+  top: 5px;
+}
+.zcat-dropdown-relative-wrapper {
+    display: flex;
+    align-items: center;
+}
+.zcat-dropdown-relative-wrapper lyte-drop-button {
+    padding-left: 24px;
+}  
+.zcat-dropdown-relative-wrapper lyte-drop-button.lyteSm {
+    padding-left: 22px;
+}
+.zcat-dropdown-relative-wrapper lyte-drop-button.lyteExsm {
+    padding-left: 18px;
+}
+
+
+
+/* multiple dropdown  */
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm {
+  min-height: 28px;
+  /* height: auto; */
+  /* height: 28px; */
+  overflow: auto;
+    max-height: 70px;
+    /* padding: 0 26px 0 8px; */
+    padding: 2px 22px 2px 6px;     /* must by sk*/
+    display: flex;
+    /* align-items: center; */
+}
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm {
+    min-height: 24px;
+    /* height: auto; */
+    /* height: 24px; */
+    overflow: auto; 
+    max-height: 70px;
+    /* padding: 0 26px 0 4px; */
+    padding: 2px 20px 2px 4px;    /* must by sk */
+    display: flex;
+    align-items: center;
+    /* padding: 0 26px 0 4px;  */
+}
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button {
+  min-height: 36px;
+  overflow: auto;
+  display: flex;
+    /* padding: 0 26px 0 8px; */
+    max-height: 70px;
+    align-items: flex-start;
+    padding: 4px 26px 4px 8px; 
+    padding: 2px 26px 2px 8px;     /* must by sk*/
+    display: flex;
+    /* align-items: center; */
+}
+
+lyte-multi-dropdown lyte-dropdown{
+    max-width: 220px;
+}
+
+.zcat-dropdown-relative-wrapper lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button{
+    padding-left: 24px;
+}
+.zcat-dropdown-relative-wrapper lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteSm{
+    padding-left: 22px;
+}
+.zcat-dropdown-relative-wrapper lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteExsm{
+    padding-left: 18px;
+}
+/* lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button, */
+lyte-svg ~ lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button {
+    padding-left: 16px;
+}
+.zcat-dropdown-icon-top{   /*enable this, If the selected element takes more than 1 row.. */
+    top: 9px;
+}
+
+lyte-multi-dropdown.lyteSm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button{
+    /* height: 28px; */
+    min-height: 28px;
+  overflow: auto;
+    max-height: 70px;
+    padding: 2px 22px 2px 6px;
+    padding: 0 22px 0 6px;
+}
+lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button{
+    /* height: 24px; */
+    min-height: 24px;
+  overflow: auto;
+    max-height: 70px;
+    padding: 2px 20px 2px 4px;
+    padding: 0 20px 0 4px;
+}
+lyte-multi-dropdown lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button{
+    display: flex;
+    align-items: center;
+    padding: 0 26px 0 8px;
+    max-height: 70px;
+  min-height: 36px;
+  overflow: auto;
+    padding: 0 24px 0 8px;
+}
+lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button .lyteMultiDropSelectedText,
+lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button .lyteDropPlaceholderMultiple,
+/* multiple drop  */
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm .lyteDropPlaceholderMultiple{
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+    display: flex;
+}
+
+lyte-multi-dropdown.lyteSm lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button .lyteMultiDropSelectedText, 
+lyte-multi-dropdown.lyteSm lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button .lyteMultiDropSelectedText{
+    /* font: var(--zcat-font-12-16) var(--zcat-font-family-primary); */
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+    display: flex;
+}
+lyte-multi-dropdown lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button .lyteMultiDropSelectedText{
+  /* font: var(--zcat-font-14-20) var(--zcat-font-family-primary); */
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-drop-button.lyteExsm .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteSm lyte-dropdown lyte-drop-button .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li
+{
+    margin: 0;
+    padding: 2px 24px 2px 4px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+}
+lyte-drop-button.lyteExsm .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li {
+    /* font: var(--zcat-font-12-16) var(--zcat-font-family-primary); */
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-drop-button.lyteExsm .lyteMultipleSelect li{
+  padding-right: 14px;
+  height: 20px;
+}
+lyte-drop-button.lyteExsm ul.lyteMultipleSelect,
+lyte-drop-button.lyteSm ul.lyteMultipleSelect{
+    gap: unset;
+}
+lyte-drop-button ul.lyteMultipleSelect{
+    gap: 4px;
+}
+lyte-multi-dropdown.lyteSm, lyte-dropdown.lyteSm,
+lyte-multi-dropdown.lyteExsm, lyte-dropdown.lyteExsm{
+    padding: 0;
+}
+lyte-multi-dropdown .lyteMultipleSelect .lyteMultiDropdownNmoreElem,
+lyte-multi-dropdown.lyteSm lyte-dropdown .lyteMultipleSelect li.lyteMultiDropdownNmoreElem,
+lyte-multi-dropdown.lyteExsm lyte-dropdown .lyteMultipleSelect li.lyteMultiDropdownNmoreElem{
+    padding: 2px;
+    background: var(--zcat-btn-fill-bg-primary-default);
+}
+
+
+
+.lyteDropButtonDown:hover,
+.lyteDropButtonDown:hover 
+/* Need to handle for Up too  */
+{
+  background: var(--zcat-inputField-bg-hover);
+  border: var(--zcat-inputField-border-hover);
+}
+.lyteDropButtonDown:hover .zcat-stroke-input-icon path[stroke],
+.lyteDropButtonDown:hover .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-placeholder);
+} 
+
+.zcat-input-relative-wrapper:focus-within .zcat-stroke-input-icon path[stroke],
+.lyteDropButtonDown:focus-within .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-active);
+} 
+
+/* disabled  */
+.lyteInputDisabled + lyte-svg .zcat-stroke-input-icon path[stroke],
+.zcat-input-relative-wrapper:has(.lyteInputDisabled) .zcat-stroke-input-icon path[stroke],
+.lyteDropButtonDown:active .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-disabled);
+}
+
+
+
+.zcat-invalid .lyteField input{
+  background: var(--zcat-inputField-bg-error) !important;
+}
+
+
+
+zcat-dropdown lyte-dropdown lyte-icon.dropdown,
+lyte-dropdown lyte-icon.dropdown,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button::after{
+  top: calc(50% - 2px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  height: 16px;
+  width: 16px;
+  top: 50%;
+  right: 0;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;  
+  right: -2px;
+  transition: transform 0.1s ease;
+}
+zcat-dropdown lyte-dropdown lyte-drop-button.lyteSm lyte-icon.dropdown, 
+lyte-dropdown lyte-drop-button.lyteSm lyte-icon.dropdown, 
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteSm::after{
+  height: 14px;
+  width: 14px;
+}
+
+zcat-dropdown lyte-dropdown lyte-drop-button.lyteExsm lyte-icon.dropdown,
+lyte-dropdown lyte-drop-button.lyteExsm lyte-icon.dropdown,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteExsm::after {
+  height: 12px;
+  width: 12px;
+}
+lyte-multi-dropdown .lyteMultipleSelect .lyteMultiDropdownNmoreElem,
+lyte-multi-dropdown.lyteSm lyte-drop-button.lyteSm .lyteMultipleSelect .lyteMultiDropdownNmoreElem,
+lyte-multi-dropdown.lyteExsm lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteMultiDropdownNmoreElem{
+  background: transparent;
+  color: var(--zcat-link-text-primary-default);
+}
+lyte-multi-dropdown .lyteMultipleSelect .lyteMultiDropdownNmoreElem:hover, 
+lyte-multi-dropdown.lyteSm lyte-drop-button.lyteSm .lyteMultipleSelect .lyteMultiDropdownNmoreElem:hover,
+lyte-multi-dropdown.lyteExsm lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteMultiDropdownNmoreElem:hover {
+    border-color: transparent;
+    background: var(--zcat-btn-ghost-bg-primary-hover);
+}
+lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteCloseIcon::before,
+lyte-drop-button.lyteSm .lyteMultipleSelect .lyteCloseIcon::before,
+.lyteMultipleSelect .lyteCloseIcon::before{
+  height: 12px;
+  width: 12px;
+  top: calc(50% - 5px);
+  right: 1px;
+}
+.lyteMultipleSelect .lyteCloseIcon{
+  /* width: 16px; */
+}
+
+lyte-drop-button.lyteSm .lyteDropPlaceholderNormal,
+lyte-drop-button.lyteSm .lyteDropPlaceholderMultiple, 
+lyte-multi-dropdown.lyteSm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button .lyteDropPlaceholderMultiple,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm,
+lyte-drop-box.lyteSm lyte-drop-item .lyteCheckbox,
+.lyteSm lyte-popover-item .lyteCheckbox {
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+}
+ lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm,
+lyte-drop-box.lyteExsm lyte-drop-item .lyteCheckbox,
+.lyteExsm lyte-popover-item .lyteCheckbox,
+lyte-drop-button.lyteExsm .lyteDropPlaceholderMultiple, 
+lyte-drop-button.lyteExsm .lyteDropPlaceholderNormal {
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+}
+
+ lyte-drop-button.lyteExsm,
+ lyte-drop-button, lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm {
+  border-radius: 4px;
+}
+.lyteMultiDropdownCheckBoxTypeDropbox lyte-drop-item,
+.lyteMultiDropdownCheckBoxTypeDropbox  lyte-popover-item {
+    display: block;
+    display: flex;
+    align-items: center;
+}
+lyte-drop-box.lyteSm lyte-drop-label, lyte-drop-box.lyteSm lyte-drop-header h4,
+lyte-drop-box.lyteExsm lyte-drop-label, lyte-drop-box.lyteExsm lyte-drop-header h4 {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  font-weight: 600;
+  padding-bottom: 6px;
+}
+.lyteMultipleSelect .lyteDropdownVisible{
+  word-break: break-all;
+  white-space: pre-wrap;
+  display: block;
+  text-indent: -7px;     
+}
+.lyteMultipleSelect .lyteDropdownVisible,
+.lyteMultipleSelect .lyteDropdownVisible lyte-text {
+  padding-right: 4px;   
+  margin-right: 4px;
+}   
+.lyteMultipleSelect li:hover .lyteCloseIcon{
+    border-radius: 50%;
+    padding: 2px;
+    box-sizing: border-box;
+    background-color: var(--zcat-btn-grey-bg-hover);
+}
+.lyteMultipleSelect .lyteCloseIcon::before {
+  top: 2px;
+  left: 2px;
+}
+lyte-checkbox span, lyte-checkbox{
+  color: var(--zcat-menuList-text-default);
+}
+.lyteDropdownSelection .lyteCheckbox .lyteCheckBoxDefault span, lyte-checkbox:hover span{
+  color: var(--zcat-menuList-text-hover);
+}
+.lyteMultiDropdownCheckBoxTypeDropbox lyte-drop-item[selected='true'],
+.lyteMultiDropdownCheckBoxTypeDropbox lyte-popover-item[selected='true']{
+  background: var(--zcat-menuList-bg-selected);
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect .lyteCloseIcon, 
+lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteCloseIcon{
+  width: 14px;
+  height: 14px;
+}
+lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteCloseIcon::before, lyte-drop-button.lyteSm .lyteMultipleSelect .lyteCloseIcon::before{
+  top: 1px;
+  left: 1px;
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect li, lyte-drop-button.lyteExsm .lyteMultipleSelect li, lyte-multi-dropdown.lyteSm lyte-dropdown lyte-drop-button .lyteMultipleSelect li, lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li {
+  padding-right: 16px;
+}
+.lyteMultipleSelect .lyteCloseIcon:hover::before {
+    opacity: 0.7;
+}
+
+.lyteMultiSelectDropdown lyte-drop-item, .lyteMultiSelectDropdown lyte-popover-item{
+  /* padding: 8px; */
+  padding: 8px 4px;
+}       
+lyte-drop-box.lyteExsm lyte-drop-body, lyte-drop-box.lyteSm lyte-drop-body{
+  padding: 8px; 
+}
+lyte-drop-body lyte-drop-item:last-of-type, lyte-drop-body lyte-popover-item:last-of-type {
+  margin-bottom: 0 !important;
+}
+lyte-drop-body h4{
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-menuList-text-heading);
+}
+.menu-lyte-svg-class{
+  /* width: 16px;
+  height: 16px; */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* missed disable styles  */
+.lyteDropdownDisabled .lyteMultipleSelect li{
+    background: var(--zcat-chips-bg-default);
+    border: 1px solid var(--zcat-chips-border-default);
+    pointer-events: none;
+    color: var(--zcat-inputField-text-disabled);
+}
+.lyteDropdownDisabled lyte-drop-button:hover
+, lyte-dropdown.lyteDropdownDisabled lyte-drop-button:hover, lyte-dropdown[lt-prop-type="multiple"].lyteDropdownDisabled lyte-drop-button:hover
+{
+  cursor: not-allowed;
+  border-color: var(--zcat-inputField-border-disabled) !important;
+}
+
+lyte-dropdown.lyteDropdownDisabled lyte-drop-button .prefixClass {
+    pointer-events: none;
+}
+.lyteDropdownDisabled .lyteMultipleSelect .lyteMultiDropdownNmoreElem{
+  background: transparent;
+  border: none;
+}
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm, 
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button {
+  align-items: unset;
+}
+
+lyte-search.lyteSm{
+  padding: 0;
+  font-size: unset;  
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect .lyteDropdownVisible, lyte-drop-button.lyteSm .lyteMultipleSelect .lyteDropdownVisible lyte-text, 
+lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteDropdownVisible, lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteDropdownVisible lyte-text{
+  margin-right: 0;
+}
+.zcat-dropdown-relative-wrapper lyte-svg.disabled{
+  cursor: not-allowed;
+}
+
+
+/* ghost dropdown  */
+.ghost-dropdown lyte-drop-button{ 
+  border-color: transparent;
+}
+.ghost-dropdown lyte-drop-button, .ghost-dropdown lyte-drop-button .lyteDropPlaceholderNormal{
+  color: var(--zcat-dropdown-ghost-text-primary-default);
+}
+zcat-dropdown .ghost-dropdown lyte-dropdown lyte-icon.dropdown, lyte-dropdown lyte-icon.dropdown{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 16px;
+  height: 16px;
+}
+zcat-dropdown .ghost-dropdown lyte-dropdown.lyteSm lyte-icon.dropdown, lyte-dropdown lyte-icon.dropdown, 
+zcat-dropdown .ghost-dropdown lyte-dropdown.lyteExsm lyte-icon.dropdown, lyte-dropdown lyte-icon.dropdown, 
+zcat-dropdown .ghost-dropdown lyte-dropdown lyte-drop-button.lyteExsm lyte-icon.dropdown{
+  width: 14px;
+  height: 14px;
+}  
+.ghost-dropdown lyte-dropdown lyte-drop-button:hover{
+  border-color: transparent !important;  
+  color: var(--zcat-dropdown-ghost-text-primary-hover);
+  background: var(--zcat-inputField-bg-hover);
+}
+.ghost-dropdown lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button:hover,
+.ghost-dropdown lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button {
+  border-color: transparent !important;
+}    
+.zcat-ghost-dropdown-icon-primary path[stroke]{
+  stroke: var(--zcat-dropdown-ghost-icon-primary-default);
+}
+.ghost-dropdown .zcat-dropdown-icon-position-sm{
+  top: unset;
+}
+.ghost-dropdown-wrapper lyte-svg.disabled svg,
+.ghost-dropdown-wrapper zcat-icon.disabled path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-primary-disabled)
+}
+.ghost-dropdown lyte-dropdown .lyteDropdown-disabled lyte-drop-button{
+  color: var(--zcat-dropdown-ghost-text-primary-disabled) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+/* Light mode - downArrowIcon */
+zcat-dropdown .ghost-dropdown lyte-dropdown lyte-icon.dropdown
+/* , lyte-dropdown lyte-icon.dropdown */
+{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* hover  */
+.ghost-dropdown lyte-dropdown lyte-drop-button:hover lyte-icon.dropdown{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%230755F2" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* opened  */
+.ghost-dropdown .lyteDropButtonDown lyte-icon.dropdown, 
+.ghost-dropdown .lyteDropButtonUp lyte-icon.dropdown,
+.ghost-dropdown .lyteDropButtonDown:hover lyte-icon.dropdown, 
+.ghost-dropdown .lyteDropButtonUp:hover lyte-icon.dropdown {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 10L8 6L12 10" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}  
+/* disable  */
+.ghost-dropdown .lyteDropdownDisabled lyte-icon.dropdown {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%237DA2FB" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* Dark mode - downArrowIcon */
+[data-user-color-scheme="dark"] zcat-dropdown .ghost-dropdown lyte-dropdown lyte-icon.dropdown
+/* , [data-user-color-scheme="dark"] lyte-dropdown lyte-icon.dropdown */
+{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" class=""><path d="M4 6L8 10L12 6" stroke="%23458BFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* hover  */
+[data-user-color-scheme="dark"] .ghost-dropdown lyte-dropdown lyte-drop-button:hover lyte-icon.dropdown{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%235A97FB" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* opened  */
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropButtonDown lyte-icon.dropdown, 
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropButtonUp lyte-icon.dropdown,
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropButtonDown:hover lyte-icon.dropdown, 
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropButtonUp:hover lyte-icon.dropdown {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 10L8 6L12 10" stroke="%23458BFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}  
+[data-user-color-scheme="dark"] .ghost-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonUp lyte-icon.dropdown,
+[data-user-color-scheme="dark"] .ghost-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonDown lyte-icon.dropdown,
+.ghost-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonUp lyte-icon.dropdown,
+.ghost-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonDown lyte-icon.dropdown {
+  transform: translate(-50%, -50%) rotate(0deg);
+  transition: none;
+}
+/* disable  */
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropdownDisabled lyte-icon.dropdown {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%23355A8D" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+
+
+.count-highlight{
+  color: var(--zcat-link-text-primary-default);
+  padding: 2px;
+  border-radius: 6px;
+}
+.count-highlight:hover{
+  border-color: transparent;
+  background: var(--zcat-btn-ghost-bg-primary-hover);
+}
+
+lyte-multi-dropdown.zcat-w-fc lyte-dropdown {
+    max-width: 100%;
+}
+.lyteDropdownDisabled .lyteMultipleSelect li [yield-name="nMoreTag"]{
+  color: var(--zcat-dropdown-ghost-text-primary-disabled);
+}
+lyte-drop-button.lyteExsm.lyteDropButtonUp, lyte-drop-button.lyteDropButtonUp, lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm.lyteDropButtonUp,
+lyte-drop-button.lyteExsm.lyteDropButtonDown, lyte-drop-button.lyteDropButtonDown, lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm.lyteDropButtonDown{
+  border-radius: 4px;
+}
+.lyteDropdown-disabled .count-highlight{
+  color: var(--zcat-dropdown-ghost-text-primary-disabled);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+.dropdown-disabled lyte-svg svg,
+.dropdown-disabled zcat-icon path[stroke]{
+  stroke: var(--zcat-inputField-icon-disabled);
+}
+.input-field-disabled .input-label{
+  color: var(--zcat-inputField-text-disabled);
+}
+.input-field-disabled .zcat-input-label-stroke path[stroke]{
+  stroke: var(--zcat-inputField-icon-disabled);
+}
+[data-user-color-scheme="dark"] lyte-drop-item[selected='true']::before, 
+[data-user-color-scheme="dark"] lyte-popover-item[selected='true']::before{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none" class=""><path d="M14.0833 4.30005L6.74996 11.6334L3.41663 8.30005" stroke="%23458BFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+.checkboxBoxClass lyte-checkbox, .checkboxBoxClass lyte-checkbox {
+    width: unset;
+}
+
+ /* July 8  */
+lyte-drop-footer {
+  border-top: unset;
+}
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm, lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm, lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button{
+  align-items: center;
+}
+.lyteMultiDropSelectedText, .lyteMultiDropSelectedText lyte-text{
+  width: 100%;
+}
+lyte-multi-dropdown lyte-dropdown {
+    max-width: 100%;
+    max-width: unset;
+}
+lyte-dropdown.zcat-multiple-dropdown lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-dropdown.zcat-multiple-dropdown lyte-drop-button.lyteExsm .lyteMultipleSelect li,
+lyte-dropdown.zcat-multiple-dropdown .lyteMultipleSelect li {
+  display: inline-flex;
+}
+lyte-multi-dropdown .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteSm lyte-dropdown lyte-drop-button .lyteMultipleSelect li, 
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li, 
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteExsm .lyteMultipleSelect li{
+  display: flex;
+  align-items: center;
+  margin: 2px 4px 2px 0;
+}
+lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li, 
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteExsm .lyteMultipleSelect li{
+  margin: 0 4px 0 0;
+}
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button{
+  display: inline-block;
+  height: 36px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+/* checkbox  -->  placeholder */
+lyte-multi-dropdown[lt-prop-type="checkbox"] .lyteDropPlaceholderMultiple {
+  width: 100%;
+  display: flex;
+}
+/* with value */
+/* lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button ul.lyteMultipleSelect {
+  width: 100%;
+  display: flex;
+  flex-wrap: unset;
+  gap: unset;
+} */
+ 
+  /* lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button ul.lyteMultipleSelect, */
+lyte-multi-dropdown.zcat-chip-checkbox-dropdown[lt-prop-type="checkbox"] lyte-drop-button ul.lyteMultipleSelect {
+  width: 100%;
+  display: flex;
+  /* flex-wrap: unset;
+  gap: unset; */
+}
+lyte-multi-dropdown.zcat-default-checkbox-dropdown[lt-prop-type="checkbox"] .lyteMultiDropSelectedText {
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+}
+lyte-dropdown.zcat-multiple-dropdown.zcat-w-fc .lyteMultipleSelect li,
+lyte-dropdown.zcat-multiple-dropdown.zcat-w-fc lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-dropdown.zcat-multiple-dropdown.zcat-w-fc lyte-drop-button.lyteExsm .lyteMultipleSelect li{
+  margin: 0;
+}
+lyte-multi-dropdown.zcat-default-checkbox-dropdown[lt-prop-type="checkbox"] .lyteMultiDropSelectedText lyte-text{
+  display: flex;
+}
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteSm {
+  height: 28px;
+}
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteExsm {
+  height: 24px;
+}
+.ghost-dropdown lyte-dropdown lyte-drop-button {
+    border-color: transparent !important;
+    background: transparent;
+}
+.ghost-dropdown lyte-dropdown lyte-icon.dropdown{
+  opacity: unset;
+}
+lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button .lyteDropPlaceholderMultiple,
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteExsm ul.lyteMultipleSelect,
+lyte-multi-dropdown.zcat-default-checkbox-dropdown.lyteExsm[lt-prop-type="checkbox"] .lyteMultiDropSelectedText {
+  gap: unset;
+  flex-wrap: unset;
+}
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteDropButtonDown::after, 
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteDropButtonUp::after,
+zcat-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonDown lyte-icon.dropdown, lyte-dropdown lyte-drop-button.lyteDropButtonDown lyte-icon.dropdown,
+zcat-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonUp lyte-icon.dropdown, lyte-dropdown lyte-drop-button.lyteDropButtonUp lyte-icon.dropdown  {
+    transform: translate(-50%, -50%) rotate(180deg);
+    transition: transform 0.1s ease;
+}
+lyte-dropdown.zcat-multiple-dropdown lyte-drop-button.lyteExsm ul.lyteMultipleSelect, lyte-drop-button.lyteSm ul.lyteMultipleSelect,
+lyte-dropdown.zcat-multiple-dropdown lyte-drop-button ul.lyteMultipleSelect {
+  gap: 4px;
+}
+zcat-dropdown lyte-dropdown {
+  width: 100%;   /* default width  */
+}
+
+
+
+
+
+/* menu list  - yet to add in common place  */
+.lyteDropdownSelection lyte-svg svg.zcat-stroke-icon-active, .lyteDropdownSelection lyte-svg svg.zcat-ghost-dropdown-icon-primary,
+.lyteDropdownSelection .zcat-stroke-icon-active path[stroke], .lyteDropdownSelection .zcat-ghost-dropdown-icon-primary path[stroke]
+{
+  stroke: var(--zcat-menuList-icon-hover);
+}
+lyte-drop-box.lyteExsm lyte-drop-body.zcat-pt-6, lyte-drop-box.lyteSm lyte-drop-body.zcat-pt-6{
+  padding-top: 6px;
+}
+lyte-drop-box.lyteExsm lyte-drop-body.zcat-pb-6, lyte-drop-box.lyteSm lyte-drop-body.zcat-pb-6{
+  padding-bottom: 6px;
+}
+.lyteMultiSelectDropdown lyte-drop-body.lyteExsm lyte-drop-item,
+.lyteMultiSelectDropdown lyte-drop-body.lyteSm lyte-drop-item,
+.lyteMultiSelectDropdown lyte-drop-body.lyteExsm lyte-popover-item,
+.lyteMultiSelectDropdown lyte-drop-body.lyteSm lyte-popover-item {
+  padding: 6px 4px 6px 4px;
+}
+
+
+
+
+/* tooltip  */
+.lyteMultiDropdownTagHovercard.lyteHovercardPopover .lytePopover{
+  border: 1px solid var(--zcat-tooltip-border);
+}
+lyte-hovercard-content{
+    background: var(--zcat-tooltip-bg);
+    border-radius: 6px;
+    /* box-shadow: 2px 2px 10px 12px var(--zcat-shadow-bg-default); */
+  /* border: 1px solid var(--zcat-tooltip-border); */
+}
+.lyteMultiDropdownTagHovercard.lyteHovercardPopover .lytePopover{
+  border: 1px solid var(--zcat-tooltip-border);
+  background: var(--zcat-tooltip-bg);
+}
+.lyteMultiDropdownTagHovercard.lyteHovercardPopover .lytePopoverArrowIcon{
+  background: var(--zcat-tooltip-bg);
+}
+
+/* dropdown - menu list icon  */
+.zcat-stroke-icon-active path[stroke]{
+  stroke: var(--zcat-menuList-icon-active);
+}
+.zcat-stroke-icon-tooltip path[stroke]{
+  stroke: var(--zcat-body-icons-static-primary);
+}
+
+.zcat-chip-checkbox-dropdown{
+  max-width: 100%;
+}
+
+
+/* removable - checkbox's defaul */
+lyte-drop-body .lyteCheckBoxDefault::before{
+  margin-right: 4px;
+}
+
+lyte-drop-box.cxDropbox{
+  background: var(--zcat-menuList-bg-default);
+  border: 1px solid var(--zcat-menuList-border-default);
+}
+.lyteHovercardPopover.popoverWrapper{
+  z-index: 10000;
+}
+
+
+
+
+
+
+/* === Global base styles from reference css/zcat-dropdown.css === */
+lyte-dropdown * {
+  box-sizing: border-box;
+}
+lyte-dropdown, lyte-multi-dropdown {
+  max-width: unset;
+  position: relative;
+}
+lyte-drop-button,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button {
+  padding: 8px 26px 8px 8px;
+  background: var(--zcat-inputField-bg-default);
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  color: var( --zcat-inputField-text-active);
+  border-color: var(--zcat-inputField-border-default);
+  border-radius: 6px;
+  /* height: 36px;  */
+  display: flex;
+    /* align-items: center; */
+    padding: 0 26px 0 8px;
+    max-height: 70px;
+  min-height: 36px;
+  overflow: auto;
+}
+lyte-drop-button{
+  align-items: center;
+}
+lyte-dropdown::after, lyte-multi-dropdown::after {
+  content: attr(error-message);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-error);
+  padding-top: 2px;
+}
+lyte-dropdown lyte-drop-button:hover,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button:hover {
+  border-color: var(--zcat-inputField-border-hover) !important;
+}
+lyte-drop-item[selected='true'],
+lyte-popover-item[selected='true'] {
+  background: var(--zcat-menuList-bg-selected);
+}
+lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button:hover,
+lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button,
+.lyteDropButtonDown, .lyteDropButtonDown:hover {
+  border-color: var(--zcat-inputField-border-active) !important;
+  box-shadow: none;
+}
+lyte-drop-box, lyte-drop-box.lyteDropdownUp {
+  box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+  border-radius: 6px;
+  border: 1px solid var(--zcat-menuList-border-default);
+  overflow: hidden;
+  background: var(--zcat-menuList-bg-default);
+}
+lyte-drop-box.lyteDropdownUp {
+  transform: translateY(-1px);
+}
+lyte-drop-box.lyteDropdownDown {
+  transform: translateY(1px);
+}
+.lyteDropPlaceholderNormal,
+.lyteDropdownLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  margin-right: 0;
+}
+.lyteCalendarPopup .lyteDropPlaceholderNormal,
+.lyteCalendarPopup .lyteDropdownLabel {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+}
+.lyteDropdownUp.lyteDropdownCurve,
+.lyteDropdownDown.lyteDropdownCurve {
+  border-radius: 6px;
+  box-shadow: 0px 4px 6px 0px var(--zcat-shadow-bg-default);
+}
+lyte-drop-button.lyteDropButtonUp,
+lyte-drop-button.lyteDropButtonDown {
+  border-radius: 6px;
+  box-shadow: none;
+}
+lyte-drop-body, lyte-menu-body {
+  padding: 8px;          
+}
+lyte-drop-body.lyteExsm, lyte-drop-body.lyteSm {
+  padding: 8px;
+}
+lyte-drop-body.lyteEXsm lyte-drop-item, lyte-dlyte-drop-item, lytrop-body.lyteSm lyte-drop-item,
+lyte-popover-item {
+  border-radius: 4px;
+  padding: 6px 28px 6px 4px;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-menuList-text-default);
+  margin-bottom: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+lyte-drop-body.lyteEXsm lyte-drop-item[selected='true']::before,
+lyte-drop-body.lyteEXsm lyte-popover-item[selected='true']::before {
+  top: 9px;
+  right: 7px;
+  transform: scale(0.8);
+}
+lyte-drop-item, lyte-popover-item {
+  border-radius: 6px;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-menuList-text-default);
+  margin-bottom: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  padding: 8px 28px 8px 4px;
+}
+lyte-drop-item, lyte-popover-item, lyte-drop-item div p{
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.autocomplete-dropbox lyte-drop-item{
+  display: block;
+}
+lyte-drop-item.lyteDropdown-disabled{
+  opacity: 1;
+  color: var(--zcat-inputField-text-disabled);
+}
+lyte-drop-item[selected='true']::before, 
+lyte-popover-item[selected='true']::before {
+  top: 14px;
+  left: auto;
+  /* right: 10px; */
+  /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='9' viewBox='0 0 12 9' fill='none'%3E%3Cpath d='M10.6668 1.5L4.25016 7.91667L1.3335 5' stroke='%232A65F0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); */
+  width: 16px;
+  height: 16px;
+  right: 4px;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M13.3334 4.29999L6.00002 11.6333L2.66669 8.29999" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  top: 50%;
+  transform: translateY(-50%);
+}
+.lyteDropdownSelection, .lyteMultiDropdownCheckBoxTypeDropbox .lyteDropdownSelection {
+  background: var(--zcat-menuList-bg-hover);
+}
+lyte-drop-box .lyteArrowTop::before {
+  border-bottom-color: var(--zcat-color-grey2);
+}
+lyte-drop-box .lyteArrowTop::after {
+  border-bottom-color: var(--zcat-color-white);
+}
+ul.lyteMultipleSelect {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+.lyteMultipleSelect li {
+  background: var(--zcat-chips-bg-default);
+  color: var(--zcat-inputField-text-active);
+  border: 1px solid var(--zcat-chips-border-default);
+  border-radius: 6px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+  display: inline-block;
+  position: relative;
+  cursor: default;
+  max-width: 100%;
+  box-sizing: border-box;
+    margin: 0;
+    padding: 2px 18px 2px 4px;
+    height: 24px;
+    /* display: flex;
+    align-items: center; */
+    padding: 2px 14px 2px 4px;
+    min-height: 24px;
+    height: auto;
+}
+lyte-dropdown lyte-icon.dropdown {
+  top: calc(50% - 1px);
+}
+lyte-dropdown[lt-prop-type='multisearch'] lyte-drop-button::after,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button::after {
+  top: calc(50% - 1px);
+}
+lyte-dropdown[lt-prop-type='multisearch'] lyte-drop-button,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button {
+  padding: 8px 26px 8px 8px;
+  min-height: 36px;
+  /* height: auto; */
+}
+.lyteMultipleSelect .lyteCloseIcon {
+  border-radius: 5px;
+  width: 16px;
+  width: 16px;
+    height: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 2px;
+    border-radius: 50%;
+}
+.lyteMultipleSelect .lyteCloseIcon::before { 
+  content: '';
+  /* margin-top: -1px; */
+  /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); */
+  background-position: center;
+  /* width: 16px;
+  height: 16px; */
+  /* background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4L12 12" stroke="%23101F3E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>'); */
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M9 3L3 9M3 3L9 9" stroke="%23101F3E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 12px;
+  height: 12px; 
+} 
+
+html[data-user-color-scheme="dark"] .lyteMultipleSelect .lyteCloseIcon::before {
+  /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M10.5 3.5L3.5 10.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3.5 3.5L10.5 10.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); */
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M9 3L3 9M3 3L9 9" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+.lyteMultipleSelect li:hover {
+  border-color: var(--zcat-chips-border-hover);
+  background: var(--zcat-chips-bg-hover);
+} 
+.lyteMultipleSelect li:hover .lyteCloseIcon {
+  background-color: transparent;
+}
+.lyteMultipleSelect li:hover .lyteCloseIcon::before {
+  border-radius: 2px;
+}
+lyte-drop-box:not(.lyteDropBodyCallout) .lyteArrow {
+  background-color: transparent;
+}
+.lyteDropPlaceholderMultiple {
+  color: var(--zcat-inputField-text-placeholder);
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  align-self: center;
+  white-space: nowrap;
+}
+.lyteDropdownNoResult {
+  padding: 10px 15px 10px;
+  text-align: center;
+  color: var(--zcat-menuList-text-light);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+  /* display: none !important; */
+}
+.sm-dropdown-btn lyte-drop-button {
+  padding: 5px 35px 5px 8px;
+}
+lyte-dropdown.zcat-invalid lyte-drop-button,
+lyte-dropdown.zcat-invalid lyte-drop-button:hover,
+lyte-dropdown.zcat-invalid .lyteDummyEventContainer:focus lyte-drop-button,
+lyte-dropdown.zcat-invalid
+  .lyteDummyEventContainer:focus
+  lyte-drop-button:hover,
+lyte-multi-dropdown.zcat-invalid lyte-drop-button,
+lyte-multi-dropdown.zcat-invalid lyte-drop-button:hover {
+  border-color: var(--zcat-inputField-border-error) !important;
+  background: var(--zcat-inputField-bg-error);
+}
+lyte-dropdown.zcat-invalid .lyteDummyEventContainer lyte-drop-button::before {
+  background-color: var(--zcat-inputField-border-error);
+}
+lyte-dropdown lyte-icon.dropdown,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button::after,
+lyte-dropdown[lt-prop-type='multisearch'] lyte-drop-button::after {
+  top: calc(50% - 2px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  height: 6px;
+  /* height: 12px;
+  width: 12px; */
+}
+html[data-user-color-scheme="dark"] lyte-dropdown lyte-icon.dropdown{
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.header-container lyte-drop-button.lyteExsm lyte-icon.dropdown {
+  /* transform: scale(0.8); */
+}
+
+/* Dropdown Sizes */
+lyte-drop-box.lyteSm {
+  padding: 0;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+}
+lyte-drop-box.lyteExsm{
+  padding: 0;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+}
+lyte-drop-button.lyteSm, 
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm
+{
+  padding: 2px 6px;
+  padding-right: 22px;
+  min-height: 28px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+}
+.lyteSm lyte-drop-item,
+.lyteSm lyte-popover-item{
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+}
+lyte-drop-button.textDrpdwn,
+.textDrpdwn lyte-drop-item,
+.textDrpdwn lyte-popover-item {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--zcat-pagination-theme);
+}
+lyte-drop-button.textDrpdwn:hover {
+  background-color: var(--zcat-inputField-bg-hover);
+  border-color: var(--zcat-inputField-border-hover)!important
+}
+lyte-dropdown .lyteDummyEventContainer {
+  display: flex;
+  align-items: center;
+}
+lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button.textDrpdwn:hover,
+lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button.textDrpdwn {
+  background-color: var(--zcat-inputField-bg-hover);
+  border-color: var(--zcat-inputField-border-hover) !important;
+}
+lyte-drop-button.lyteExsm,
+.lyteExsm lyte-drop-item,
+.lyteExsm lyte-popover-item,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm
+{
+  min-height: 24px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+  padding: 2px 22px 2px 4px; 
+}
+.lyteExsm lyte-drop-item[selected='true']::before {
+  /* top: 7px; */
+}
+.lyteSm lyte-drop-item[selected='true']::before {
+  /* top: 8px; */
+}
+lyte-drop-button .lyteDropPlaceholderNormal {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+lyte-drop-header, lyte-drop-box.lyteSm lyte-drop-header,
+lyte-drop-box.lyteExsm lyte-drop-header  {
+  /* padding: 16px 16px 0 16px; */
+  padding: 8px 8px 0;
+}
+lyte-dropdown .lyteDropdown-disabled lyte-drop-button,
+lyte-dropdown
+  .lyteDropdown-disabled
+  .lyteDummyEventContainer:focus
+  lyte-drop-button:hover,
+lyte-dropdown
+  .lyteDropdown-disabled
+  .lyteDummyEventContainer:focus
+  lyte-drop-button {
+  background: var(--zcat-inputField-bg-disabled) !important;
+  color: var(--zcat-inputField-text-disabled) !important;
+  cursor: not-allowed;
+  border-color: var(--zcat-inputField-border-disabled) !important;
+  box-shadow: none;
+}
+lyte-dropdown.lyteDropdownDisabled
+  .lyteDummyEventContainer:focus
+  lyte-drop-button:hover,
+lyte-dropdown.lyteDropdownDisabled
+  .lyteDummyEventContainer:focus
+  lyte-drop-button {
+  border-color: var(--zcat-inputField-border-disabled) !important;
+}
+lyte-drop-label, lyte-drop-header h4 {
+  /* padding: 5px 10px 5px 7px; */
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 600;
+  font-family: var(--zcat-font-family-primary);
+  padding: 0 0 6px;
+  color: var(--zcat-inputField-text-label);
+}
+lyte-drop-box.lyteDropBodyCallout {
+  box-shadow: var(--zcat-shadow-bg-default);
+  border-radius: 6px;
+  border: 1px solid var(--zcat-inputField-border-default);
+}
+
+/* Dropdown scrollbar */
+/* lyte-drop-body::-webkit-scrollbar-track {
+	border-radius: 10px;
+	background-color: var(--zcat-color-grey6);
+} */
+/* 
+lyte-drop-body::-webkit-scrollbar {
+  width: 4px;
+  background-color: var(--zcat-inputField-bg-default);
+}
+lyte-drop-body::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: var(--zcat-color-dark4);
+} */
+
+ /* Dropdown scrollbar */
+lyte-drop-body::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+
+lyte-drop-body::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: var(--zcat-scrollbar-bg);
+}
+
+lyte-drop-body::-webkit-scrollbar-track {
+	background-color: var(--zcat-scrollbar-track-bg);
+}
+
+lyte-drop-box .dropdown-menu-btn {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 500 !important;
+  color: var(--zcat-btn-ghost-text-primary-default);
+  border-top: 1px solid var(--zcat-menuList-border-default);
+  cursor: pointer;
+}
+lyte-drop-box .dropdown-menu-btn.sm {
+  height: 36px;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+}
+lyte-drop-box .dropdown-menu-btn.exSm {
+  height: 36px;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+}
+lyte-drop-box .dropdown-menu-btn:hover,
+lyte-drop-box .dropdown-menu-btn.sm:hover,
+lyte-drop-box .dropdown-menu-btn.exSm:hover {
+  background-color: var(var(--zcat-btn-ghost-bg-primary-hover));
+}
+lyte-drop-item.hide,
+lyte-popover-item.hide {
+  display: none;
+}
+/* .lyteMultiDropdownCheckBoxTypeDropbox lyte-drop-item[selected='true'], */
+.lyteMultiDropdownCheckBoxTypeDropbox .lyteDropdownSelection {
+  background: transparent;
+  background: var(--zcat-menuList-bg-hover); 
+}
+.lyteMultiDropSelectedText {
+  font: 14px/13px var(--zcat-font-family-primary);
+}
+.lyteMultiDropSelectedText .lyteTextSuffix {
+  padding-left: 4px;
+}
+.lyteMultiDropSelectedText .lyteTextNoSpace {
+  /* display: inline-table; */
+}
+lyte-drop-box.lyteMultiSelectDropdown {
+  z-index: 1000;
+}
+.lyteDropdownText {
+  padding: 10px 15px 10px;
+  text-align: center;
+  color: var(--zcat-menuList-text-light);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+  display: none !important;
+}
+lyte-drop-button input {
+  color: var(--zcat-color-dark3);
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+}
+lyte-dropdown[lt-prop-type='multisearch']
+  .lyteMultipleSelect
+  li.lyteMultiselectInput {
+  background: transparent;
+}
+lyte-drop-box.lyteMultiSelectDropdown {
+  z-index: 10000 !important;
+}
+/* info icon */
+.lyteHovercardPopover .lytePopover {
+  background: var(--zcat-tooltip-bg);
+  border-radius: 6px;
+  color: var(--zcat-tooltip-text-primary);
+  font-weight: 400;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  text-align: left;
+  box-shadow: var(--zcat-shadow-bg-default);
+  word-break: break-word;
+  overflow: visible;
+  border: 1px solid var(--zcat-tooltip-border);
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowBottom {
+  box-shadow: 1px 1px 0 0 var(--zcat-shadow-bg-default);
+}
+.lyteHovercardPopover .lytePopoverArrowIcon {
+  background: var(--zcat-inputField-icon-active);
+}
+lyte-hovercard-content {
+  padding: 6px 10px;
+}
+.tooltip-info-icon{
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none"><g clip-path="url(%23clip0_4506_905)"><path d="M6 8V6M6 4H6.005M11 6C11 8.76142 8.76142 11 6 11C3.23858 11 1 8.76142 1 6C1 3.23858 3.23858 1 6 1C8.76142 1 11 3.23858 11 6Z" stroke="%234D618A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_4506_905"><rect width="12" height="12" fill="white"/></clipPath></defs></svg>');
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    color: var(--zcat-body-text-light);
+}
+html[data-user-color-scheme="dark"] .tooltip-info-icon{
+	background: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(%23clip0_1060_709)"><g clip-path="url(%23clip1_1060_709)"><path d="M6.99996 12.8346C10.2216 12.8346 12.8333 10.223 12.8333 7.0013C12.8333 3.77964 10.2216 1.16797 6.99996 1.16797C3.7783 1.16797 1.16663 3.77964 1.16663 7.0013C1.16663 10.223 3.7783 12.8346 6.99996 12.8346Z" stroke="%23888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 9.33333V7" stroke="%23888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 4.66797H7.00625" stroke="%23888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></g><defs><clipPath id="clip0_1060_709"><rect width="14" height="14" fill="white"/></clipPath><clipPath id="clip1_1060_709"><rect width="14" height="14" fill="white"/></clipPath></defs></svg>');
+}
+
+#lytedropdownfreezelayer{
+    background: none !important;
+    opacity: 1 !important;
+}
+
+lyte-drop-body::-webkit-scrollbar-thumb {
+  background: var(--zcat-scrollbar-bg);
+}
+
+lyte-dropdown.now-wrap-dropdown ul.lyteMultipleSelect::-webkit-scrollbar {
+  width: 4px;
+  height: 2px;
+} 
+lyte-dropdown.now-wrap-dropdown ul.lyteMultipleSelect::-webkit-scrollbar-thumb {
+  background: var(--zcat-scrollbar-bg);
+} 
+
+lyte-dropdown.now-wrap-dropdown ul.lyteMultipleSelect::-webkit-scrollbar-track {
+  background: var(--zcat-scrollbar-track-bg);
+} 
+
+lyte-button .lyte-button.btn-radius-top0{
+  border-radius: 0 0 6px 6px;
+  width: 100%;
+}
+
+
+
+/* May 28 - Kamali - CSS in document file  */
+.zcat-dropdown-icon-position{
+    z-index: 1;
+    left: 8px;
+    top: 10px;
+}
+.zcat-dropdown-icon-position-exsm{
+    left: 4px;
+    z-index: 1;
+}
+.zcat-dropdown-icon-position-sm{
+  top: 7px;
+  left: 6px;
+}
+.zcat-dropdown-icon-position-exsm{
+  top: 5px;
+}
+.zcat-dropdown-relative-wrapper {
+    display: flex;
+    align-items: center;
+}
+.zcat-dropdown-relative-wrapper lyte-drop-button {
+    padding-left: 24px;
+}  
+.zcat-dropdown-relative-wrapper lyte-drop-button.lyteSm {
+    padding-left: 22px;
+}
+.zcat-dropdown-relative-wrapper lyte-drop-button.lyteExsm {
+    padding-left: 18px;
+}
+
+
+
+/* multiple dropdown  */
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm {
+  min-height: 28px;
+  /* height: auto; */
+  /* height: 28px; */
+  overflow: auto;
+    max-height: 70px;
+    /* padding: 0 26px 0 8px; */
+    padding: 2px 22px 2px 6px;     /* must by sk*/
+    display: flex;
+    /* align-items: center; */
+}
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm {
+    min-height: 24px;
+    /* height: auto; */
+    /* height: 24px; */
+    overflow: auto; 
+    max-height: 70px;
+    /* padding: 0 26px 0 4px; */
+    padding: 2px 20px 2px 4px;    /* must by sk */
+    display: flex;
+    align-items: center;
+    /* padding: 0 26px 0 4px;  */
+}
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button {
+  min-height: 36px;
+  overflow: auto;
+  display: flex;
+    /* padding: 0 26px 0 8px; */
+    max-height: 70px;
+    align-items: flex-start;
+    padding: 4px 26px 4px 8px; 
+    padding: 2px 26px 2px 8px;     /* must by sk*/
+    display: flex;
+    /* align-items: center; */
+}
+
+lyte-multi-dropdown lyte-dropdown{
+    max-width: 220px;
+}
+
+.zcat-dropdown-relative-wrapper lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button{
+    padding-left: 24px;
+}
+.zcat-dropdown-relative-wrapper lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteSm{
+    padding-left: 22px;
+}
+.zcat-dropdown-relative-wrapper lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteExsm{
+    padding-left: 18px;
+}
+/* lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button, */
+lyte-svg ~ lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button {
+    padding-left: 16px;
+}
+.zcat-dropdown-icon-top{   /*enable this, If the selected element takes more than 1 row.. */
+    top: 9px;
+}
+
+lyte-multi-dropdown.lyteSm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button{
+    /* height: 28px; */
+    min-height: 28px;
+  overflow: auto;
+    max-height: 70px;
+    padding: 2px 22px 2px 6px;
+    padding: 0 22px 0 6px;
+}
+lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button{
+    /* height: 24px; */
+    min-height: 24px;
+  overflow: auto;
+    max-height: 70px;
+    padding: 2px 20px 2px 4px;
+    padding: 0 20px 0 4px;
+}
+lyte-multi-dropdown lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button{
+    display: flex;
+    align-items: center;
+    padding: 0 26px 0 8px;
+    max-height: 70px;
+  min-height: 36px;
+  overflow: auto;
+    padding: 0 24px 0 8px;
+}
+lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button .lyteMultiDropSelectedText,
+lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button .lyteDropPlaceholderMultiple,
+/* multiple drop  */
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm .lyteDropPlaceholderMultiple{
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+    display: flex;
+}
+
+lyte-multi-dropdown.lyteSm lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button .lyteMultiDropSelectedText, 
+lyte-multi-dropdown.lyteSm lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button .lyteMultiDropSelectedText{
+    /* font: var(--zcat-font-12-16) var(--zcat-font-family-primary); */
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+    display: flex;
+}
+lyte-multi-dropdown lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button .lyteMultiDropSelectedText{
+  /* font: var(--zcat-font-14-20) var(--zcat-font-family-primary); */
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-drop-button.lyteExsm .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteSm lyte-dropdown lyte-drop-button .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li
+{
+    margin: 0;
+    padding: 2px 24px 2px 4px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+}
+lyte-drop-button.lyteExsm .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li {
+    /* font: var(--zcat-font-12-16) var(--zcat-font-family-primary); */
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-drop-button.lyteExsm .lyteMultipleSelect li{
+  padding-right: 14px;
+  height: 20px;
+}
+lyte-drop-button.lyteExsm ul.lyteMultipleSelect,
+lyte-drop-button.lyteSm ul.lyteMultipleSelect{
+    gap: unset;
+}
+lyte-drop-button ul.lyteMultipleSelect{
+    gap: 4px;
+}
+lyte-multi-dropdown.lyteSm, lyte-dropdown.lyteSm,
+lyte-multi-dropdown.lyteExsm, lyte-dropdown.lyteExsm{
+    padding: 0;
+}
+lyte-multi-dropdown .lyteMultipleSelect .lyteMultiDropdownNmoreElem,
+lyte-multi-dropdown.lyteSm lyte-dropdown .lyteMultipleSelect li.lyteMultiDropdownNmoreElem,
+lyte-multi-dropdown.lyteExsm lyte-dropdown .lyteMultipleSelect li.lyteMultiDropdownNmoreElem{
+    padding: 2px;
+    background: var(--zcat-btn-fill-bg-primary-default);
+}
+
+
+
+.lyteDropButtonDown:hover,
+.lyteDropButtonDown:hover 
+/* Need to handle for Up too  */
+{
+  background: var(--zcat-inputField-bg-hover);
+  border: var(--zcat-inputField-border-hover);
+}
+.lyteDropButtonDown:hover .zcat-stroke-input-icon path[stroke],
+.lyteDropButtonDown:hover .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-placeholder);
+} 
+
+.zcat-input-relative-wrapper:focus-within .zcat-stroke-input-icon path[stroke],
+.lyteDropButtonDown:focus-within .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-active);
+} 
+
+/* disabled  */
+.lyteInputDisabled + lyte-svg .zcat-stroke-input-icon path[stroke],
+.zcat-input-relative-wrapper:has(.lyteInputDisabled) .zcat-stroke-input-icon path[stroke],
+.lyteDropButtonDown:active .zcat-stroke-input-icon path[stroke]{  
+  stroke: var(--zcat-inputField-icon-disabled);
+}
+
+
+
+.zcat-invalid .lyteField input{
+  background: var(--zcat-inputField-bg-error) !important;
+}
+
+
+
+zcat-dropdown lyte-dropdown lyte-icon.dropdown,
+lyte-dropdown lyte-icon.dropdown,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button::after{
+  top: calc(50% - 2px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  height: 16px;
+  width: 16px;
+  top: 50%;
+  right: 0;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;  
+  right: -2px;
+  transition: transform 0.1s ease;
+}
+zcat-dropdown lyte-dropdown lyte-drop-button.lyteSm lyte-icon.dropdown, 
+lyte-dropdown lyte-drop-button.lyteSm lyte-icon.dropdown, 
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteSm::after{
+  height: 14px;
+  width: 14px;
+}
+
+zcat-dropdown lyte-dropdown lyte-drop-button.lyteExsm lyte-icon.dropdown,
+lyte-dropdown lyte-drop-button.lyteExsm lyte-icon.dropdown,
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteExsm::after {
+  height: 12px;
+  width: 12px;
+}
+lyte-multi-dropdown .lyteMultipleSelect .lyteMultiDropdownNmoreElem,
+lyte-multi-dropdown.lyteSm lyte-drop-button.lyteSm .lyteMultipleSelect .lyteMultiDropdownNmoreElem,
+lyte-multi-dropdown.lyteExsm lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteMultiDropdownNmoreElem{
+  background: transparent;
+  color: var(--zcat-link-text-primary-default);
+}
+lyte-multi-dropdown .lyteMultipleSelect .lyteMultiDropdownNmoreElem:hover, 
+lyte-multi-dropdown.lyteSm lyte-drop-button.lyteSm .lyteMultipleSelect .lyteMultiDropdownNmoreElem:hover,
+lyte-multi-dropdown.lyteExsm lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteMultiDropdownNmoreElem:hover {
+    border-color: transparent;
+    background: var(--zcat-btn-ghost-bg-primary-hover);
+}
+lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteCloseIcon::before,
+lyte-drop-button.lyteSm .lyteMultipleSelect .lyteCloseIcon::before,
+.lyteMultipleSelect .lyteCloseIcon::before{
+  height: 12px;
+  width: 12px;
+  top: calc(50% - 5px);
+  right: 1px;
+}
+.lyteMultipleSelect .lyteCloseIcon{
+  /* width: 16px; */
+}
+
+lyte-drop-button.lyteSm .lyteDropPlaceholderNormal,
+lyte-drop-button.lyteSm .lyteDropPlaceholderMultiple, 
+lyte-multi-dropdown.lyteSm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button .lyteDropPlaceholderMultiple,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm,
+lyte-drop-box.lyteSm lyte-drop-item .lyteCheckbox,
+.lyteSm lyte-popover-item .lyteCheckbox {
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+}
+ lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm,
+lyte-drop-box.lyteExsm lyte-drop-item .lyteCheckbox,
+.lyteExsm lyte-popover-item .lyteCheckbox,
+lyte-drop-button.lyteExsm .lyteDropPlaceholderMultiple, 
+lyte-drop-button.lyteExsm .lyteDropPlaceholderNormal {
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+}
+
+ lyte-drop-button.lyteExsm,
+ lyte-drop-button, lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm {
+  border-radius: 4px;
+}
+.lyteMultiDropdownCheckBoxTypeDropbox lyte-drop-item,
+.lyteMultiDropdownCheckBoxTypeDropbox  lyte-popover-item {
+    display: block;
+    display: flex;
+    align-items: center;
+}
+lyte-drop-box.lyteSm lyte-drop-label, lyte-drop-box.lyteSm lyte-drop-header h4,
+lyte-drop-box.lyteExsm lyte-drop-label, lyte-drop-box.lyteExsm lyte-drop-header h4 {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  font-weight: 600;
+  padding-bottom: 6px;
+}
+.lyteMultipleSelect .lyteDropdownVisible{
+  word-break: break-all;
+  white-space: pre-wrap;
+  display: block;
+  text-indent: -7px;     
+}
+.lyteMultipleSelect .lyteDropdownVisible,
+.lyteMultipleSelect .lyteDropdownVisible lyte-text {
+  padding-right: 4px;   
+  margin-right: 4px;
+}   
+.lyteMultipleSelect li:hover .lyteCloseIcon{
+    border-radius: 50%;
+    padding: 2px;
+    box-sizing: border-box;
+    background-color: var(--zcat-btn-grey-bg-hover);
+}
+.lyteMultipleSelect .lyteCloseIcon::before {
+  top: 2px;
+  left: 2px;
+}
+lyte-checkbox span, lyte-checkbox{
+  color: var(--zcat-menuList-text-default);
+}
+.lyteDropdownSelection .lyteCheckbox .lyteCheckBoxDefault span, lyte-checkbox:hover span{
+  color: var(--zcat-menuList-text-hover);
+}
+.lyteMultiDropdownCheckBoxTypeDropbox lyte-drop-item[selected='true'],
+.lyteMultiDropdownCheckBoxTypeDropbox lyte-popover-item[selected='true']{
+  background: var(--zcat-menuList-bg-selected);
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect .lyteCloseIcon, 
+lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteCloseIcon{
+  width: 14px;
+  height: 14px;
+}
+lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteCloseIcon::before, lyte-drop-button.lyteSm .lyteMultipleSelect .lyteCloseIcon::before{
+  top: 1px;
+  left: 1px;
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect li, lyte-drop-button.lyteExsm .lyteMultipleSelect li, lyte-multi-dropdown.lyteSm lyte-dropdown lyte-drop-button .lyteMultipleSelect li, lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li {
+  padding-right: 16px;
+}
+.lyteMultipleSelect .lyteCloseIcon:hover::before {
+    opacity: 0.7;
+}
+
+.lyteMultiSelectDropdown lyte-drop-item, .lyteMultiSelectDropdown lyte-popover-item{
+  /* padding: 8px; */
+  padding: 8px 4px;
+}       
+lyte-drop-box.lyteExsm lyte-drop-body, lyte-drop-box.lyteSm lyte-drop-body{
+  padding: 8px; 
+}
+lyte-drop-body lyte-drop-item:last-of-type, lyte-drop-body lyte-popover-item:last-of-type {
+  margin-bottom: 0 !important;
+}
+lyte-drop-body h4{
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-menuList-text-heading);
+}
+.menu-lyte-svg-class{
+  /* width: 16px;
+  height: 16px; */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* missed disable styles  */
+.lyteDropdownDisabled .lyteMultipleSelect li{
+    background: var(--zcat-chips-bg-default);
+    border: 1px solid var(--zcat-chips-border-default);
+    pointer-events: none;
+    color: var(--zcat-inputField-text-disabled);
+}
+.lyteDropdownDisabled lyte-drop-button:hover
+, lyte-dropdown.lyteDropdownDisabled lyte-drop-button:hover, lyte-dropdown[lt-prop-type="multiple"].lyteDropdownDisabled lyte-drop-button:hover
+{
+  cursor: not-allowed;
+  border-color: var(--zcat-inputField-border-disabled) !important;
+}
+
+lyte-dropdown.lyteDropdownDisabled lyte-drop-button .prefixClass {
+    pointer-events: none;
+}
+.lyteDropdownDisabled .lyteMultipleSelect .lyteMultiDropdownNmoreElem{
+  background: transparent;
+  border: none;
+}
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm, 
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm,
+lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button {
+  align-items: unset;
+}
+
+lyte-search.lyteSm{
+  padding: 0;
+  font-size: unset;  
+}
+lyte-drop-button.lyteSm .lyteMultipleSelect .lyteDropdownVisible, lyte-drop-button.lyteSm .lyteMultipleSelect .lyteDropdownVisible lyte-text, 
+lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteDropdownVisible, lyte-drop-button.lyteExsm .lyteMultipleSelect .lyteDropdownVisible lyte-text{
+  margin-right: 0;
+}
+.zcat-dropdown-relative-wrapper lyte-svg.disabled{
+  cursor: not-allowed;
+}
+
+
+/* ghost dropdown  */
+.ghost-dropdown lyte-drop-button{ 
+  border-color: transparent;
+}
+.ghost-dropdown lyte-drop-button, .ghost-dropdown lyte-drop-button .lyteDropPlaceholderNormal{
+  color: var(--zcat-dropdown-ghost-text-primary-default);
+}
+zcat-dropdown .ghost-dropdown lyte-dropdown lyte-icon.dropdown, lyte-dropdown lyte-icon.dropdown{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 16px;
+  height: 16px;
+}
+zcat-dropdown .ghost-dropdown lyte-dropdown.lyteSm lyte-icon.dropdown, lyte-dropdown lyte-icon.dropdown, 
+zcat-dropdown .ghost-dropdown lyte-dropdown.lyteExsm lyte-icon.dropdown, lyte-dropdown lyte-icon.dropdown, 
+zcat-dropdown .ghost-dropdown lyte-dropdown lyte-drop-button.lyteExsm lyte-icon.dropdown{
+  width: 14px;
+  height: 14px;
+}  
+.ghost-dropdown lyte-dropdown lyte-drop-button:hover{
+  border-color: transparent !important;  
+  color: var(--zcat-dropdown-ghost-text-primary-hover);
+  background: var(--zcat-inputField-bg-hover);
+}
+.ghost-dropdown lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button:hover,
+.ghost-dropdown lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button {
+  border-color: transparent !important;
+}    
+.zcat-ghost-dropdown-icon-primary path[stroke]{
+  stroke: var(--zcat-dropdown-ghost-icon-primary-default);
+}
+.ghost-dropdown .zcat-dropdown-icon-position-sm{
+  top: unset;
+}
+.ghost-dropdown-wrapper lyte-svg.disabled svg,
+.ghost-dropdown-wrapper zcat-icon.disabled path[stroke]{
+  stroke: var(--zcat-btn-ghost-icon-primary-disabled)
+}
+.ghost-dropdown lyte-dropdown .lyteDropdown-disabled lyte-drop-button{
+  color: var(--zcat-dropdown-ghost-text-primary-disabled) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+/* Light mode - downArrowIcon */
+zcat-dropdown .ghost-dropdown lyte-dropdown lyte-icon.dropdown
+/* , lyte-dropdown lyte-icon.dropdown */
+{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* hover  */
+.ghost-dropdown lyte-dropdown lyte-drop-button:hover lyte-icon.dropdown{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%230755F2" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* opened  */
+.ghost-dropdown .lyteDropButtonDown lyte-icon.dropdown, 
+.ghost-dropdown .lyteDropButtonUp lyte-icon.dropdown,
+.ghost-dropdown .lyteDropButtonDown:hover lyte-icon.dropdown, 
+.ghost-dropdown .lyteDropButtonUp:hover lyte-icon.dropdown {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 10L8 6L12 10" stroke="%232A65F0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}  
+/* disable  */
+.ghost-dropdown .lyteDropdownDisabled lyte-icon.dropdown {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%237DA2FB" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* Dark mode - downArrowIcon */
+[data-user-color-scheme="dark"] zcat-dropdown .ghost-dropdown lyte-dropdown lyte-icon.dropdown
+/* , [data-user-color-scheme="dark"] lyte-dropdown lyte-icon.dropdown */
+{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" class=""><path d="M4 6L8 10L12 6" stroke="%23458BFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* hover  */
+[data-user-color-scheme="dark"] .ghost-dropdown lyte-dropdown lyte-drop-button:hover lyte-icon.dropdown{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%235A97FB" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+/* opened  */
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropButtonDown lyte-icon.dropdown, 
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropButtonUp lyte-icon.dropdown,
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropButtonDown:hover lyte-icon.dropdown, 
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropButtonUp:hover lyte-icon.dropdown {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 10L8 6L12 10" stroke="%23458BFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}  
+[data-user-color-scheme="dark"] .ghost-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonUp lyte-icon.dropdown,
+[data-user-color-scheme="dark"] .ghost-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonDown lyte-icon.dropdown,
+.ghost-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonUp lyte-icon.dropdown,
+.ghost-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonDown lyte-icon.dropdown {
+  transform: translate(-50%, -50%) rotate(0deg);
+  transition: none;
+}
+/* disable  */
+[data-user-color-scheme="dark"] .ghost-dropdown .lyteDropdownDisabled lyte-icon.dropdown {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="%23355A8D" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+
+
+.count-highlight{
+  color: var(--zcat-link-text-primary-default);
+  padding: 2px;
+  border-radius: 6px;
+}
+.count-highlight:hover{
+  border-color: transparent;
+  background: var(--zcat-btn-ghost-bg-primary-hover);
+}
+
+lyte-multi-dropdown.zcat-w-fc lyte-dropdown {
+    max-width: 100%;
+}
+.lyteDropdownDisabled .lyteMultipleSelect li [yield-name="nMoreTag"]{
+  color: var(--zcat-dropdown-ghost-text-primary-disabled);
+}
+lyte-drop-button.lyteExsm.lyteDropButtonUp, lyte-drop-button.lyteDropButtonUp, lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm.lyteDropButtonUp,
+lyte-drop-button.lyteExsm.lyteDropButtonDown, lyte-drop-button.lyteDropButtonDown, lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm.lyteDropButtonDown{
+  border-radius: 4px;
+}
+.lyteDropdown-disabled .count-highlight{
+  color: var(--zcat-dropdown-ghost-text-primary-disabled);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+.dropdown-disabled lyte-svg svg,
+.dropdown-disabled zcat-icon path[stroke]{
+  stroke: var(--zcat-inputField-icon-disabled);
+}
+.input-field-disabled .input-label{
+  color: var(--zcat-inputField-text-disabled);
+}
+.input-field-disabled .zcat-input-label-stroke path[stroke]{
+  stroke: var(--zcat-inputField-icon-disabled);
+}
+[data-user-color-scheme="dark"] lyte-drop-item[selected='true']::before, 
+[data-user-color-scheme="dark"] lyte-popover-item[selected='true']::before{
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none" class=""><path d="M14.0833 4.30005L6.74996 11.6334L3.41663 8.30005" stroke="%23458BFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+.checkboxBoxClass lyte-checkbox, .checkboxBoxClass lyte-checkbox {
+    width: unset;
+}
+
+ /* July 8  */
+lyte-drop-footer {
+  border-top: unset;
+}
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteSm, lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button.lyteExsm, lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button{
+  align-items: center;
+}
+.lyteMultiDropSelectedText, .lyteMultiDropSelectedText lyte-text{
+  width: 100%;
+}
+lyte-multi-dropdown lyte-dropdown {
+    max-width: 100%;
+    max-width: unset;
+}
+lyte-dropdown.zcat-multiple-dropdown lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-dropdown.zcat-multiple-dropdown lyte-drop-button.lyteExsm .lyteMultipleSelect li,
+lyte-dropdown.zcat-multiple-dropdown .lyteMultipleSelect li {
+  display: inline-flex;
+}
+lyte-multi-dropdown .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteSm lyte-dropdown lyte-drop-button .lyteMultipleSelect li, 
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li, 
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteExsm .lyteMultipleSelect li{
+  display: flex;
+  align-items: center;
+  margin: 2px 4px 2px 0;
+}
+lyte-multi-dropdown.lyteExsm lyte-dropdown lyte-drop-button .lyteMultipleSelect li, 
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteExsm .lyteMultipleSelect li{
+  margin: 0 4px 0 0;
+}
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button{
+  display: inline-block;
+  height: 36px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+/* checkbox  -->  placeholder */
+lyte-multi-dropdown[lt-prop-type="checkbox"] .lyteDropPlaceholderMultiple {
+  width: 100%;
+  display: flex;
+}
+/* with value */
+/* lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button ul.lyteMultipleSelect {
+  width: 100%;
+  display: flex;
+  flex-wrap: unset;
+  gap: unset;
+} */
+ 
+  /* lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button ul.lyteMultipleSelect, */
+lyte-multi-dropdown.zcat-chip-checkbox-dropdown[lt-prop-type="checkbox"] lyte-drop-button ul.lyteMultipleSelect {
+  width: 100%;
+  display: flex;
+  /* flex-wrap: unset;
+  gap: unset; */
+}
+lyte-multi-dropdown.zcat-default-checkbox-dropdown[lt-prop-type="checkbox"] .lyteMultiDropSelectedText {
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+}
+lyte-dropdown.zcat-multiple-dropdown.zcat-w-fc .lyteMultipleSelect li,
+lyte-dropdown.zcat-multiple-dropdown.zcat-w-fc lyte-drop-button.lyteSm .lyteMultipleSelect li,
+lyte-dropdown.zcat-multiple-dropdown.zcat-w-fc lyte-drop-button.lyteExsm .lyteMultipleSelect li{
+  margin: 0;
+}
+lyte-multi-dropdown.zcat-default-checkbox-dropdown[lt-prop-type="checkbox"] .lyteMultiDropSelectedText lyte-text{
+  display: flex;
+}
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteSm {
+  height: 28px;
+}
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteExsm {
+  height: 24px;
+}
+.ghost-dropdown lyte-dropdown lyte-drop-button {
+    border-color: transparent !important;
+    background: transparent;
+}
+.ghost-dropdown lyte-dropdown lyte-icon.dropdown{
+  opacity: unset;
+}
+lyte-multi-dropdown.lyteExsm lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button .lyteDropPlaceholderMultiple,
+lyte-multi-dropdown[lt-prop-type="checkbox"] lyte-drop-button.lyteExsm ul.lyteMultipleSelect,
+lyte-multi-dropdown.zcat-default-checkbox-dropdown.lyteExsm[lt-prop-type="checkbox"] .lyteMultiDropSelectedText {
+  gap: unset;
+  flex-wrap: unset;
+}
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteDropButtonDown::after, 
+lyte-dropdown[lt-prop-type='multiple'] lyte-drop-button.lyteDropButtonUp::after,
+zcat-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonDown lyte-icon.dropdown, lyte-dropdown lyte-drop-button.lyteDropButtonDown lyte-icon.dropdown,
+zcat-dropdown lyte-dropdown lyte-drop-button.lyteDropButtonUp lyte-icon.dropdown, lyte-dropdown lyte-drop-button.lyteDropButtonUp lyte-icon.dropdown  {
+    transform: translate(-50%, -50%) rotate(180deg);
+    transition: transform 0.1s ease;
+}
+lyte-dropdown.zcat-multiple-dropdown lyte-drop-button.lyteExsm ul.lyteMultipleSelect, lyte-drop-button.lyteSm ul.lyteMultipleSelect,
+lyte-dropdown.zcat-multiple-dropdown lyte-drop-button ul.lyteMultipleSelect {
+  gap: 4px;
+}
+zcat-dropdown lyte-dropdown {
+  width: 100%;   /* default width  */
+}
+
+
+
+
+
+/* menu list  - yet to add in common place  */
+.lyteDropdownSelection lyte-svg svg.zcat-stroke-icon-active, .lyteDropdownSelection lyte-svg svg.zcat-ghost-dropdown-icon-primary,
+.lyteDropdownSelection .zcat-stroke-icon-active path[stroke], .lyteDropdownSelection .zcat-ghost-dropdown-icon-primary path[stroke]
+{
+  stroke: var(--zcat-menuList-icon-hover);
+}
+lyte-drop-box.lyteExsm lyte-drop-body.zcat-pt-6, lyte-drop-box.lyteSm lyte-drop-body.zcat-pt-6{
+  padding-top: 6px;
+}
+lyte-drop-box.lyteExsm lyte-drop-body.zcat-pb-6, lyte-drop-box.lyteSm lyte-drop-body.zcat-pb-6{
+  padding-bottom: 6px;
+}
+.lyteMultiSelectDropdown lyte-drop-body.lyteExsm lyte-drop-item,
+.lyteMultiSelectDropdown lyte-drop-body.lyteSm lyte-drop-item,
+.lyteMultiSelectDropdown lyte-drop-body.lyteExsm lyte-popover-item,
+.lyteMultiSelectDropdown lyte-drop-body.lyteSm lyte-popover-item {
+  padding: 6px 4px 6px 4px;
+}
+
+
+
+
+/* tooltip  */
+.lyteMultiDropdownTagHovercard.lyteHovercardPopover .lytePopover{
+  border: 1px solid var(--zcat-tooltip-border);
+}
+lyte-hovercard-content{
+    background: var(--zcat-tooltip-bg);
+    border-radius: 6px;
+    /* box-shadow: 2px 2px 10px 12px var(--zcat-shadow-bg-default); */
+  /* border: 1px solid var(--zcat-tooltip-border); */
+}
+.lyteMultiDropdownTagHovercard.lyteHovercardPopover .lytePopover{
+  border: 1px solid var(--zcat-tooltip-border);
+  background: var(--zcat-tooltip-bg);
+}
+.lyteMultiDropdownTagHovercard.lyteHovercardPopover .lytePopoverArrowIcon{
+  background: var(--zcat-tooltip-bg);
+}
+
+/* dropdown - menu list icon  */
+.zcat-stroke-icon-active path[stroke]{
+  stroke: var(--zcat-menuList-icon-active);
+}
+.zcat-stroke-icon-tooltip path[stroke]{
+  stroke: var(--zcat-body-icons-static-primary);
+}
+
+.zcat-chip-checkbox-dropdown{
+  max-width: 100%;
+}
+
+
+/* removable - checkbox's defaul */
+lyte-drop-body .lyteCheckBoxDefault::before{
+  margin-right: 4px;
+}
+
+lyte-drop-box.cxDropbox{
+  background: var(--zcat-menuList-bg-default);
+  border: 1px solid var(--zcat-menuList-border-default);
+}
+.lyteHovercardPopover.popoverWrapper{
+  z-index: 10000;
+}
+
+
+
+

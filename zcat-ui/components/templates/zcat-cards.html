@@ -1,0 +1,134 @@
+<template tag-name="zcat-cards">
+  <zcat-hovercard
+    lyte-if="{{zcatProp.infoIcon.yield || zcatProp.infoIcon.value}}"
+    zcat-prop="{{zcatProp.infoIcon}}"
+  >
+    <template is="yield" yield-name="{{zcatProp.infoIcon.yield}}">
+      <lyte-yield yield-name="{{zcatProp.infoIcon.yield}}"></lyte-yield>
+    </template>
+  </zcat-hovercard>
+  <div
+    lyte-if="{{zcatProp.label}}"
+    class="zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{zcatProp.disabled ? 'input-field-disabled' : ''}}"
+  >
+    <p
+      class="{{zcatProp.label_class ? zcatProp.label_class : 'zcat-input-label'}} zcat-input-label-default"
+    >
+      {{zcatProp.label}}
+      <span class="optional-label"
+        >{{zcatProp.isOptional && zcatProp.label ? ' (Optional)' : ''}}</span
+      >
+    </p>
+    <div
+      lyte-if="{{zcatProp.infoIcon.id}}"
+      class="zcat-w12 zcat-h12 zcat-cP"
+      id="tooltipInfoMsg{{zcatProp.infoIcon.id}}"
+      lyte-hovercard="true"
+    >
+      <!-- <lyte-svg lt-prop-path="#zcat-icon-info" lt-prop-class="zcat-w12 zcat-h12 zcat-input-label-stroke "></lyte-svg> -->
+      <zcat-icon
+        class="zcat-mb-2 zcat-input-label-stroke"
+        name="info"
+        width="12"
+        height="12"
+        stroke="var(--zcat-inputField-icon-label)"
+        strokeWidth="1.3"
+      >
+      </zcat-icon>
+    </div>
+  </div>
+  <div class="zcat-dF zcat-direction-column zcat-gap-10 zcat-w100p">
+    <%if(zcatProp.type === 'default'){ %>
+    <div
+      lyte-for="{{zcatProp.options}} as item index"
+      class="zcat-dF zcat-align-center zcat-gap-20 zcat-card-radio-button {{zcatProp.variant}}-card {{zcatProp.class}} {{item.disabled ? 'disabled' : ''}}"
+    >
+      <div class="zcat-flex-center zcat-gap-6 zcat-w100p">
+        <lyte-svg
+          lyte-if="{{item.icon.position === 'left'}}"
+          lt-prop-path="#{{item.icon.name}}"
+          lt-prop-class="{{item.icon.class}} zcat-flex-center"
+        ></lyte-svg>
+        <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+        <lyte-svg
+          lyte-if="{{item.icon.position === 'right'}}"
+          lt-prop-path="#{{item.icon.name}}"
+          lt-prop-class="{{item.icon.class}} zcat-flex-center"
+        ></lyte-svg>
+      </div>
+    </div>
+    <%}else if(zcatProp.type === 'single_sel'){%>
+    <div class="zcat-dF zcat-align-center zcat-gap-20 {{zcatProp.class}}">
+      <lyte-radiobutton
+        lt-prop-yield="true"
+        id="{{item.value}}"
+        lyte-for="{{zcatProp.options}} as item index"
+        data-zcqa="{{zcatProp.zcqa}}"
+        lt-prop-name="{{zcatProp.name}}"
+        lt-prop-value="{{item.value}}"
+        lt-prop-disabled="{{item.disabled}}"
+        lt-prop-checked="{{formData[zcatProp.key] === item.value ? 'true' : 'false'}}"
+        class="zcat-card-radio-button {{item.class ? item.class : '' }} {{zcatProp.variant}}-card {{formData[zcatProp.key] === item.value ? 'selected' : ''}}"
+        on-before-checked="{{method('customLbindForRadioButton', zcatProp.onBeforeChecked, item.value)}}"
+        on-before-unchecked="{{method('customLbindForRadioButton', zcatProp.onBeforeUnchecked, item.value)}}"
+        on-checked="{{method('customLbindForRadioButton', zcatProp.onChecked, item.value)}}"
+        on-unchecked="{{method('customLbindForRadioButton', zcatProp.onUnchecked, item.value)}}"
+        on-changed="{{method('customLbindForRadioButton', zcatProp.onChanged, item.value)}}"
+      >
+        <template is="registerYield" yield-name="yield">
+          <div class="zcat-flex-center zcat-gap-6 zcat-w100p">
+            <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+          </div>
+        </template>
+      </lyte-radiobutton>
+    </div>
+    <%}else if(zcatProp.type === 'multi_sel'){%>
+    <div class="zcat-dF zcat-align-center zcat-gap-20 {{zcatProp.class}}">
+      <lyte-checkbox
+        lt-prop-yield="true"
+        lyte-for="{{zcatProp.options}} as item index"
+        data-zcqa="{{zcatProp.zcqa}}"
+        lt-prop-type="{{zcatProp.type ? zcatProp.type : 'default'}}"
+        lt-prop-id="{{item.value}}"
+        lt-prop-disabled="{{item.disabled}}"
+        lt-prop-checked="{{formData[zcatProp.key] === item.value ? 'true' : 'false'}}"
+        lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+        lt-prop-name="{{zcatProp.name ? zcatProp.name : ''}}"
+        lt-prop-value="{{item.value}}"
+        lt-prop-read-only="{{zcatProp.readOnly ? zcatProp.readOnly : 'false'}}"
+        lt-prop-fire-on-init="{{zcatProp.fireOnInit ? zcatProp.fireOnInit : 'false'}}"
+        class="zcat-card-radio-button {{item.class ? item.class : '' }} {{zcatProp.selected === item.value ? 'selected' : 'unselect'}} {{zcatProp.variant}}-card"
+        lt-prop-label-class="{{zcatProp.labelClass ? zcatProp.labelClass : ''}}"
+        lt-prop-prevent-callback-observers="{{zcatProp.callbackObservers ? zcatProp.callbackObservers : 'false'}}"
+        lt-prop-focus="{{zcatProp.focus ? zcatProp.focus : 'false'}}"
+        lt-prop-aria-checkbox='{"aria-checked": "true"}'
+        lt-prop-data-tabindex="group0-1"
+        lt-prop-show-tooltip="{{zcatProp.tooltip ? zcatProp.tooltip : 'false'}}"
+        lt-prop-tooltip-config='{"position": "bottom", "appearance": "box", "margin": 15, "keeptooltip": true}'
+        lt-prop-tooltip-class="{{zcatProp.tooltipClass ? zcatProp.tooltipClass : 'false'}}"
+        on-changed="{{method('customLbindForCheckbox',zcatProp.onChange,item.value)}}"
+        on-before-checked="{{method('customLbindForCheckbox',zcatProp.onBeforeChecked,item.value)}}"
+        on-checked="{{method('customLbindForCheckbox',zcatProp.onChecked,'')}}"
+        on-before-unchecked="{{method('customLbindForCheckbox',zcatProp.onBeforeUnChecked,'')}}"
+        on-unchecked="{{method('customLbindForCheckbox',zcatProp.onUnChecked,'')}}"
+      >
+        <template is="registerYield" yield-name="yield">
+          <div class="zcat-flex-center zcat-gap-6 zcat-w100p">
+            <lyte-svg
+              lyte-if="{{item.icon.position === 'left'}}"
+              lt-prop-path="#{{item.icon.name}}"
+              lt-prop-class="{{item.icon.class}} zcat-flex-center"
+            ></lyte-svg>
+            <lyte-yield yield-name="{{item.yield}}"></lyte-yield>
+            <lyte-svg
+              lyte-if="{{item.icon.position === 'right'}}"
+              lt-prop-path="#{{item.icon.name}}"
+              lt-prop-class="{{item.icon.class}} zcat-flex-center"
+            ></lyte-svg>
+          </div>
+        </template>
+      </lyte-checkbox>
+    </div>
+    <%}%>
+  </div>
+</template>

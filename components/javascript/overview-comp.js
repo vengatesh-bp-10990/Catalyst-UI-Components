@@ -38,7 +38,7 @@ OverviewComp._dynamicNodes = [];;
 OverviewComp._observedAttributes = [];
 
 OverviewComp.register("overview-comp", {
-  hash: "OverviewComp_4",
+  hash: "OverviewComp_6",
   refHash: "C_zcat-app_app_0"
 });
 

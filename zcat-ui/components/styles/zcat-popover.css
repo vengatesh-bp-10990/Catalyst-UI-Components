@@ -1,0 +1,264 @@
+
+
+/* === Global base styles from reference css/zcat-popover.css === */
+lyte-popover-freeze {
+  opacity: 0 !important;
+}
+.lytePopover {
+  overflow: hidden;    
+  box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+    border-radius: 6px;
+    border: 1px solid var(--zcat-menuList-border-default);
+    overflow: hidden;
+    background: var(--zcat-menuList-bg-default);
+  transform: translate(1px, 1px);
+}
+.lyteHovercardPopover .lytePopover {
+  background: var(--zcat-tooltip-bg);
+  border-radius: 6px;
+  color: var(--zcat-tooltip-text-primary);
+  font-weight: 400;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  text-align: left;
+  box-shadow: var(--zcat-shadow-light-all);
+  word-break: break-word;
+  overflow: visible;
+  box-shadow: 2px 2px 10px 2px var(--zcat-shadow-bg-default);
+  border: 1px solid var(--zcat-tooltip-border);
+  transform: translateY(-5px);
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowBottom,
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowTop,
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowLeft,
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowRight {
+  box-shadow: 1px 1px 0 0 var(--zcat-tooltip-bg);
+}
+.lyteHovercardPopover .lytePopoverArrowIcon {
+  background: var(--zcat-tooltip-bg);
+  border-bottom: 1px solid var(--zcat-tooltip-border);
+  border-right: 1px solid var(--zcat-tooltip-border);
+}
+lyte-hovercard-content {
+  padding: 8px;
+}
+/* new for tooltip placement arrow  */
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowTop {     /* placement = bottom */
+  border-left: 1px solid var(--zcat-tooltip-border);
+  border-top: 1px solid var(--zcat-tooltip-border);
+  /* box-shadow: unset; */
+  border-bottom: transparent;
+  border-right: transparent;
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowBottom {    /* placement = top */  
+  border-bottom: 1px solid var(--zcat-tooltip-border);
+  border-right: 1px solid var(--zcat-tooltip-border);
+  box-shadow: none;   
+  border-left: transparent;
+  border-top: transparent;
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowLeft {    /* placement = right */  
+  border-bottom: 1px solid var(--zcat-tooltip-border);
+  border-left: 1px solid var(--zcat-tooltip-border);
+  border-right: transparent;
+  border-top: transparent;
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowRight {    /* placement = left */  
+  border-top: 1px solid var(--zcat-tooltip-border);
+  border-right: 1px solid var(--zcat-tooltip-border);
+  border-left: transparent;
+  border-bottom: transparent;
+}
+
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowBottom, .lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowTop, .lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowLeft, .lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowRight{
+  box-shadow: none;
+}
+
+lyte-hovercard-content{
+    background: var(--zcat-tooltip-bg);
+    border-radius: 6px;
+    /* box-shadow: 2px 2px 10px 12px var(--zcat-shadow-bg-default); */
+  /* border: 1px solid var(--zcat-tooltip-border); */
+}
+
+.nested-popover-item{
+    display: flex;
+    justify-content: space-between;
+    padding-right: 4px;
+    width: 100%;
+    gap: 6px;
+}
+.zcat-stroke-icon-active{
+  stroke: var(--zcat-menuList-icon-active);
+}
+
+lyte-popover-header, lyte-drop-header{
+    padding: 8px 8px 0;
+}
+lyte-popover-content ,lyte-drop-body {
+    padding: 8px;
+    display: block;
+    /* max-height: 210px; */
+    overflow-y: auto;
+    position: relative;
+}
+lyte-popover-content h4 ,lyte-drop-body h4 {
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    color: var(--zcat-menuList-text-heading);
+}
+lyte-popover-footer{
+    padding: 0;
+}
+
+lyte-drop-item[selected='true']::before{
+    content:unset;
+}
+lyte-popover-item{
+  padding: 8px 4px;
+  width: 100%;
+  cursor: pointer;
+}
+
+lyte-popover-item.popover-item-disabled{
+  cursor: not-allowed;
+  pointer-events: none;
+}
+lyte-popover-item.popover-item-disabled p{
+  color: var(--zcat-menuList-text-disabled);
+}
+lyte-popover-item.popover-item-disabled .menu-lyte-svg-class svg path[stroke]{
+  stroke: var(--zcat-menuList-icon-disabled)
+}
+
+
+
+
+/* === Global base styles from reference css/zcat-popover.css === */
+lyte-popover-freeze {
+  opacity: 0 !important;
+}
+.lytePopover {
+  overflow: hidden;    
+  box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+    border-radius: 6px;
+    border: 1px solid var(--zcat-menuList-border-default);
+    overflow: hidden;
+    background: var(--zcat-menuList-bg-default);
+  transform: translate(1px, 1px);
+}
+.lyteHovercardPopover .lytePopover {
+  background: var(--zcat-tooltip-bg);
+  border-radius: 6px;
+  color: var(--zcat-tooltip-text-primary);
+  font-weight: 400;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  text-align: left;
+  box-shadow: var(--zcat-shadow-light-all);
+  word-break: break-word;
+  overflow: visible;
+  box-shadow: 2px 2px 10px 2px var(--zcat-shadow-bg-default);
+  border: 1px solid var(--zcat-tooltip-border);
+  transform: translateY(-5px);
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowBottom,
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowTop,
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowLeft,
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowRight {
+  box-shadow: 1px 1px 0 0 var(--zcat-tooltip-bg);
+}
+.lyteHovercardPopover .lytePopoverArrowIcon {
+  background: var(--zcat-tooltip-bg);
+  border-bottom: 1px solid var(--zcat-tooltip-border);
+  border-right: 1px solid var(--zcat-tooltip-border);
+}
+lyte-hovercard-content {
+  padding: 8px;
+}
+/* new for tooltip placement arrow  */
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowTop {     /* placement = bottom */
+  border-left: 1px solid var(--zcat-tooltip-border);
+  border-top: 1px solid var(--zcat-tooltip-border);
+  /* box-shadow: unset; */
+  border-bottom: transparent;
+  border-right: transparent;
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowBottom {    /* placement = top */  
+  border-bottom: 1px solid var(--zcat-tooltip-border);
+  border-right: 1px solid var(--zcat-tooltip-border);
+  box-shadow: none;   
+  border-left: transparent;
+  border-top: transparent;
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowLeft {    /* placement = right */  
+  border-bottom: 1px solid var(--zcat-tooltip-border);
+  border-left: 1px solid var(--zcat-tooltip-border);
+  border-right: transparent;
+  border-top: transparent;
+}
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowRight {    /* placement = left */  
+  border-top: 1px solid var(--zcat-tooltip-border);
+  border-right: 1px solid var(--zcat-tooltip-border);
+  border-left: transparent;
+  border-bottom: transparent;
+}
+
+.lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowBottom, .lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowTop, .lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowLeft, .lyteHovercardPopover .lytePopoverArrowIcon.lytePopoverArrowRight{
+  box-shadow: none;
+}
+
+lyte-hovercard-content{
+    background: var(--zcat-tooltip-bg);
+    border-radius: 6px;
+    /* box-shadow: 2px 2px 10px 12px var(--zcat-shadow-bg-default); */
+  /* border: 1px solid var(--zcat-tooltip-border); */
+}
+
+.nested-popover-item{
+    display: flex;
+    justify-content: space-between;
+    padding-right: 4px;
+    width: 100%;
+    gap: 6px;
+}
+.zcat-stroke-icon-active{
+  stroke: var(--zcat-menuList-icon-active);
+}
+
+lyte-popover-header, lyte-drop-header{
+    padding: 8px 8px 0;
+}
+lyte-popover-content ,lyte-drop-body {
+    padding: 8px;
+    display: block;
+    /* max-height: 210px; */
+    overflow-y: auto;
+    position: relative;
+}
+lyte-popover-content h4 ,lyte-drop-body h4 {
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    color: var(--zcat-menuList-text-heading);
+}
+lyte-popover-footer{
+    padding: 0;
+}
+
+lyte-drop-item[selected='true']::before{
+    content:unset;
+}
+lyte-popover-item{
+  padding: 8px 4px;
+  width: 100%;
+  cursor: pointer;
+}
+
+lyte-popover-item.popover-item-disabled{
+  cursor: not-allowed;
+  pointer-events: none;
+}
+lyte-popover-item.popover-item-disabled p{
+  color: var(--zcat-menuList-text-disabled);
+}
+lyte-popover-item.popover-item-disabled .menu-lyte-svg-class svg path[stroke]{
+  stroke: var(--zcat-menuList-icon-disabled)
+}
+
+

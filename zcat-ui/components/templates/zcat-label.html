@@ -1,0 +1,26 @@
+<template tag-name="zcat-label">
+  <div class="zcat-label-wrap
+    {{zcatProp.size === 'small' ? 'zcat-label-sm' : zcatProp.size === 'large' ? 'zcat-label-lg' : ''}}
+    {{zcatProp.disabled ? 'zcat-label-disabled' : ''}}
+    {{zcatProp.classCss || ''}}">
+    <label class="zcat-label {{zcatProp.required ? 'zcat-label-required' : ''}}">
+      {{zcatProp.text}}
+      <span lyte-if="{{zcatProp.isOptional}}" class="zcat-label-optional"> (Optional)</span>
+    </label>
+    <div
+      lyte-if="{{zcatProp.infoIcon}}"
+      class="zcat-w12 zcat-h12 zcat-cP"
+      lt-prop-title="{{zcatProp.infoIcon.value}}"
+      lt-prop-tooltip-config="{{zcatProp.infoIcon.placement && zcatProp.infoIcon.placement !== 'auto' ? '{&quot;position&quot;:&quot;' + zcatProp.infoIcon.placement + '&quot;}' : '{}'}}"
+    >
+      <zcat-icon
+        class="zcat-input-label-stroke"
+        name="info"
+        width="12"
+        height="12"
+        stroke="currentColor"
+        strokeWidth="1.3"
+      ></zcat-icon>
+    </div>
+  </div>
+</template>

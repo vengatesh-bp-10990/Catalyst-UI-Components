@@ -1,0 +1,75 @@
+.zcat-autocomplete.default,.zcat-autocomplete.lyteSm,.zcat-autocomplete.lyteExsm{
+    width: 100%;
+    padding: 0;
+}
+.zcat-autocomplete.lyteSm,lyte-autocomplete.lyteSm lyte-dropdown,lyte-autocomplete.lyteSm lyte-dropdown .lyteDummyEventContainer,.zcat-autocomplete.lyteSm lyte-dropdown lyte-drop-button{
+    height: 28px;
+    min-height: 30px;
+}
+.zcat-autocomplete.lyteExsm,lyte-autocomplete.lyteExsm lyte-dropdown,lyte-autocomplete.lyteExsm lyte-dropdown .lyteDummyEventContainer,.zcat-autocomplete.lyteExsm lyte-dropdown lyte-drop-button{
+    height: 24px;
+    min-height: 26px;
+}
+.zcat-autocomplete.lyteSm .lyteInputBox .lyteField input{
+    padding: 8px 6px;
+    font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+    height: 28px;
+}
+.zcat-autocomplete.lyteExsm .lyteInputBox .lyteField input{
+    padding: 8px 4px;
+    font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+    height: 24px;
+    font-size: 12px;
+}
+.zcat-autocomplete-label{
+    font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--zcat-inputField-text-label);
+}
+.zcat-autocomplete-label-opt{
+  color: var(--zcat-inputField-text-optional);
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+  font-size: 12px;
+}
+
+lyte-autocomplete.zcat-invalid lyte-dropdown lyte-drop-button,
+lyte-autocomplete.zcat-invalid lyte-dropdown lyte-drop-button:hover,
+lyte-autocomplete.zcat-invalid lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button,
+lyte-autocomplete.zcat-invalid
+  .lyteDummyEventContainer:focus
+  lyte-drop-button:hover {
+  border-color: var(--zcat-inputField-border-error) !important;
+  background: var(--zcat-inputField-bg-error);
+}
+lyte-autocomplete.zcat-invalid lyte-dropdown.lyteDummyEventContainer lyte-drop-button::before {
+  background-color: var(--zcat-inputField-border-error);
+}
+
+.input-field-disabled .zcat-autocomplete-label{
+  color: var(--zcat-inputField-text-disabled);
+}
+.input-field-disabled .zcat-input-label-stroke{
+  stroke: var(--zcat-inputField-icon-disabled);
+}
+
+.zcat-autocomplete.lyteDropdownDisabled{
+    cursor: not-allowed;
+}
+.zcat-autocomplete.lyteDropdownDisabled lyte-dropdown{
+    pointer-events: none;
+}
+
+.zcat-autocomplete.lyteDropdownDisabled .lyteInputBox .lyteField,.zcat-autocomplete.lyteDropdownDisabled .lyteInputBox .lyteField input{
+  background: var(--zcat-inputField-bg-disabled) !important;
+  color: var(--zcat-inputField-text-disabled) !important;
+  cursor: not-allowed;
+  border-color: var(--zcat-inputField-border-disabled) !important;
+  box-shadow: none;
+}
+.zcat-autocomplete.lyteDropdownDisabled .lyteInputBox .lyteField:hover{
+  border-color: var(--zcat-inputField-border-disabled) !important;
+}
+.zcat-autocomplete.lyteDropdownDisabled lyte-drop-button:hover{
+    border: none;
+}

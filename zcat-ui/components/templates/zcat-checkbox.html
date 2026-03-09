@@ -1,0 +1,77 @@
+<template tag-name="zcat-checkbox">
+  <div class="zcat-dF zcat-direction-column zcat-gap-10 zcat-w100p">
+    <%if(zcatProp.variant === 'primary'){ %>
+    <lyte-checkbox
+      lyte-for="{{zcatProp.options}} as item index"
+      lt-prop-type="{{zcatProp.type ? zcatProp.type : 'default'}}"
+      data-zcqa="{{item.zcqa}}"
+      lt-prop-id="{{item.id}}"
+      lt-prop-disabled="{{item.disabled ? item.disabled : 'false'}}"
+      lt-prop-checked="{{formData[zcatProp.key] === item.value ? true : false}}"
+      lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+      lt-prop-label="{{item.label}}"
+      lt-prop-name="{{item.name}}"
+      lt-prop-value="{{item.value}}"
+      lt-prop-read-only="{{zcatProp.readOnly ? zcatProp.readOnly : 'false'}}"
+      lt-prop-fire-on-init="{{zcatProp.fireOnInit ? zcatProp.fireOnInit : 'false'}}"
+      class="{{zcatProp.class ? zcatProp.class : ''}} {{item.label ? '': 'checkboxWutLabel'}}"
+      lt-prop-label-class="{{zcatProp.labelClass ? zcatProp.labelClass : ''}}"
+      lt-prop-prevent-callback-observers="{{zcatProp.callbackObservers ? zcatProp.callbackObservers : 'false'}}"
+      lt-prop-focus="{{zcatProp.focus ? zcatProp.focus : 'false'}}"
+      lt-prop-aria-checkbox='{"aria-checked": "true"}'
+      lt-prop-data-tabindex="group0-1"
+      lt-prop-show-tooltip="{{zcatProp.tooltip ? zcatProp.tooltip : 'false'}}"
+      lt-prop-tooltip-config='{"position": "bottom", "appearance": "box", "margin": 15, "keeptooltip": true}'
+      lt-prop-tooltip-class="{{zcatProp.tooltipClass ? zcatProp.tooltipClass : 'false'}}"
+      on-changed="{{method('customLbindForCheckbox',zcatProp.onChange,item.value)}}"
+      on-before-checked="{{method('customLbindForCheckbox',zcatProp.onBeforeChecked)}}"
+      on-checked="{{method('customLbindForCheckbox',zcatProp.onChecked,item.value)}}"
+      on-before-unchecked="{{method('customLbindForCheckbox',zcatProp.onBeforeUnChecked)}}"
+      on-unchecked="{{method('customLbindForCheckbox',zcatProp.onUnChecked)}}"
+    ></lyte-checkbox>
+    <%}else if(zcatProp.variant === 'secondary'){%>
+    <lyte-checkbox 
+      lyte-for="{{zcatProp.options}} as item index"
+      lt-prop-yield='true'
+      lt-prop-type="{{zcatProp.type ? zcatProp.type : 'default'}}"
+      data-zcqa="{{item.zcqa}}"
+      lt-prop-id="{{item.id}}"
+      lt-prop-disabled="{{item.disabled ? item.disabled : 'false'}}"
+      lt-prop-checked="{{formData[zcatProp.key] === item.value ? true : false}}"
+      lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+      lt-prop-name="{{zcatProp.name ? zcatProp.name : ''}}"
+      lt-prop-value="{{item.value}}"
+      lt-prop-read-only="{{zcatProp.readOnly ? zcatProp.readOnly : 'false'}}"
+      lt-prop-fire-on-init="{{zcatProp.fireOnInit ? zcatProp.fireOnInit : 'false'}}"
+      class="zcat-secondary-checkbox-button zcat-w100p primaryCheckBoxBtn {{item.desc ? '' : 'checkboxWutSubtxt'}}"
+      lt-prop-label-class="{{zcatProp.labelClass ? zcatProp.labelClass : ''}}"
+      lt-prop-prevent-callback-observers="{{zcatProp.callbackObservers ? zcatProp.callbackObservers : 'false'}}"
+      lt-prop-focus="{{zcatProp.focus ? zcatProp.focus : 'false'}}"
+      lt-prop-aria-checkbox='{"aria-checked": "true"}'
+      lt-prop-data-tabindex="group0-1"
+      lt-prop-show-tooltip="{{zcatProp.tooltip ? zcatProp.tooltip : 'false'}}"
+      lt-prop-tooltip-config='{"position": "bottom", "appearance": "box", "margin": 15, "keeptooltip": true}'
+      lt-prop-tooltip-class="{{zcatProp.tooltipClass ? zcatProp.tooltipClass : 'false'}}"
+      on-changed="{{method('customLbindForCheckbox',zcatProp.onChange)}}"
+      on-before-checked="{{method('customLbindForCheckbox',zcatProp.onBeforeChecked)}}"
+      on-checked="{{method('customLbindForCheckbox',zcatProp.onChecked)}}"
+      on-before-unchecked="{{method('customLbindForCheckbox',zcatProp.onBeforeUnChecked)}}"
+      on-unchecked="{{method('customLbindForCheckbox',zcatProp.onUnChecked)}}">
+      <template is='registerYield' yield-name='yield'>
+        <div class="{{(zcatProp.type === 'switch') ? '' : 'zcat-ml-4'}} zcat-dF zcat-direction-column zcat-gap-2">
+          <lyte-text
+          class="zcat-text-14 {{item.desc ? 'zcat-font-semibold' : 'zcat-font-regular'}} zcat-color-dark1 zcat-w100p"
+          lt-prop-value="{{item.label}}"
+          >
+          </lyte-text>
+          <lyte-text lyte-if="{{item.desc}}"
+          class="zcat-text-12 zcat-color-dark2 zcat-w100p"
+          lt-prop-value="{{item.desc}}"
+          >
+          </lyte-text>
+        </div>
+      </template>
+    </lyte-checkbox>
+    <%}%>
+  </div>
+</template>

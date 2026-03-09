@@ -1,0 +1,271 @@
+
+
+/* === Global base styles from reference css/zcat-loader.css === */
+lyte-loader * {
+  box-sizing: border-box;
+}
+/* spinner loader */
+.zcat-loader-spinner .ltexitdiv,
+.zcat-loader-spinner .ltLoaderProgressBar,
+.zcat-loader-spinner .lyteLoaderProgressMessage,
+.zcat-loader-spinner .lyteLoaderTimeoutMessage {
+  display: none;
+}
+.zcat-loader-spinner .ltLoaderSpin {
+  width: 40px;
+  height: 40px;
+  border-top: 3px solid var(--zcat-loader-content-primary);
+  border-right: 3px solid var(--zcat-loader-content-primary);
+  border-bottom: 3px solid var(--zcat-loader-progress-primary);
+  border-left: 3px solid var(--zcat-loader-progress-primary);
+}
+.lyteLoaderFreeze {
+  opacity: 0 !important;
+}
+
+/* progress loader */
+.zcat-loader-progress .ltexitdiv,
+.zcat-loader-progress .ltspindiv,
+.zcat-loader-progress .lyteLoaderProgressMessage,
+.zcat-loader-progress .lyteLoaderTimeoutMessage {
+  display: none;
+}
+.zcat-loader-progress .ltLoaderProgressBar.indefinite {
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    var(--zcat-loader-progress-primary),
+    var(--zcat-loader-progress-primary)
+  );
+  background-color: var(--zcat-loader-progress-primary);
+  background-size: 20%;
+  background-repeat: repeat-y;
+  background-position: -25% 0;
+  border-radius: 10px;
+}
+.zcat-loader-progress .ltLoaderProgressBar.definite {
+  background-color: var(--zcat-loader-progress-primary);
+}
+
+.skeleton-loader {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .skeleton-loader-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .skeleton-loader-column {
+    animation: placeHolderShimmer 1.25s infinite linear forwards;
+    background: linear-gradient(to right, var(--zcat-loader-content-primary) 8%, var(--zcat-loader-content-secondary) 18%, var(--zcat-loader-content-primary) 33%);
+    background-size: 800px 104px;
+    position: relative;
+    height: 9px;
+    width: 23%;
+    margin: 0 1%;
+    border-radius: 50px;
+  }
+  .skeleton-loader-column:first-child {
+    margin-left: 0;
+  }
+  .skeleton-loader-column:last-child {
+    margin-right: 0;
+  }
+  @keyframes placeHolderShimmer {
+    0% {
+      background-position: -468px 0;
+    }
+    100% {
+      background-position: 468px 0;
+    }
+  }
+
+  .spin-loader {
+  width: 16px;
+  aspect-ratio: 1;
+  display: grid;
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--zcat-loader-round-primary) 50%, transparent) 30%,
+      #0000 0 70%,
+      var(--zcat-loader-round-primary) 0
+    ) 50%/8% 100%,
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--zcat-loader-round-primary) 25%, transparent) 30%,
+      #0000 0 70%,
+      color-mix(in srgb, var(--zcat-loader-round-primary) 75%, transparent) 0
+    ) 50%/100% 8%;
+  background-repeat: no-repeat;
+  animation: spinanimation 1s infinite steps(12);
+}
+
+.spin-loader::before,
+.spin-loader::after {
+   content: "";
+   grid-area: 1/1;
+   border-radius: 50%;
+   background: inherit;
+   opacity: 0.915;
+   transform: rotate(30deg);
+}
+.spin-loader::after {
+   opacity: 0.83;
+   transform: rotate(60deg);
+}
+@keyframes spinanimation {
+  100% {transform: rotate(1turn)}
+}
+.progress-loader {
+  height: 4px;
+  width: 100%;
+  --c:no-repeat linear-gradient(var(--zcat-loader-progress-primary) 0 0);
+  background: var(--c),var(--c),var(--zcat-loader-progress-secondary);
+  background-size: 60% 100%;
+  animation: progressanimation 3s infinite;
+  border-radius: 40px;
+}
+@keyframes progressanimation {
+  0%   {background-position:-150% 0,-150% 0}
+  66%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
+}
+
+/* === Global base styles from reference css/zcat-loader.css === */
+lyte-loader * {
+  box-sizing: border-box;
+}
+/* spinner loader */
+.zcat-loader-spinner .ltexitdiv,
+.zcat-loader-spinner .ltLoaderProgressBar,
+.zcat-loader-spinner .lyteLoaderProgressMessage,
+.zcat-loader-spinner .lyteLoaderTimeoutMessage {
+  display: none;
+}
+.zcat-loader-spinner .ltLoaderSpin {
+  width: 40px;
+  height: 40px;
+  border-top: 3px solid var(--zcat-loader-content-primary);
+  border-right: 3px solid var(--zcat-loader-content-primary);
+  border-bottom: 3px solid var(--zcat-loader-progress-primary);
+  border-left: 3px solid var(--zcat-loader-progress-primary);
+}
+.lyteLoaderFreeze {
+  opacity: 0 !important;
+}
+
+/* progress loader */
+.zcat-loader-progress .ltexitdiv,
+.zcat-loader-progress .ltspindiv,
+.zcat-loader-progress .lyteLoaderProgressMessage,
+.zcat-loader-progress .lyteLoaderTimeoutMessage {
+  display: none;
+}
+.zcat-loader-progress .ltLoaderProgressBar.indefinite {
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    var(--zcat-loader-progress-primary),
+    var(--zcat-loader-progress-primary)
+  );
+  background-color: var(--zcat-loader-progress-primary);
+  background-size: 20%;
+  background-repeat: repeat-y;
+  background-position: -25% 0;
+  border-radius: 10px;
+}
+.zcat-loader-progress .ltLoaderProgressBar.definite {
+  background-color: var(--zcat-loader-progress-primary);
+}
+
+.skeleton-loader {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .skeleton-loader-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .skeleton-loader-column {
+    animation: placeHolderShimmer 1.25s infinite linear forwards;
+    background: linear-gradient(to right, var(--zcat-loader-content-primary) 8%, var(--zcat-loader-content-secondary) 18%, var(--zcat-loader-content-primary) 33%);
+    background-size: 800px 104px;
+    position: relative;
+    height: 9px;
+    width: 23%;
+    margin: 0 1%;
+    border-radius: 50px;
+  }
+  .skeleton-loader-column:first-child {
+    margin-left: 0;
+  }
+  .skeleton-loader-column:last-child {
+    margin-right: 0;
+  }
+  @keyframes placeHolderShimmer {
+    0% {
+      background-position: -468px 0;
+    }
+    100% {
+      background-position: 468px 0;
+    }
+  }
+
+  .spin-loader {
+  width: 16px;
+  aspect-ratio: 1;
+  display: grid;
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--zcat-loader-round-primary) 50%, transparent) 30%,
+      #0000 0 70%,
+      var(--zcat-loader-round-primary) 0
+    ) 50%/8% 100%,
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--zcat-loader-round-primary) 25%, transparent) 30%,
+      #0000 0 70%,
+      color-mix(in srgb, var(--zcat-loader-round-primary) 75%, transparent) 0
+    ) 50%/100% 8%;
+  background-repeat: no-repeat;
+  animation: spinanimation 1s infinite steps(12);
+}
+
+.spin-loader::before,
+.spin-loader::after {
+   content: "";
+   grid-area: 1/1;
+   border-radius: 50%;
+   background: inherit;
+   opacity: 0.915;
+   transform: rotate(30deg);
+}
+.spin-loader::after {
+   opacity: 0.83;
+   transform: rotate(60deg);
+}
+@keyframes spinanimation {
+  100% {transform: rotate(1turn)}
+}
+.progress-loader {
+  height: 4px;
+  width: 100%;
+  --c:no-repeat linear-gradient(var(--zcat-loader-progress-primary) 0 0);
+  background: var(--c),var(--c),var(--zcat-loader-progress-secondary);
+  background-size: 60% 100%;
+  animation: progressanimation 3s infinite;
+  border-radius: 40px;
+}
+@keyframes progressanimation {
+  0%   {background-position:-150% 0,-150% 0}
+  66%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
+}

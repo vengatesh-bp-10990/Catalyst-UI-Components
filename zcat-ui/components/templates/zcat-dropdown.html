@@ -1,0 +1,1462 @@
+<template tag-name="zcat-dropdown">  
+  <zcat-hovercard
+    lyte-if="{{zcatProp.infoIcon.yield || zcatProp.infoIcon.value}}"
+    zcat-prop="{{zcatProp.infoIcon}}"
+  >
+    <template is="yield" yield-name="{{zcatProp.infoIcon.yield}}">
+      <lyte-yield yield-name="{{zcatProp.infoIcon.yield}}"></lyte-yield>
+    </template>
+  </zcat-hovercard>
+  <div
+    lyte-if="{{zcatProp.label}}"
+    class="zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{zcatProp.disabled ? 'input-field-disabled' : ''}}"
+  >
+    <p
+      class="{{zcatProp.label_class ? zcatProp.label_class : 'zcat-input-label'}} input-label"
+    >
+      {{zcatProp.label}}
+      <span class="optional-label"
+        >{{zcatProp.isOptional && zcatProp.label ? ' (Optional)' : ''}}</span
+      >
+    </p>
+    <div
+      lyte-if="{{zcatProp.infoIcon.id}}"
+      class="zcat-w12 zcat-h12 zcat-cP"
+      id="tooltipInfoMsg{{zcatProp.infoIcon.id}}"
+      lyte-hovercard="true"
+    >
+      <!-- <lyte-svg lt-prop-path="#zcat-icon-info" lt-prop-class="zcat-w12 zcat-h12 zcat-input-label-stroke zcat-mb-2"></lyte-svg> -->
+      <zcat-icon
+        class="zcat-mb-2 zcat-input-label-stroke"
+        name="info"
+        width="12"
+        height="12"
+        stroke="var(--zcat-inputField-icon-label)"
+        strokeWidth="1.3"
+      >
+      </zcat-icon>
+    </div>
+  </div>
+
+  <div class="{{fieldClass}}" lyte-if="{{zcatProp.icon}}">
+    <div
+      class="zcat-pR zcat-dropdown-relative-wrapper {{zcatProp.variant === 'ghost' ? 'ghost-dropdown-wrapper' : ''}} 
+    {{zcatProp.disabled ? 'dropdown-disabled' : ''}}"
+    >
+      <zcat-icon
+        class="{{zcatProp.variant === 'ghost' ? 'zcat-ghost-dropdown-icon-primary' : 'zcat-stroke-input-icon'}} 
+              zcat-pA zcat-dropdown-icon-position zcat-flex-center
+              {{zcatProp.size === 'extra-small' ? 'zcat-dropdown-icon-position-exsm' : zcatProp.size === 'small' ? 'zcat-dropdown-icon-position-sm' : ''}}
+              {{zcatProp.disabled ? 'disabled' : ''}}"
+        name="{{zcatProp.icon.name}}"
+        width="{{(zcatProp.size === 'small' || zcatProp.size === 'extra-small') ? '14' : '16'}}"
+        height="{{(zcatProp.size === 'small' || zcatProp.size === 'extra-small') ? '14' : '16'}}"
+        stroke="var(--zcat-inputField-icon-label)"
+        strokeWidth="1.3"
+      >
+      </zcat-icon>
+      <lyte-multi-dropdown
+        data-zcqa="{{zcatProp.zcqa}}"
+        lyte-if="{{zcatProp.dropdown_type === 'checkbox'}}"
+        error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+        lt-prop-id="{{zcatProp.id}}"
+        class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : ''}} {{zcatProp.width}} {{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }} {{zcatProp.variant == 'secondary' ? 'textDrpdwn' : '' }} 
+          {{zcatProp.checkboxChips ? 'zcat-chip-checkbox-dropdown' : 'zcat-default-checkbox-dropdown'}}"
+        lt-prop-selected="{{lbind(featureObj[zcatProp.key])}}"
+        lt-prop-remove-multiple="{{zcatProp.removeMultiple ? zcatProp.removeMultiple : 'false'}}"
+        lt-prop-type="checkbox"
+        lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+        lt-prop-freeze="{{zcatProp.freeze !== undefined ? zcatProp.freeze : 'true'}}"
+        lt-prop-prevent-parent-scroll="{{zcatProp.freeze ? zcatProp.freeze : 'false'}}"
+        lt-prop-position="{{zcatProp.position ? zcatProp.position : 'down'}}"
+        lt-prop-callout="{{zcatProp.callout ? zcatProp.callout : 'false'}}"
+        lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.isOptional && !zcatProp.label ? ' (Optional)' : ''}}"
+        lt-prop-disabled="{{zcatProp.disabled ? zcatProp.disabled : 'false'}}"
+        lt-prop-hover="{{zcatProp.hover ? zcatProp.hover : 'false'}}"
+        lt-prop-no-result="{{zcatProp.noResult ? zcatProp.noResult : 'No results found'}}"
+        lt-prop-max-count="{{zcatProp.maxCount}}"
+        lt-prop-boundary="{{zcatProp.boundary}}"
+        on-show="{{method('onAfterDropboxOpen')}}"
+        on-before-show="{{method('defaultOnBeforeShow')}}"
+        on-hide="{{method('defaultOnHide')}}"
+        on-before-hide="{{method('defaultOnBeforeHide')}}"
+        on-add="{{method('defaultOnAdd')}}"
+        on-before-add="{{method('defaultOnBeforeAdd')}}"
+        on-remove="{{method('defaultOnRemove')}}"
+        on-before-remove="{{method('defaultOnBeforeRemove')}}"
+        on-position-changed="{{method('defaultOnPositionChanged')}}"
+        before-select="{{method('defaultBeforeSelect')}}"
+        on-change="{{method('defaultOnChange')}}"
+        on-scroll="{{method('defaultOnScroll')}}"
+        lt-prop-show-empty-message="true"
+        lt-prop-user-value="{{zcatProp.userValueKey ? zcatProp.userValueKey : 'name'}}"
+        lt-prop-system-value="{{zcatProp.systemValueKey ? zcatProp.systemValueKey : 'value'}}"
+        lt-prop-data="{{zcatProp.options}}"
+        lt-prop-tag="{{zcatProp.checkboxChips ? zcatProp.checkboxChips : 'false'}}"
+        lt-prop-more-options-tag-view="{{zcatProp.checkboxChips ? zcatProp.checkboxChips : 'false'}}"
+        lt-prop-show-counttt='{{zcatProp.showCount ? zcatProp.showCount : "true"}}'
+        lt-prop-show-count='{{zcatProp.width === "zcat-w-fc" ? "false" : "true"}}'
+        lt-prop-hide-hovercard="false"
+        lt-prop-box-class="checkboxBoxClass {{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }}"
+        lt-prop-button-class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }}"
+        lt-prop-drop-body-yield="true"
+        lt-prop-ntag-yield="true"
+        lt-prop-li-yield="true"
+        lt-prop-text-suffix="{{suf}}"
+      >
+        <template is="registerYield" yield-name="nMoreTag">
+          +{{count}}
+        </template>
+
+        <!-- <template is="registerYield" yield-name="lyteMultiDropButtonLi">
+            <div class="zcat-dF zcat-align-center zcat-gap-4">
+              <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.class}}" class="menu-lyte-svg-class"></lyte-svg>
+              {{item.name}}
+            </div>
+          </template> -->
+
+        <template is="registerYield" yield-name="lyteMultiDropButtonLi">
+          <div
+            class="zcat-dF zcat-align-center zcat-gap-4"
+            lyte-if="{{item.icon}}"
+          >
+            <!-- <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.classs}} zcat-stroke-icon-active 
+                  {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" class="menu-lyte-svg-class 
+                  {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}"></lyte-svg> -->
+
+            <zcat-icon
+              class="menu-lyte-svg-class zcat-stroke-icon-active"
+              name="{{item.icon.name}}"
+              width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+              height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+              stroke="var(--zcat-menuList-icon-active)"
+              strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+            >
+            </zcat-icon>
+
+            {{item.name}}
+          </div>
+          <div class="zcat-dF zcat-align-center zcat-gap-4" lyte-else>
+            {{item.name}}
+          </div>
+        </template>
+
+        <template is="registerYield" yield-name="lytedropheaderyield">
+          <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+            <div class="header-search-parent">
+              <lyte-search
+                data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                on-search="{{method('onDropdownSearch')}}"
+                lt-prop-query-selector='{"scope" : "lyte-drop-box.checkboxBoxClass", "search" : "lyte-drop-item"}'
+                lt-prop-placeholder="Search"
+                lt-prop='{"closeIcon" : true}'
+                class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+              ></lyte-search>
+              <!-- on-search="{{method('onDropdownSearch', zcatProp.onSearch)}}" -->
+            </div>
+          </lyte-drop-header>
+        </template>
+
+        <%if(zcatProp.isLoading){%>
+            <div class="lyteDropdownText">Loading ...</div>
+            <%}
+        else{%>
+        <template is="registerYield" yield-name="lytedropbodyyield">
+          <lyte-drop-body
+            class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+              {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+              {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+          >
+            <h4
+              lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              class="zcat-mb-6"
+            >
+              {{zcatProp.dropLabel}}
+            </h4>
+            <%if(zcatProp.options.length === 0){%>
+              <div class="lyteDropdownText">No Result Found</div>
+              <%}else{%>
+            <template lyte-for="{{items}} as item index">
+              <lyte-drop-item
+                lyte-if="{{item.icon}}"
+                data-value="{{item.value}}"
+                data-zcqa="{{item.zcqa}}"
+              >
+                <lyte-checkbox
+                  lt-prop-tabindex="-1"
+                  lt-prop-yield="true"
+                  lt-prop-label="{{item.name}}"
+                >
+                  <template is="registerYield" yield-name="yield">
+                    <div class="">
+                      <!-- <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.classs}} zcat-stroke-icon-active {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" 
+                                      class="menu-lyte-svg-class {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}"
+                                      ></lyte-svg> -->
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{item.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      {{item.name}}
+                    </div>
+                  </template>
+                </lyte-checkbox>
+              </lyte-drop-item>
+              <lyte-drop-item
+                lyte-else
+                data-value="{{item.value}}"
+                data-zcqa="{{item.zcqa}}"
+              >
+                <lyte-checkbox
+                  lt-prop-tabindex="-1"
+                  lt-prop-label="{{item.name}}"
+                ></lyte-checkbox>
+              </lyte-drop-item>
+            </template>
+            
+            <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+              {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+            </div>
+            <%}%>
+          </lyte-drop-body>
+        </template>
+
+        <template is="registerYield" yield-name="lytedropfooteryield">
+          <lyte-drop-footer
+            class="lyte-drop-footer"
+            lyte-if="{{zcatProp.createNewBtn.label}}"
+          >
+            <div
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                      "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                      "variant": "ghost",
+                                              "size": "default",
+                                              "color": "primary",
+                                              "icon": {
+                                                "position": "left",
+                                                "name": "zcat-icon-plus",
+                                                "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                                              },
+                                              "width": "zcat-w100p",
+                                              "ltPropClassCss": "btn-radius-top0", 
+                                              "callback": {
+                                                "name": "{{zcatProp.createNewBtn.callback.name}}"
+                                              }
+                    }'
+              >
+              </zcat-button>
+            </div>
+          </lyte-drop-footer>
+        </template>
+        <%}%>
+      </lyte-multi-dropdown>
+
+      <!-- lt-prop-selected-list="{{lbind(zcatProp.selectedList)}}" -->
+      <lyte-dropdown
+        data-zcqa="{{zcatProp.zcqa}}"
+        lyte-else-if="{{zcatProp.dropdown_type === 'multiple'}}"
+        error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+        id="{{zcatProp.id}}"
+        lt-prop-id="{{zcatProp.id}}"
+        class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : ''}} {{zcatProp.width}} zcat-dB zcat-multiple-dropdown"
+        lt-prop-selected="{{lbind(featureObj[zcatProp.key])}}"
+        lt-prop-button-class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }} {{zcatProp.variant == 'secondary' ? 'textDrpdwn' : '' }}"
+        lt-prop-remove-multiple="{{zcatProp.removeMultiple ? zcatProp.removeMultiple : 'false'}}"
+        lt-prop-type="{{zcatProp.dropdown_type ? zcatProp.dropdown_type : 'default'}}"
+        lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+        lt-prop-freeze="{{zcatProp.freeze !== undefined ? zcatProp.freeze : 'true'}}"
+        lt-prop-prevent-parent-scroll="{{zcatProp.freeze ? zcatProp.freeze : 'false'}}"
+        lt-prop-position="{{zcatProp.position ? zcatProp.position : 'down'}}"
+        lt-prop-callout="{{zcatProp.callout ? zcatProp.callout : 'false'}}"
+        lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.isOptional && !zcatProp.label ? ' (Optional)' : ''}}"
+        lt-prop-disabled="{{zcatProp.disabled ? zcatProp.disabled : 'false'}}"
+        lt-prop-hover="{{zcatProp.hover ? zcatProp.hover : 'false'}}"
+        lt-prop-no-result="{{zcatProp.noResult ? zcatProp.noResult : 'No results found'}}"
+        lt-prop-max-count="{{zcatProp.maxCount}}"
+        lt-prop-boundary="{{zcatProp.boundary}}"
+        on-show="{{method('onAfterDropboxOpen')}}"
+        on-before-show="{{method('defaultOnBeforeShow')}}"
+        on-hide="{{method('defaultOnHide')}}"
+        on-before-hide="{{method('defaultOnBeforeHide')}}"
+        on-add="{{method('defaultOnAdd')}}"
+        on-before-add="{{method('defaultOnBeforeAdd')}}"
+        on-remove="{{method('defaultOnRemove')}}"
+        on-before-remove="{{method('defaultOnBeforeRemove')}}"
+        on-position-changed="{{method('defaultOnPositionChanged')}}"
+        before-select="{{method('defaultBeforeSelect')}}"
+        on-change="{{method('defaultOnChange')}}"
+        on-scroll="{{method('defaultOnScroll')}}"
+        lt-prop-show-empty-message="true"
+        lt-prop-show-count='{{zcatProp.showCount ? zcatProp.showCount : "true"}}'
+        on-option-selected="{{method('defaultOnOptionSelected')}}"
+      >
+        <template is="registerYield" yield-name="yield">
+          <!-- test  -->
+          <!-- <lyte-drop-button style="border:none;border-bottom: solid 1px #d6d6d6;">
+              <div class="zcat-dF zcat-align-center zcat-gap-4" lyte-if="{{item.icon}}">
+                  <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.class}}" class="menu-lyte-svg-class"></lyte-svg>
+                  {{item.name}}
+              </div> 
+              <div class="zcat-dF zcat-align-center zcat-gap-4" lyte-else>
+                  {{item.name}}
+              </div> 
+            </lyte-drop-button> -->
+
+          <lyte-drop-box
+            id="dropdownSearch_{{zcatProp.id}}"
+          >
+            <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+              <div class="header-search-parent">
+                <lyte-search
+                  data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                  on-search="{{method('onDropdownSearch')}}"
+                  lt-prop-query-selector='{"scope":"#dropdownSearch_{{zcatProp.id}}","search":"lyte-drop-item"}'
+                  lt-prop-placeholder="Search"
+                  lt-prop='{"closeIcon" : true}'
+                  class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+                ></lyte-search>
+              </div>
+            </lyte-drop-header>
+            <%if(zcatProp.isLoading){%>
+            <div class="lyteDropdownText">Loading ...</div>
+            <%}
+            else{%>
+            <lyte-drop-body
+              class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+                {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+                {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+            >
+              <h4
+                class="zcat-mb-6"
+                lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              >
+                {{zcatProp.dropLabel}}
+              </h4>
+              <%if(zcatProp.options.length === 0){%>
+              <div class="lyteDropdownText">No Result Found</div>
+              <%}else{%>
+              <template lyte-for="{{zcatProp.options}} as data index">
+                <lyte-drop-item
+                  data-value="{{data.value}}"
+                  data-zcqa="{{data.zcqa}}"
+                >
+                  <template lyte-if="{{data.icon}}">
+                    <div class="zcat-dF zcat-align-center zcat-gap-4">
+                      <!-- <lyte-svg lt-prop-path="#{{data.icon.name}}" lt-prop-class="{{data.icon.classs}} zcat-stroke-icon-active 
+                        {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" 
+                        class="menu-lyte-svg-class {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}"></lyte-svg> -->
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{data.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      <p>{{data.name}}</p>
+                    </div>
+                  </template>
+                  <template lyte-else> {{data.name}} </template>
+                </lyte-drop-item>
+              </template>
+              <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+              </div>
+              <%}%>
+            </lyte-drop-body>
+            <div
+              class="lyte-drop-footer"
+              lyte-if="{{zcatProp.createNewBtn.label}}"
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                      "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                      "variant": "ghost",
+                                              "size": "default",
+                                              "color": "primary",
+                                              "icon": {
+                                                "position": "left",
+                                                "name": "zcat-icon-plus",
+                                                "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                                              },
+                                              "width": "zcat-w100p",
+                                              "ltPropClassCss": "btn-radius-top0", 
+                                              "callback": {
+                                                "name": "{{zcatProp.createNewBtn.callback.name}}"
+                                              }
+                    }'
+              >
+              </zcat-button>
+            </div>
+            <%}%>
+          </lyte-drop-box>
+        </template>
+      </lyte-dropdown>
+
+      <div
+        lyte-else-if="{{zcatProp.variant === 'ghost'}}"
+        class="{{zcatProp.variant === 'ghost' ? 'ghost-dropdown' : ''}}"
+      >
+        <lyte-dropdown
+          data-zcqa="{{zcatProp.zcqa}}"
+          error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+          id="{{zcatProp.id}}"
+          lt-prop-id="{{zcatProp.id}}"
+          class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : ''}} zcat-w-fc"
+          lt-prop-selected="{{lbind(featureObj[zcatProp.key])}}"
+          lt-prop-button-class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }}"
+          lt-prop-remove-multiple="{{zcatProp.removeMultiple ? zcatProp.removeMultiple : 'false'}}"
+          lt-prop-type=""
+          lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+          lt-prop-freeze="{{zcatProp.freeze !== undefined ? zcatProp.freeze : 'true'}}"
+          lt-prop-prevent-parent-scroll="{{zcatProp.freeze ? zcatProp.freeze : 'false'}}"
+          lt-prop-position="{{zcatProp.position ? zcatProp.position : 'down'}}"
+          lt-prop-callout="{{zcatProp.callout ? zcatProp.callout : 'false'}}"
+          lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.isOptional && !zcatProp.label ? ' (Optional)' : ''}}"
+          lt-prop-disabled="{{zcatProp.disabled ? zcatProp.disabled : 'false'}}"
+          lt-prop-hover="{{zcatProp.hover ? zcatProp.hover : 'false'}}"
+          lt-prop-no-result="{{zcatProp.noResult ? zcatProp.noResult : 'No results found'}}"
+          lt-prop-max-count="{{zcatProp.maxCount}}"
+          lt-prop-boundary="{{zcatProp.boundary}}"
+          on-show="{{method('onAfterDropboxOpen')}}"
+          on-before-show="{{method('defaultOnBeforeShow')}}"
+          on-hide="{{method('defaultOnHide')}}"
+          on-before-hide="{{method('defaultOnBeforeHide')}}"
+          on-remove="{{method('defaultOnRemove')}}"
+          on-before-remove="{{method('defaultOnBeforeRemove')}}"
+          on-position-changed="{{method('defaultOnPositionChanged')}}"
+          before-select="{{method('defaultBeforeSelect')}}"
+          on-change="{{method('defaultOnChange')}}"
+          on-scroll="{{method('defaultOnScroll')}}"
+          on-option-selected="{{method('defaultOnOptionSelected')}}"
+          on-before-select="{{method('defaultOnBeforeSelect')}}"
+          lt-prop-show-empty-message="true"
+        >
+          <template is="registerYield" yield-name="yield">
+            <lyte-drop-box
+              id="dropdownSearch_{{zcatProp.id}}"
+            >
+              <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+                <div class="header-search-parent">
+                  <lyte-search
+                    data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                    on-search="{{method('onDropdownSearch')}}"
+                    lt-prop-query-selector='{"scope":"#dropdownSearch_{{zcatProp.id}}","search":"lyte-drop-item"}'
+                    lt-prop-placeholder="Search"
+                    lt-prop='{"closeIcon" : true}'
+                    class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+                  ></lyte-search>
+                </div>
+              </lyte-drop-header>
+              <%if(zcatProp.isLoading){%>
+              <div class="lyteDropdownText">Loading ...</div>
+              <%}
+              else{%>
+              <lyte-drop-body
+                class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+                {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+                {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+              >
+                <h4
+                  class="zcat-mb-6"
+                  lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+                >
+                  {{zcatProp.dropLabel}}
+                </h4>
+                <%if(zcatProp.options.length === 0){%>
+                <div class="lyteDropdownText">No Result Found</div>
+                <%}else{%>
+                <template lyte-for="{{zcatProp.options}} as data index">
+                  <lyte-drop-item
+                    data-value="{{data.value}}"
+                    data-zcqa="{{data.zcqa}}"
+                  >
+                    <template lyte-if="{{data.icon}}">
+                      <div class="zcat-dF zcat-align-center zcat-gap-4">
+                        <!-- <lyte-svg lt-prop-path="#{{data.icon.name}}" lt-prop-class="{{data.icon.classs}} zcat-stroke-icon-active 
+                        {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" 
+                        class="menu-lyte-svg-class {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}"></lyte-svg> -->
+                        <zcat-icon
+                          class="menu-lyte-svg-class zcat-stroke-icon-active"
+                          name="{{data.icon.name}}"
+                          width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                          height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                          stroke="var(--zcat-menuList-icon-active)"
+                          strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                        >
+                        </zcat-icon>
+                        <p>{{data.name}}</p>
+                      </div>
+                    </template>
+                    <template lyte-else> {{data.name}} </template>
+                  </lyte-drop-item>
+                </template>
+
+                <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                  {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+                </div>
+                <%}%>
+              </lyte-drop-body>
+              <div
+                lyte-if="{{zcatProp.createNewBtn.label}}"
+                style="
+                  border-top: 1px solid var(--zcat-menuList-border-default);
+                "
+                class="lyte-drop-footer"
+              >
+                <zcat-button
+                  self="{{self}}"
+                  zcat-prop='{
+                    "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                    "variant": "ghost",
+                      "size": "default",
+                      "color": "primary",
+                      "icon": {
+                      "position": "left",
+                      "name": "zcat-icon-plus",
+                        "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                      },
+                      "width": "zcat-w100p",
+                      "ltPropClassCss": "btn-radius-top0", 
+                       "callback": {
+                         "name": "{{zcatProp.createNewBtn.callback.name}}"
+                        }
+                  }'
+                >
+                </zcat-button>
+              </div>
+              <%}%>
+            </lyte-drop-box>
+          </template>
+        </lyte-dropdown>
+      </div>
+
+      <!-- nrml dropdown -->
+      <lyte-dropdown
+        lyte-else
+        data-zcqa="{{zcatProp.zcqa}}"
+        error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+        id="{{zcatProp.id}}"
+        lt-prop-id="{{zcatProp.id}}"
+        class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : ''}} {{zcatProp.width}}"
+        lt-prop-selected="{{lbind(featureObj[zcatProp.key])}}"
+        lt-prop-button-class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }} {{zcatProp.variant == 'secondary' ? 'textDrpdwn' : '' }}"
+        lt-prop-remove-multiple="{{zcatProp.removeMultiple ? zcatProp.removeMultiple : 'false'}}"
+        lt-prop-type="{{zcatProp.dropdown_type ? zcatProp.dropdown_type : 'default'}}"
+        lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+        lt-prop-freeze="{{zcatProp.freeze !== undefined ? zcatProp.freeze : 'true'}}"
+        lt-prop-prevent-parent-scroll="{{zcatProp.freeze ? zcatProp.freeze : 'false'}}"
+        lt-prop-position="{{zcatProp.position ? zcatProp.position : 'down'}}"
+        lt-prop-callout="{{zcatProp.callout ? zcatProp.callout : 'false'}}"
+        lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.isOptional && !zcatProp.label ? ' (Optional)' : ''}}"
+        lt-prop-disabled="{{zcatProp.disabled ? zcatProp.disabled : 'false'}}"
+        lt-prop-hover="{{zcatProp.hover ? zcatProp.hover : 'false'}}"
+        lt-prop-no-result="{{zcatProp.noResult ? zcatProp.noResult : 'No results found'}}"
+        lt-prop-max-count="{{zcatProp.maxCount}}"
+        lt-prop-boundary="{{zcatProp.boundary}}"
+        on-show="{{method('onAfterDropboxOpen')}}"
+        on-before-show="{{method('defaultOnBeforeShow')}}"
+        on-hide="{{method('defaultOnHide')}}"
+        on-before-hide="{{method('defaultOnBeforeHide')}}"
+        on-add="{{method('defaultOnAdd')}}"
+        on-before-add="{{method('defaultOnBeforeAdd')}}"
+        on-remove="{{method('defaultOnRemove')}}"
+        on-before-remove="{{method('defaultOnBeforeRemove')}}"
+        on-position-changed="{{method('defaultOnPositionChanged')}}"
+        before-select="{{method('defaultBeforeSelect')}}"
+        on-change="{{method('defaultOnChange')}}"
+        on-scroll="{{method('defaultOnScroll')}}"
+        on-option-selected="{{method('defaultOnOptionSelected')}}"
+        lt-prop-show-empty-message="true"
+      >
+        <template is="registerYield" yield-name="yield">
+          <!-- test -- the below is wrong -->
+          <!-- <lyte-drop-button style="border:none;border-bottom: solid 1px #d6d6d6;">
+              <div class="zcat-dF zcat-align-center zcat-gap-4" lyte-if="{{item.icon}}">
+                  <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.class}}" class="menu-lyte-svg-class"></lyte-svg>
+                  {{item.name}}
+              </div> 
+            </lyte-drop-button> -->
+
+          <lyte-drop-box
+            id="dropdownSearch_{{zcatProp.id}}"
+          >
+            <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+              <div class="header-search-parent">
+                <lyte-search
+                  data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                  on-search="{{method('onDropdownSearch')}}"
+                  lt-prop-query-selector='{"scope":"#dropdownSearch_{{zcatProp.id}}","search":"lyte-drop-item"}'
+                  lt-prop-placeholder="Search"
+                  lt-prop='{"closeIcon" : true}'
+                  class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+                ></lyte-search>
+              </div>
+            </lyte-drop-header>
+            <%if(zcatProp.isLoading){%>
+            <div class="lyteDropdownText">Loading ...</div>
+            <%}
+            else{%>
+            <lyte-drop-body
+              class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+                {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+                {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+            >
+              <h4
+                class="zcat-mb-6"
+                lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              >
+                {{zcatProp.dropLabel}}
+              </h4>
+              <%if(zcatProp.options.length === 0){%>
+              <div class="lyteDropdownText">No Result Found</div>
+              <%}else{%>
+              <template lyte-for="{{zcatProp.options}} as data index">
+                <lyte-drop-item
+                  data-value="{{data.value}}"
+                  data-zcqa="{{data.zcqa}}"
+                >
+                  <template lyte-if="{{data.icon}}">
+                    <div class="zcat-dF zcat-align-center zcat-gap-4">
+                      <!-- <lyte-svg lt-prop-path="#{{data.icon.name}}" lt-prop-class="{{data.icon.classs}} zcat-stroke-icon-active 
+                        {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" 
+                        class="menu-lyte-svg-class {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}"></lyte-svg> -->
+
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{data.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      <p>{{data.name}}</p>
+                    </div>
+                  </template>
+                  <template lyte-else> {{data.name}} </template>
+                </lyte-drop-item>
+              </template>
+              <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+              </div>
+              <%}%>
+            </lyte-drop-body>
+            <div
+              class="lyte-drop-footer"
+              lyte-if="{{zcatProp.createNewBtn.label}}"
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                      "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                      "variant": "ghost",
+                                              "size": "default",
+                                              "color": "primary",
+                                              "icon": {
+                                                "position": "left",
+                                                "name": "zcat-icon-plus",
+                                                "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                                              },
+                                              "width": "zcat-w100p",
+                                              "ltPropClassCss": "btn-radius-top0", 
+                                              "callback": {
+                                                "name": "{{zcatProp.createNewBtn.callback.name}}"
+                                              }
+                    }'
+              >
+              </zcat-button>
+            </div>
+            <%}%>
+          </lyte-drop-box>
+        </template>
+      </lyte-dropdown>
+    </div>
+  </div>
+
+  <div class="{{fieldClass}}" lyte-else>
+    <div lyte-if="{{zcatProp.dropdown_type === 'checkbox'}}" class="zcat-dF">
+      <lyte-multi-dropdown
+        data-zcqa="{{zcatProp.zcqa}}"
+        error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+        lt-prop-id="{{zcatProp.id}}"
+        lt-prop-fit-contentt="{{isFitContent ? 'isFitContent' : 'false'}}"
+        class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : ''}} {{zcatProp.width}}  
+        {{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }} 
+        {{zcatProp.checkboxChips ? 'zcat-chip-checkbox-dropdown' : 'zcat-default-checkbox-dropdown'}}"
+        lt-prop-selected="{{lbind(featureObj[zcatProp.key])}}"
+        lt-prop-remove-multiple="{{zcatProp.removeMultiple ? zcatProp.removeMultiple : 'false'}}"
+        lt-prop-type="checkbox"
+        lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+        lt-prop-freeze="{{zcatProp.freeze !== undefined ? zcatProp.freeze : 'true'}}"
+        lt-prop-prevent-parent-scroll="{{zcatProp.freeze ? zcatProp.freeze : 'false'}}"
+        lt-prop-position="{{zcatProp.position ? zcatProp.position : 'down'}}"
+        lt-prop-callout="{{zcatProp.callout ? zcatProp.callout : 'false'}}"
+        lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.isOptional && !zcatProp.label ? ' (Optional)' : ''}}"
+        lt-prop-disabled="{{zcatProp.disabled ? zcatProp.disabled : 'false'}}"
+        lt-prop-hover="{{zcatProp.hover ? zcatProp.hover : 'false'}}"
+        lt-prop-no-result="{{zcatProp.noResult ? zcatProp.noResult : 'No results found'}}"
+        lt-prop-max-count="{{zcatProp.maxCount}}"
+        lt-prop-boundary="{{zcatProp.boundary}}"
+        on-show="{{method('onAfterDropboxOpen')}}"
+        on-before-show="{{method('defaultOnBeforeShow')}}"
+        on-hide="{{method('defaultOnHide')}}"
+        on-before-hide="{{method('defaultOnBeforeHide')}}"
+        on-add="{{method('defaultOnAdd')}}"
+        on-before-add="{{method('defaultOnBeforeAdd')}}"
+        on-remove="{{method('defaultOnRemove')}}"
+        on-before-remove="{{method('defaultOnBeforeRemove')}}"
+        on-position-changed="{{method('defaultOnPositionChanged')}}"
+        before-select="{{method('defaultBeforeSelect')}}"
+        on-change="{{method('defaultOnChange')}}"
+        on-scroll="{{method('defaultOnScroll')}}"
+        lt-prop-show-empty-message="true"
+        lt-prop-user-value="{{zcatProp.userValueKey ? zcatProp.userValueKey : 'name'}}"
+        lt-prop-system-value="{{zcatProp.systemValueKey ? zcatProp.systemValueKey : 'value'}}"
+        lt-prop-data="{{zcatProp.options}}"
+        lt-prop-tag="{{zcatProp.checkboxChips ? zcatProp.checkboxChips : 'false'}}"
+        lt-prop-more-options-tag-view="{{zcatProp.checkboxChips ? zcatProp.checkboxChips : 'false'}}"
+        lt-prop-show-counttt='{{zcatProp.showCount ? zcatProp.showCount : "true"}}'
+        lt-prop-show-count='{{zcatProp.width === "zcat-w-fc" ? "false" : "true"}}'
+        lt-prop-hide-hovercard="false"
+        lt-prop-box-class="checkboxBoxClass {{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }}"
+        lt-prop-button-class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }}"
+        lt-prop-drop-body-yield="true"
+        lt-prop-ntag-yield="true"
+        lt-prop-li-yield="true"
+        lt-prop-text-suffix="{{suf}}"
+      >
+        {{item.icon}}
+        <template is="registerYield" yield-name="nMoreTag">
+          +{{count}}
+        </template>
+
+        <template is="registerYield" yield-name="lyteMultiDropButtonLi">
+          <div
+            class="zcat-dF zcat-align-center zcat-gap-4"
+            lyte-if="{{item.icon}}"
+          >
+            <!-- <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.classs}} zcat-stroke-icon-active 
+                  {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" class="menu-lyte-svg-class 
+                  {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}"></lyte-svg> -->
+            <zcat-icon
+              class="menu-lyte-svg-class zcat-stroke-icon-active"
+              name="{{item.icon.name}}"
+              width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+              height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+              stroke="var(--zcat-menuList-icon-active)"
+              strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+            >
+            </zcat-icon>
+            {{item.name}}
+          </div>
+          <div class="zcat-dF zcat-align-center zcat-gap-4" lyte-else>
+            <!-- <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.class}}" class="menu-lyte-svg-class"></lyte-svg> -->
+            {{item.name}}
+          </div>
+        </template>
+
+        <template is="registerYield" yield-name="lytedropheaderyield">
+          <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+            <div class="header-search-parent">
+              <lyte-search
+                data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                on-search="{{method('onDropdownSearch')}}"
+                lt-prop-query-selector='{"scope" : "lyte-drop-box.checkboxBoxClass", "search" : "lyte-drop-item"}'
+                lt-prop-placeholder="Search"
+                lt-prop='{"closeIcon" : true}'
+                class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+              ></lyte-search>
+            </div>
+          </lyte-drop-header>
+        </template>
+
+        <%if(zcatProp.isLoading){%>
+            <div class="lyteDropdownText">Loading ...</div>
+            <%}
+            else{%>
+        <template is="registerYield" yield-name="lytedropbodyyield">
+          <lyte-drop-body
+            class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+              {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+              {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+          >
+            <h4
+              lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              class="zcat-mb-6"
+            >
+              {{zcatProp.dropLabel}}
+            </h4>
+            <%if(zcatProp.options.length === 0){%>
+              <div class="lyteDropdownText">No Result Found</div>
+              <%}else{%>
+            <template lyte-for="{{items}} as item index">
+              <!-- <lyte-drop-item data-value="{{item.value}}" >
+                          <lyte-checkbox lt-prop-tabindex="-1" lt-prop-label="{{item.name}}"></lyte-checkbox>
+                      </lyte-drop-item> 
+                      -->
+              <lyte-drop-item
+                lyte-if="{{item.icon}}"
+                data-value="{{item.value}}"
+                data-zcqa="{{item.zcqa}}"
+              >
+                <lyte-checkbox
+                  lt-prop-tabindex="-1"
+                  lt-prop-yield="true"
+                  lt-prop-label="{{item.name}}"
+                >
+                  <template is="registerYield" yield-name="yield">
+                    <div class="zcat-dF zcat-align-center zcat-gap-4">
+                      <!-- <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.classs}} zcat-stroke-icon-active 
+                                        {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" 
+                                        class="menu-lyte-svg-class {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}">
+                                      </lyte-svg> -->
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{item.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      {{item.name}}
+                    </div>
+                  </template>
+                </lyte-checkbox>
+              </lyte-drop-item>
+              <lyte-drop-item lyte-else data-value="{{item.value}}">
+                <lyte-checkbox
+                  lt-prop-tabindex="-1"
+                  lt-prop-label="{{item.name}}"
+                ></lyte-checkbox>
+              </lyte-drop-item>
+            </template>
+
+            <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+              {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+            </div>
+            <%}%>
+          </lyte-drop-body>
+        </template>
+
+        <template is="registerYield" yield-name="lytedropfooteryield">
+          <lyte-drop-footer
+            class="lyte-drop-footer"
+            lyte-if="{{zcatProp.createNewBtn.label}}"
+          >
+            <div
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                      "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                      "variant": "ghost",
+                                              "size": "default",
+                                              "color": "primary",
+                                              "icon": {
+                                                "position": "left",
+                                                "name": "zcat-icon-plus",
+                                                "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                                              },
+                                              "width": "zcat-w100p",
+                                              "ltPropClassCss": "btn-radius-top0", 
+                                              "callback": {
+                                                "name": "{{zcatProp.createNewBtn.callback.name}}"
+                                              }
+                    }'
+              >
+              </zcat-button>
+            </div>
+          </lyte-drop-footer>
+        </template>
+         <%}%>
+      </lyte-multi-dropdown>
+    </div>
+    <div lyte-else-if="{{zcatProp.dropdown_type === 'multiple'}}">
+      <lyte-dropdown
+        data-zcqa="{{zcatProp.zcqa}}"
+        error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+        id="{{zcatProp.id}}"
+        lt-prop-id="{{zcatProp.id}}"
+        class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : ''}} {{zcatProp.width}} zcat-dB {{zcatProp.height ? 'set-height' : ''}} 
+        {{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }} 
+        zcat-multiple-dropdown"
+        lt-prop-selected="{{lbind(featureObj[zcatProp.key])}}"
+        lt-prop-button-class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }} {{zcatProp.variant == 'secondary' ? 'textDrpdwn' : '' }}"
+        lt-prop-remove-multiple="{{zcatProp.removeMultiple ? zcatProp.removeMultiple : 'false'}}"
+        lt-prop-type="{{zcatProp.dropdown_type ? zcatProp.dropdown_type : 'default'}}"
+        lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+        lt-prop-freeze="{{zcatProp.freeze !== undefined ? zcatProp.freeze : 'true'}}"
+        lt-prop-prevent-parent-scroll="{{zcatProp.freeze ? zcatProp.freeze : 'false'}}"
+        lt-prop-position="{{zcatProp.position ? zcatProp.position : 'down'}}"
+        lt-prop-callout="{{zcatProp.callout ? zcatProp.callout : 'false'}}"
+        lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.isOptional && !zcatProp.label ? ' (Optional)' : ''}}"
+        lt-prop-disabled="{{zcatProp.disabled ? zcatProp.disabled : 'false'}}"
+        lt-prop-hover="{{zcatProp.hover ? zcatProp.hover : 'false'}}"
+        lt-prop-no-result="{{zcatProp.noResult ? zcatProp.noResult : 'No results found'}}"
+        lt-prop-max-count="{{zcatProp.maxCount}}"
+        lt-prop-boundary="{{zcatProp.boundary}}"
+        on-show="{{method('onAfterDropboxOpen')}}"
+        on-before-show="{{method('defaultOnBeforeShow')}}"
+        on-hide="{{method('defaultOnHide')}}"
+        on-before-hide="{{method('defaultOnBeforeHide')}}"
+        on-add="{{method('defaultOnAdd')}}"
+        on-before-add="{{method('defaultOnBeforeAdd')}}"
+        on-remove="{{method('defaultOnRemove')}}"
+        on-before-remove="{{method('defaultOnBeforeRemove')}}"
+        on-position-changed="{{method('defaultOnPositionChanged')}}"
+        before-select="{{method('defaultBeforeSelect')}}"
+        on-change="{{method('defaultOnChange')}}"
+        on-scroll="{{method('defaultOnScroll')}}"
+        lt-prop-show-empty-message="true"
+        lt-prop-show-count='{{zcatProp.showCount ? zcatProp.showCount : "true"}}'
+        on-option-selected="{{method('defaultOnOptionSelected')}}"
+      >
+        <template is="registerYield" yield-name="yield">
+          <lyte-drop-box
+            id="dropdownSearch_{{zcatProp.id}}"
+          >
+            <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+              <div class="header-search-parent">
+                <lyte-search
+                  data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                  on-search="{{method('onDropdownSearch')}}"
+                  lt-prop-query-selector='{"scope":"#dropdownSearch_{{zcatProp.id}}","search":"lyte-drop-item"}'
+                  lt-prop-placeholder="Search"
+                  lt-prop='{"closeIcon" : true}'
+                  class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+                ></lyte-search>
+              </div>
+            </lyte-drop-header>
+
+            <%if(zcatProp.isLoading){%>
+            <div class="lyteDropdownText">Loading ...</div>
+            <%}
+            else{%>
+            <lyte-drop-body
+              class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+              {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+              {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+            >
+              <h4
+                class="zcat-mb-6"
+                lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              >
+                {{zcatProp.dropLabel}}
+              </h4>
+              <!-- <lyte-drop-item
+                lyte-for="{{zcatProp.options}} as data index"
+                data-value="{{data.value}}"
+                >{{data.name}}</lyte-drop-item
+              > -->
+              <%if(zcatProp.options.length === 0){%>
+              <div class="lyteDropdownText">No Result Found</div>
+              <%}else{%>
+              <template lyte-for="{{zcatProp.options}} as data index">
+                <lyte-drop-item
+                  data-value="{{data.value}}"
+                  data-zcqa="{{data.zcqa}}"
+                >
+                  <template lyte-if="{{data.icon}}">
+                    <div class="zcat-dF zcat-align-center zcat-gap-4">
+                      <!-- <lyte-svg lt-prop-path="#{{data.icon.name}}" lt-prop-class="{{data.icon.classs}} zcat-stroke-icon-active 
+                      {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}" 
+                      class="menu-lyte-svg-class {{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? 'zcat-h12 zcat-w12' : 'zcat-h14 zcat-w14'}}"></lyte-svg> -->
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{data.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      <p>{{data.name}}</p>
+                    </div>
+                  </template>
+                  <template lyte-else> {{data.name}} </template>
+                </lyte-drop-item>
+              </template>              
+              <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+              </div>              
+              <%}%>
+            </lyte-drop-body>
+            <div
+              class="lyte-drop-footer"
+              lyte-if="{{zcatProp.createNewBtn.label}}"
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                  "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                   "variant": "ghost",
+                                          "size": "default",
+                                          "color": "primary",
+                                          "icon": {
+                                            "position": "left",
+                                            "name": "zcat-icon-plus",
+                                            "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                                          },
+                                          "width": "zcat-w100p",
+                                          "ltPropClassCss": "btn-radius-top0", 
+                                          "callback": {
+                                            "name": "{{zcatProp.createNewBtn.callback.name}}"
+                                          }
+                }'
+              >
+              </zcat-button>
+            </div>
+            <%}%>
+
+          </lyte-drop-box>
+        </template>
+      </lyte-dropdown>
+    </div>
+
+    <div
+      lyte-else-if="{{zcatProp.variant === 'ghost'}}"
+      class="{{zcatProp.variant === 'ghost' ? 'ghost-dropdown' : ''}}"
+    >
+      <lyte-dropdown
+        data-zcqa="{{zcatProp.zcqa}}"
+        error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+        id="{{zcatProp.id}}"
+        lt-prop-id="{{zcatProp.id}}"
+        class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : ''}} zcat-w-fc"
+        lt-prop-selected="{{lbind(featureObj[zcatProp.key])}}"
+        lt-prop-button-class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }}"
+        lt-prop-remove-multiple="{{zcatProp.removeMultiple ? zcatProp.removeMultiple : 'false'}}"
+        lt-prop-type="{{zcatProp.dropdown_type ? zcatProp.dropdown_type : 'default'}}"
+        lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+        lt-prop-freeze="{{zcatProp.freeze !== undefined ? zcatProp.freeze : 'true'}}"
+        lt-prop-prevent-parent-scroll="{{zcatProp.freeze ? zcatProp.freeze : 'false'}}"
+        lt-prop-position="{{zcatProp.position ? zcatProp.position : 'down'}}"
+        lt-prop-callout="{{zcatProp.callout ? zcatProp.callout : 'false'}}"
+        lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.isOptional && !zcatProp.label ? ' (Optional)' : ''}}"
+        lt-prop-disabled="{{zcatProp.disabled ? zcatProp.disabled : 'false'}}"
+        lt-prop-hover="{{zcatProp.hover ? zcatProp.hover : 'false'}}"
+        lt-prop-no-result="{{zcatProp.noResult ? zcatProp.noResult : 'No results found'}}"
+        lt-prop-max-count="{{zcatProp.maxCount}}"
+        lt-prop-boundary="{{zcatProp.boundary}}"
+        on-show="{{method('onAfterDropboxOpen')}}"
+        on-before-show="{{method('defaultOnBeforeShow')}}"
+        on-hide="{{method('defaultOnHide')}}"
+        on-before-hide="{{method('defaultOnBeforeHide')}}"
+        on-remove="{{method('defaultOnRemove')}}"
+        on-before-remove="{{method('defaultOnBeforeRemove')}}"
+        on-position-changed="{{method('defaultOnPositionChanged')}}"
+        before-select="{{method('defaultBeforeSelect')}}"
+        on-change="{{method('defaultOnChange')}}"
+        on-scroll="{{method('defaultOnScroll')}}"
+        on-option-selected="{{method('defaultOnOptionSelected')}}"
+        on-before-select="{{method('defaultOnBeforeSelect')}}"
+        lt-prop-show-empty-message="true"
+      >
+        <template is="registerYield" yield-name="yield">
+          <lyte-drop-box
+            id="dropdownSearch_{{zcatProp.id}}"
+          >
+            <!-- <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+              <div class="header-search-parent">
+                <lyte-search
+                  data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                  on-search="{{method('onDropdownSearch')}}"
+                  lt-prop-query-selector='{"scope":"#dropdownSearch_{{zcatProp.id}}","search":"lyte-drop-item"}'
+                  lt-prop-placeholder="Search"
+                  lt-prop='{"closeIcon" : true}'
+                  class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+                ></lyte-search>
+              </div>
+            </lyte-drop-header>
+            <lyte-drop-body
+              class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+                {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+                {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+            >
+              <h4
+                class="zcat-mb-6"
+                lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              >
+                {{zcatProp.dropLabel}}
+              </h4>
+
+              <template lyte-for="{{zcatProp.options}} as data index">
+                <lyte-drop-item
+                  data-value="{{data.value}}"
+                  data-zcqa="{{data.zcqa}}"
+                >
+                  <template lyte-if="{{data.icon}}">
+                    <div class="zcat-dF zcat-align-center zcat-gap-4">
+                      
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{data.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      <p>{{data.name}}</p>
+                    </div>
+                  </template>
+                  <template lyte-else> {{data.name}} </template>
+                </lyte-drop-item>
+              </template>
+
+              <div lyte-if="{{zcatProp.isLoading}}" class="lyteDropdownText">
+                Loading ...
+              </div>
+              <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+              </div>
+            </lyte-drop-body>
+            <div
+              class="lyte-drop-footer"
+              lyte-if="{{zcatProp.createNewBtn.label}}"
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                    "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                    "variant": "ghost",
+                      "size": "default",
+                      "color": "primary",
+                      "icon": {
+                      "position": "left",
+                      "name": "zcat-icon-plus",
+                        "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                      },
+                      "width": "zcat-w100p",
+                      "ltPropClassCss": "btn-radius-top0",
+                      "callback": {
+                        "name": "{{zcatProp.createNewBtn.callback.name}}"
+                      }
+                  }'
+              >
+              </zcat-button>
+            </div> -->
+
+            <%if(zcatProp.isLoading){%>
+            <div class="lyteDropdownText">Loading ...</div>
+            <%}
+            else{%>
+            <lyte-drop-body
+              class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+                {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+                {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+            >
+              <h4
+                class="zcat-mb-6"
+                lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              >
+                {{zcatProp.dropLabel}}
+              </h4>
+
+              <%if(zcatProp.options.length === 0){%>
+              <div class="lyteDropdownText">No Result Found</div>
+              <%}else{%>
+              <template lyte-for="{{zcatProp.options}} as data index">
+                <lyte-drop-item
+                  data-value="{{data.value}}"
+                  data-zcqa="{{data.zcqa}}"
+                >
+                  <template lyte-if="{{data.icon}}">
+                    <div class="zcat-dF zcat-align-center zcat-gap-4">
+                      
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{data.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      <p>{{data.name}}</p>
+                    </div>
+                  </template>
+                  <template lyte-else> {{data.name}} </template>
+                </lyte-drop-item>
+              </template>
+              <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+              </div>
+              <%}%>
+            </lyte-drop-body>
+            <div
+              class="lyte-drop-footer"
+              lyte-if="{{zcatProp.createNewBtn.label}}"
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                    "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                    "variant": "ghost",
+                      "size": "default",
+                      "color": "primary",
+                      "icon": {
+                      "position": "left",
+                      "name": "zcat-icon-plus",
+                        "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                      },
+                      "width": "zcat-w100p",
+                      "ltPropClassCss": "btn-radius-top0", 
+                       "callback": {
+                          "name": "{{zcatProp.createNewBtn.callback.name}}"
+                        }
+                  }'
+              >
+              </zcat-button>
+            </div>
+            <%}%>
+
+          </lyte-drop-box>
+        </template>
+      </lyte-dropdown>
+    </div>
+    <!-- nrml dropdown like nrml // -->
+    <div lyte-else>
+      <lyte-dropdown
+        data-zcqa="{{zcatProp.zcqa}}"
+        error-message="{{errorObj[zcatProp.key] || errorMessage}}"
+        id="{{zcatProp.id}}"
+        lt-prop-id="{{zcatProp.id}}"
+        class="{{zcatProp.class}} {{errorObj[zcatProp.key] || errorMessage ? 'zcat-invalid' : ''}} {{zcatProp.width}}"
+        lt-prop-selected="{{lbind(featureObj[zcatProp.key])}}"
+        lt-prop-button-class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : '' }} {{zcatProp.variant == 'secondary' ? 'textDrpdwn' : '' }}"
+        lt-prop-remove-multiple="{{zcatProp.removeMultiple ? zcatProp.removeMultiple : 'false'}}"
+        lt-prop-type="{{zcatProp.dropdown_type ? zcatProp.dropdown_type : 'default'}}"
+        lt-prop-tabindex="{{zcatProp.tabindex ? zcatProp.tabindex : '0'}}"
+        lt-prop-freeze="{{zcatProp.freeze !== undefined ? zcatProp.freeze : 'true'}}"
+        lt-prop-prevent-parent-scroll="{{zcatProp.freeze ? zcatProp.freeze : 'false'}}"
+        lt-prop-position="{{zcatProp.position ? zcatProp.position : 'down'}}"
+        lt-prop-callout="{{zcatProp.callout ? zcatProp.callout : 'false'}}"
+        lt-prop-placeholder="{{zcatProp.placeholder}}{{zcatProp.isOptional && !zcatProp.label ? ' (Optional)' : ''}}"
+        lt-prop-disabled="{{zcatProp.disabled ? zcatProp.disabled : 'false'}}"
+        lt-prop-hover="{{zcatProp.hover ? zcatProp.hover : 'false'}}"
+        lt-prop-no-result="{{zcatProp.noResult ? zcatProp.noResult : 'No results found'}}"
+        lt-prop-max-count="{{zcatProp.maxCount}}"
+        lt-prop-boundary="{{zcatProp.boundary}}"
+        on-show="{{method('onAfterDropboxOpen')}}"
+        on-before-show="{{method('defaultOnBeforeShow')}}"
+        on-hide="{{method('defaultOnHide')}}"
+        on-before-hide="{{method('defaultOnBeforeHide')}}"
+        on-remove="{{method('defaultOnRemove')}}"
+        on-before-remove="{{method('defaultOnBeforeRemove')}}"
+        on-position-changed="{{method('defaultOnPositionChanged')}}"
+        before-select="{{method('defaultBeforeSelect')}}"
+        on-change="{{method('defaultOnChange')}}"
+        on-scroll="{{method('defaultOnScroll')}}"
+        on-option-selected="{{method('defaultOnOptionSelected')}}"
+        on-before-select="{{method('defaultOnBeforeSelect')}}"
+        lt-prop-show-empty-message="true"
+      >
+        <template is="registerYield" yield-name="yield">
+          <lyte-drop-box
+            id="dropdownSearch_{{zcatProp.id}}"
+          >
+            <!-- <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+              <div class="header-search-parent">
+                <lyte-search
+                  data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                  on-search="{{method('onDropdownSearch')}}"
+                  lt-prop-query-selector='{"scope":"#dropdownSearch_{{zcatProp.id}}","search":"lyte-drop-item"}'
+                  lt-prop-placeholder="Search"
+                  lt-prop='{"closeIcon" : true}'
+                  class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+                ></lyte-search>
+              </div>
+            </lyte-drop-header>
+            <lyte-drop-body
+              class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+              {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+              {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+            >
+              <h4
+                class="zcat-mb-6"
+                lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              >
+                {{zcatProp.dropLabel}}
+              </h4>
+
+              <template lyte-for="{{zcatProp.options}} as data index">
+                <lyte-drop-item
+                  data-value="{{data.value}}"
+                  data-zcqa="{{data.zcqa}}"
+                >
+                  <template lyte-if="{{data.icon}}">
+                    <div class="zcat-dF zcat-align-center zcat-gap-4">
+                      
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{data.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      <p>{{data.name}}</p>
+                    </div>
+                  </template>
+                  <template lyte-else> {{data.name}} </template>
+                </lyte-drop-item>
+              </template>
+
+              <div lyte-if="{{zcatProp.isLoading}}" class="lyteDropdownText">
+                Loading ...
+              </div>
+              <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+              </div>
+            </lyte-drop-body>
+
+            <div
+              class="lyte-drop-footer"
+              lyte-if="{{zcatProp.createNewBtn.label}}"
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                  "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                   "variant": "ghost",
+                    "size": "default",
+                    "color": "primary",
+                    "icon": {
+                    "position": "left",
+                    "name": "zcat-icon-plus",
+                      "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                    },
+                    "width": "zcat-w100p",
+                    "ltPropClassCss": "btn-radius-top0",
+                    "callback": {
+                      "name": "{{zcatProp.createNewBtn.callback.name}}"
+                    }
+                }'
+              >
+              </zcat-button>
+            </div> -->
+
+
+
+            <!-- new due to data fecthing issue from backend -->
+            <lyte-drop-header lyte-if="{{zcatProp.isSearchable}}">
+              <div class="header-search-parent">
+                <lyte-search
+                  data-zcqa="{{zcatProp.isSearchable.zcqa}}"
+                  on-search="{{method('onDropdownSearch')}}"
+                  lt-prop-query-selector='{"scope":"#dropdownSearch_{{zcatProp.id}}","search":"lyte-drop-item"}'
+                  lt-prop-placeholder="Search"
+                  lt-prop='{"closeIcon" : true}'
+                  class="{{zcatProp.size === 'small' || zcatProp.size == 'extra-small' ? 'lyteSm' : ''}}"
+                ></lyte-search>
+              </div>
+            </lyte-drop-header>
+            <%if(zcatProp.isLoading){%>
+            <div class="lyteDropdownText">Loading ...</div>
+            <%}
+            else{%>
+            <lyte-drop-body
+              class="{{zcatProp.size == 'small' ? 'lyteSm' : zcatProp.size == 'extra-small' ? 'lyteExsm' : ''}} 
+              {{zcatProp.isSearchable ? 'zcat-pt-6' : ''}} 
+              {{zcatProp.createNewBtn ? 'zcat-pb-6': ''}}"
+            >
+              <h4
+                class="zcat-mb-6"
+                lyte-if="{{zcatProp.dropLabel && searchResultsFound}}"
+              >
+                {{zcatProp.dropLabel}}
+              </h4>
+              <%if(zcatProp.options.length === 0){%>
+              <div class="lyteDropdownText">No Result Found</div>
+              <%}else{%>
+              <template lyte-for="{{zcatProp.options}} as data index">
+                <lyte-drop-item
+                  data-value="{{data.value}}"
+                  data-zcqa="{{data.zcqa}}"
+                >
+                  <template lyte-if="{{data.icon}}">
+                    <div class="zcat-dF zcat-align-center zcat-gap-4">
+                      
+                      <zcat-icon
+                        class="menu-lyte-svg-class zcat-stroke-icon-active"
+                        name="{{data.icon.name}}"
+                        width="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        height="{{zcatProp.size === 'small' || zcatProp.size === 'extra-small' ? '12' : '14'}}"
+                        stroke="var(--zcat-menuList-icon-active)"
+                        strokeWidth="{{item.icon.strokeWidth || 1.3}}"
+                      >
+                      </zcat-icon>
+                      <p>{{data.name}}</p>
+                    </div>
+                  </template>
+                  <template lyte-else> {{data.name}} </template>
+                </lyte-drop-item>
+              </template>
+              <div lyte-if="{{!searchResultsFound}}" class="lyteDropdownText">
+                {{zcatProp.noResult ? zcatProp.noResult : 'No Result Found'}}
+              </div>
+              <%}%>
+            </lyte-drop-body>
+            <div
+              class="lyte-drop-footer"
+              lyte-if="{{zcatProp.createNewBtn.label}}"
+              style="border-top: 1px solid var(--zcat-menuList-border-default)"
+            >
+              <zcat-button
+                self="{{self}}"
+                zcat-prop='{
+                  "label": "{{zcatProp.createNewBtn.label ? zcatProp.createNewBtn.label : "Create New"}}",
+                   "variant": "ghost",
+                    "size": "default",
+                    "color": "primary",
+                    "icon": {
+                    "position": "left",
+                    "name": "zcat-icon-plus",
+                      "class": "zcat-w16 zcat-h16 zcat-stroke-ghost-primarybtn-icon"
+                    },
+                    "width": "zcat-w100p",
+                    "ltPropClassCss": "btn-radius-top0", 
+                     "callback": {
+                        "name": "{{zcatProp.createNewBtn.callback.name}}"
+                      }
+                }'
+              >
+              </zcat-button>
+            </div>
+            <%}%>
+
+
+
+
+
+
+
+
+
+          </lyte-drop-box>
+        </template>
+      </lyte-dropdown>
+    </div>
+  </div>
+</template>

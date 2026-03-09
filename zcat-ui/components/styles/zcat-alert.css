@@ -1,0 +1,249 @@
+
+
+/* === Global base styles from reference css/zcat-alert.css === */
+.alert-content-outer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 16px;
+}
+
+.successMessageIcon .alert-icon-color{
+    stroke: var(--zcat-toast-icon-line-success);
+}
+.errorMessageIcon .alert-icon-color {
+    stroke: var(--zcat-toast-icon-line-danger);
+}
+.warningMessageIcon .alert-icon-color {
+    stroke: var(--zcat-toast-icon-line-warning);
+}
+.infoMessageIcon .alert-icon-color {
+    stroke: var(--zcat-toast-icon-line-info);
+}
+
+
+.alert-content-outer.success .alert-primary-text{
+  color: var(--zcat-alerts-success-text-primary);
+}
+.alert-content-outer.success .alert-secondary-text{
+  color: var(--zcat-alerts-success-text-secondary)
+}
+.alert-content-outer.error .alert-primary-text{
+  color: var(--zcat-alerts-danger-text-primary);
+}
+.alert-content-outer.error .alert-secondary-text{
+  color: var(--zcat-alerts-danger-text-secondary)
+}
+.alert-content-outer.warning .alert-primary-text{
+  color: var(--zcat-alerts-warning-text-primary);
+}
+.alert-content-outer.warning .alert-secondary-text{
+  color: var(--zcat-alerts-warning-text-secondary)
+}
+.alert-content-outer.info .alert-primary-text{
+  color: var(--zcat-alerts-info-text-primary);
+}
+.alert-content-outer.info .alert-secondary-text{
+  color: var(--zcat-alerts-info-text-secondary)
+}
+/* no header  */
+.alert-content-outer.success .alert-secondary-text.no-header{
+  color: var(--zcat-alerts-success-text-primary)
+}
+.alert-content-outer.error .alert-secondary-text.no-header{
+  color: var(--zcat-alerts-danger-text-primary)
+}
+.alert-content-outer.warning .alert-secondary-text.no-header{
+  color: var(--zcat-alerts-warning-text-primary)
+}
+.alert-content-outer.info .alert-secondary-text.no-header{
+  color: var(--zcat-alerts-info-text-primary)
+}
+
+.lyteMessageBox.successMessageIcon, .lyteMessageBox.errorMessageIcon, .lyteMessageBox.warningMessageIcon, .lyteMessageBox.infoMessageIcon{
+    top: 10px !important
+}
+.right-alert-content{
+  justify-content: flex-end;
+}
+
+
+.lyte-svg {
+  display: none;
+}
+lyte-alert * {
+  box-sizing: border-box;
+}
+lyte-alert {
+  display: none;
+}
+.alertFreezeLayer {
+  background: var(--zcat-popup-bg-blur) !important;
+  /* opacity: 0.3 !important; */
+  opacity: unset !important;
+}
+.alertPopup {
+  padding: 0;
+  background: var(--zcat-popup-bg);
+  border: 1px solid var(--zcat-popup-border);
+  box-shadow: 0 0px 4px 0px var(--zcat-shadow-bg-default);
+  border-radius: 10px;
+  min-width: 450px;
+}
+.alertPopup .alertHeader {
+  font: var(--zcat-font-18-22) var(--zcat-font-family-primary);
+  font-weight: 600;
+  color: var(--zcat-body-text-primary);
+}
+.alertPopup .alertPrimaryMsg {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-secondary);
+}
+.alertPopup.lyteAlertSlideDown {
+  transition-property: center;
+}
+
+lyte-alert-header, .alertHeader {        /* , .alertPrimaryMsg */
+    color: var(--zcat-body-text-primary);
+    padding: 24px 24px 16px;
+    background: var(--zcat-popup-bg);
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 0;
+}
+.alertContent, lyte-alert-content {      /*  .alertSecondaryMsg, */
+    padding: 8px 24px;
+    max-height: calc(100vh - 200px) !important;
+    overflow-y: auto;
+    color: var(--zcat-body-text-primary);
+}
+.alertHeader .dBlock{
+    font: var(--zcat-heading-font-weight) var(--zcat-heading-font-h5) var(--zcat-font-family-primary);
+}
+lyte-alert-footer, .alertFooter {
+    padding: 16px 24px 24px;
+}
+
+/* === Global base styles from reference css/zcat-alert.css === */
+.alert-content-outer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 16px;
+}
+
+.successMessageIcon .alert-icon-color{
+    stroke: var(--zcat-toast-icon-line-success);
+}
+.errorMessageIcon .alert-icon-color {
+    stroke: var(--zcat-toast-icon-line-danger);
+}
+.warningMessageIcon .alert-icon-color {
+    stroke: var(--zcat-toast-icon-line-warning);
+}
+.infoMessageIcon .alert-icon-color {
+    stroke: var(--zcat-toast-icon-line-info);
+}
+
+
+.alert-content-outer.success .alert-primary-text{
+  color: var(--zcat-alerts-success-text-primary);
+}
+.alert-content-outer.success .alert-secondary-text{
+  color: var(--zcat-alerts-success-text-secondary)
+}
+.alert-content-outer.error .alert-primary-text{
+  color: var(--zcat-alerts-danger-text-primary);
+}
+.alert-content-outer.error .alert-secondary-text{
+  color: var(--zcat-alerts-danger-text-secondary)
+}
+.alert-content-outer.warning .alert-primary-text{
+  color: var(--zcat-alerts-warning-text-primary);
+}
+.alert-content-outer.warning .alert-secondary-text{
+  color: var(--zcat-alerts-warning-text-secondary)
+}
+.alert-content-outer.info .alert-primary-text{
+  color: var(--zcat-alerts-info-text-primary);
+}
+.alert-content-outer.info .alert-secondary-text{
+  color: var(--zcat-alerts-info-text-secondary)
+}
+/* no header  */
+.alert-content-outer.success .alert-secondary-text.no-header{
+  color: var(--zcat-alerts-success-text-primary)
+}
+.alert-content-outer.error .alert-secondary-text.no-header{
+  color: var(--zcat-alerts-danger-text-primary)
+}
+.alert-content-outer.warning .alert-secondary-text.no-header{
+  color: var(--zcat-alerts-warning-text-primary)
+}
+.alert-content-outer.info .alert-secondary-text.no-header{
+  color: var(--zcat-alerts-info-text-primary)
+}
+
+.lyteMessageBox.successMessageIcon, .lyteMessageBox.errorMessageIcon, .lyteMessageBox.warningMessageIcon, .lyteMessageBox.infoMessageIcon{
+    top: 10px !important
+}
+.right-alert-content{
+  justify-content: flex-end;
+}
+
+
+.lyte-svg {
+  display: none;
+}
+lyte-alert * {
+  box-sizing: border-box;
+}
+lyte-alert {
+  display: none;
+}
+.alertFreezeLayer {
+  background: var(--zcat-popup-bg-blur) !important;
+  /* opacity: 0.3 !important; */
+  opacity: unset !important;
+}
+.alertPopup {
+  padding: 0;
+  background: var(--zcat-popup-bg);
+  border: 1px solid var(--zcat-popup-border);
+  box-shadow: 0 0px 4px 0px var(--zcat-shadow-bg-default);
+  border-radius: 10px;
+  min-width: 450px;
+}
+.alertPopup .alertHeader {
+  font: var(--zcat-font-18-22) var(--zcat-font-family-primary);
+  font-weight: 600;
+  color: var(--zcat-body-text-primary);
+}
+.alertPopup .alertPrimaryMsg {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  color: var(--zcat-body-text-secondary);
+}
+.alertPopup.lyteAlertSlideDown {
+  transition-property: center;
+}
+
+lyte-alert-header, .alertHeader {        /* , .alertPrimaryMsg */
+    color: var(--zcat-body-text-primary);
+    padding: 24px 24px 16px;
+    background: var(--zcat-popup-bg);
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 0;
+}
+.alertContent, lyte-alert-content {      /*  .alertSecondaryMsg, */
+    padding: 8px 24px;
+    max-height: calc(100vh - 200px) !important;
+    overflow-y: auto;
+    color: var(--zcat-body-text-primary);
+}
+.alertHeader .dBlock{
+    font: var(--zcat-heading-font-weight) var(--zcat-heading-font-h5) var(--zcat-font-family-primary);
+}
+lyte-alert-footer, .alertFooter {
+    padding: 16px 24px 24px;
+}

@@ -1,0 +1,11 @@
+/* zcat-hovercard component styles
+   Popup styles (.lyteHovercardPopover) are defined globally in layout-comp.css
+   so they are available on every route regardless of lazy loading.
+*/
+
+/* Trigger wrapper */
+.zcat-tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}

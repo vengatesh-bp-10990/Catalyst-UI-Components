@@ -1,0 +1,95 @@
+<template tag-name="zcat-radio">
+  <zcat-hovercard
+    lyte-if="{{zcatProp.infoIcon.yield || zcatProp.infoIcon.value}}"
+    zcat-prop="{{zcatProp.infoIcon}}"
+  >
+    <template is="yield" yield-name="{{zcatProp.infoIcon.yield}}">
+      <lyte-yield yield-name="{{zcatProp.infoIcon.yield}}"></lyte-yield>
+    </template>
+  </zcat-hovercard>
+  <div
+    lyte-if="{{zcatProp.label}}"
+    class="zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{zcatProp.disabled ? 'input-field-disabled' : ''}}"
+  >
+    <p
+      class="{{zcatProp.label_class ? zcatProp.label_class : 'zcat-input-label'}} zcat-input-label-default"
+    >
+      {{zcatProp.label}}
+      <span class="optional-label"
+        >{{zcatProp.isOptional && zcatProp.label ? ' (Optional)' : ''}}</span
+      >
+    </p>
+    <div
+      lyte-if="{{zcatProp.infoIcon.id}}"
+      class="zcat-w12 zcat-h12 zcat-cP"
+      id="tooltipInfoMsg{{zcatProp.infoIcon.id}}"
+      lyte-hovercard="true"
+    >
+      <zcat-icon
+        class="zcat-mb-2 zcat-input-label-stroke"
+        name="info"
+        width="12"
+        height="12"
+        stroke="var(--zcat-inputField-icon-label)"
+        strokeWidth="1.3"
+      >
+      </zcat-icon>
+    </div>
+  </div>
+  <div class="zcat-dF zcat-direction-column zcat-gap-10 zcat-w100p">
+    <%if(zcatProp.variant === 'primary'){ %>
+    <div class="{{zcatProp.class}} zcat-dF zcat-align-center zcat-gap-24">
+      <lyte-radiobutton
+        id="{{item.value}}"
+        data-zcqa="{{item.zcqa}}"
+        lyte-for="{{zcatProp.options}} as item index"
+        lt-prop-label="{{item.label}}"
+        class="{{item.label ? '' : 'checkboxWutLabel'}}"
+        lt-prop-value="{{item.value}}"
+        lt-prop-name="{{zcatProp.name}}"
+        lt-prop-type="default"
+        lt-prop-disabled="{{item.disabled}}"
+        lt-prop-checked="{{(formData && zcatProp.key) ? formData[zcatProp.key] === item.value : zcatProp.selected === item.value}}"
+        on-before-checked="{{method('customLbindForRadioButton', zcatProp.onBeforeChecked, item.value)}}"
+        on-before-unchecked="{{method('customLbindForRadioButton', zcatProp.onBeforeUnchecked, item.value)}}"
+        on-checked="{{method('customLbindForRadioButton', zcatProp.onChecked, item.value)}}"
+        on-unchecked="{{method('customLbindForRadioButton', zcatProp.onUnchecked, item.value)}}"
+        on-changed="{{method('defaultOnChanged', item.value)}}"
+      ></lyte-radiobutton>
+    </div>
+    <%}else if(zcatProp.variant === 'secondary'){%>
+    <lyte-radiobutton
+      lt-prop-yield="true"
+      id="{{item.value}}"
+      lyte-for="{{zcatProp.options}} as item index"
+      data-zcqa="{{item.zcqa}}"
+      lt-prop-name="{{zcatProp.name}}"
+      lt-prop-value="{{item.value}}"
+      lt-prop-disabled="{{item.disabled}}"
+      class="zcat-secondary-radio-button zcat-w100p primaryRadioBtn {{item.desc ? '' : 'checkboxWutSubtxt'}} {{item.class}} {{(formData && zcatProp.key) ? (formData[zcatProp.key] === item.value ? 'selected' : '') : (zcatProp.selected === item.value ? 'selected' : '')}}"
+      lt-prop-checked="{{(formData && zcatProp.key) ? formData[zcatProp.key] === item.value : zcatProp.selected === item.value}}"
+      on-before-checked="{{method('customLbindForRadioButton', zcatProp.onBeforeChecked, item.value)}}"
+      on-before-unchecked="{{method('customLbindForRadioButton', zcatProp.onBeforeUnchecked, item.value)}}"
+      on-checked="{{method('customLbindForRadioButton', zcatProp.onChecked, item.value)}}"
+      on-unchecked="{{method('customLbindForRadioButton', zcatProp.onUnchecked, item.value)}}"
+      on-changed="{{method('defaultOnChanged', item.value)}}"
+    >
+      <template is="registerYield" yield-name="yield">
+        <div class="zcat-ml-4 zcat-dF zcat-direction-column zcat-gap-2">
+          <lyte-text
+            class="zcat-text-14 {{item.desc ? 'zcat-font-semibold' : 'zcat-font-regular'}} zcat-color-dark1 zcat-w100p"
+            lt-prop-value="{{item.label}}"
+          >
+          </lyte-text>
+          <lyte-text
+            lyte-if="{{item.desc}}"
+            class="zcat-text-12 zcat-color-dark2 zcat-w100p"
+            lt-prop-value="{{item.desc}}"
+          >
+          </lyte-text>
+        </div>
+      </template>
+    </lyte-radiobutton>
+    <%}%>
+  </div>
+</template>

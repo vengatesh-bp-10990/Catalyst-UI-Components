@@ -1,0 +1,79 @@
+.zcat-card-radio-button{
+    position: relative;
+    padding: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--zcat-body-text-primary);
+    border: 1px solid var(--zcat-card-border-default);
+}
+.zcat-card-radio-dimension{
+    width: 150px;
+    height: 100px;
+}
+.zcat-card-radio-button .lyteCheckbox.lyteDefault,.zcat-card-radio-button .lyteCheckbox{
+    height: 100%;
+}
+.zcat-card-radio-button .lyteCheckbox .lyteCheckBoxDefault span,.zcat-card-radio-button .lyteCheckbox .lyteCheckBoxPrimary span,.zcat-card-radio-button .lyteCheckbox .lyteCheckBoxDefault span,.zcat-card-radio-button .lyteCheckBoxPrimary{
+    width: 100%;
+}
+.zcat-card-radio-button .lyteRadioLabel{
+    width: 100%;
+    margin: 0;
+}
+.primary-card,.secondary-card,.tertiary-card,.quaternary-card,.bodyBg-card{
+    background: var(--zcat-card-bg-default);
+}
+.secondary-card{
+    background: var(--zcat-card-bg-secondary);
+}
+.tertiary-card{
+    background: var(--zcat-card-bg-tertiary);
+}
+.quaternary-card{
+    background: var(--zcat-card-bg-quaternary);
+}
+.bodyBg-card{
+    background: var(--zcat-card-bg-bodyBg);
+}
+.primary-card:hover,.secondary-card:hover,.tertiary-card:hover,.quaternary-card:hover,.bodyBg-card:hover{
+    border-color: var(--zcat-card-border-hover);
+    background: var(--zcat-card-bg-hover);
+    box-shadow: 0px 0px 6px 1px var(--zcat-shadow-bg-default);
+}
+.secondary-card:hover{
+    background: var(--zcat-card-bg-hover-secondary);
+}
+.tertiary-card:hover{
+    background: var(--zcat-card-bg-hover-tertiary);
+}
+.quaternary-card:hover{
+    background: var(--zcat-card-bg-hover-quaternary);
+}
+.bodyBg-card:hover{
+    background: var(--zcat-card-bg-hover-bodyBg);
+}
+.zcat-card-radio-button.selected,.zcat-card-radio-button.selected:hover{
+    border-color: var(--zcat-card-border-selected);
+    background: var(--zcat-card-bg-selected);
+}
+.zcat-card-radio-button.selected::after {
+    content: '';
+    position: absolute;
+    top: -0.5px;
+    right: 0;
+    background-image: url('data:image/svg+xml,<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0.5H11C13.7614 0.5 16 2.73858 16 5.5V16.5C7.16344 16.5 0 9.33656 0 0.5Z" fill="%232A65F0"/><path d="M13.3337 4.5L8.75033 9.08333L6.66699 7" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    width: 16px;
+    height: 16px;
+}
+.zcat-card-radio-button .lyteRadioLayer,.zcat-card-radio-button .lyteCheckBoxDefault::before,.zcat-card-radio-button .lyteCheckbox > input[type='checkbox']:checked + .lyteCheckBoxDefault::after,
+.zcat-card-radio-button .lyteRadioLayer,.zcat-card-radio-button .lyteCheckBoxPrimary::before {
+    display: none;
+}
+
+.zcat-card-radio-button.disabled,.zcat-card-radio-button.lyteRadioDisabled,.zcat-card-radio-button.lyteCheckDisabled,.zcat-card-radio-button.disabled:hover,.zcat-card-radio-button.lyteRadioDisabled:hover,.zcat-card-radio-button.lyteCheckDisabled:hover{
+    background: var(--zcat-card-bg-disabled);
+    color: var(--zcat-body-text-disabled);
+    border: 1px solid var(--zcat-card-border-disabled);
+    cursor: not-allowed;
+    box-shadow: none;
+}

@@ -1,0 +1,153 @@
+
+
+/* === Global base styles from reference css/zcat-pagination.css === */
+.lyteNavigator lyte-yield{
+    width: 100%;
+}
+.zcat-pagination-wraper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 30px;
+    padding: 6px 16px;
+    border-radius: 0px 0px 10px 10px;
+    border-top: 1px solid var(--zcat-pagination-divider);
+    background-color: var(--zcat-pagination-bg);
+    box-shadow: 0px -6px 16px 0px var(--zcat-shadow-bg-secondary);
+}
+zcat-table .zcat-pagination-wraper{
+    margin-top: -3px;
+    border: 1px solid var(--zcat-table-border-default);
+    position: relative;
+    z-index: 2;
+}
+zcat-table .zcat-pagination-wraper.borderless-table{
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+}
+.zcat-pagination-page-list{
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    font-weight: 400;
+    color: var(--zcat-pagination-text-secondary);
+}
+.zcat-pagination-icon-wraper{
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.zcat-pagination-icon-wraper:hover{
+    cursor: pointer;
+    background: var(--zcat-btn-grey-bg-hover);
+}
+.lyteDisabled.zcat-pagination-icon-wraper{
+    cursor: not-allowed;
+    background: none;
+}
+.zcat-pagination-icon-color{
+  stroke: var(--zcat-body-icons-static-primary);
+}
+.lyteDisabled.zcat-pagination-icon-disabled-color{
+    stroke: var(--zcat-body-icons-static-disabled);
+}
+.zcat-pagination-result-wraper,.zcat-pagination-dropdown-text{
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    font-weight: 400;
+}
+.zcat-pagination-result-text{
+    color: var(--zcat-pagination-text-tertiary);
+}
+.zcat-pagination-result-count{
+    color: var(--zcat-pagination-text-primary);
+}
+.zcat-pagination-result-total{
+    color: var(--zcat-pagination-text-secondary);
+}
+.zcat-pagination-divider{
+    height: 20px;
+    width: 1px;
+    background: var(--zcat-pagination-divider);
+}
+.zcat-pagination-dropdown-text{
+    color: var(--zcat-pagination-text-tertiary);
+}
+
+/* === Global base styles from reference css/zcat-pagination.css === */
+.lyteNavigator lyte-yield{
+    width: 100%;
+}
+.zcat-pagination-wraper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 30px;
+    padding: 6px 16px;
+    border-radius: 0px 0px 10px 10px;
+    border-top: 1px solid var(--zcat-pagination-divider);
+    background-color: var(--zcat-pagination-bg);
+    box-shadow: 0px -6px 16px 0px var(--zcat-shadow-bg-secondary);
+}
+zcat-table .zcat-pagination-wraper{
+    margin-top: -3px;
+    border: 1px solid var(--zcat-table-border-default);
+    position: relative;
+    z-index: 2;
+}
+zcat-table .zcat-pagination-wraper.borderless-table{
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+}
+.zcat-pagination-page-list{
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    font-weight: 400;
+    color: var(--zcat-pagination-text-secondary);
+}
+.zcat-pagination-icon-wraper{
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.zcat-pagination-icon-wraper:hover{
+    cursor: pointer;
+    background: var(--zcat-btn-grey-bg-hover);
+}
+.lyteDisabled.zcat-pagination-icon-wraper{
+    cursor: not-allowed;
+    background: none;
+}
+.zcat-pagination-icon-color{
+  stroke: var(--zcat-body-icons-static-primary);
+}
+.lyteDisabled.zcat-pagination-icon-disabled-color{
+    stroke: var(--zcat-body-icons-static-disabled);
+}
+.zcat-pagination-result-wraper,.zcat-pagination-dropdown-text{
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    font-weight: 400;
+}
+.zcat-pagination-result-text{
+    color: var(--zcat-pagination-text-tertiary);
+}
+.zcat-pagination-result-count{
+    color: var(--zcat-pagination-text-primary);
+}
+.zcat-pagination-result-total{
+    color: var(--zcat-pagination-text-secondary);
+}
+.zcat-pagination-divider{
+    height: 20px;
+    width: 1px;
+    background: var(--zcat-pagination-divider);
+}
+.zcat-pagination-dropdown-text{
+    color: var(--zcat-pagination-text-tertiary);
+}

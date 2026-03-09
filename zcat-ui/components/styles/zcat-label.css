@@ -1,0 +1,39 @@
+/* zcat-label component */
+.zcat-label-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.zcat-label {
+  color: var(--zcat-inputField-text-label);
+  font: var(--zcat-input-label-font-weight) var(--zcat-input-label-font) var(--zcat-font-family-primary);
+  margin: 0;
+}
+
+.zcat-label-required::after {
+  content: ' *';
+  color: var(--zcat-danger-1);
+}
+
+.zcat-label-optional {
+  color: var(--zcat-text-secondary);
+  font-weight: 400;
+}
+
+.zcat-label-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Size: small */
+.zcat-label-sm .zcat-label {
+  font-size: 11px;
+  line-height: 14px;
+}
+
+/* Size: large */
+.zcat-label-lg .zcat-label {
+  font-size: 14px;
+  line-height: 20px;
+}

@@ -1,0 +1,150 @@
+<template tag-name="zcat-keyvalue-pair">
+  <zcat-hovercard
+    lyte-if="{{zcatProp.infoIcon.yield || zcatProp.infoIcon.value}}"
+    zcat-prop="{{zcatProp.infoIcon}}"
+  >
+    <template is="yield" yield-name="{{zcatProp.infoIcon.yield}}">
+      <lyte-yield yield-name="{{zcatProp.infoIcon.yield}}"></lyte-yield>
+    </template>
+  </zcat-hovercard>
+  <div
+    lyte-if="{{zcatProp.label}}"
+    class="zcat-dF zcat-align-center zcat-gap-2 zcat-mb-2 {{zcatProp.disabled ? 'input-field-disabled' : ''}}"
+  >
+    <p
+    class="{{zcatProp.label_class ? zcatProp.label_class : 'zcat-input-label'}} zcat-input-label-default" 
+    >
+      {{zcatProp.label}}
+      <span class="optional-label">{{zcatProp.isOptional && zcatProp.label ? ' (Optional)' : ''}}</span>
+    </p>
+    <div    
+      lyte-if="{{zcatProp.infoIcon.id}}"
+      class="zcat-w12 zcat-h12 zcat-cP"
+      id="tooltipInfoMsg{{zcatProp.infoIcon.id}}" 
+      lyte-hovercard="true"
+    >
+      <zcat-icon 
+              class="zcat-mb-2 zcat-input-label-stroke"
+              name="info" 
+              width="12"
+              height="12"
+              stroke="var(--zcat-inputField-icon-label)"
+              strokeWidth="1.3"
+        >
+        </zcat-icon>
+    </div>
+  </div>
+
+  
+  <ul class="zcat-key-value-pair-list-block" id="kvPairId">    
+    <li
+      class="zcat-key-value-pair-box"
+      lyte-for="{{rowList}} as row index"
+    >
+          <zcat-icon lyte-if="{{zcatProp.variant === 'auto'}}"
+              class="zcat-flex-center"
+              name="six-dot-drag" 
+              width="7"
+              height="24"
+          >
+          </zcat-icon>
+          <div
+           class="zcat-dF zcat-gap-16 zcat-align-center {{
+            zcatProp.keyErrorMessage || zcatProp.valueErrorMessage ? 'zcat-mb-10' : ''
+           }}" 
+           data-index="{{index}}"
+          >            
+            <template lyte-for="{{row.fieldList}} as item fIndex">
+              <zcat-input 
+              lyte-if="{{item.type === 'textbox'}}" 
+              self="{{self}}" 
+              zcat-prop="{{item.fieldObj}}"
+              feature-obj="{{lbind(userObj)}}"
+              on-value-change="{{method('inputOnValueChange', index, this)}}"
+              error-message="{{item.fieldObj.errorMessage}}"
+              >
+              </zcat-input>
+              <zcat-dropdown 
+              lyte-if="{{item.type === 'dropdown'}}" 
+              self="{{self}}" 
+              zcat-prop="{{item.fieldObj}}"
+              feature-obj="{{lbind(userObj)}}"
+              on-option-selected="{{method('dropdownOnValueSelect', index, this)}}"
+              error-message="{{item.fieldObj.errorMessage}}"
+              >
+              </zcat-dropdown>
+
+              <zcat-autocomplete 
+              lyte-if="{{item.type === 'autocomplete'}}"
+              zcat-prop = "{{item.fieldObj}}" 
+              feature-obj = "{{lbind(userObj)}}"
+              on-select="{{method('autocompleteOnSelect', index, this)}}"
+              error-message="{{item.fieldObj.errorMessage}}"
+              >
+              </zcat-autocomplete>
+            </template>
+
+          </div>
+          <div class="zcat-dF zcat-gap-10 zcat-align-center">
+            <zcat-button lyte-if="{{index !== 0}}"
+              self = "{{self}}"
+              zcat-prop = '
+              {
+                "variant": "grey",
+                "size": "extra-small",
+                "color": "grey", 
+                "type": "navigation", 
+                "icon": {
+                  "position": "right",
+                  "name": "minus", 
+                  "stroke": "zcat-stroke-greybtn-icon"
+                }, 
+                "callback": {
+                  "name": "removeRow",
+                  "arguments": [{{index}}]
+                }
+              }
+            '>
+            </zcat-button>
+            <!-- <zcat-button lyte-if="{{zcatProp.variant === 'manual'}}"
+            self = "{{self}}" zcat-prop = '
+              {
+                "variant": "grey",
+                "size": "extra-small",
+                "color": "grey", 
+                "type": "navigation", 
+                "icon": {
+                  "position": "right",
+                  "name": "plus", 
+                  "stroke": "zcat-stroke-greybtn-icon"
+                }
+              }
+            '
+            click-action="{{method('addRow', index)}}">
+            </zcat-button> -->
+            <zcat-button lyte-if="{{zcatProp.variant === 'manual'}}"
+            self = "{{self}}" zcat-prop = '
+              {
+                "variant": "grey",
+                "size": "extra-small",
+                "color": "grey", 
+                "type": "navigation", 
+                "icon": {
+                  "position": "right",
+                  "name": "plus", 
+                  "stroke": "zcat-stroke-greybtn-icon"
+                }, 
+                "callback": {
+                  "name": "addRow",
+                  "arguments": [{{index}}]
+                }
+              }
+            '>
+            </zcat-button>
+          </div>
+
+    </li>  
+  </ul>
+</template>
+
+

@@ -1,0 +1,9 @@
+<template tag-name="zcat-tooltip">
+  <div
+    class="zcat-tooltip-wrap {{zcatProp.classCss || ''}}"
+    lt-prop-title="{{zcatProp.text || ''}}"
+    lt-prop-tooltip-config="{{tooltipConfig}}"
+  >
+    <lyte-yield yield-name="trigger"></lyte-yield>
+  </div>
+</template>

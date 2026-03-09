@@ -1,0 +1,54 @@
+/* zcat-tooltip component */
+.zcat-tooltip-wrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Global tooltip overrides (lyte-tooltip appends .lyteTooltip to body) */
+.lyteTooltip {
+  position: absolute;
+  font-weight: 400;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  max-width: 300px;
+  padding: 10px;
+  background: var(--zcat-tooltip-bg) !important;
+  color: var(--zcat-tooltip-text-primary) !important;
+  text-align: left;
+  box-shadow: 2px 2px 10px 2px var(--zcat-shadow-bg-default);
+  border-radius: 6px;
+  word-break: break-word;
+  box-sizing: border-box;
+  border: 1px solid var(--zcat-tooltip-border);
+  z-index: 10000;
+}
+
+.lyteTooltip.lyteTooltipCallout .lyteTooltipInnerSpan,
+.lyteTooltip.lyteTooltipCallout::before {
+  width: 8px;
+  height: 8px;
+  border-right: 1px solid var(--zcat-tooltip-border);
+  border-bottom: 1px solid var(--zcat-tooltip-border);
+  border-left: transparent;
+  border-top: transparent;
+}
+
+.lyteTooltip.lyteTooltipCallout.lyteBottom::before {
+  border-left: 1px solid var(--zcat-tooltip-border);
+  border-top: 1px solid var(--zcat-tooltip-border);
+  border-right: transparent;
+  border-bottom: transparent;
+}
+
+.lyteTooltip.lyteTooltipCallout.lyteLeft::before {
+  border-right: 1px solid var(--zcat-tooltip-border);
+  border-top: 1px solid var(--zcat-tooltip-border);
+  border-bottom: transparent;
+  border-left: transparent;
+}
+
+.lyteTooltip.lyteTooltipCallout.lyteRight::before {
+  border-bottom: 1px solid var(--zcat-tooltip-border);
+  border-left: 1px solid var(--zcat-tooltip-border);
+  border-top: transparent;
+  border-right: transparent;
+}

@@ -1,0 +1,64 @@
+.zcat-field-first.lyteInputBox .lyteField, .zcat-field-first lyte-drop-button {
+  border-radius: 6px 0 0 6px;
+  left: 1px;
+}
+.zcat-field-last.lyteInputBox .lyteField, .zcat-field-last lyte-drop-button {
+  border-radius: 0 6px 6px 0;
+}
+
+/* Hover & focus handling  */
+.zcat-field-first.lyteInputBox .lyteField:hover
+.zcat-field-first.lyteInputBox.lyteInputFocus .lyteField{
+  z-index: 2;
+}
+.zcat-field-first lyte-dropdown lyte-drop-button:hover,
+.zcat-field-first lyte-dropdown[lt-prop-type="multiple"] lyte-drop-button:hover,
+.zcat-field-first lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button:hover,
+.zcat-field-first lyte-dropdown .lyteDummyEventContainer:focus lyte-drop-button,
+.zcat-field-first .lyteDropButtonDown,
+.zcat-field-first .lyteDropButtonDown:hover {
+  z-index: 2
+}
+
+.double-field-outer::after{
+    content: attr(error-message);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+    font-family: var(--zcat-font-family-primary);
+    color: var(--zcat-inputField-text-error);
+    padding-top: 2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* More than 2 field handling  */
+/* .zcat-field-mid.lyteInputBox .lyteField, .zcat-field-mid lyte-drop-button {
+  border-radius: 0;
+  left: 1px;
+}
+.zcat-field-mid.lyteInputBox .lyteField:hover{
+  border-color: red;
+  z-index: 2;
+}
+.zcat-field-last.lyteInputBox .lyteField:hover{
+  border-color: black;
+} */
+

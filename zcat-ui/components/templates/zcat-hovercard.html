@@ -1,0 +1,19 @@
+<template tag-name="zcat-hovercard">
+  <lyte-hovercard
+    lt-prop-width="{{zcatProp.width ? zcatProp.width : 'fit-content'}}"
+    lt-prop-auto-show="true"
+    lt-prop-keep-alive="true"
+    lt-prop-type="callout"
+    lt-prop-prevent-focus="true"
+    id="hovercard"
+    lt-prop-origin-elem="#tooltipInfoMsg{{zcatProp.id}}"
+    lt-prop-placement="{{zcatProp.placement ? zcatProp.placement : ''}}"
+  >
+    <template is="registerYield" yield-name="hoverCardYield">
+      <lyte-hovercard-content>
+        <lyte-yield lyte-if="{{zcatProp.yield}}" yield-name="{{zcatProp.yield}}"></lyte-yield>
+        <p lyte-if="{{zcatProp.value}}">{{zcatProp.value}}</p>
+      </lyte-hovercard-content>
+    </template>
+  </lyte-hovercard>
+</template>

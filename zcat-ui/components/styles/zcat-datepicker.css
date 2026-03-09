@@ -1,0 +1,1331 @@
+
+
+/* === Global base styles from reference css/zcat-datepicker.css === */
+.lyteDateRangePickerRow {
+  border: none;
+  box-shadow: none;
+  background: var(--zcat-datePicker-bg-default);
+}
+.lyteCalendarPopup {
+  background: var(--zcat-datePicker-bg-default);
+  border-radius: 1px;
+  border: none;
+  box-shadow: none;
+}
+.lyteCalendarPopup lyte-dropdown lyte-drop-button {
+  font-size: 12px;
+  color: var(--zcat-inputField-text-active);
+  border: 1px solid var(--zcat-inputField-border-default);
+  padding: 2px 22px 2px 4px;
+}
+.lyteCalDateSpan {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+}
+.lyteDateRPTempSelected .lyteCalDateSpan {
+  color: var(--zcat-datePicker-text-active);
+  position: relative;
+  z-index: 5;
+}
+.lyteDateRPFirstDateSelected .lyteCalDateSpan{
+  color: var(--zcat-datePicker-text-selected);
+  position: relative;
+  z-index: 5;
+}
+.lyteCalToday {
+  background: var(--zcat-datePicker-bg-default);
+  color: var(--zcat-datePicker-text-default);
+  border: none;
+}
+.lyteCalendarPopup lyte-dropdown lyte-drop-button:hover,
+.lyteCalendarPopup .lyteDummyEventContainer:focus lyte-drop-button,
+.lyteCalendarPopup lyte-dropdown lyte-drop-button.lyteDropButtonDown,
+.lyteCalendarPopup .lyteDummyEventContainer:focus lyte-drop-button:hover {
+  color: var(--zcat-inputField-text-active);
+  border: 1px solid var(--zcat-inputField-border-hover) !important;
+  padding: 2px 22px 2px 4px;
+}
+.lyteDateRPFirstDateSelected,
+.lyteDateRPFirstDateSelected::before,
+.lyteDateRPTempFirstDateSelected::before,.lyteDateRPTempFirstDateSelected{
+  background: var(--zcat-datePicker-number-bg-selected);
+  border-radius: 50%;
+  z-index: 1;
+}
+.lyteDateRPTempFirstDateSelected .lyteCalDateSpan,
+.lyteDateRPTempLastDateSelected .lyteCalDateSpan {
+  color: var(--zcat-datePicker-text-selected) !important;
+  position: relative;
+  z-index: 5;
+}
+.lyteDateRPLastDateSelected,
+.lyteDateRPLastDateSelected::before,
+.lyteDateRPTempLastDateSelected::before,.lyteDateRPLastDateSelected.lyteCalTableCell,.lyteDateRPTempLastDateSelected{
+  background: var(--zcat-datePicker-number-bg-selected) !important;
+  border-radius: 50% !important;
+}
+.lyteDateRPFirstDateSelected,
+.lyteDateRPFirstDateSelected:hover,
+.lyteDateRPLastDateSelected,
+.lyteDateRPLastDateSelected:hover {
+  border-color: none !important;
+  border-radius: 0;
+}
+.lyteDateRPFirstDateSelected,.lyteDateRPLastDateSelected,.lyteDateRPLastDateSelected:hover{
+  border-radius: 50% !important;
+}
+.lyteDateRPFirstDateSelected::after,.lyteDateRPTempFirstDateSelected::after,.lyteCalTableCell.lyteCalToday.lyteDateRPTempSelected::after{
+  left: 50%;
+  top: 0;
+  height: 30px;
+}
+.lyteCalTableCell.lyteCalToday.lyteDateRPTempSelected::after{
+  left: 100%
+}
+.lyteDateRPTempFirstDateSelected::after, 
+.lyteDateRPFirstDateSelected::after, 
+.lyteDateRPMonthStartDate::after, 
+.lyteDateRPTempSelected::after{
+  height: 30px;
+  width: 38px;
+}
+.lyteDateRPTempSelected,
+.lyteDateRPTempFirstDateSelected::after,
+.lyteDateRPFirstDateSelected::after,
+.lyteDateRPMonthStartDate::after,
+.lyteDateRPTempSelected::after,
+.lyteCalTableCell:hover,
+.lyteCalToday:hover {
+  background: var(--zcat-datePicker-number-bg-active);
+}
+.lyteDateRPMonthStartDate,
+.lyteDateRPMonthEndDate,
+.lyteDateRPTempSelected,.lyteDateRPFirstDateSelected::after,.lyteDateRangePickerRow .lyteDateRPTempSelected,.lyteDateRPTempSelected::after{
+  color: var(--zcat-datePicker-text-active) !important;
+  background: var(--zcat-datePicker-number-bg-active);
+}
+.lyteCalNav,
+.lyteCalNav:hover {
+  border: none;
+}
+.lyteCalDisableNav,.lyteDateRPLeftNav[aria-disabled="true"],.lyteDateRPRightNav[aria-disabled="true"]{
+  opacity: 1;
+  cursor: not-allowed;
+}
+.lyteCaldLft::before,
+.lyteCaldRgt::before{
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='10' viewBox='0 0 6 10' fill='none'%3E%3Cpath d='M1.25 1.5L4.75 5L1.25 8.5' stroke='%23101F3E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  width: 6px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) rotate(180deg);
+  z-index: 2;
+  opacity: 1;
+}
+.lyteCaldRgt::before{
+  transform: translate(-50%,-50%);
+}
+
+/* Default (light) mode */
+html[data-user-color-scheme="dark"] .lyteCaldLft::before,
+html[data-user-color-scheme="dark"] .lyteCaldRgt::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='10' viewBox='0 0 6 10' fill='none'%3E%3Cpath d='M1.25 1.5L4.75 5L1.25 8.5' stroke='%23EEEEEE' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Disabled nav (light mode) */
+.lyteCalDisableNav.lyteCaldLft::before,
+.lyteDateRPLeftNav[aria-disabled="true"] .lyteCaldLft::before,
+.lyteCalDisableNav.lyteCaldRgt::before,
+.lyteDateRPRightNav[aria-disabled="true"] .lyteCaldRgt::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='10' viewBox='0 0 6 10' fill='none'%3E%3Cpath d='M1.25 1.5L4.75 5L1.25 8.5' stroke='%23A6B1C9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Disabled nav (dark mode) */
+html[data-user-color-scheme="dark"] .lyteCalDisableNav.lyteCaldLft::before,
+html[data-user-color-scheme="dark"] .lyteCalDisableNav.lyteCaldRgt::before,
+html[data-user-color-scheme="dark"] .lyteDateRPLeftNav[aria-disabled="true"] .lyteCaldLft::before,
+html[data-user-color-scheme="dark"] .lyteDateRPRightNav[aria-disabled="true"] .lyteCaldRgt::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='10' viewBox='0 0 6 10' fill='none'%3E%3Cpath d='M1.25 1.5L4.75 5L1.25 8.5' stroke='%23666666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.lyteCaldLft::after,.lyteCaldRgt::after{
+  content: '';
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50% , -50%);
+  z-index: 1;
+}
+.lyteCalNav:hover.lyteCaldLft::after,.lyteCalNav:hover.lyteCaldRgt::after{
+  cursor: pointer;
+  background-color: var(--zcat-btn-grey-bg-hover);
+}
+.lyteCalTableCellHeader {
+  font: var(--zcat-font-regular) var(--zcat-font-10-12) var(--zcat-font-family-primary);
+  color: var(--zcat-datePicker-text-days);
+}
+.lyteCalTableCell {
+  color: var(--zcat-datePicker-text-default);
+}
+.lyteCalTableCell.lyteCalDisabled{
+  color: var(--zcat-datePicker-text-disabled);
+  opacity: 1;
+}
+
+.lyteCalTableCell.lyteCalToday {
+  position: relative;
+  /* background: var(--zcat-datePicker-number-bg-active); */
+  color: var(--zcat-datePicker-text-active);
+  border: none;
+}
+.lyteDateRPFirstDateSelected.lyteCalTableCell.lyteCalToday::before,.lyteDateRPLastDateSelected.lyteCalTableCell.lyteCalToday::before{
+  content: '';
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: var(--zcat-datePicker-text-active);
+  border-radius: 50%;
+}
+.lyteDateRPLastDateSelected.lyteCalTableCell.lyteCalToday .lyteCalDateSpan,.lyteDateRPFirstDateSelected.lyteCalTableCell.lyteCalToday .lyteCalDateSpan{
+  position: relative;
+  z-index: 2;
+}
+/* .lyteCalToday.lyteCalTableCell.lyteDateRPTempSelected::before,
+.lyteCalToday.lyteCalTableCell.lyteDateRPTempSelected::before,
+.lyteCalTableCell.lyteCalToday.lyteDateRPFirstDateSelected::before,
+.lyteCalTableCell.lyteCalToday.lyteDateRPLastDateSelected::before,
+.lyteCalTableCell.lyteCalToday.lyteDateRPTempFirstDateSelected::before,
+.lyteCalTableCell.lyteCalToday.lyteDateRPTempLastDateSelected::before {
+  display: none;
+} */
+.lyteCalToday.lyteCalTableCell.lyteDateRPTempSelected {
+  background: var(--zcat-datePicker-number-bg-active);
+  border: none;
+  z-index: 5;
+}
+.lyteDateRPTempFirstDateSelected,
+.lyteDateRPTempLastDateSelected,
+.lyteDateRPFirstDateSelected,
+.lyteDateRPLastDateSelected {
+  color: var(--zcat-datePicker-text-selected) !important;
+}
+.lyteDateRPTempFirstDateSelected,
+.lyteDateRPFirstDateSelected,
+.lyteDateRPTempSelected.lyteDateRPTempFirstDateSelected,
+.lyteDateRPTempSelected.lyteDateRPTempFirstDateSelected:hover,
+.lyteDateRPTempFirstDateSelected:hover,
+.lyteDateRPFirstDateSelected:hover,.lyteDateRPFirstDateSelected.lyteCalTableCell{
+  background-color: var(--zcat-datePicker-number-bg-active) !important;
+  border: none !important;
+  border-radius: 50% !important;
+}
+.lyteDateRPFirstDateSelected,.lyteDateRPFirstDateSelected.lyteCalTableCell{
+  border-radius: 50% !important;
+}
+.lyteDateRPTempLastDateSelected,
+.lyteDateRPLastDateSelected,
+.lyteDateRPTempSelected.lyteDateRPTempLastDateSelected,
+.lyteDateRPTempSelected.lyteDateRPTempLastDateSelected:hover,
+.lyteDateRPTempLastDateSelected:hover {
+  border-radius: 50% !important;
+}
+.lyteCalToday.lyteDateRPTempFirstDateSelected,
+.lyteCalToday.lyteDateRPTempLastDateSelected,
+.lyteCalToday.lyteDateRPTempFirstDateSelected:hover,
+.lyteCalToday.lyteDateRPTempLastDateSelected:hover,
+.lyteDateRPTempFirstDateSelected,
+.lyteDateRPTempFirstDateSelected:hover,
+.lyteDateRPTempLastDateSelected,
+.lyteDateRPTempLastDateSelected:hover {
+  background-color: var(--zcat-datePicker-number-bg-active) !important;
+  border-color: none !important;
+  color: var(--zcat-datePicker-text-selected) !important;
+}
+.lyteDateRPTempLastDateSelected.lyteDateRPTempFirstDateSelected::after{
+  display: none;
+}
+.lyteDateRPMonthEndDate:first-of-type {
+  border-radius: 50%;
+}
+
+.dRPCalendar2 .lyteCalTableContainer {
+  border: none;
+}
+.lyteCalTableCell.lyteDateRPTempLastDateSelected:hover,
+.lyteDateRPMonthEndDate,
+.lyteDateRPTempSelected:last-of-type,
+.lyteCalTableCell.lyteDateRPTempSelected:last-of-type:hover {
+  border-radius: 0 50% 50% 0;
+}
+.lyteDateRPMonthStartDate{
+  border-radius: 50% 0 0 50%;
+}
+.lyteCalDisabled.lyteCalTableCell.lyteCalSel,
+.lyteCalTableCell.lyteCalSel,
+.lyteCalTableCell.lyteCalSel:hover {
+  background: var(--zcat-datePicker-number-bg-active);
+  color: var(--zcat-datePicker-text-selected);
+  border: none;
+  /* border-radius: 3px; */
+}
+/* .lyteCalTableCell.lyteCalSel:hover {
+  background: var(--zcat-color-white);
+  color: var(--zcat-color-dark1);
+  border: none;
+  border-radius: 4px;
+} */
+.lyteCalendarNavigator {
+  justify-content: space-between;
+  padding: 14px 14px 16px;
+  gap: 14px;
+}
+.lyteCalNav.lyteCaldLft {
+  order: 1;
+}
+.lyteCalNav.lyteCaldRgt {
+  order: 3;
+  margin: 0;
+}
+.lyteCalsCalMon {
+  display: flex;
+  gap: 14px;
+  flex-grow: unset;
+  order: 2;
+  width: calc(100% - 60px);
+}
+.lyteCalMonthDD,.lyteCalYearDD{
+  max-width: 100%;
+  width: 50%;
+}
+.lyteCalendarPopup lyte-dropdown lyte-drop-button,
+.lyteCalendarPopup lyte-dropdown lyte-drop-button:hover,
+.lyteCalendarPopup .lyteDummyEventContainer:focus lyte-drop-button,
+.lyteCalendarPopup lyte-dropdown lyte-drop-button.lyteDropButtonDown,
+.lyteCalendarPopup .lyteDummyEventContainer:focus lyte-drop-button:hover {
+  min-height: 24px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+  padding: 2px 22px 2px 4px;
+  border-radius: 4px;
+}
+.lyteCalendarPopup lyte-dropdown lyte-icon.dropdown{
+  top: 50%;
+  height: 12px;
+  width: 12px;
+}
+html[data-user-color-scheme="dark"] .lyteCalendarPopup lyte-dropdown lyte-icon.dropdown{
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.date-input-field .lyteField {
+  position: relative;
+}
+.date-input-field .lyteField::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z' stroke='%237988a8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+}
+html[data-user-color-scheme="dark"] .date-input-field .lyteField::after{
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z' stroke='%23888888' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.date-input-field .lyteField::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 6px 6px 0;
+  /* background-color: var(--zcat-color-grey6); */
+}
+.zcat-calendar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--zcat-datePicker-border-line);
+}
+
+.lyteInputBox .lyteInputCalendarIcon {
+  position: absolute;
+  right: 0;
+  top: calc(50%);
+  transform: translateY(-50%);
+  width: 100%;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background-color: transparent;
+  cursor: pointer;
+  -webkit-mask-image: none;
+}
+.lyteInputBox .lyteInputCalendarIcon::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z' stroke='%237988a8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 10px;
+  background-color: none;
+  border-radius: 0 5px 5px 0;
+  width: 34px;
+  height: 34px;
+}
+html[data-user-color-scheme="dark"] .lyteInputBox .lyteInputCalendarIcon::before{
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z' stroke='%23888888' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.lyteInputCalendar {
+  border-radius: 6px;
+  border: 1px solid var(--zcat-datePicker-border-default);
+  box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+  overflow: hidden;
+}
+.calendarPopover lyte-popover-freeze {
+  background-color: transparent !important;
+  opacity: 1 !important;
+}
+.lyteCalCurrentDate {
+  display: none;
+}
+
+/* Time Picker Css */
+.lyteTimePickerField {
+  border: 1px solid var(--zcat-inputField-border-default);
+  background: var(--zcat-inputField-bg-default);
+  border-radius: 4px;
+  position: relative;
+  width: 200px;
+}
+lyte-time-picker:hover .lyteTimePickerField,
+.lyteTimePickerField:hover {
+  border-color: var(--zcat-inputField-border-hover);
+}
+lyte-time-picker.lyteTimePickerInputFocused .lyteTimePickerField,
+lyte-time-picker.lyteTimePickerDropdownOpened .lyteTimePickerField,
+lyte-time-picker.lyteTimePickerInputFocused:hover .lyteTimePickerField,
+lyte-time-picker.lyteTimePickerDropdownOpened:hover .lyteTimePickerField,
+.lyteTimePickerInputFocused .lyteTimePickerField,
+.lyteTimePickerDropdownOpened .lyteTimePickerField,
+.lyteTimePickerInputFocused .lyteTimePickerField:focus-within,
+.lyteTimePickerDropdownOpened .lyteTimePickerField:focus-within {
+  border-color: var(--zcat-inputField-border-active);
+}
+.lyteTimePickerField:focus-within,.lyteTimePickerField:hover:focus-within{
+  border-color: var(--zcat-inputField-border-active);
+}
+.lyteTimePickerDropdownValues{
+  gap: 0 16px;
+  margin: 14px 14px 0;
+}
+.lyteTimePickerInput{
+  padding: 8px;
+  height: 36px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  border-radius: 6px;
+  color: var(--zcat-datePicker-text-default) !important;
+  background: var(--zcat-datePicker-bg-default);
+}
+
+.lyteTimePickerInput:hover{
+  background: var(--zcat-inputField-bg-hover);
+}
+
+.lyteTimePickerDropdownValues li {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin: 0 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-datePicker-text-default);
+  background: var(--zcat-datePicker-bg-default);
+}
+
+.lyteTimePickerDropdownValues li:hover{
+  cursor: pointer;
+  background-color: var(--zcat-datePicker-number-bg-hover);
+}
+
+.lyteTimePickerInput::placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+.lyteTimePickerInput:-ms-input-placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+.lyteTimePickerInput::-ms-input-placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+.lytetimePickerButton {
+  border-radius: 0px 4px 4px 0px;
+  /* background-color: var(--zcat-datePicker-bg-secondary);
+  position: relative;
+  width: 24px;
+  height: 24px; */
+  background-color: transparent;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  height: 100%;
+  position: absolute;
+}
+.lytetimePickerButton::after {
+  content: '';
+  display: inline-block;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%237988A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+  background-repeat: no-repeat;
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+html[data-user-color-scheme="dark"] .lytetimePickerButton::after{
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+}
+/* .lyteTimePickerField:hover .lytetimePickerButton::after{
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%237DA2FB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+} */
+.lyteTimePickerBtnIcon{
+  display: none;
+}
+/* .lyteTimePickerField:hover .lytetimePickerButton::after {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23101f3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+} */
+
+/* .lyteTimePickerDropdownOpened .lyteTimePickerField .lytetimePickerButton::after,
+.lyteTimePickerDropdownOpened
+  .lyteTimePickerField:hover
+  .lytetimePickerButton::after,
+.lyteTimePickerInputFocused .lyteTimePickerField .lytetimePickerButton::after,
+.lyteTimePickerInputFocused
+  .lyteTimePickerField:hover
+  .lytetimePickerButton::after {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%232a65f0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+} */
+.lytetimePickerButton svg {
+  display: none;
+}
+lyte-time-picker-dropdown {
+  background: var(--zcat-datePicker-bg-default);
+  border: 1px solid var(--zcat-datePicker-border-default);
+  border-radius: 6px;
+  box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+  transform: translateY(1px);
+}
+lyte-time-picker-dropdown.lyteDropdownTopSide{
+  transform: translateY(-1px);
+}
+.lyteTimePickerUl {
+  padding: 0;
+  border: 0;
+  width: 32px;
+}
+.lyteTimePickerUl:last-of-type{
+  width: 26px;
+  overflow-y: hidden;
+}
+.lyteTimePickerDropdownValues li.lyteTimePickerItemSelected {
+  color: var(--zcat-datePicker-text-selected) !important;
+  background-color: var(--zcat-datePicker-number-bg-selected);
+}
+.lyteTimePickerItemSelected {
+  background-color: var(--zcat-datePicker-number-bg-selected);
+}
+.lyteTimePickerDropdownButton {
+  padding: 10px 14px;
+  border-top: 1px solid var(--zcat-datePicker-border-line);
+}
+.lyteTimePickerDropdownButton lyte-button .lyte-button{
+  padding: 0 6px;
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-sm) var(--zcat-font-family-primary);
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  background: var(--zcat-btn-fill-bg-primary-default);
+  color: var(--zcat-btn-fill-text-default);
+  border: none;
+}
+.lyteTimePickerDropdownButton lyte-button .lyte-button.lyteDefaultBtn:hover{
+  background: var(--zcat-btn-fill-bg-primary-hover);
+  border: none;
+}
+.zcat-timepicker-splitter {
+  background-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.91683 7H11.0835" stroke="%23A6B1C9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.00016 11.0846L11.0835 7.0013L7.00016 2.91797" stroke="%23A6B1C9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 14px;
+  height: 14px;
+}
+.lyteCalTableCell.lyteCalSel.lyteCalToday, .lyteCalTableCell.lyteCalToday.lyteCalSel:hover{
+  color: var(--zcat-datePicker-text-selected) !important;
+}
+/* .lyteCalTableCell.lyteCalToday{
+  color: unset !important;
+ }
+ .lyteCalTableCell.lyteCalToday::before{
+  display: none !important;
+ }  */
+
+ .calendarPopover .lytePopover{
+  background: var(--zcat-datePicker-bg-default);
+  border-color: var(--zcat-datePicker-border-default);
+ }
+
+ lyte-drop-button.textDrpdwn:hover{
+  background-color: var(--zcat-inputField-bg-hover);
+  border-color: var(--zcat-inputField-border-hover)!important
+ }
+
+ .calendarPopover .zcat-color-dark1{
+  color: var(--zcat-datePicker-text-headings) !important;
+ }
+
+ .lyteCalTableContainer{
+  border-spacing: 20px 16px;
+  padding: 0 14px;
+ }
+
+.lyteInputCalendar.lyteInputCalendarUp {
+  transform: translateY(-1px);
+}
+.lyteInputCalendar.lyteInputCalendarDown {
+  transform: translateY(1px);
+}
+
+.lyteSm.lyteTimePickerInput{
+  padding: 8px 6px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  height: 28px;
+}
+.lyteExsm.lyteTimePickerInput{
+  padding: 8px 4px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+  height: 24px;
+  font-size: 12px;
+}
+
+.lyteDateRPLeftNav,.lyteDateRPRightNav{
+  top: 20px;
+  width: 20px;
+  height: 20px;
+}
+.lyteDateRangePickerCol1 .lyteDateRPMonthHeader,.lyteDateRangePickerCol2 .lyteDateRPMonthHeader{
+  padding: 18px 40px 16px 54px;
+  text-align: unset;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lyteDateRangePickerCol2 .lyteDateRPMonthHeader{
+  padding: 18px 54px 16px 40px;
+}
+
+.monthDD,.yearDD{
+  max-width: 100%;
+  width: 50%;
+  margin: 0;
+}
+
+.lytePopRightToOrig,.lytePopLeftToOrig{
+  transform: translateX(3px);
+}
+.lytePopBottomToOrig,.lytePopTopToOrig{
+  transform: translateY(3px);
+}
+
+.lyteDateRPTempSelected:last-of-type::after, .lyteDateRPFirstDateSelected:last-of-type::after, .lyteDateRPTempFirstDateSelected:last-of-type::after, .lyteDateRPTempLastDateSelected::after, .lyteDateRPLastDateSelected::after{
+  display: none;
+}
+
+.lyteDateRPTempSelected.lyteDateRPTempLastDateSelected, .lyteDateRPTempLastDateSelected.lyteCalTableCell, .lyteDateRPLastDateSelected.lyteCalTableCell, .lyteDateRPTempLastDateSelected:hover, .lyteDateRPLastDateSelected:hover{
+  z-index: 5;
+}
+
+.lyteDateRPFirstDateSelected:has(+ .lyteDateRPLastDateSelected)::after,.lyteDateRPTempFirstDateSelected:has(+ .lyteDateRPTempLastDateSelected)::after{
+  width: 50px;
+}
+
+/* === Global base styles from reference css/zcat-datepicker.css === */
+.lyteDateRangePickerRow {
+  border: none;
+  box-shadow: none;
+  background: var(--zcat-datePicker-bg-default);
+}
+.lyteCalendarPopup {
+  background: var(--zcat-datePicker-bg-default);
+  border-radius: 1px;
+  border: none;
+  box-shadow: none;
+}
+.lyteCalendarPopup lyte-dropdown lyte-drop-button {
+  font-size: 12px;
+  color: var(--zcat-inputField-text-active);
+  border: 1px solid var(--zcat-inputField-border-default);
+  padding: 2px 22px 2px 4px;
+}
+.lyteCalDateSpan {
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+}
+.lyteDateRPTempSelected .lyteCalDateSpan {
+  color: var(--zcat-datePicker-text-active);
+  position: relative;
+  z-index: 5;
+}
+.lyteDateRPFirstDateSelected .lyteCalDateSpan{
+  color: var(--zcat-datePicker-text-selected);
+  position: relative;
+  z-index: 5;
+}
+.lyteCalToday {
+  background: var(--zcat-datePicker-bg-default);
+  color: var(--zcat-datePicker-text-default);
+  border: none;
+}
+.lyteCalendarPopup lyte-dropdown lyte-drop-button:hover,
+.lyteCalendarPopup .lyteDummyEventContainer:focus lyte-drop-button,
+.lyteCalendarPopup lyte-dropdown lyte-drop-button.lyteDropButtonDown,
+.lyteCalendarPopup .lyteDummyEventContainer:focus lyte-drop-button:hover {
+  color: var(--zcat-inputField-text-active);
+  border: 1px solid var(--zcat-inputField-border-hover) !important;
+  padding: 2px 22px 2px 4px;
+}
+.lyteDateRPFirstDateSelected,
+.lyteDateRPFirstDateSelected::before,
+.lyteDateRPTempFirstDateSelected::before,.lyteDateRPTempFirstDateSelected{
+  background: var(--zcat-datePicker-number-bg-selected);
+  border-radius: 50%;
+  z-index: 1;
+}
+.lyteDateRPTempFirstDateSelected .lyteCalDateSpan,
+.lyteDateRPTempLastDateSelected .lyteCalDateSpan {
+  color: var(--zcat-datePicker-text-selected) !important;
+  position: relative;
+  z-index: 5;
+}
+.lyteDateRPLastDateSelected,
+.lyteDateRPLastDateSelected::before,
+.lyteDateRPTempLastDateSelected::before,.lyteDateRPLastDateSelected.lyteCalTableCell,.lyteDateRPTempLastDateSelected{
+  background: var(--zcat-datePicker-number-bg-selected) !important;
+  border-radius: 50% !important;
+}
+.lyteDateRPFirstDateSelected,
+.lyteDateRPFirstDateSelected:hover,
+.lyteDateRPLastDateSelected,
+.lyteDateRPLastDateSelected:hover {
+  border-color: none !important;
+  border-radius: 0;
+}
+.lyteDateRPFirstDateSelected,.lyteDateRPLastDateSelected,.lyteDateRPLastDateSelected:hover{
+  border-radius: 50% !important;
+}
+.lyteDateRPFirstDateSelected::after,.lyteDateRPTempFirstDateSelected::after,.lyteCalTableCell.lyteCalToday.lyteDateRPTempSelected::after{
+  left: 50%;
+  top: 0;
+  height: 30px;
+}
+.lyteCalTableCell.lyteCalToday.lyteDateRPTempSelected::after{
+  left: 100%
+}
+.lyteDateRPTempFirstDateSelected::after, 
+.lyteDateRPFirstDateSelected::after, 
+.lyteDateRPMonthStartDate::after, 
+.lyteDateRPTempSelected::after{
+  height: 30px;
+  width: 38px;
+}
+.lyteDateRPTempSelected,
+.lyteDateRPTempFirstDateSelected::after,
+.lyteDateRPFirstDateSelected::after,
+.lyteDateRPMonthStartDate::after,
+.lyteDateRPTempSelected::after,
+.lyteCalTableCell:hover,
+.lyteCalToday:hover {
+  background: var(--zcat-datePicker-number-bg-active);
+}
+.lyteDateRPMonthStartDate,
+.lyteDateRPMonthEndDate,
+.lyteDateRPTempSelected,.lyteDateRPFirstDateSelected::after,.lyteDateRangePickerRow .lyteDateRPTempSelected,.lyteDateRPTempSelected::after{
+  color: var(--zcat-datePicker-text-active) !important;
+  background: var(--zcat-datePicker-number-bg-active);
+}
+.lyteCalNav,
+.lyteCalNav:hover {
+  border: none;
+}
+.lyteCalDisableNav,.lyteDateRPLeftNav[aria-disabled="true"],.lyteDateRPRightNav[aria-disabled="true"]{
+  opacity: 1;
+  cursor: not-allowed;
+}
+.lyteCaldLft::before,
+.lyteCaldRgt::before{
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='10' viewBox='0 0 6 10' fill='none'%3E%3Cpath d='M1.25 1.5L4.75 5L1.25 8.5' stroke='%23101F3E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  width: 6px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) rotate(180deg);
+  z-index: 2;
+  opacity: 1;
+}
+.lyteCaldRgt::before{
+  transform: translate(-50%,-50%);
+}
+
+/* Default (light) mode */
+html[data-user-color-scheme="dark"] .lyteCaldLft::before,
+html[data-user-color-scheme="dark"] .lyteCaldRgt::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='10' viewBox='0 0 6 10' fill='none'%3E%3Cpath d='M1.25 1.5L4.75 5L1.25 8.5' stroke='%23EEEEEE' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Disabled nav (light mode) */
+.lyteCalDisableNav.lyteCaldLft::before,
+.lyteDateRPLeftNav[aria-disabled="true"] .lyteCaldLft::before,
+.lyteCalDisableNav.lyteCaldRgt::before,
+.lyteDateRPRightNav[aria-disabled="true"] .lyteCaldRgt::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='10' viewBox='0 0 6 10' fill='none'%3E%3Cpath d='M1.25 1.5L4.75 5L1.25 8.5' stroke='%23A6B1C9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Disabled nav (dark mode) */
+html[data-user-color-scheme="dark"] .lyteCalDisableNav.lyteCaldLft::before,
+html[data-user-color-scheme="dark"] .lyteCalDisableNav.lyteCaldRgt::before,
+html[data-user-color-scheme="dark"] .lyteDateRPLeftNav[aria-disabled="true"] .lyteCaldLft::before,
+html[data-user-color-scheme="dark"] .lyteDateRPRightNav[aria-disabled="true"] .lyteCaldRgt::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='10' viewBox='0 0 6 10' fill='none'%3E%3Cpath d='M1.25 1.5L4.75 5L1.25 8.5' stroke='%23666666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.lyteCaldLft::after,.lyteCaldRgt::after{
+  content: '';
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50% , -50%);
+  z-index: 1;
+}
+.lyteCalNav:hover.lyteCaldLft::after,.lyteCalNav:hover.lyteCaldRgt::after{
+  cursor: pointer;
+  background-color: var(--zcat-btn-grey-bg-hover);
+}
+.lyteCalTableCellHeader {
+  font: var(--zcat-font-regular) var(--zcat-font-10-12) var(--zcat-font-family-primary);
+  color: var(--zcat-datePicker-text-days);
+}
+.lyteCalTableCell {
+  color: var(--zcat-datePicker-text-default);
+}
+.lyteCalTableCell.lyteCalDisabled{
+  color: var(--zcat-datePicker-text-disabled);
+  opacity: 1;
+}
+
+.lyteCalTableCell.lyteCalToday {
+  position: relative;
+  /* background: var(--zcat-datePicker-number-bg-active); */
+  color: var(--zcat-datePicker-text-active);
+  border: none;
+}
+.lyteDateRPFirstDateSelected.lyteCalTableCell.lyteCalToday::before,.lyteDateRPLastDateSelected.lyteCalTableCell.lyteCalToday::before{
+  content: '';
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: var(--zcat-datePicker-text-active);
+  border-radius: 50%;
+}
+.lyteDateRPLastDateSelected.lyteCalTableCell.lyteCalToday .lyteCalDateSpan,.lyteDateRPFirstDateSelected.lyteCalTableCell.lyteCalToday .lyteCalDateSpan{
+  position: relative;
+  z-index: 2;
+}
+/* .lyteCalToday.lyteCalTableCell.lyteDateRPTempSelected::before,
+.lyteCalToday.lyteCalTableCell.lyteDateRPTempSelected::before,
+.lyteCalTableCell.lyteCalToday.lyteDateRPFirstDateSelected::before,
+.lyteCalTableCell.lyteCalToday.lyteDateRPLastDateSelected::before,
+.lyteCalTableCell.lyteCalToday.lyteDateRPTempFirstDateSelected::before,
+.lyteCalTableCell.lyteCalToday.lyteDateRPTempLastDateSelected::before {
+  display: none;
+} */
+.lyteCalToday.lyteCalTableCell.lyteDateRPTempSelected {
+  background: var(--zcat-datePicker-number-bg-active);
+  border: none;
+  z-index: 5;
+}
+.lyteDateRPTempFirstDateSelected,
+.lyteDateRPTempLastDateSelected,
+.lyteDateRPFirstDateSelected,
+.lyteDateRPLastDateSelected {
+  color: var(--zcat-datePicker-text-selected) !important;
+}
+.lyteDateRPTempFirstDateSelected,
+.lyteDateRPFirstDateSelected,
+.lyteDateRPTempSelected.lyteDateRPTempFirstDateSelected,
+.lyteDateRPTempSelected.lyteDateRPTempFirstDateSelected:hover,
+.lyteDateRPTempFirstDateSelected:hover,
+.lyteDateRPFirstDateSelected:hover,.lyteDateRPFirstDateSelected.lyteCalTableCell{
+  background-color: var(--zcat-datePicker-number-bg-active) !important;
+  border: none !important;
+  border-radius: 50% !important;
+}
+.lyteDateRPFirstDateSelected,.lyteDateRPFirstDateSelected.lyteCalTableCell{
+  border-radius: 50% !important;
+}
+.lyteDateRPTempLastDateSelected,
+.lyteDateRPLastDateSelected,
+.lyteDateRPTempSelected.lyteDateRPTempLastDateSelected,
+.lyteDateRPTempSelected.lyteDateRPTempLastDateSelected:hover,
+.lyteDateRPTempLastDateSelected:hover {
+  border-radius: 50% !important;
+}
+.lyteCalToday.lyteDateRPTempFirstDateSelected,
+.lyteCalToday.lyteDateRPTempLastDateSelected,
+.lyteCalToday.lyteDateRPTempFirstDateSelected:hover,
+.lyteCalToday.lyteDateRPTempLastDateSelected:hover,
+.lyteDateRPTempFirstDateSelected,
+.lyteDateRPTempFirstDateSelected:hover,
+.lyteDateRPTempLastDateSelected,
+.lyteDateRPTempLastDateSelected:hover {
+  background-color: var(--zcat-datePicker-number-bg-active) !important;
+  border-color: none !important;
+  color: var(--zcat-datePicker-text-selected) !important;
+}
+.lyteDateRPTempLastDateSelected.lyteDateRPTempFirstDateSelected::after{
+  display: none;
+}
+.lyteDateRPMonthEndDate:first-of-type {
+  border-radius: 50%;
+}
+
+.dRPCalendar2 .lyteCalTableContainer {
+  border: none;
+}
+.lyteCalTableCell.lyteDateRPTempLastDateSelected:hover,
+.lyteDateRPMonthEndDate,
+.lyteDateRPTempSelected:last-of-type,
+.lyteCalTableCell.lyteDateRPTempSelected:last-of-type:hover {
+  border-radius: 0 50% 50% 0;
+}
+.lyteDateRPMonthStartDate{
+  border-radius: 50% 0 0 50%;
+}
+.lyteCalDisabled.lyteCalTableCell.lyteCalSel,
+.lyteCalTableCell.lyteCalSel,
+.lyteCalTableCell.lyteCalSel:hover {
+  background: var(--zcat-datePicker-number-bg-active);
+  color: var(--zcat-datePicker-text-selected);
+  border: none;
+  /* border-radius: 3px; */
+}
+/* .lyteCalTableCell.lyteCalSel:hover {
+  background: var(--zcat-color-white);
+  color: var(--zcat-color-dark1);
+  border: none;
+  border-radius: 4px;
+} */
+.lyteCalendarNavigator {
+  justify-content: space-between;
+  padding: 14px 14px 16px;
+  gap: 14px;
+}
+.lyteCalNav.lyteCaldLft {
+  order: 1;
+}
+.lyteCalNav.lyteCaldRgt {
+  order: 3;
+  margin: 0;
+}
+.lyteCalsCalMon {
+  display: flex;
+  gap: 14px;
+  flex-grow: unset;
+  order: 2;
+  width: calc(100% - 60px);
+}
+.lyteCalMonthDD,.lyteCalYearDD{
+  max-width: 100%;
+  width: 50%;
+}
+.lyteCalendarPopup lyte-dropdown lyte-drop-button,
+.lyteCalendarPopup lyte-dropdown lyte-drop-button:hover,
+.lyteCalendarPopup .lyteDummyEventContainer:focus lyte-drop-button,
+.lyteCalendarPopup lyte-dropdown lyte-drop-button.lyteDropButtonDown,
+.lyteCalendarPopup .lyteDummyEventContainer:focus lyte-drop-button:hover {
+  min-height: 24px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-exsm) var(--zcat-font-family-primary);
+  padding: 2px 22px 2px 4px;
+  border-radius: 4px;
+}
+.lyteCalendarPopup lyte-dropdown lyte-icon.dropdown{
+  top: 50%;
+  height: 12px;
+  width: 12px;
+}
+html[data-user-color-scheme="dark"] .lyteCalendarPopup lyte-dropdown lyte-icon.dropdown{
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%237988A8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.date-input-field .lyteField {
+  position: relative;
+}
+.date-input-field .lyteField::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z' stroke='%237988a8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+}
+html[data-user-color-scheme="dark"] .date-input-field .lyteField::after{
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z' stroke='%23888888' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.date-input-field .lyteField::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 6px 6px 0;
+  /* background-color: var(--zcat-color-grey6); */
+}
+.zcat-calendar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--zcat-datePicker-border-line);
+}
+
+.lyteInputBox .lyteInputCalendarIcon {
+  position: absolute;
+  right: 0;
+  top: calc(50%);
+  transform: translateY(-50%);
+  width: 100%;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background-color: transparent;
+  cursor: pointer;
+  -webkit-mask-image: none;
+}
+.lyteInputBox .lyteInputCalendarIcon::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z' stroke='%237988a8' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 10px;
+  background-color: none;
+  border-radius: 0 5px 5px 0;
+  width: 34px;
+  height: 34px;
+}
+html[data-user-color-scheme="dark"] .lyteInputBox .lyteInputCalendarIcon::before{
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 6.66668H2M10.6667 1.33334V4.00001M5.33333 1.33334V4.00001M5.2 14.6667H10.8C11.9201 14.6667 12.4802 14.6667 12.908 14.4487C13.2843 14.2569 13.5903 13.951 13.782 13.5747C14 13.1468 14 12.5868 14 11.4667V5.86668C14 4.74657 14 4.18652 13.782 3.7587C13.5903 3.38237 13.2843 3.07641 12.908 2.88466C12.4802 2.66668 11.9201 2.66668 10.8 2.66668H5.2C4.0799 2.66668 3.51984 2.66668 3.09202 2.88466C2.71569 3.07641 2.40973 3.38237 2.21799 3.7587C2 4.18652 2 4.74657 2 5.86668V11.4667C2 12.5868 2 13.1468 2.21799 13.5747C2.40973 13.951 2.71569 14.2569 3.09202 14.4487C3.51984 14.6667 4.0799 14.6667 5.2 14.6667Z' stroke='%23888888' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.lyteInputCalendar {
+  border-radius: 6px;
+  border: 1px solid var(--zcat-datePicker-border-default);
+  box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+  overflow: hidden;
+}
+.calendarPopover lyte-popover-freeze {
+  background-color: transparent !important;
+  opacity: 1 !important;
+}
+.lyteCalCurrentDate {
+  display: none;
+}
+
+/* Time Picker Css */
+.lyteTimePickerField {
+  border: 1px solid var(--zcat-inputField-border-default);
+  background: var(--zcat-inputField-bg-default);
+  border-radius: 4px;
+  position: relative;
+  width: 200px;
+}
+lyte-time-picker:hover .lyteTimePickerField,
+.lyteTimePickerField:hover {
+  border-color: var(--zcat-inputField-border-hover);
+}
+lyte-time-picker.lyteTimePickerInputFocused .lyteTimePickerField,
+lyte-time-picker.lyteTimePickerDropdownOpened .lyteTimePickerField,
+lyte-time-picker.lyteTimePickerInputFocused:hover .lyteTimePickerField,
+lyte-time-picker.lyteTimePickerDropdownOpened:hover .lyteTimePickerField,
+.lyteTimePickerInputFocused .lyteTimePickerField,
+.lyteTimePickerDropdownOpened .lyteTimePickerField,
+.lyteTimePickerInputFocused .lyteTimePickerField:focus-within,
+.lyteTimePickerDropdownOpened .lyteTimePickerField:focus-within {
+  border-color: var(--zcat-inputField-border-active);
+}
+.lyteTimePickerField:focus-within,.lyteTimePickerField:hover:focus-within{
+  border-color: var(--zcat-inputField-border-active);
+}
+.lyteTimePickerDropdownValues{
+  gap: 0 16px;
+  margin: 14px 14px 0;
+}
+.lyteTimePickerInput{
+  padding: 8px;
+  height: 36px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  border-radius: 6px;
+  color: var(--zcat-datePicker-text-default) !important;
+  background: var(--zcat-datePicker-bg-default);
+}
+
+.lyteTimePickerInput:hover{
+  background: var(--zcat-inputField-bg-hover);
+}
+
+.lyteTimePickerDropdownValues li {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin: 0 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: var(--zcat-font-12-16) var(--zcat-font-family-primary);
+  color: var(--zcat-datePicker-text-default);
+  background: var(--zcat-datePicker-bg-default);
+}
+
+.lyteTimePickerDropdownValues li:hover{
+  cursor: pointer;
+  background-color: var(--zcat-datePicker-number-bg-hover);
+}
+
+.lyteTimePickerInput::placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+.lyteTimePickerInput:-ms-input-placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+.lyteTimePickerInput::-ms-input-placeholder {
+  font-family: var(--zcat-font-family-primary);
+  color: var(--zcat-inputField-text-placeholder);
+}
+.lytetimePickerButton {
+  border-radius: 0px 4px 4px 0px;
+  /* background-color: var(--zcat-datePicker-bg-secondary);
+  position: relative;
+  width: 24px;
+  height: 24px; */
+  background-color: transparent;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  height: 100%;
+  position: absolute;
+}
+.lytetimePickerButton::after {
+  content: '';
+  display: inline-block;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%237988A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+  background-repeat: no-repeat;
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+html[data-user-color-scheme="dark"] .lytetimePickerButton::after{
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+}
+/* .lyteTimePickerField:hover .lytetimePickerButton::after{
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%237DA2FB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+} */
+.lyteTimePickerBtnIcon{
+  display: none;
+}
+/* .lyteTimePickerField:hover .lytetimePickerButton::after {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23101f3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+} */
+
+/* .lyteTimePickerDropdownOpened .lyteTimePickerField .lytetimePickerButton::after,
+.lyteTimePickerDropdownOpened
+  .lyteTimePickerField:hover
+  .lytetimePickerButton::after,
+.lyteTimePickerInputFocused .lyteTimePickerField .lytetimePickerButton::after,
+.lyteTimePickerInputFocused
+  .lyteTimePickerField:hover
+  .lytetimePickerButton::after {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%232a65f0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+} */
+.lytetimePickerButton svg {
+  display: none;
+}
+lyte-time-picker-dropdown {
+  background: var(--zcat-datePicker-bg-default);
+  border: 1px solid var(--zcat-datePicker-border-default);
+  border-radius: 6px;
+  box-shadow: 0px 4px 14px -4px var(--zcat-shadow-bg-default);
+  transform: translateY(1px);
+}
+lyte-time-picker-dropdown.lyteDropdownTopSide{
+  transform: translateY(-1px);
+}
+.lyteTimePickerUl {
+  padding: 0;
+  border: 0;
+  width: 32px;
+}
+.lyteTimePickerUl:last-of-type{
+  width: 26px;
+  overflow-y: hidden;
+}
+.lyteTimePickerDropdownValues li.lyteTimePickerItemSelected {
+  color: var(--zcat-datePicker-text-selected) !important;
+  background-color: var(--zcat-datePicker-number-bg-selected);
+}
+.lyteTimePickerItemSelected {
+  background-color: var(--zcat-datePicker-number-bg-selected);
+}
+.lyteTimePickerDropdownButton {
+  padding: 10px 14px;
+  border-top: 1px solid var(--zcat-datePicker-border-line);
+}
+.lyteTimePickerDropdownButton lyte-button .lyte-button{
+  padding: 0 6px;
+  font: var(--zcat-button-font-weight) var(--zcat-button-font-sm) var(--zcat-font-family-primary);
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  background: var(--zcat-btn-fill-bg-primary-default);
+  color: var(--zcat-btn-fill-text-default);
+  border: none;
+}
+.lyteTimePickerDropdownButton lyte-button .lyte-button.lyteDefaultBtn:hover{
+  background: var(--zcat-btn-fill-bg-primary-hover);
+  border: none;
+}
+.zcat-timepicker-splitter {
+  background-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.91683 7H11.0835" stroke="%23A6B1C9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.00016 11.0846L11.0835 7.0013L7.00016 2.91797" stroke="%23A6B1C9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  width: 14px;
+  height: 14px;
+}
+.lyteCalTableCell.lyteCalSel.lyteCalToday, .lyteCalTableCell.lyteCalToday.lyteCalSel:hover{
+  color: var(--zcat-datePicker-text-selected) !important;
+}
+/* .lyteCalTableCell.lyteCalToday{
+  color: unset !important;
+ }
+ .lyteCalTableCell.lyteCalToday::before{
+  display: none !important;
+ }  */
+
+ .calendarPopover .lytePopover{
+  background: var(--zcat-datePicker-bg-default);
+  border-color: var(--zcat-datePicker-border-default);
+ }
+
+ lyte-drop-button.textDrpdwn:hover{
+  background-color: var(--zcat-inputField-bg-hover);
+  border-color: var(--zcat-inputField-border-hover)!important
+ }
+
+ .calendarPopover .zcat-color-dark1{
+  color: var(--zcat-datePicker-text-headings) !important;
+ }
+
+ .lyteCalTableContainer{
+  border-spacing: 20px 16px;
+  padding: 0 14px;
+ }
+
+.lyteInputCalendar.lyteInputCalendarUp {
+  transform: translateY(-1px);
+}
+.lyteInputCalendar.lyteInputCalendarDown {
+  transform: translateY(1px);
+}
+
+.lyteSm.lyteTimePickerInput{
+  padding: 8px 6px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-default) var(--zcat-font-family-primary);
+  height: 28px;
+}
+.lyteExsm.lyteTimePickerInput{
+  padding: 8px 4px;
+  font: var(--zcat-input-text-font-weight) var(--zcat-input-text-font-small) var(--zcat-font-family-primary);
+  height: 24px;
+  font-size: 12px;
+}
+
+.lyteDateRPLeftNav,.lyteDateRPRightNav{
+  top: 20px;
+  width: 20px;
+  height: 20px;
+}
+.lyteDateRangePickerCol1 .lyteDateRPMonthHeader,.lyteDateRangePickerCol2 .lyteDateRPMonthHeader{
+  padding: 18px 40px 16px 54px;
+  text-align: unset;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lyteDateRangePickerCol2 .lyteDateRPMonthHeader{
+  padding: 18px 54px 16px 40px;
+}
+
+.monthDD,.yearDD{
+  max-width: 100%;
+  width: 50%;
+  margin: 0;
+}
+
+.lytePopRightToOrig,.lytePopLeftToOrig{
+  transform: translateX(3px);
+}
+.lytePopBottomToOrig,.lytePopTopToOrig{
+  transform: translateY(3px);
+}
+
+.lyteDateRPTempSelected:last-of-type::after, .lyteDateRPFirstDateSelected:last-of-type::after, .lyteDateRPTempFirstDateSelected:last-of-type::after, .lyteDateRPTempLastDateSelected::after, .lyteDateRPLastDateSelected::after{
+  display: none;
+}
+
+.lyteDateRPTempSelected.lyteDateRPTempLastDateSelected, .lyteDateRPTempLastDateSelected.lyteCalTableCell, .lyteDateRPLastDateSelected.lyteCalTableCell, .lyteDateRPTempLastDateSelected:hover, .lyteDateRPLastDateSelected:hover{
+  z-index: 5;
+}
+
+.lyteDateRPFirstDateSelected:has(+ .lyteDateRPLastDateSelected)::after,.lyteDateRPTempFirstDateSelected:has(+ .lyteDateRPTempLastDateSelected)::after{
+  width: 50px;
+}

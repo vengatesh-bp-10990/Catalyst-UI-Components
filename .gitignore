@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build output (inside app folders only — root dist files are the deployment)
+zcat-app/dist/
+build/.temp_cache/
+build/__cliCompiledFile/
+build/log.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+*.swp
+*.swo

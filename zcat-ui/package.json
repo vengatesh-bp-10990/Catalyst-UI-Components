@@ -1,0 +1,29 @@
+{
+  "name": "zcat-ui",
+  "version": "1.0.0",
+  "description": "Catalyst UI Components — reusable zcat-* components built on the Slyte/Lyte framework",
+  "scripts": {
+    "postinstall": "node build/runscript.js $INIT_CWD"
+  },
+  "main": "addon.js",
+  "lyte-addon": true,
+  "isV4": true,
+  "addons": [
+    "zcat-ui"
+  ],
+  "files": [
+    "addon.js",
+    "build/",
+    "components/"
+  ],
+  "dependencies": {
+    "semver": "7.3.4",
+    "inquirer": "7.3.3"
+  },
+  "peerDependencies": {
+    "@slyte/core": "^1.3.0-BETA7",
+    "@slyte/component": "*",
+    "@zoho/lyte-ui-component": "^4.6.4"
+  },
+  "license": "UNLICENSED"
+}

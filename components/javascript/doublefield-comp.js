@@ -11,10 +11,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DoublefieldComp": () => (/* binding */ DoublefieldComp)
 /* harmony export */ });
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _zcat_button_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-button.js */ 28020792);
-/* harmony import */ var _zcat_toggle_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-toggle.js */ 21046360);
-/* harmony import */ var _zcat_double_field_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zcat-double-field.js */ 87815276);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-icon.js */ 35554276);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_button_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-button.js */ 43360219);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_toggle_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-toggle.js */ 85465283);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_double_field_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-double-field.js */ 27502757);
 /* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
 /* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
 
@@ -265,29 +265,29 @@ DoublefieldComp._observedAttributes = [
 
 
 DoublefieldComp.register("doublefield-comp", {
-  hash: "DoublefieldComp_4",
+  hash: "DoublefieldComp_6",
   refHash: "C_zcat-app_app_0"
 });
 
 
 /***/ }),
 
-/***/ 87815276:
-/*!****************************************************!*\
-  !*** ./components/javascript/zcat-double-field.js ***!
-  \****************************************************/
+/***/ 27502757:
+/*!*************************************************************************!*\
+  !*** ./node_modules/zcat-ui/components/javascript/zcat-double-field.js ***!
+  \*************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatDoubleField": () => (/* binding */ ZcatDoubleField)
 /* harmony export */ });
-/* harmony import */ var _zcat_hovercard_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-hovercard.js */ 61083875);
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _zcat_input_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-input.js */ 9513644);
-/* harmony import */ var _zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zcat-dropdown.js */ 71154528);
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
-/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
+/* harmony import */ var _zcat_hovercard_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-hovercard.js */ 5719580);
+/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-icon.js */ 35554276);
+/* harmony import */ var _zcat_input_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-input.js */ 16528657);
+/* harmony import */ var _zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zcat-dropdown.js */ 91662813);
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../component.js */ 62316197);
+/* harmony import */ var _slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../@slyte/core/index.js */ 60469700);
 
 
 
@@ -296,7 +296,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class ZcatDoubleField extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_4__.Component {
+class ZcatDoubleField extends _component_js__WEBPACK_IMPORTED_MODULE_4__.Component {
     constructor() {
 		super();
 	}
@@ -313,7 +313,7 @@ class ZcatDoubleField extends _node_modules_slyte_component_index_js__WEBPACK_IM
 	}
 
     data(arg1) {
-		const doubleField = (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", {
+		const doubleField = (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", {
 			default: {
 				size: "default",
 				label: "Field Label",
@@ -357,11 +357,11 @@ class ZcatDoubleField extends _node_modules_slyte_component_index_js__WEBPACK_IM
 		})
 
 		return Object.assign(super.data({
-      		featureObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { watch: true }),
-			zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", {default: {}}, { watch: true }),
-			self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: this }), 
-			fieldClass: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", {default: ""}),
-			userObj: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { default: {} })			
+      		featureObj: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { watch: true }),
+			zcatProp: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", {default: {}}, { watch: true }),
+			self: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("object", { default: this }), 
+			fieldClass: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)("string", {default: ""}),
+			userObj: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_5__.prop)('object', { default: {} })			
 		}), arg1);	
 	}
 
@@ -415,8 +415,8 @@ ZcatDoubleField._dynamicNodes = [{"t":"s","p":[1],"c":{"lc_id_0":{"dN":[{"t":"a"
 ZcatDoubleField._observedAttributes = ["featureObj", "zcatProp", "self", "fieldClass", "userObj"];
 
 ZcatDoubleField.register("zcat-double-field", {
-    hash: "ZcatDoubleField_4",
-    refHash: "C_zcat-app_app_0"
+    hash: "ZcatDoubleField_6",
+    refHash: "C_zcat-ui_zcat-ui_2"
 }); 
 
 

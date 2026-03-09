@@ -1,0 +1,162 @@
+
+
+/* === Global base styles from reference css/zcat-radio.css === */
+lyte-radiobutton * {
+  box-sizing: border-box;
+}
+lyte-radiobutton {
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+  color: var(--zcat-body-text-primary);
+  display: flex;
+}
+lyte-radiobutton input[type="radio"]:focus ~ .lyteRadioLabel,lyte-radiobutton label:hover .lyteRadioLabel,.lyteRadioDisabled label:hover .lyteRadioLabel{
+  color: var(--zcat-body-text-primary);
+}
+.lyteRadioBtn.lyteDefault,.primaryRadioBtn .lyteRadioBtn.lyteDefault{
+  position: relative;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+}
+.checkboxWutLabel.lyteRadioDisabled .lyteRadioBtn.lyteDefault,.lyteRadioDisabled .lyteRadioBtn.lyteDefault{
+  cursor: not-allowed;
+}
+.checkboxWutLabel .lyteRadioBtn.lyteDefault{
+  width: 14px;
+}
+.primaryRadioBtn .lyteRadioBtn.lyteDefault{
+  align-items: baseline;
+}
+.primaryRadioBtn.checkboxWutSubtxt .lyteRadioBtn.lyteDefault{
+  align-items: center;
+}
+.lyteRadioLabel {
+  margin-left: 4px;
+  width: calc(100% - 14px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: var(--zcat-font-14-20) var(--zcat-font-family-primary);
+  font-weight: 400;
+}
+.lyteRadioBtn.lyteDefault input[type='radio'] {
+  opacity: 0;
+  position: absolute;
+  height: 0;
+  width: 0;
+}
+.lyteRadioLayer {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--zcat-radio-bg-default);
+  border: 1px solid;
+  border-color: var(--zcat-radio-border-default);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  margin-right: 0;
+}
+.lyteRadioBtn:hover .lyteRadioLayer,
+.lyteRadioBtn input[type='radio']:active + .lyteRadioLayer {
+  background-color: var(--zcat-radio-bg-hover);
+  border-color: var(--zcat-radio-border-hover);
+}
+
+.lyteRadioLayer .lyteRadioCheck {
+  width: 6px;
+  height: 6px;
+  transform: none;
+  position: static;
+  background: transparent;
+}
+
+.lyteRadioBtn.lyteDefault
+  input[type='radio']:checked
+  + .lyteRadioLayer
+  .lyteRadioCheck {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--zcat-radio-inner-default);
+}
+.lyteRadioBtn.lyteDefault input[type='radio']:checked + .lyteRadioLayer {
+  background-color: var(--zcat-radio-bg-clicked);
+  border-color: var(--zcat-radio-bg-clicked);
+}
+.lyteRadioBtn:hover input[type='radio']:checked + .lyteRadioLayer {
+  background-color: var(--zcat-radio-bg-clicked-hover);
+}
+
+.lyteRadioBtn.lyteDefault input[type='radio']:disabled + .lyteRadioLayer {
+  background-color: var(--zcat-radio-bg-disabled);
+  border-color: var(--zcat-radio-border-disabled);
+  cursor: not-allowed;
+  opacity: 1;
+}
+.lyteRadioBtn.lyteDefault
+  input[type='radio']:checked:disabled
+  + .lyteRadioLayer {
+  background-color: var(--zcat-radio-bg-clicked-disabled);
+  border-color: var(--zcat-radio-bg-clicked-disabled);
+  cursor: not-allowed;
+  opacity: 1;
+}
+.lyteRadioBtn.lyteDefault input[type='radio']:checked:disabled + .lyteRadioLayer .lyteRadioCheck {
+  background-color: var(--zcat-radio-inner-disabled);
+}
+
+/*Keyboard Focus*/
+.lyteRadioBtn.lyteDefault input[type='radio']:checked:focus + .lyteRadioLayer,
+.lyteRadioBtn.lyteDefault input[type='radio']:focus + .lyteRadioLayer {
+  box-shadow: none;
+}
+.zcat-secondary-radio-button.primaryRadioBtn.selected,
+.zcat-secondary-radio-button.primaryRadioBtn {
+  padding: 0;
+}
+.zcat-secondary-radio-button .lyteRadioBtn {
+  width: 100%;
+  padding: 8px 12px;
+}
+.zcat-secondary-radio-button.lyteRadioDisabled .lyteRadioBtn,.primaryRadioBtn.lyteRadioDisabled{
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.primaryRadioBtn {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--zcat-radio-outer-border-default);
+  background: var(--zcat-radio-outer-bg-default);
+  cursor: pointer;
+}
+.primaryRadioBtn:hover {
+  box-shadow: 0px 0px 6px 1px var(--zcat-shadow-bg-default);
+}
+.primaryRadioBtn.selected {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--zcat-radio-border-default);
+  background: var(--zcat-radio-bg-default);
+}
+zcat-radio * {
+  box-sizing: border-box;
+}
+zcat-radio p {
+  margin: 0;
+}
+zcat-radio h1,
+zcat-radio h2,
+zcat-radio h3,
+zcat-radio h4,
+zcat-radio h5,
+zcat-radio h6 {
+  font-weight: 600 !important;
+  margin: 0;
+}
+

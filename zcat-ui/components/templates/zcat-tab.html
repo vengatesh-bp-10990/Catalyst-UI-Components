@@ -1,0 +1,55 @@
+<template tag-name="zcat-tab">
+    <div class="zcat-dN">
+        <svg id="zcat-icon-plus" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="none">
+            <path d="M6.99998 2.91675V11.0834M2.91665 7.00008H11.0833" stroke="#101F3E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <lyte-tabs class="{{zcatProp.variant ? zcatProp.variant : ''}}-tabs lyteTabDefaultTop {{zcatProp.class}} {{zcatProp.sizeClass}}"
+    data-zcqa="{{zcatProp.zcqa}}"
+    lt-prop-hover = "{{zcatProp.hover ? zcatProp.hover : ''}}"
+    lt-prop-active-class = "{{zcatProp.activeTab ? zcatProp.activeTab : 'lyteTabActive'}}"
+    lt-prop = '{"position" : {"pos" : "{{zcatProp.position ? zcatProp.position : ""}}", "align" : "{{zcatProp.align ? zcatProp.align : ""}}","height" : "{{zcatProp.height ? zcatProp.height : ""}}","type" : "{{zcatProp.type ? zcatProp.type : ""}}","max-width" : "{{zcatProp.maxWidth ? zcatProp.maxWidth : ""}}","tabStyle" : "{{zcatProp.tabStyle ? zcatProp.tabStyle : ""}}","menuWrapperClass" : "{{zcatProp.menuWrapperClass ? zcatProp.menuWrapperClass : ""}}"}}'
+    lt-prop-close-icon = "{{zcatProp.closeIcon ? zcatProp.closeIcon : 'false'}}"
+    on-before-open = '{{method("customLbindForTab", zcatProp.onBeforeOpen)}}'
+    on-open = '{{method("customLbindForTab", zcatProp.onOpen)}}'
+    on-before-menu-open='{{method("customLbindForTab", zcatProp.onBeforeMenuOpen)}}'
+    on-menu-open='{{method("customLbindForTab", zcatProp.onMenuOpen)}}'
+    on-before-menu-close='{{method("customLbindForTab", zcatProp.onBeforeMenuClose)}}'
+    on-menu-close='{{method("customLbindForTab", zcatProp.onMenuClose)}}'
+    on-menu-click='{{method("customLbindForTab", zcatProp.onMenuClick)}}'
+    on-before-menu-render='{{method("customLbindForTab", zcatProp.onBeforeMenuRender)}}'
+    on-after-menu-render='{{method("customLbindForTab", zcatProp.onAfterMenuRender)}}'
+    on-before-delete='{{method("customLbindForTab", zcatProp.onBeforeDelete)}}'
+    on-delete='{{method("customLbindForTab", zcatProp.onDelete)}}'
+    after-render='{{method("customLbindForTab", zcatProp.onAfterRender)}}'
+    >
+        <template is="registerYield" yield-name="tabYield">
+          <lyte-tab-head style="{{(zcatProp.variant === 'secondary') ? 'width: fit-content;' : ''}}">
+            <lyte-tab-title lyte-for="{{ zcatProp.list}} as item index" lt-prop-id="{{item.id}}"> 
+                <%if(item.icon.name){%>
+                    <lyte-svg lt-prop-path="#{{item.icon.name}}" lt-prop-class="{{item.icon.class}}"></lyte-svg>
+                <%}%>
+                <%if(item.title.badge){%>
+                    {{item.title.name}} 
+                <%}else{%>
+                    <p class="tab-title">{{item.title.name}}</p>
+                <%}%>
+                <div lyte-if="{{zcatProp.variant === 'code'}}" class="code-tab-slide"></div>
+                <%if(item.title.badge){%>
+                <div class="zcat-tab-badge">{{item.title.badge}}</div> 
+                <%}%>
+            </lyte-tab-title>
+          </lyte-tab-head>
+          <lyte-tab-body lyte-if="{{zcatProp.variant !== 'code'}}" style="{{(zcatProp.variant === 'primary') ? 'border: 1px solid var(--zcat-tabs-primary-border-default); border-top: 0px;' : ''}}">
+            <lyte-tab-content  lyte-for="{{ zcatProp.list }} as item index" id="{{item.id}}">
+                <lyte-yield yield-name="{{ item.body.yield }}"></lyte-yield>
+            </lyte-tab-content>
+          </lyte-tab-body>
+          <lyte-tab-body lyte-if="{{zcatProp.variant === 'code'}}"  style="{{(zcatProp.variant === 'code') ? 'border: 1px solid var(--zcat-tabs-primary-border-default) !important; margin-bottom: -1px;' : ''}}">
+            <lyte-tab-content  lyte-for="{{ zcatProp.list }} as item index" id="{{item.id}}">
+                <lyte-yield yield-name="{{ item.body.yield }}"></lyte-yield>
+            </lyte-tab-content>
+          </lyte-tab-body>
+        </template>
+    </lyte-tabs>
+</template>

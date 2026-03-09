@@ -11,9 +11,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "PaginationComp": () => (/* binding */ PaginationComp)
 /* harmony export */ });
-/* harmony import */ var _zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-icon.js */ 122993);
-/* harmony import */ var _zcat_button_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./zcat-button.js */ 28020792);
-/* harmony import */ var _zcat_pagination_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zcat-pagination.js */ 35378205);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_icon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-icon.js */ 35554276);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_button_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-button.js */ 43360219);
+/* harmony import */ var _node_modules_zcat_ui_components_javascript_zcat_pagination_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/zcat-ui/components/javascript/zcat-pagination.js */ 34157887);
 /* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
 /* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
 
@@ -208,28 +208,28 @@ PaginationComp._observedAttributes = [
 
 
 PaginationComp.register("pagination-comp", {
-  hash: "PaginationComp_4",
+  hash: "PaginationComp_6",
   refHash: "C_zcat-app_app_0"
 });
 
 
 /***/ }),
 
-/***/ 35378205:
-/*!**************************************************!*\
-  !*** ./components/javascript/zcat-pagination.js ***!
-  \**************************************************/
+/***/ 34157887:
+/*!***********************************************************************!*\
+  !*** ./node_modules/zcat-ui/components/javascript/zcat-pagination.js ***!
+  \***********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ZcatPagination": () => (/* binding */ ZcatPagination)
 /* harmony export */ });
-/* harmony import */ var _zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-dropdown.js */ 71154528);
-/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_svg_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-svg.js */ 33893575);
-/* harmony import */ var _node_modules_zoho_lyte_ui_component_components_javascript_lyte_navigator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/@zoho/lyte-ui-component/components/javascript/lyte-navigator.js */ 88837589);
-/* harmony import */ var _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/@slyte/component/index.js */ 93132498);
-/* harmony import */ var _node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../node_modules/@slyte/core/index.js */ 60469700);
+/* harmony import */ var _zcat_dropdown_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./zcat-dropdown.js */ 91662813);
+/* harmony import */ var _zoho_lyte_ui_component_components_javascript_lyte_svg_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../@zoho/lyte-ui-component/components/javascript/lyte-svg.js */ 33893575);
+/* harmony import */ var _zoho_lyte_ui_component_components_javascript_lyte_navigator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../@zoho/lyte-ui-component/components/javascript/lyte-navigator.js */ 88837589);
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../component.js */ 62316197);
+/* harmony import */ var _slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../@slyte/core/index.js */ 60469700);
 
 
 
@@ -237,16 +237,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class ZcatPagination extends _node_modules_slyte_component_index_js__WEBPACK_IMPORTED_MODULE_3__.Component {
+class ZcatPagination extends _component_js__WEBPACK_IMPORTED_MODULE_3__.Component {
     constructor() {
 		super();
 	}
 
     data(arg1) {
 		return Object.assign(super.data({
-			self: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object'),
-      		zcatProp: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object'),
-			paginationDropdownStyles: (0,_node_modules_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)( "object", {
+			self: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object'),
+      		zcatProp: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)('object'),
+			paginationDropdownStyles: (0,_slyte_core_index_js__WEBPACK_IMPORTED_MODULE_4__.prop)( "object", {
 				default: {
 					"id": "dropdown-id",
 					"placeholder": "Select Option",
@@ -329,8 +329,8 @@ ZcatPagination._dynamicNodes = [{"t":"s","p":[3],"c":{"lc_id_0":{"dN":[{"t":"a",
 ZcatPagination._observedAttributes = ["self", "zcatProp", "paginationDropdownStyles"];
 
 ZcatPagination.register("zcat-pagination", {
-    hash: "ZcatPagination_4",
-    refHash: "C_zcat-app_app_0"
+    hash: "ZcatPagination_6",
+    refHash: "C_zcat-ui_zcat-ui_2"
 }); 
 
 
